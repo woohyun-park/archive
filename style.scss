@@ -58,7 +58,7 @@ container{
 
 nav{
   display: flex;
-  position:sticky;
+  position:absolute;
   top: 0;
   height: 5%;
   width: inherit;
@@ -90,7 +90,7 @@ nav{
 }
 
 main{
-  height: 95%;
+  height: 100%;
   width: 100%;
   scroll-snap-type: y mandatory;
   overflow: auto;
