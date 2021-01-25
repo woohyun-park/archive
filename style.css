@@ -88,7 +88,7 @@ main {
   opacity: 100; }
 
 main > .main__page:nth-child(1) {
-  scroll-snap-align: start;
+  scroll-snap-align: center;
   background-color: #587bbe; }
   main > .main__page:nth-child(1) .main__title {
     display: flex;
@@ -110,7 +110,7 @@ main > .main__page:nth-child(1) {
     overflow: hidden; }
 
 main > .main__page:nth-child(2) {
-  scroll-snap-align: start;
+  scroll-snap-align: center;
   background-color: #e3605e; }
   main > .main__page:nth-child(2) .main__title {
     display: flex;
@@ -132,7 +132,7 @@ main > .main__page:nth-child(2) {
     overflow: hidden; }
 
 main > .main__page:nth-child(3) {
-  scroll-snap-align: start;
+  scroll-snap-align: center;
   background-color: #42997b; }
   main > .main__page:nth-child(3) .main__title {
     display: flex;
