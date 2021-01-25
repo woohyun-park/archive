@@ -7,6 +7,7 @@ body{
   font-family: font;
   margin: 0;
   height: 100vh;
+  width: 100vw;
 }
 
 @keyframes shake{
@@ -50,7 +51,7 @@ container{
   // height: 846.5px;
   // width: 414px;
   height: 100%;
-  width: 414px;
+  width: 100%;
   margin: 0 auto;
 }
 
