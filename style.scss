@@ -209,6 +209,7 @@ main>.main__page:nth-child(1){
   left: 0%;
   scroll-snap-align: center;
   background-color: #587bbe;
+  background: radial-gradient(ellipse at center, rgba(88,123,190,0.65) 0%,rgba(88,123,190,1) 100%);
   .main__title{
     display: flex;
     width: auto;
@@ -240,6 +241,7 @@ main>.main__page:nth-child(2){
 
   scroll-snap-align: center;
   background-color: #e3605e;
+  background: radial-gradient(ellipse at center, rgba(227,96,94,0.65) 0%,rgba(227,96,94,1) 100%);
   .main__title{
     display: flex;
     width: auto;
@@ -271,6 +273,7 @@ main>.main__page:nth-child(3){
 
   scroll-snap-align: center;
   background-color: #42997b;
+  background: radial-gradient(ellipse at center, rgba(66,153,123,0.65) 0%,rgba(66,153,123,1) 100%);
   .main__title{
     display: flex;
     width: auto;
