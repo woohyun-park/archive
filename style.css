@@ -10,7 +10,8 @@ body {
   margin: 0;
   height: 100vh;
   height: calc(var(--vh, 1vh) * 100);
-  width: 100vw; }
+  width: 100vw;
+  background-color: #e8e9e9; }
 
 @keyframes shake {
   0% {
@@ -225,3 +226,19 @@ main > .main__page:nth-child(3) {
     height: 80%;
     width: .35em;
     overflow: hidden; }
+
+.main__crud {
+  display: flex;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  visibility: hidden;
+  transition: 1s;
+  opacity: 0; }
+
+.main__create {
+  font-size: 3em;
+  padding: 0 .25em;
+  margin: .3em; }
+  .main__create:hover {
+    cursor: pointer; }
