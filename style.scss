@@ -73,14 +73,29 @@ nav{
   z-index: 1;
 }
 
+.nav__box{
+  width: 20%;
+  text-align: center;
+}
+
 .nav__title{
   padding: 1%;
   margin: 0 3%;
-  transition: 0.5s;
+  transition: 1s;
   &:hover{
-    font-size: 1.1em;
     cursor: pointer;
   }
+
+  position:absolute;
+  left:0;
+  top:50%;
+  transform: translateY(-50%);
+}
+
+.nav__title:nth-child(2),
+.nav__title:nth-child(3),
+.nav__title:nth-child(4){
+  left: -50%;
 }
 
 .nav__menu{
@@ -89,7 +104,6 @@ nav{
   margin: 0 1%;
   transition: 0.5s;
   &:hover{
-    font-size: 2.2em;
     cursor: pointer;
   }
 }
