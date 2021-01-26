@@ -66,6 +66,7 @@ nav{
 
   justify-content: space-between;
   align-items: center;
+  z-index: 1;
 }
 
 .nav__title{
@@ -92,7 +93,7 @@ nav{
 main{
   height: 100%;
   width: 100%;
-  scroll-snap-type: y mandatory;
+  scroll-snap-type: x mandatory;
   overflow: auto;
 }
 
@@ -100,9 +101,25 @@ main{
   display: flex;
   height: 100%;
   width: 100%;
+  position: fixed;
 
   justify-content: center;
   align-items: center;
+  transition: 1s;
+}
+
+.main__left{
+  position: absolute;
+  height: 100%;
+  width: 10%;
+  left: 0;
+}
+
+.main__right{
+  position:absolute;
+  height: 100%;
+  width: 10%;
+  right:0;
 }
 
 .main__open,
@@ -116,6 +133,7 @@ main{
 }
 
 main>.main__page:nth-child(1){
+  left: 0%;
   scroll-snap-align: center;
   background-color: #587bbe;
   .main__title{
@@ -145,6 +163,8 @@ main>.main__page:nth-child(1){
   }
 }
 main>.main__page:nth-child(2){
+  left: 100%;
+
   scroll-snap-align: center;
   background-color: #e3605e;
   .main__title{
@@ -174,6 +194,8 @@ main>.main__page:nth-child(2){
   }
 }
 main>.main__page:nth-child(3){
+  left: 100%;
+
   scroll-snap-align: center;
   background-color: #42997b;
   .main__title{

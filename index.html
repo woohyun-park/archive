@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <link rel="stylesheet" href="style.css">
-  <!-- <script src="index.js"></script> -->
+  <script src="index.js"></script>
   <title>Document</title>
 </head>
 <body>
@@ -20,6 +20,7 @@
     </nav>
     <main id="main">
       <div class="main__page">
+        <div class="main__right" onclick="moveRight(this.parentNode);"></div>
         <div class="main__title">
           <span class="main__open">
             [
@@ -33,6 +34,8 @@
         </div>
       </div>
       <div class="main__page">
+        <div class="main__left" onclick="moveLeft(this.parentNode);"></div>
+        <div class="main__right" onclick="moveRight(this.parentNode);"></div>
         <div class="main__title">
           <span class="main__open">
             [
@@ -46,6 +49,7 @@
         </div>
       </div>
       <div class="main__page">
+        <div class="main__left" onclick="moveLeft(this.parentNode);"></div>
         <div class="main__title">
           <span class="main__open">
             [
