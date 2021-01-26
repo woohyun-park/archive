@@ -3,6 +3,10 @@
   font-family: "font"
 }
 
+*{
+  -webkit-tap-highlight-color : transparent;
+}
+
 body{
   font-family: font;
   margin: 0;
@@ -117,13 +121,9 @@ main{
   visibility: hidden;
   opacity: 0;
   transition: .5s;
-  -webkit-tap-highlight-color : transparent;
   &:hover{
     opacity: 1;
     cursor: pointer;
-  }
-  &:focus{
-    outline: none;
   }
 }
 
@@ -136,16 +136,12 @@ main{
   visibility: hidden;
   opacity: 0;
   transition: .5s;
-  -webkit-tap-highlight-color : transparent;
   &:first-of-type{
     visibility: visible;
   }
   &:hover{
     opacity: 1;
     cursor: pointer;
-  }
-  &:focus{
-    outline: none;
   }
 }
 

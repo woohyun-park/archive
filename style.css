@@ -2,6 +2,9 @@
   src: url("font/Rounded_Elegance.ttf");
   font-family: "font"; }
 
+* {
+  -webkit-tap-highlight-color: transparent; }
+
 body {
   font-family: font;
   margin: 0;
