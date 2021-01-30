@@ -15,6 +15,7 @@ body{
   //모바일에서는 100vh
   // height: calc(var(--vh, 1vh) * 100);
   background-color: #e8e9e9;
+  overflow: hidden;
 }
 
 @keyframes shake{
@@ -99,7 +100,7 @@ container{
 
 nav{
   display: flex;
-  position:absolute;
+  position: fixed;
   top: 0;
   height: 5%;
   width: inherit;
@@ -299,23 +300,27 @@ main>.main__page:nth-child(3n+3){
 }
 
 .main__content{
-  width: 1080px;
+  max-width: 1080px;
+  width: 80%;
   height: 100%;
-  margin-top: 107%;
-  display:flex;
-  justify-content: space-around;
+  margin-top: 110vh;
+  justify-content: flex-start;
   flex-wrap: wrap;
   transition: .5s;
+  display:none;
 }
 
 .main__box>img{
-  width: 350px;
-  height: 350px;
+  max-width: 350px;
+  max-height: 350px;
+  width: 23vw;
+  height: 23vw;
+  margin: .5vh .5vh 0 .5vh;
 }
 
 .main__crud{
   display:flex;
-  position: absolute;
+  position: fixed;
   bottom:0;
   right: 0;
   visibility: hidden;
