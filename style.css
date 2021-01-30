@@ -113,7 +113,9 @@ main {
   height: 95%;
   width: 100%;
   scroll-snap-type: x mandatory;
-  overflow: auto; }
+  overflow: auto;
+  display: flex;
+  justify-content: center; }
 
 .main__page {
   display: flex;
@@ -161,8 +163,7 @@ main {
 main > .main__page:nth-child(3n+1) {
   left: 100%;
   scroll-snap-align: center;
-  background-color: #587bbe;
-  background: radial-gradient(ellipse at center, rgba(88, 123, 190, 0.65) 0%, #587bbe 100%); }
+  background-color: #587bbe; }
   main > .main__page:nth-child(3n+1) .main__title {
     display: flex;
     width: auto;
@@ -185,8 +186,7 @@ main > .main__page:nth-child(3n+1) {
 main > .main__page:nth-child(3n+2) {
   left: 100%;
   scroll-snap-align: center;
-  background-color: #e3605e;
-  background: radial-gradient(ellipse at center, rgba(227, 96, 94, 0.65) 0%, #e3605e 100%); }
+  background-color: #e3605e; }
   main > .main__page:nth-child(3n+2) .main__title {
     display: flex;
     width: auto;
@@ -209,8 +209,7 @@ main > .main__page:nth-child(3n+2) {
 main > .main__page:nth-child(3n+3) {
   left: 100%;
   scroll-snap-align: center;
-  background-color: #42997b;
-  background: radial-gradient(ellipse at center, rgba(66, 153, 123, 0.65) 0%, #42997b 100%); }
+  background-color: #42997b; }
   main > .main__page:nth-child(3n+3) .main__title {
     display: flex;
     width: auto;
@@ -226,6 +225,19 @@ main > .main__page:nth-child(3n+3) {
 
 #firstPage {
   left: 0%; }
+
+.main__content {
+  width: 1080px;
+  height: 100%;
+  margin-top: 107%;
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  transition: .5s; }
+
+.main__box > img {
+  width: 350px;
+  height: 350px; }
 
 .main__crud {
   display: flex;
