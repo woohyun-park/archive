@@ -51,6 +51,7 @@ function moveTop(self, i){
   let currentPage = self.parentNode;
   let currentCrud = document.getElementsByClassName("main__crud")[0];
   let navTitle = document.getElementsByClassName("nav__title");
+  let navMenu = document.getElementsByClassName("nav__menu")[0];
 
   currentPage.style.transform = "translateY(-93%)";
   currentCrud.style.visibility = "visible";
@@ -58,16 +59,23 @@ function moveTop(self, i){
   currentCrud.style.opacity = 1;
   navTitle[0].style.left = "-50%";
   navTitle[i].style.left = 0;
+  navMenu.style.visibility = "visible";
+  navMenu.style.opacity = 1;
+  navMenu.style.right = 0;
 }
 
 function moveBottom(i){
   let currentPage = document.getElementsByClassName("main__page")[i];
   let currentCrud = document.getElementsByClassName("main__crud")[0];
   let navTitle = document.getElementsByClassName("nav__title");
+  let navMenu = document.getElementsByClassName("nav__menu")[0];
 
   currentPage.style.transform = "translateY(0%)";
   currentCrud.style.visibility = "hidden";
   currentCrud.style.opacity = 0;
   navTitle[0].style.left = 0;
   navTitle[i+1].style.left = "-50%";
+  navMenu.style.visibility = "hidden";
+  navMenu.style.opacity = 0;
+  navMenu.style.right = "-50%";
 }

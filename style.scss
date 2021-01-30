@@ -10,8 +10,10 @@
 body{
   font-family: font;
   margin: 0;
-  height: 100vh;
-  height: calc(var(--vh, 1vh) * 100);
+  //데스크탑에서는 100%
+  height: 100%;
+  //모바일에서는 100vh
+  // height: calc(var(--vh, 1vh) * 100);
   width: 100vw;
   background-color: #e8e9e9;
 }
@@ -138,14 +140,18 @@ nav{
   font-size: 2em;
   padding: 0% 2%;
   margin: 0 1%;
-  transition: 0.5s;
+  transition: 1s;
   &:hover{
     cursor: pointer;
   }
+  visibility: hidden;
+  opacity: 0;
+  position: absolute;
+  right: -50%;
 }
 
 main{
-  height: 100%;
+  height: 95%;
   width: 100%;
   scroll-snap-type: x mandatory;
   overflow: auto;
