@@ -1,12 +1,20 @@
-var http = require('http');
-var fs = require('fs');
-var app = http.createServer(function(request,response){
-    var url = request.url;
-    if(request.url == '/'){
-      url = '/index.html';
-    }
+let http = require('http');
+let fs = require('fs');
+let template = require('./lib/template.js');
+let url = require('url');
+
+let app = http.createServer(function(request,response){
+  let _url = request.url;
+  let pathname = url.parse(_url, true).pathname;
+
+  if(pathname === '/style'){
+    template.style(request, response);
+  }
+  else{
+    let html = template.html;
     response.writeHead(200);
-    response.end(fs.readFileSync(__dirname + url));
+    response.end(html);
+  }
 });
 app.listen(3000);
 
