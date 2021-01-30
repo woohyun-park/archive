@@ -3,50 +3,71 @@ document.documentElement.style.setProperty('--vh', `${vh}px`);
 
 let themeColor = ["#587bbe", "#e3605e", "#42997b"];
 
-function moveRight(self){
-  self.parentNode.style.left = "-100%";
-  self.parentNode.nextElementSibling.style.left = "0%";
-  self.style.visibility = "hidden";
-  if(self.parentNode.getElementsByClassName("main__left").length != 0){
-    self.parentNode.getElementsByClassName("main__left")[0].style.visibility = "hidden";
+function moveRight(right){
+  let currentPage = right.parentNode;
+  let nextPage = currentPage.nextElementSibling;
+  let left = currentPage.getElementsByClassName("main__left");
+  let nextLeft = nextPage.getElementsByClassName("main__left");
+  let nextRight = nextPage.getElementsByClassName("main__right");
+
+  currentPage.style.left = "-100%";
+  nextPage.style.left = "0%";
+
+  right.style.visibility = "hidden";
+  if(left.length == 1){
+    left[0].style.visibility = "hidden";
   }
-  if(self.parentNode.nextElementSibling.getElementsByClassName("main__left").length != 0){
-    self.parentNode.nextElementSibling.getElementsByClassName("main__left")[0].style.visibility = "visible";
+  if(nextLeft.length == 1){
+    nextLeft[0].style.visibility = "visible";
   }
-  if(self.parentNode.nextElementSibling.getElementsByClassName("main__right").length != 0){
-    self.parentNode.nextElementSibling.getElementsByClassName("main__right")[0].style.visibility = "visible";
+  if(nextRight.length == 1){
+    nextRight[0].style.visibility = "visible";
   }
 }
 
-function moveLeft(self){
-  self.parentNode.style.left = "100%";
-  self.parentNode.previousElementSibling.style.left = "0%";
-  self.style.visibility = "hidden";
-  if(self.parentNode.getElementsByClassName("main__right").length != 0){
-    self.parentNode.getElementsByClassName("main__right")[0].style.visibility = "hidden";
+function moveLeft(left){
+  let currentPage = left.parentNode;
+  let previousPage = currentPage.previousElementSibling;
+  let right = currentPage.getElementsByClassName("main__right");
+  let previousLeft = previousPage.getElementsByClassName("main__left");
+  let previousRight = previousPage.getElementsByClassName("main__right");
+
+  currentPage.style.left = "100%";
+  previousPage.style.left = "0%";
+
+  left.style.visibility = "hidden";
+  if(right.length == 1){
+    right[0].style.visibility = "hidden";
   }
-  if(self.parentNode.previousElementSibling.getElementsByClassName("main__left").length != 0){
-    self.parentNode.previousElementSibling.getElementsByClassName("main__left")[0].style.visibility = "visible";
+  if(previousLeft.length == 1){
+    previousLeft[0].style.visibility = "visible";
   }
-  if(self.parentNode.previousElementSibling.getElementsByClassName("main__right").length != 0){
-    self.parentNode.previousElementSibling.getElementsByClassName("main__right")[0].style.visibility = "visible";
+  if(previousRight.length == 1){
+    previousRight[0].style.visibility = "visible";
   }
 }
 
 function moveTop(self, i){
-  self.parentNode.style.transform = "translateY(-93%)";
-  document.getElementsByClassName("nav__title")[0].style.left = "-50%";
-  document.getElementsByClassName("main__crud")[0].style.visibility = "visible";
-  document.getElementsByClassName("main__crud")[0].style.color = themeColor[i-1];
-  document.getElementsByClassName("main__crud")[0].style.opacity = 1;
-  document.getElementsByClassName("nav__title")[i].style.left = 0;
+  let currentPage = self.parentNode;
+  let currentCrud = document.getElementsByClassName("main__crud")[0];
+  let navTitle = document.getElementsByClassName("nav__title");
+
+  currentPage.style.transform = "translateY(-93%)";
+  currentCrud.style.visibility = "visible";
+  currentCrud.style.color = themeColor[i-1];
+  currentCrud.style.opacity = 1;
+  navTitle[0].style.left = "-50%";
+  navTitle[i].style.left = 0;
 }
 
-function moveBottom(self, i){
-  self.style.left = "-50%";
-  document.getElementsByClassName("nav__title")[0].style.left = 0;
-  document.getElementsByClassName("main__crud")[0].style.visibility = "hidden";
-  document.getElementsByClassName("main__crud")[0].style.opacity = 0;
-  console.log(document.getElementsByClassName("main__title")[i]);
-  document.getElementsByClassName("main__page")[i].style.transform = "translateY(0%)";
+function moveBottom(i){
+  let currentPage = document.getElementsByClassName("main__page")[i];
+  let currentCrud = document.getElementsByClassName("main__crud")[0];
+  let navTitle = document.getElementsByClassName("nav__title");
+
+  currentPage.style.transform = "translateY(0%)";
+  currentCrud.style.visibility = "hidden";
+  currentCrud.style.opacity = 0;
+  navTitle[0].style.left = 0;
+  navTitle[i+1].style.left = "-50%";
 }
