@@ -14,7 +14,6 @@ body{
   height: 100%;
   //모바일에서는 100vh
   // height: calc(var(--vh, 1vh) * 100);
-  width: 100vw;
   background-color: #e8e9e9;
 }
 
@@ -109,6 +108,7 @@ nav{
   justify-content: space-between;
   align-items: center;
   z-index: 1;
+  overflow: hidden;
 }
 
 .nav__box{
@@ -121,7 +121,7 @@ nav{
   margin: 0 3%;
   transition: 1s;
   position:absolute;
-  left:0;
+  left: -50%;
   top:50%;
   transform: translateY(-50%);
   &:hover{
@@ -130,10 +130,8 @@ nav{
   }
 }
 
-.nav__title:nth-child(2),
-.nav__title:nth-child(3),
-.nav__title:nth-child(4){
-  left: -50%;
+.nav__title:first-child{
+  left:0;
 }
 
 .nav__menu{
@@ -148,6 +146,7 @@ nav{
   opacity: 0;
   position: absolute;
   right: -50%;
+  transform: translateY(-50%);
 }
 
 main{
@@ -192,9 +191,6 @@ main{
   visibility: hidden;
   opacity: 0;
   transition: .5s;
-  &:first-of-type{
-    visibility: visible;
-  }
   &:hover{
     opacity: 1;
     cursor: pointer;
@@ -211,8 +207,8 @@ main{
   opacity: 100;
 }
 
-main>.main__page:nth-child(1){
-  left: 0%;
+main>.main__page:nth-child(3n+1){
+  left: 100%;
   scroll-snap-align: center;
   background-color: #587bbe;
   background: radial-gradient(ellipse at center, rgba(88,123,190,0.65) 0%,rgba(88,123,190,1) 100%);
@@ -242,7 +238,7 @@ main>.main__page:nth-child(1){
     overflow: hidden;
   }
 }
-main>.main__page:nth-child(2){
+main>.main__page:nth-child(3n+2){
   left: 100%;
 
   scroll-snap-align: center;
@@ -274,7 +270,7 @@ main>.main__page:nth-child(2){
     overflow: hidden;
   }
 }
-main>.main__page:nth-child(3){
+main>.main__page:nth-child(3n+3){
   left: 100%;
 
   scroll-snap-align: center;
@@ -297,14 +293,10 @@ main>.main__page:nth-child(3){
       }
     }
   }
+}
 
-  .main__box{
-    transition: 0.5s;
-    display: block;
-    height: 80%;
-    width: .35em;
-    overflow: hidden;
-  }
+#firstPage{
+  left: 0%;
 }
 
 .main__crud{

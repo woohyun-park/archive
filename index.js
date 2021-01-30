@@ -11,13 +11,7 @@ let app = http.createServer(function(request,response){
     template.style(request, response);
   }
   else{
-    let html = template.html;
-    response.writeHead(200);
-    response.end(html);
+    template.main(request, response);
   }
 });
 app.listen(3000);
-
-//
-// // let vh = window.innerHeight * 0.01;
-// // document.documentElement.style.setProperty('--vh', `${vh}px`);

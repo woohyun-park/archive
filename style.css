@@ -9,7 +9,6 @@ body {
   font-family: font;
   margin: 0;
   height: 100%;
-  width: 100vw;
   background-color: #e8e9e9; }
 
 @keyframes shake {
@@ -75,7 +74,8 @@ nav {
   background-color: #e8e9e9;
   justify-content: space-between;
   align-items: center;
-  z-index: 1; }
+  z-index: 1;
+  overflow: hidden; }
 
 .nav__box {
   width: 20%;
@@ -86,17 +86,15 @@ nav {
   margin: 0 3%;
   transition: 1s;
   position: absolute;
-  left: 0;
+  left: -50%;
   top: 50%;
   transform: translateY(-50%); }
   .nav__title:hover {
     cursor: pointer;
     animation: shakeTop 3s infinite; }
 
-.nav__title:nth-child(2),
-.nav__title:nth-child(3),
-.nav__title:nth-child(4) {
-  left: -50%; }
+.nav__title:first-child {
+  left: 0; }
 
 .nav__menu {
   font-size: 2em;
@@ -106,7 +104,8 @@ nav {
   visibility: hidden;
   opacity: 0;
   position: absolute;
-  right: -50%; }
+  right: -50%;
+  transform: translateY(-50%); }
   .nav__menu:hover {
     cursor: pointer; }
 
@@ -147,8 +146,6 @@ main {
   visibility: hidden;
   opacity: 0;
   transition: .5s; }
-  .main__right:first-of-type {
-    visibility: visible; }
   .main__right:hover {
     opacity: 1;
     cursor: pointer; }
@@ -161,77 +158,74 @@ main {
 .main__alphabet {
   opacity: 100; }
 
-main > .main__page:nth-child(1) {
-  left: 0%;
+main > .main__page:nth-child(3n+1) {
+  left: 100%;
   scroll-snap-align: center;
   background-color: #587bbe;
   background: radial-gradient(ellipse at center, rgba(88, 123, 190, 0.65) 0%, #587bbe 100%); }
-  main > .main__page:nth-child(1) .main__title {
+  main > .main__page:nth-child(3n+1) .main__title {
     display: flex;
     width: auto;
     justify-content: center;
     align-items: center;
     font-size: 3em;
     color: white; }
-    main > .main__page:nth-child(1) .main__title:hover .main__box {
+    main > .main__page:nth-child(3n+1) .main__title:hover .main__box {
       transition: 0.5s;
       width: 3.75em;
       animation: shake 3s infinite;
       cursor: pointer; }
-  main > .main__page:nth-child(1) .main__box {
+  main > .main__page:nth-child(3n+1) .main__box {
     transition: 0.5s;
     display: block;
     height: 80%;
     width: .65em;
     overflow: hidden; }
 
-main > .main__page:nth-child(2) {
+main > .main__page:nth-child(3n+2) {
   left: 100%;
   scroll-snap-align: center;
   background-color: #e3605e;
   background: radial-gradient(ellipse at center, rgba(227, 96, 94, 0.65) 0%, #e3605e 100%); }
-  main > .main__page:nth-child(2) .main__title {
+  main > .main__page:nth-child(3n+2) .main__title {
     display: flex;
     width: auto;
     justify-content: center;
     align-items: center;
     font-size: 3em;
     color: white; }
-    main > .main__page:nth-child(2) .main__title:hover .main__box {
+    main > .main__page:nth-child(3n+2) .main__title:hover .main__box {
       transition: 0.5s;
       width: 2.8em;
       animation: shake 3s infinite;
       cursor: pointer; }
-  main > .main__page:nth-child(2) .main__box {
+  main > .main__page:nth-child(3n+2) .main__box {
     transition: 0.5s;
     display: block;
     height: 80%;
     width: .95em;
     overflow: hidden; }
 
-main > .main__page:nth-child(3) {
+main > .main__page:nth-child(3n+3) {
   left: 100%;
   scroll-snap-align: center;
   background-color: #42997b;
   background: radial-gradient(ellipse at center, rgba(66, 153, 123, 0.65) 0%, #42997b 100%); }
-  main > .main__page:nth-child(3) .main__title {
+  main > .main__page:nth-child(3n+3) .main__title {
     display: flex;
     width: auto;
     justify-content: center;
     align-items: center;
     font-size: 3em;
     color: white; }
-    main > .main__page:nth-child(3) .main__title:hover .main__box {
+    main > .main__page:nth-child(3n+3) .main__title:hover .main__box {
       transition: 0.5s;
       width: 3.45em;
       animation: shake 3s infinite;
       cursor: pointer; }
-  main > .main__page:nth-child(3) .main__box {
-    transition: 0.5s;
-    display: block;
-    height: 80%;
-    width: .35em;
-    overflow: hidden; }
+
+#firstPage {
+  left: 0%; }
 
 .main__crud {
   display: flex;
