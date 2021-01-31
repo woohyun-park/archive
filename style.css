@@ -114,7 +114,9 @@ main {
   height: 100vh;
   width: 100%;
   scroll-snap-type: x mandatory;
-  overflow: hidden; }
+  overflow: auto; }
+  main::-webkit-scrollbar {
+    display: none; }
 
 .main__page {
   display: flex;

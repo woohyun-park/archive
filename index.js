@@ -113,7 +113,7 @@ function showContent(self){
     siblings[i].style.display = "none";
   }
   text.style.visibility = "visible";
-  main.style.overflow = "auto";
+  // main.style.overflow = "auto";
   self.style.maxWidth = "100vw";
   self.style.maxHeight = "50vw";
   self.style.width = "100vw";
@@ -138,7 +138,7 @@ function hideContent(self){
   }
 
   text.style.visibility = "hidden";
-  main.style.overflow = "hidden";
+  // main.style.overflow = "hidden";
   self.style.maxWidth = "340px";
   self.style.maxHeight = "340px";
   self.style.width = "26vw";
