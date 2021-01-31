@@ -109,6 +109,8 @@ function showContent(self){
   let type = self.getElementsByClassName("main__type")[0];
   let text = self.getElementsByTagName("object")[0];
 
+  text.style.display = "block";
+
   for(let i = 0; i < siblings.length; i++){
     siblings[i].style.display = "none";
   }
@@ -123,7 +125,6 @@ function showContent(self){
   image.style.width = "50vw";
   image.style.height = "50vw";
   type.style.visibility = "hidden";
-  text.style.display = "block";
   self.firstElementChild.onclick = function() {hideContent(this.parentNode);};
 }
 
