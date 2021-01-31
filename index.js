@@ -52,6 +52,7 @@ function moveLeft(left){
 function moveTop(self, i){
   let scroll = document.getElementsByTagName("body")[0];
   let currentPage = self.parentNode;
+  let otherPages = getSiblings(currentPage);
   let currentContent = document.getElementsByClassName("main__content")[i-1];
   let currentType = currentContent.getElementsByClassName("main__type");
   let currentCrud = document.getElementsByClassName("main__crud")[0];
@@ -82,6 +83,7 @@ function moveTop(self, i){
 function moveBottom(i){
   let scroll = document.getElementsByTagName("body")[0];
   let currentPage = document.getElementsByClassName("main__page")[i];
+  let otherPages = getSiblings(currentPage);
   let currentContent = document.getElementsByClassName("main__content")[i];
   let currentCrud = document.getElementsByClassName("main__crud")[0];
   let navTitle = document.getElementsByClassName("nav__title");
