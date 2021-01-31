@@ -122,11 +122,8 @@ function showContent(self){
   image.style.width = "50vw";
   image.style.height = "50vw";
   type.style.visibility = "hidden";
-  text.style.display = "block";
   self.firstElementChild.onclick = function() {hideContent(this.parentNode);};
-  setTimeout(function(){
-    text.style.visibility = "visible";
-  }, 1000);
+  text.style.visibility = "visible";
 }
 
 function hideContent(self){
@@ -150,7 +147,6 @@ function hideContent(self){
   image.style.width = "26vw";
   image.style.height = "26vw";
   type.style.visibility = "visible";
-  text.style.display = "none";
   text.style.visibility = "hidden";
   self.firstElementChild.onclick = function() {showContent(this.parentNode);};
 }
