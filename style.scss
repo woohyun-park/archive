@@ -100,7 +100,7 @@ container{
 
 nav{
   display: flex;
-  position:absolute;
+  position:fixed;
   top: 0;
   height: 5%;
   width: inherit;
@@ -108,7 +108,7 @@ nav{
 
   justify-content: space-between;
   align-items: center;
-  z-index: 1;
+  z-index: 2;
 }
 
 .nav__box{
@@ -151,10 +151,10 @@ nav{
 }
 
 main{
-  height: 95%;
+  height: 100vh;
   width: 100%;
   scroll-snap-type: x mandatory;
-  overflow: auto;
+  overflow: hidden;
 }
 
 .main__page{
@@ -166,6 +166,7 @@ main{
   justify-content: center;
   align-items: center;
   transition: 0.5s;
+  z-index: 1;
 }
 
 .main__left{
@@ -215,7 +216,6 @@ main>.main__page:nth-child(1){
   left: 0%;
   scroll-snap-align: center;
   background-color: #587bbe;
-  background: radial-gradient(ellipse at center, rgba(88,123,190,0.65) 0%,rgba(88,123,190,1) 100%);
   .main__title{
     display: flex;
     width: auto;
@@ -247,7 +247,6 @@ main>.main__page:nth-child(2){
 
   scroll-snap-align: center;
   background-color: #e3605e;
-  background: radial-gradient(ellipse at center, rgba(227,96,94,0.65) 0%,rgba(227,96,94,1) 100%);
   .main__title{
     display: flex;
     width: auto;
@@ -279,7 +278,6 @@ main>.main__page:nth-child(3){
 
   scroll-snap-align: center;
   background-color: #42997b;
-  background: radial-gradient(ellipse at center, rgba(66,153,123,0.65) 0%,rgba(66,153,123,1) 100%);
   .main__title{
     display: flex;
     width: auto;
@@ -309,12 +307,17 @@ main>.main__page:nth-child(3){
 
 .main__crud{
   display:flex;
-  position: absolute;
+  position: fixed;
   bottom:0;
   right: 0;
   visibility: hidden;
   transition: 1s;
   opacity: 0;
+  text-shadow:
+    1px  1px white,
+    1px -1px white,
+   -1px  1px white,
+   -1px -1px white;
 }
 
 .main__create{
@@ -324,4 +327,70 @@ main>.main__page:nth-child(3){
   &:hover{
     cursor:pointer;
   }
+}
+
+
+
+
+
+
+.main__content{
+  max-width: 1080px;
+  width: 81%;
+  height: 100%;
+  margin: auto;
+  margin-top: 110vh;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  transition: .5s;
+  display: none;
+  padding-bottom: 5vh;
+}
+
+// .main__box>img{
+//   max-width: 340px;
+//   max-height: 340px;
+//   width: 26vw;
+//   height: 26vw;
+// }
+
+.main__box{
+  position:relative;
+  max-width: 340px;
+  max-height: 340px;
+  width: 26vw;
+  height: 26vw;
+  margin: .5vw;
+  visibility: visible;
+  text-align: center;
+}
+
+.main__box>img{
+  max-width: 340px;
+  max-height: 340px;
+  width: 26vw;
+  height: 26vw;
+  &:hover{
+    // animation: shake 3s infinite;
+    cursor: pointer;
+  }
+}
+
+.main__box>object{
+  display:none;
+  margin: auto;
+  max-width: 600px;
+}
+
+
+.main__type{
+  position: absolute;
+  width: 2em;
+  height: 2em;
+  text-align: center;
+  line-height: 2em;
+  bottom: 0;
+  left: 0;
+  background-color: white;
+  color: white;
 }
