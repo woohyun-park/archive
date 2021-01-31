@@ -126,7 +126,7 @@ function showContent(self){
   self.firstElementChild.onclick = function() {hideContent(this.parentNode);};
   setTimeout(function(){
     text.style.visibility = "visible";
-  }, 300);
+  }, 1000);
 }
 
 function hideContent(self){
