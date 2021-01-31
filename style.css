@@ -281,7 +281,8 @@ main > .main__page:nth-child(3) {
 .main__box > object {
   display: none;
   margin: auto;
-  max-width: 600px; }
+  max-width: 600px;
+  visibility: hidden; }
 
 .main__type {
   position: absolute;

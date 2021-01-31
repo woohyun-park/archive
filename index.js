@@ -109,12 +109,9 @@ function showContent(self){
   let type = self.getElementsByClassName("main__type")[0];
   let text = self.getElementsByTagName("object")[0];
 
-  text.style.display = "block";
-
   for(let i = 0; i < siblings.length; i++){
     siblings[i].style.display = "none";
   }
-
   main.style.overflow = "auto";
   self.style.maxWidth = "100vw";
   self.style.maxHeight = "50vw";
@@ -125,7 +122,11 @@ function showContent(self){
   image.style.width = "50vw";
   image.style.height = "50vw";
   type.style.visibility = "hidden";
+  text.style.display = "block";
   self.firstElementChild.onclick = function() {hideContent(this.parentNode);};
+  setTimeout(function(){
+    text.style.visibility = "visible";
+  }, 50);
 }
 
 function hideContent(self){
@@ -150,6 +151,7 @@ function hideContent(self){
   image.style.height = "26vw";
   type.style.visibility = "visible";
   text.style.display = "none";
+  text.style.visibility = "hidden";
   self.firstElementChild.onclick = function() {showContent(this.parentNode);};
 }
 
