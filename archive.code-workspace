@@ -1,0 +1,17 @@
+{
+  "folders": [
+	{
+		"name": "nico-next",
+		"path": "../nico-next"
+	},
+	{
+		"name": "archive-everything",
+		"path": "../archive-everything"
+	},
+	{
+		"name": "archive",
+		"path": "."
+	}
+],
+  "settings": {}
+}

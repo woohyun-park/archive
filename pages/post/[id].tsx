@@ -1,7 +1,11 @@
-export default function Post() {
+import { useRouter } from "next/router";
+
+export default function Post({}) {
+  const router = useRouter();
+  const id = router.query.id;
   return (
     <>
-      <h1>Post</h1>
+      <h1>{id}</h1>
     </>
   );
 }

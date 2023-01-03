@@ -7,8 +7,8 @@ interface ILayoutProps {
 export default function Layout({ children }: ILayoutProps) {
   return (
     <>
-      <Nav />
       <div className="pageCont">{children}</div>
+      <Nav />
       <style jsx global>
         {`
           body {
@@ -16,6 +16,7 @@ export default function Layout({ children }: ILayoutProps) {
           }
           .pageCont {
             margin: 16px;
+            margin-top: 48px;
           }
         `}
       </style>

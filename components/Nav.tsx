@@ -13,25 +13,60 @@ import {
   HiOutlineUser,
 } from "react-icons/hi";
 
+const ICON_SIZE = "24px";
+
 export default function Nav() {
   const router = useRouter();
   return (
     <>
-      <Link href="/">
-        {router.pathname === "/" ? <HiHome /> : <HiOutlineHome />}
-      </Link>
-      <Link href="/search">
-        {router.pathname === "/search" ? <HiSearch /> : <HiOutlineSearch />}
-      </Link>
-      <Link href="/add">
-        {router.pathname === "/add" ? <HiPlus /> : <HiOutlinePlus />}
-      </Link>
-      <Link href="/alarm">
-        {router.pathname === "/alarm" ? <HiBell /> : <HiOutlineBell />}
-      </Link>
-      <Link href="/profile">
-        {router.pathname === "/profile" ? <HiUser /> : <HiOutlineUser />}
-      </Link>
+      <div className="cont">
+        <Link href="/" legacyBehavior>
+          {router.pathname === "/" ? (
+            <HiHome size={ICON_SIZE} />
+          ) : (
+            <HiOutlineHome size={ICON_SIZE} />
+          )}
+        </Link>
+        <Link href="/search" legacyBehavior>
+          {router.pathname === "/search" ? (
+            <HiSearch size={ICON_SIZE} />
+          ) : (
+            <HiOutlineSearch size={ICON_SIZE} />
+          )}
+        </Link>
+        <Link href="/add" legacyBehavior>
+          {router.pathname === "/add" ? (
+            <HiPlus size={ICON_SIZE} />
+          ) : (
+            <HiOutlinePlus size={ICON_SIZE} />
+          )}
+        </Link>
+        <Link href="/alarm" legacyBehavior>
+          {router.pathname === "/alarm" ? (
+            <HiBell size={ICON_SIZE} />
+          ) : (
+            <HiOutlineBell size={ICON_SIZE} />
+          )}
+        </Link>
+        <Link href="/profile" legacyBehavior>
+          {router.pathname === "/profile" ? (
+            <HiUser size={ICON_SIZE} />
+          ) : (
+            <HiOutlineUser size={ICON_SIZE} />
+          )}
+        </Link>
+      </div>
+
+      <style jsx>{`
+        .cont {
+          display: flex;
+          justify-content: space-around;
+          position: sticky;
+          bottom: 0;
+          background-color: white;
+          padding: 12px 24px 36px 24px;
+        }
+      `}</style>
     </>
   );
 }
