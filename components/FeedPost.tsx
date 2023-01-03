@@ -26,7 +26,7 @@ export default function FeedPost({ post }: IFeedPostProps) {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 16px;
+            margin: 32px 0 8px 0;
           }
           .userImg {
             width: 32px;

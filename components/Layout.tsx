@@ -8,11 +8,14 @@ export default function Layout({ children }: ILayoutProps) {
   return (
     <>
       <Nav />
-      {children}
+      <div className="pageCont">{children}</div>
       <style jsx global>
         {`
           body {
             margin: 0;
+          }
+          .pageCont {
+            margin: 16px;
           }
         `}
       </style>
