@@ -1,8 +1,8 @@
 import Link from "next/link";
-import { Post } from "../types";
+import { IPost } from "../types";
 
 type IImageSmallProps = {
-  post: Post;
+  post: IPost;
 };
 
 export default function ImageSmall({ post }: IImageSmallProps) {

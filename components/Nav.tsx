@@ -61,10 +61,13 @@ export default function Nav() {
         .cont {
           display: flex;
           justify-content: space-around;
-          position: sticky;
+          position: fixed;
           bottom: 0;
           background-color: white;
           padding: 12px 24px 36px 24px;
+          width: 100%;
+          max-width: 480px;
+          box-sizing: border-box;
         }
       `}</style>
     </>

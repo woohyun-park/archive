@@ -1,9 +1,9 @@
-export interface User {
+export interface IUser {
   name: string;
   img: string;
 }
 
-export interface Post {
+export interface IPost {
   id: number;
   user: User;
   createdAt: string;

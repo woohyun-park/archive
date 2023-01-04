@@ -1,12 +1,14 @@
+import { DocumentData, QueryDocumentSnapshot } from "firebase/firestore";
 import { HiDotsHorizontal } from "react-icons/hi";
-import { User, Post } from "../types";
+import { IPost } from "../types";
 import ImageSmall from "./ImageSmall";
 
 type IFeedPostProps = {
-  post: Post;
+  docData: QueryDocumentSnapshot<DocumentData>;
 };
 
-export default function FeedPost({ post }: IFeedPostProps) {
+export default function FeedPost({ docData }: IFeedPostProps) {
+  const post: IPost = docData.data() as IPost;
   return (
     <>
       <div className="userCont">
