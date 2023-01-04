@@ -1,5 +1,7 @@
+import { collection, doc, Firestore, getDoc } from "firebase/firestore";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { db } from "../../apis/firebase";
 import Header from "../../components/Header";
 import ProfileSmall from "../../components/ProfileSmall";
 import { IPost } from "../../custom";
@@ -7,11 +9,21 @@ import { IPost } from "../../custom";
 export default function Post({}) {
   const router = useRouter();
   const [post, setPost] = useState<IPost | null>(null);
+  async function getPost() {
+    if (typeof router.query.id === "string") {
+      const docRef = doc(db, "posts", router.query.id);
+      const docSnap = await getDoc(docRef);
+      setPost(docSnap.data());
+    }
+  }
   useEffect(() => {
+    console.log("router", router);
     if (typeof router.query.post === "string") {
       setPost(JSON.parse(router.query.post));
+    } else {
+      getPost();
     }
-  }, []);
+  }, [router.isReady]);
   return (
     <>
       <Header post={post} />

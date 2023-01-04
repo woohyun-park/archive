@@ -26,7 +26,9 @@ export default function ImageFeed({ post }: IImageFeedProps) {
           )}
           <div className="title">{post.title}</div>
           <div className="tagCont">
-            <div className="mainTag">{`#${post.tags[0]}`}</div>
+            <Link href={{ pathname: `/tag/${post.tags[0]}` }}>
+              <div className="mainTag">{`#${post.tags[0]}`}</div>
+            </Link>
             <div>
               {post.tags.slice(1, post.tags.length).map((e, i) => (
                 <span className="subTag" key={i}>{` #${e}`}</span>
