@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { HiDotsHorizontal } from "react-icons/hi";
-import { COLOR, IPost } from "../custom";
+import { COLOR, IPost, SIZE } from "../custom";
 
 type IProfileSmallProps = {
   post: IPost | null;
@@ -21,7 +21,7 @@ export default function ProfileSmall({ post }: IProfileSmallProps) {
         {post && router.pathname.split("/")[1] === "post" ? (
           <div className="followBtn">팔로우</div>
         ) : (
-          <HiDotsHorizontal />
+          <HiDotsHorizontal size={SIZE.icon} />
         )}
       </div>
       <style jsx>

@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Header from "../../components/Header";
 import ProfileSmall from "../../components/ProfileSmall";
-import { COLOR, IPost } from "../../custom";
+import { IPost } from "../../custom";
 
 export default function Post({}) {
   const router = useRouter();
@@ -53,13 +53,18 @@ export default function Post({}) {
           height: 100%;
           object-fit: cover;
         }
+        .bg {
+          background-color: ${post?.color};
+          width: calc(100% + 32px);
+          padding-bottom: calc(50%);
+          transform: translate(-16px);
+        }
         .img {
           width: calc(100% + 32px);
           transform: translateX(-16px);
         }
         .title {
           word-break: keep-all;
-          margin-bottom: 0;
         }
         .tagCont {
           display: flex;
@@ -71,10 +76,10 @@ export default function Post({}) {
         }
         .subTag {
           margin-left: 4px;
-          color: ${COLOR.txt2};
+          color: grey;
         }
         .text {
-          margin-top: 32px;
+          margin-top: 8px;
         }
       `}</style>
     </>

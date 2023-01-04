@@ -1,5 +1,7 @@
-import axios from "axios";
-import React, { useRef, useState } from "react";
+import axios, { AxiosRequestConfig } from "axios";
+import { addDoc, collection } from "firebase/firestore";
+import React, { MutableRefObject, useRef, useState } from "react";
+import { db } from "../apis/firebase";
 import Header from "../components/Header";
 import { COLOR, IPost } from "../custom";
 
@@ -23,7 +25,6 @@ export default function Add() {
   //   });
   // })();
   const [newPost, setNewPost] = useState<IPost>({
-    id: "",
     user: {
       name: "iamdooddi",
       img: "https://res.cloudinary.com/dl5qaj6le/image/upload/v1664891276/archive/static/profile_temp.png",
@@ -39,20 +40,26 @@ export default function Add() {
     numComments: 0,
     arrComments: [],
   });
-  const imageInputRef = useRef(null);
-  const [imageFile, setImageFile] = useState<String>("");
+  const imageInputRef = useRef<HTMLInputElement>();
+  const [imageFile, setImageFile] = useState<string>("");
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.currentTarget;
-    setNewPost({
-      ...newPost,
-      [name]: value,
-    });
+    if (name === "tags") {
+      setNewPost({
+        ...newPost,
+        [name]: [value],
+      });
+    } else {
+      setNewPost({
+        ...newPost,
+        [name]: value,
+      });
+    }
     console.log(newPost);
   }
   function handleImageClick() {
-    // ???
-    imageInputRef.current.click();
+    imageInputRef.current?.click();
   }
   function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
     if (e.target.files === null) {
@@ -63,33 +70,62 @@ export default function Add() {
     reader.readAsDataURL(file);
     reader.onloadend = () => {
       console.log("handleImageChange", reader.result);
-      setNewPost({ ...newPost, imgs: [reader.result] });
-      setImageFile(reader.result);
+      if (typeof reader.result === "string") {
+        setNewPost({ ...newPost, imgs: [reader.result] });
+        setImageFile(reader.result);
+      }
       e.target.value = "";
     };
   }
   async function handleSubmit(e: React.MouseEvent<HTMLButtonElement>) {
-    console.log(imageFile);
-    let formData = new FormData();
-    formData.append("api_key", "426129994386455");
-    formData.append("upload_preset", "archive");
-    formData.append("timestamp", (Date.now() / 1000) | 0);
-    formData.append(`file`, imageFile);
+    if (newPost.imgs.length === 1) {
+      let formData = new FormData();
+      formData.append("api_key", "426129994386455");
+      formData.append("upload_preset", "archive");
+      formData.append(`file`, imageFile);
 
-    const config = {
-      header: { "Content-Type": "multipart/form-data" },
-    };
+      const config: AxiosRequestConfig<FormData> = {
+        headers: { "Content-Type": "multipart/form-data" },
+      };
 
-    await axios
-      .post(
-        "https://api.cloudinary.com/v1_1/dl5qaj6le/image/upload",
-        formData,
-        config
-      )
-      .then((res) => {
-        console.log(res.data.url);
-        // uploadPost(res.data.url);
+      await axios
+        .post(
+          "https://api.cloudinary.com/v1_1/dl5qaj6le/image/upload",
+          formData,
+          config
+        )
+        .then(async (res) => {
+          await addDoc(collection(db, "posts"), {
+            ...newPost,
+            tags: newPost.tags[0].split(" "),
+            imgs: [res.data.url],
+          });
+        });
+    } else {
+      await addDoc(collection(db, "posts"), {
+        ...newPost,
+        tags: newPost.tags[0].split(" "),
+        color: "blue",
       });
+    }
+
+    // (async () => {
+    //   await addDoc(collection(db, "posts"), {
+    //     user: {
+    //       name: "blugalore",
+    //       img: "https://res.cloudinary.com/dl5qaj6le/image/upload/v1664891276/archive/static/profile_temp.png",
+    //     },
+    //     title: "오래 속삭여도 좋을 이야기",
+    //     tags: ["시집", "문학동네", "이은규"],
+    //     imgs: [],
+    //     color: "#EC6B71",
+    //     createdAt: "1일 전",
+    //     numLikes: 0,
+    //     arrLikes: [],
+    //     numComments: 0,
+    //     arrComments: [],
+    //   });
+    // })();
   }
   return (
     <>
@@ -194,7 +230,6 @@ export default function Add() {
             border-radius: 8px;
             padding: 8px;
             color: ${COLOR.txtDark1};
-            margin-bottom: 72px;
           }
         `}
       </style>

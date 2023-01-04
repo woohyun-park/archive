@@ -28,14 +28,7 @@ export default function Feed() {
       {posts.map((e) => {
         return <FeedPost docData={e} key={e.id} />;
       })}
-      <div className="space"></div>
-      <style jsx>
-        {`
-          .space {
-            height: 72px;
-          }
-        `}
-      </style>
+      <style jsx>{``}</style>
     </>
   );
 }

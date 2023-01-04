@@ -25,7 +25,7 @@ export interface IUser {
 }
 
 export interface IPost {
-  id: string;
+  id?: string;
   user: IUser;
   createdAt: string;
   title: string;

@@ -36,6 +36,7 @@ export default function Layout({ children }: ILayoutProps) {
             padding-top: ${router.pathname.split("/")[1] === "post"
               ? "0"
               : "48px"};
+            padding-bottom: 96px;
           }
         `}
       </style>
