@@ -180,6 +180,7 @@ export default function Add() {
             flex-direction: column;
           }
           .imgBg {
+            position: relative;
             width: 100%;
             padding-bottom: 100%;
             background-color: ${COLOR.bg2};

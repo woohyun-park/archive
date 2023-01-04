@@ -26,12 +26,19 @@ export default function ImageFeed({ post }: IImageFeedProps) {
           )}
           <div className="title">{post.title}</div>
           <div className="tagCont">
-            <Link href={{ pathname: `/tag/${post.tags[0]}` }}>
-              <div className="mainTag">{`#${post.tags[0]}`}</div>
+            <Link href={{ pathname: `/tag/${post.tags[0]}` }} legacyBehavior>
+              <a className="mainTagCont">
+                <div className="mainTag">{`#${post.tags[0]}`}</div>
+              </a>
             </Link>
             <div>
               {post.tags.slice(1, post.tags.length).map((e, i) => (
-                <span className="subTag" key={i}>{` #${e}`}</span>
+                <Link
+                  href={{ pathname: `/tag/${post.tags[i + 1]}` }}
+                  legacyBehavior
+                >
+                  <span className="subTag" key={i}>{` #${e}`}</span>
+                </Link>
               ))}
             </div>
           </div>
@@ -80,6 +87,9 @@ export default function ImageFeed({ post }: IImageFeedProps) {
           bottom: 0;
           right: 0;
           margin: 16px;
+        }
+        .mainTagCont {
+          text-decoration: none;
         }
         .mainTag {
           font-size: 24px;
