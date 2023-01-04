@@ -1,4 +1,7 @@
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+
 import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import Nav from "./Nav";
 
 interface ILayoutProps {
@@ -6,12 +9,34 @@ interface ILayoutProps {
 }
 
 export default function Layout({ children }: ILayoutProps) {
+  const provider = new GoogleAuthProvider();
+  const auth = getAuth();
   const router = useRouter();
-  console.log(router.pathname.split("/"));
+  function onLoginClick() {
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        const token = credential?.accessToken;
+        const user = result.user;
+        setUser(user.uid);
+      })
+      .catch((error) => {});
+  }
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [user, setUser] = useState<string | null>(null);
   return (
     <>
-      <div className="pageCont">{children}</div>
-      <Nav />
+      {user === null ? (
+        <div>
+          <button onClick={onLoginClick}>login</button>
+        </div>
+      ) : (
+        <>
+          <div className="pageCont">{children}</div>
+          <Nav />
+        </>
+      )}
       <style jsx global>
         {`
           :root {

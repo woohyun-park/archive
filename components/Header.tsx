@@ -1,7 +1,6 @@
 import { useRouter } from "next/router";
 import { HiArrowLeft, HiDotsHorizontal } from "react-icons/hi";
-import { COLOR, IPost } from "../custom";
-import { SIZE } from "../custom";
+import { SIZE, COLOR, IPost } from "../custom";
 
 type IHeaderProps = {
   post: IPost | null;

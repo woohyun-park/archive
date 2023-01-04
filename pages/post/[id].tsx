@@ -1,10 +1,10 @@
-import { collection, doc, Firestore, getDoc } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { db } from "../../apis/firebase";
 import Header from "../../components/Header";
 import ProfileSmall from "../../components/ProfileSmall";
-import { IPost } from "../../custom";
+import { COLOR, IPost } from "../../custom";
 
 export default function Post({}) {
   const router = useRouter();
@@ -13,11 +13,10 @@ export default function Post({}) {
     if (typeof router.query.id === "string") {
       const docRef = doc(db, "posts", router.query.id);
       const docSnap = await getDoc(docRef);
-      setPost(docSnap.data());
+      setPost(docSnap.data() as IPost);
     }
   }
   useEffect(() => {
-    console.log("router", router);
     if (typeof router.query.post === "string") {
       setPost(JSON.parse(router.query.post));
     } else {
@@ -88,7 +87,7 @@ export default function Post({}) {
         }
         .subTag {
           margin-left: 4px;
-          color: grey;
+          color: ${COLOR.txt2};
         }
         .text {
           margin-top: 8px;
