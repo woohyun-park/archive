@@ -1,14 +1,20 @@
 import Link from "next/link";
-import { IPost } from "../types";
+import { IPost } from "../custom";
 
-type IImageSmallProps = {
+type IImageFeedProps = {
   post: IPost;
 };
 
-export default function ImageSmall({ post }: IImageSmallProps) {
+export default function ImageFeed({ post }: IImageFeedProps) {
   return (
     <>
-      <Link href={`/post/${post.id}`}>
+      <Link
+        href={{
+          pathname: `/post/${post.id}`,
+          query: { post: JSON.stringify(post) },
+        }}
+        as={`/post/${post.id}`}
+      >
         <div className="cont">
           {post.imgs.length === 0 ? (
             <div className="bg" />
@@ -22,8 +28,8 @@ export default function ImageSmall({ post }: IImageSmallProps) {
           <div className="tagCont">
             <div className="mainTag">{post.tags[0]}</div>
             <div>
-              {post.tags.slice(1, post.tags.length).map((e) => (
-                <span className="subTag">{` #${e}`}</span>
+              {post.tags.slice(1, post.tags.length).map((e, i) => (
+                <span className="subTag" key={i}>{` #${e}`}</span>
               ))}
             </div>
           </div>

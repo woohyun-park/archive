@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import Nav from "./Nav";
 
 interface ILayoutProps {
@@ -5,6 +6,8 @@ interface ILayoutProps {
 }
 
 export default function Layout({ children }: ILayoutProps) {
+  const router = useRouter();
+  console.log(router.pathname.split("/"));
   return (
     <>
       <div className="pageCont">{children}</div>
@@ -25,9 +28,14 @@ export default function Layout({ children }: ILayoutProps) {
             background-color: white;
             box-sizing: border-box;
           }
+          body::-webkit-scrollbar {
+            display: none;
+          }
           .pageCont {
-            margin: 16px;
-            margin-top: 48px;
+            padding: 16px;
+            padding-top: ${router.pathname.split("/")[1] === "post"
+              ? "0"
+              : "48px"};
           }
         `}
       </style>

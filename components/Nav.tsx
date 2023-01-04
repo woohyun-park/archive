@@ -12,8 +12,7 @@ import {
   HiUser,
   HiOutlineUser,
 } from "react-icons/hi";
-
-const ICON_SIZE = "24px";
+import { SIZE } from "../custom";
 
 export default function Nav() {
   const router = useRouter();
@@ -22,37 +21,37 @@ export default function Nav() {
       <div className="cont">
         <Link href="/" legacyBehavior>
           {router.pathname === "/" ? (
-            <HiHome size={ICON_SIZE} />
+            <HiHome size={SIZE.icon} />
           ) : (
-            <HiOutlineHome size={ICON_SIZE} />
+            <HiOutlineHome size={SIZE.icon} />
           )}
         </Link>
         <Link href="/search" legacyBehavior>
           {router.pathname === "/search" ? (
-            <HiSearch size={ICON_SIZE} />
+            <HiSearch size={SIZE.icon} />
           ) : (
-            <HiOutlineSearch size={ICON_SIZE} />
+            <HiOutlineSearch size={SIZE.icon} />
           )}
         </Link>
         <Link href="/add" legacyBehavior>
           {router.pathname === "/add" ? (
-            <HiPlus size={ICON_SIZE} />
+            <HiPlus size={SIZE.icon} />
           ) : (
-            <HiOutlinePlus size={ICON_SIZE} />
+            <HiOutlinePlus size={SIZE.icon} />
           )}
         </Link>
         <Link href="/alarm" legacyBehavior>
           {router.pathname === "/alarm" ? (
-            <HiBell size={ICON_SIZE} />
+            <HiBell size={SIZE.icon} />
           ) : (
-            <HiOutlineBell size={ICON_SIZE} />
+            <HiOutlineBell size={SIZE.icon} />
           )}
         </Link>
         <Link href="/profile" legacyBehavior>
           {router.pathname === "/profile" ? (
-            <HiUser size={ICON_SIZE} />
+            <HiUser size={SIZE.icon} />
           ) : (
-            <HiOutlineUser size={ICON_SIZE} />
+            <HiOutlineUser size={SIZE.icon} />
           )}
         </Link>
       </div>
