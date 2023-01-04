@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useRef, useState } from "react";
 import Header from "../components/Header";
 import { COLOR, IPost } from "../custom";
@@ -38,7 +39,8 @@ export default function Add() {
     numComments: 0,
     arrComments: [],
   });
-  const imageInput = useRef(null);
+  const imageInputRef = useRef(null);
+  const [imageFile, setImageFile] = useState<String>("");
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.currentTarget;
@@ -50,10 +52,9 @@ export default function Add() {
   }
   function handleImageClick() {
     // ???
-    imageInput.current.click();
+    imageInputRef.current.click();
   }
   function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
-    e.preventDefault();
     if (e.target.files === null) {
       return;
     }
@@ -61,23 +62,50 @@ export default function Add() {
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onloadend = () => {
+      console.log("handleImageChange", reader.result);
       setNewPost({ ...newPost, imgs: [reader.result] });
+      setImageFile(reader.result);
       e.target.value = "";
     };
   }
+  async function handleSubmit(e: React.MouseEvent<HTMLButtonElement>) {
+    console.log(imageFile);
+    let formData = new FormData();
+    formData.append("api_key", "426129994386455");
+    formData.append("upload_preset", "archive");
+    formData.append("timestamp", (Date.now() / 1000) | 0);
+    formData.append(`file`, imageFile);
+
+    const config = {
+      header: { "Content-Type": "multipart/form-data" },
+    };
+
+    await axios
+      .post(
+        "https://api.cloudinary.com/v1_1/dl5qaj6le/image/upload",
+        formData,
+        config
+      )
+      .then((res) => {
+        console.log(res.data.url);
+        // uploadPost(res.data.url);
+      });
+  }
   return (
     <>
-      <h1>new archive</h1>
+      <h1>create</h1>
       <div className="form">
         {newPost.imgs.length === 0 ? (
-          <div className="imgBg" onClick={handleImageClick}></div>
+          <div className="imgBg" onClick={handleImageClick}>
+            <div className="select">+</div>
+          </div>
         ) : (
           <div className="imgCont" onClick={handleImageClick}>
             <img className="img" src={newPost.imgs[0]} />
           </div>
         )}
         <input
-          ref={imageInput}
+          ref={imageInputRef}
           type="file"
           accept="image/*"
           onChange={handleImageChange}
@@ -102,7 +130,9 @@ export default function Add() {
           onChange={handleChange}
           placeholder="내용"
         />
-        <button className="createBtn">생성</button>
+        <button className="createBtn" onClick={handleSubmit}>
+          생성
+        </button>
       </div>
       <style jsx>
         {`
@@ -118,6 +148,15 @@ export default function Add() {
             padding-bottom: 100%;
             background-color: ${COLOR.bg2};
             border-radius: 8px;
+          }
+          .select {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            font-size: 64px;
+            transform: translate(-50%, -50%);
+            color: ${COLOR.txt2};
+            font-weight: 100;
           }
           .imgCont {
             position: relative;
@@ -155,6 +194,7 @@ export default function Add() {
             border-radius: 8px;
             padding: 8px;
             color: ${COLOR.txtDark1};
+            margin-bottom: 72px;
           }
         `}
       </style>
