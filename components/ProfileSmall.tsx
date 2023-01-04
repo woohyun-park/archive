@@ -21,7 +21,9 @@ export default function ProfileSmall({ post }: IProfileSmallProps) {
         {post && router.pathname.split("/")[1] === "post" ? (
           <div className="followBtn">팔로우</div>
         ) : (
-          <HiDotsHorizontal size={SIZE.icon} />
+          <div className="moreBtn">
+            <HiDotsHorizontal size={SIZE.icon} />
+          </div>
         )}
       </div>
       <style jsx>
@@ -60,7 +62,10 @@ export default function ProfileSmall({ post }: IProfileSmallProps) {
             font-size: 12px;
             border-radius: 4px;
           }
-          .followBtn:hover {
+          .userImg,
+          .userName,
+          .followBtn:hover,
+          .moreBtn:hover {
             cursor: pointer;
           }
         `}

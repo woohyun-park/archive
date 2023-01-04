@@ -12,7 +12,7 @@ import {
   HiUser,
   HiOutlineUser,
 } from "react-icons/hi";
-import { SIZE } from "../custom";
+import { COLOR, SIZE } from "../custom";
 
 export default function Nav() {
   const router = useRouter();
@@ -20,43 +20,57 @@ export default function Nav() {
     <>
       <div className="cont">
         <Link href="/" legacyBehavior>
-          {router.pathname === "/" ? (
-            <HiHome size={SIZE.icon} />
-          ) : (
-            <HiOutlineHome size={SIZE.icon} />
-          )}
+          <a>
+            {router.pathname === "/" ? (
+              <HiHome size={SIZE.icon} />
+            ) : (
+              <HiOutlineHome size={SIZE.icon} />
+            )}
+          </a>
         </Link>
         <Link href="/search" legacyBehavior>
-          {router.pathname === "/search" ? (
-            <HiSearch size={SIZE.icon} />
-          ) : (
-            <HiOutlineSearch size={SIZE.icon} />
-          )}
+          <a>
+            {router.pathname === "/search" ? (
+              <HiSearch size={SIZE.icon} />
+            ) : (
+              <HiOutlineSearch size={SIZE.icon} />
+            )}
+          </a>
         </Link>
+
         <Link href="/add" legacyBehavior>
-          {router.pathname === "/add" ? (
-            <HiPlus size={SIZE.icon} />
-          ) : (
-            <HiOutlinePlus size={SIZE.icon} />
-          )}
+          <a>
+            {router.pathname === "/add" ? (
+              <HiPlus size={SIZE.icon} />
+            ) : (
+              <HiOutlinePlus size={SIZE.icon} />
+            )}
+          </a>
         </Link>
         <Link href="/alarm" legacyBehavior>
-          {router.pathname === "/alarm" ? (
-            <HiBell size={SIZE.icon} />
-          ) : (
-            <HiOutlineBell size={SIZE.icon} />
-          )}
+          <a>
+            {router.pathname === "/alarm" ? (
+              <HiBell size={SIZE.icon} />
+            ) : (
+              <HiOutlineBell size={SIZE.icon} />
+            )}
+          </a>
         </Link>
         <Link href="/profile" legacyBehavior>
-          {router.pathname === "/profile" ? (
-            <HiUser size={SIZE.icon} />
-          ) : (
-            <HiOutlineUser size={SIZE.icon} />
-          )}
+          <a>
+            {router.pathname === "/profile" ? (
+              <HiUser size={SIZE.icon} />
+            ) : (
+              <HiOutlineUser size={SIZE.icon} />
+            )}
+          </a>
         </Link>
       </div>
 
       <style jsx>{`
+        a {
+          color: ${COLOR.txt1};
+        }
         .cont {
           display: flex;
           justify-content: space-around;

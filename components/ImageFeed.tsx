@@ -49,6 +49,10 @@ export default function ImageFeed({ post }: IImageFeedProps) {
         * {
           color: white;
         }
+        .mainTag:hover,
+        .subTag:hover {
+          cursor: pointer;
+        }
         .cont {
           position: relative;
           width: 100%;

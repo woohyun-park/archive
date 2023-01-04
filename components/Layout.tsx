@@ -24,7 +24,8 @@ export default function Layout({ children }: ILayoutProps) {
   }
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [user, setUser] = useState<string | null>(null);
+  // const [user, setUser] = useState<string | null>("null");
+  const [user, setUser] = useState<string | null>("");
   return (
     <>
       {user === null ? (
@@ -49,9 +50,12 @@ export default function Layout({ children }: ILayoutProps) {
             margin: 0;
             width: 100vw;
             max-width: 480px;
-            min-height: calc(100vh - 72px);
+            min-height: ${user === null ? "100vh" : "calc(100vh - 72px)"};
             background-color: white;
             box-sizing: border-box;
+            display: ${user === null ? "flex" : ""};
+            justify-content: center;
+            align-items: center;
           }
           body::-webkit-scrollbar {
             display: none;
