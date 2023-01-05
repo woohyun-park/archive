@@ -1,34 +1,21 @@
 import { db } from "../apis/firebase";
-import {
-  collection,
-  DocumentData,
-  getDocs,
-  QueryDocumentSnapshot,
-} from "firebase/firestore";
+import { collection, getDocs } from "firebase/firestore";
+import { IPost } from "../custom";
+import Feed from "./feed";
 
-import FeedPost from "../components/FeedPost";
-import { useEffect, useState } from "react";
+interface IIndex {
+  posts: IPost[];
+}
 
-export default function Feed() {
-  const [posts, setPosts] = useState<QueryDocumentSnapshot<DocumentData>[]>([]);
-  async function getPosts() {
-    const querySnapshot = await getDocs(collection(db, "posts"));
-    const result: QueryDocumentSnapshot<DocumentData>[] = [];
-    querySnapshot.forEach((doc) => {
-      result.push(doc);
-    });
-    setPosts(result);
-  }
-  useEffect(() => {
-    getPosts();
-  }, []);
-  return (
-    <>
-      <h1>feed</h1>
-      {posts.map((e) => {
-        return <FeedPost docData={e} key={e.id} />;
-      })}
-      <style jsx>{``}</style>
-    </>
-  );
+export default function Index({ posts }: IIndex) {
+  return <Feed posts={posts} />;
+}
+
+export async function getServerSideProps() {
+  const querySnapshot = await getDocs(collection(db, "posts"));
+  const posts: IPost[] = [];
+  querySnapshot.forEach((doc) => {
+    posts.push({ ...doc.data(), id: doc.id } as IPost);
+  });
+  return { props: { posts } };
 }

@@ -10,8 +10,7 @@ import {
 import { useEffect, useState } from "react";
 import { auth, db } from "../apis/firebase";
 import { useStore } from "../apis/zustand";
-import FeedPost from "../components/FeedPost";
-import ImageFeed from "../components/ImageFeed";
+import ImagePost from "../components/ImagePost";
 import { IPost } from "../custom";
 
 export default function Profile() {
@@ -40,7 +39,7 @@ export default function Profile() {
       <button onClick={handleLogout}>logout</button>
       <div className="postCont">
         {posts.map((e) => (
-          <ImageFeed post={e} size="small"></ImageFeed>
+          <ImagePost post={e} size="small"></ImagePost>
         ))}
       </div>
       <style jsx>

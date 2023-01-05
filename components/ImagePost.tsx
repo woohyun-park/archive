@@ -1,12 +1,12 @@
 import Link from "next/link";
 import { IPost } from "../custom";
 
-type IImageFeedProps = {
+type IImagePostProps = {
   post: IPost;
   size: string;
 };
 
-export default function ImageFeed({ post, size }: IImageFeedProps) {
+export default function ImagePost({ post, size }: IImagePostProps) {
   return (
     <>
       <div className="cont">

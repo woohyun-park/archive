@@ -46,7 +46,6 @@ export default function Layout({ children }: ILayoutProps) {
           ...profile,
           uid: curUser.uid,
         });
-        console.log(user);
       } else {
         setLogin({ ...login, isLoggedIn: false });
       }
