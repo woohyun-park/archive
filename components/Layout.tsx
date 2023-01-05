@@ -69,6 +69,7 @@ export default function Layout({ children }: ILayoutProps) {
         const res = await setDoc(doc(db, "users", user.uid), {
           displayName: user.displayName,
           photoURL: user.photoURL,
+          txt: "",
           posts: [],
           tags: [],
           scraps: [],
@@ -89,6 +90,7 @@ export default function Layout({ children }: ILayoutProps) {
         await setDoc(doc(db, "users", user.uid), {
           displayName: user.displayName,
           photoURL: user.photoURL,
+          txt: "",
           posts: [],
           tags: [],
           scraps: [],

@@ -11,7 +11,7 @@ export default function Add() {
     uid: user.uid,
     title: "",
     tags: [],
-    text: "",
+    txt: "",
     imgs: [],
     color: "",
     createdAt: "",
@@ -79,20 +79,24 @@ export default function Add() {
           config
         )
         .then(async (res) => {
-          await addDoc(collection(db, "posts"), {
+          const ref = await addDoc(collection(db, "posts"), {
             ...newPost,
             tags: newPost.tags[0].split(" "),
             imgs: [res.data.url],
           });
-          setUser({ ...user });
+          const tempPosts = user.posts;
+          tempPosts.push(ref.id);
+          setUser({ ...user, posts: tempPosts });
         });
     } else {
-      await addDoc(collection(db, "posts"), {
+      const ref = await addDoc(collection(db, "posts"), {
         ...newPost,
         tags: newPost.tags[0].split(" "),
         color: "blue",
       });
-      setUser({ ...user });
+      const tempPosts = user.posts;
+      tempPosts.push(ref.id);
+      setUser({ ...user, posts: tempPosts });
     }
   }
   return (
@@ -128,8 +132,8 @@ export default function Add() {
           placeholder="태그(첫번째 태그가 메인태그, 띄어쓰기로 구분)"
         />
         <textarea
-          name="text"
-          value={newPost.text}
+          name="txt"
+          value={newPost.txt}
           onChange={handleTextareaChange}
           placeholder="내용"
         />

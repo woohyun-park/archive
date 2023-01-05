@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { HiDotsHorizontal } from "react-icons/hi";
 import { db } from "../apis/firebase";
-import { COLOR, IPost, IUser, SIZE } from "../custom";
+import { COLOR, IPost, SIZE } from "../custom";
 
 type IProfileSmallProps = {
   post: IPost | null;

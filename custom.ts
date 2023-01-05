@@ -5,7 +5,7 @@ export const SIZE = {
 export const COLOR = {
   txt1: "#000000",
   txt2: "#4A4A4A",
-  txt3: "#D9D9D9",
+  txt3: "#818181",
   txtDark1: "#FFFFFF",
   txtDark2: "#818181",
   txtDark3: "#4A4A4A",
@@ -23,6 +23,8 @@ export interface IUser {
   uid: string;
   displayName: string;
   photoURL: string;
+  txt: string;
+  posts: string[];
   tags: string[];
   scraps: string[];
   followers: string[];
@@ -35,7 +37,7 @@ export interface IPost {
   createdAt: string;
   title: string;
   tags: string[];
-  text: string;
+  txt: string;
   imgs: string[];
   color: string;
   likes: number[];

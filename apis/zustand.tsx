@@ -13,6 +13,7 @@ export const useStore = create<IUserState>((set) => ({
     uid: "",
     displayName: "",
     photoURL: "",
+    txt: "",
     posts: [],
     tags: [],
     scraps: [],
