@@ -1,18 +1,24 @@
-import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+} from "firebase/auth";
 
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import { auth } from "../apis/firebase";
 import Nav from "./Nav";
 
 interface ILayoutProps {
   children: React.ReactNode;
+  isLoggedIn: boolean | null;
 }
 
-export default function Layout({ children }: ILayoutProps) {
+export default function Layout({ children, isLoggedIn }: ILayoutProps) {
   const provider = new GoogleAuthProvider();
-  const auth = getAuth();
   const router = useRouter();
-  function onLoginClick() {
+  function handleLoginClick() {
     signInWithPopup(auth, provider)
       .then((result) => {
         const credential = GoogleAuthProvider.credentialFromResult(result);
@@ -20,23 +26,75 @@ export default function Layout({ children }: ILayoutProps) {
         const user = result.user;
         setUser(user.uid);
       })
-      .catch((error) => {});
+      .catch((e) => {
+        console.log(e);
+      });
+  }
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const { name, value } = e.target;
+    if (name === "email") {
+      setEmail(value);
+    } else if (name === "password") {
+      setPassword(value);
+    }
+  }
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    try {
+      let data;
+      if (newAccount) {
+        data = await createUserWithEmailAndPassword(auth, email, password);
+      } else {
+        data = await signInWithEmailAndPassword(auth, email, password);
+      }
+    } catch (e) {
+      console.log(e);
+    }
   }
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  // const [user, setUser] = useState<string | null>("null");
-  const [user, setUser] = useState<string | null>("");
+  const [user, setUser] = useState(auth.currentUser);
+  const [newAccount, setNewAccount] = useState(false);
+
   return (
     <>
-      {user === null ? (
-        <div>
-          <button onClick={onLoginClick}>login</button>
-        </div>
-      ) : (
+      {isLoggedIn === null ? (
+        <>loading...</>
+      ) : isLoggedIn ? (
         <>
           <div className="pageCont">{children}</div>
           <Nav />
         </>
+      ) : (
+        <div>
+          <form onSubmit={handleSubmit}>
+            <input
+              type="text"
+              name="email"
+              placeholder="email"
+              required
+              value={email}
+              onChange={handleChange}
+            />
+            <input
+              type="password"
+              name="password"
+              placeholder="password"
+              required
+              value={password}
+              onChange={handleChange}
+            />
+            <input
+              type="submit"
+              value={newAccount ? "create account" : "login"}
+              required
+            />
+          </form>
+          <button onClick={() => setNewAccount(!newAccount)}>
+            {newAccount ? "Log In" : "Create Account"}
+          </button>
+          <button onClick={handleLoginClick}>login with google</button>
+        </div>
       )}
       <style jsx global>
         {`
@@ -50,10 +108,10 @@ export default function Layout({ children }: ILayoutProps) {
             margin: 0;
             width: 100vw;
             max-width: 480px;
-            min-height: ${user === null ? "100vh" : "calc(100vh - 72px)"};
+            min-height: ${isLoggedIn ? "calc(100vh - 72px)" : "100vh"};
             background-color: white;
             box-sizing: border-box;
-            display: ${user === null ? "flex" : ""};
+            display: ${isLoggedIn ? "" : "flex"};
             justify-content: center;
             align-items: center;
           }
