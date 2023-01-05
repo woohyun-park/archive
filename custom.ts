@@ -20,8 +20,9 @@ export const COLOR = {
 };
 
 export interface IUser {
-  name: string;
-  img: string;
+  uid: string;
+  displayName: string;
+  photoURL: string;
 }
 
 export interface IPost {

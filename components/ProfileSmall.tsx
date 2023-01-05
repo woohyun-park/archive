@@ -12,9 +12,9 @@ export default function ProfileSmall({ post }: IProfileSmallProps) {
     <>
       <div className="userCont">
         <div className="row">
-          <img className="userImg" src={post?.user.img} />
+          <img className="userImg" src={post?.user.photoURL} />
           <div className="col">
-            <div className="userName">{post?.user.name}</div>
+            <div className="userName">{post?.user.displayName}</div>
             <div className="createdAt">{post?.createdAt}</div>
           </div>
         </div>

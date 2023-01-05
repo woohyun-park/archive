@@ -18,16 +18,18 @@ interface ILayoutProps {
 export default function Layout({ children, isLoggedIn }: ILayoutProps) {
   const provider = new GoogleAuthProvider();
   const router = useRouter();
-  function handleLoginClick() {
+  function handleSocialLogin() {
     signInWithPopup(auth, provider)
       .then((result) => {
         const credential = GoogleAuthProvider.credentialFromResult(result);
         const token = credential?.accessToken;
         const user = result.user;
+        console.log(user);
+        // user.photoURL
         setUser(user.uid);
       })
       .catch((e) => {
-        console.log(e);
+        console.log(e.message);
       });
   }
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -38,7 +40,7 @@ export default function Layout({ children, isLoggedIn }: ILayoutProps) {
       setPassword(value);
     }
   }
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleEmailLogin(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     try {
       let data;
@@ -48,13 +50,16 @@ export default function Layout({ children, isLoggedIn }: ILayoutProps) {
         data = await signInWithEmailAndPassword(auth, email, password);
       }
     } catch (e) {
-      console.log(e);
+      if (e instanceof Error) {
+        setError(e.message);
+      }
     }
   }
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [user, setUser] = useState(auth.currentUser);
   const [newAccount, setNewAccount] = useState(false);
+  const [error, setError] = useState("");
 
   return (
     <>
@@ -67,7 +72,7 @@ export default function Layout({ children, isLoggedIn }: ILayoutProps) {
         </>
       ) : (
         <div>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleEmailLogin}>
             <input
               type="text"
               name="email"
@@ -93,7 +98,8 @@ export default function Layout({ children, isLoggedIn }: ILayoutProps) {
           <button onClick={() => setNewAccount(!newAccount)}>
             {newAccount ? "Log In" : "Create Account"}
           </button>
-          <button onClick={handleLoginClick}>login with google</button>
+          <button onClick={handleSocialLogin}>login with google</button>
+          {error}
         </div>
       )}
       <style jsx global>
