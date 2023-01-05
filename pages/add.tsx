@@ -1,16 +1,14 @@
 import axios, { AxiosRequestConfig } from "axios";
 import { addDoc, collection } from "firebase/firestore";
-import React, { MutableRefObject, useRef, useState } from "react";
-import { convertCompilerOptionsFromJson } from "typescript";
+import React, { useRef, useState } from "react";
 import { db } from "../apis/firebase";
 import { COLOR, IPost } from "../custom";
+import { useStore } from "../apis/zustand";
 
 export default function Add() {
+  const { user, setUser } = useStore();
   const [newPost, setNewPost] = useState<IPost>({
-    user: {
-      name: "iamdooddi",
-      img: "https://res.cloudinary.com/dl5qaj6le/image/upload/v1664891276/archive/static/profile_temp.png",
-    },
+    uid: user.uid,
     title: "",
     tags: [],
     text: "",
@@ -38,6 +36,13 @@ export default function Add() {
         [name]: value,
       });
     }
+  }
+  function handleTextareaChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
+    const { name, value } = e.currentTarget;
+    setNewPost({
+      ...newPost,
+      [name]: value,
+    });
   }
   function handleImageClick() {
     imageInputRef.current?.click();
@@ -125,8 +130,7 @@ export default function Add() {
         <textarea
           name="text"
           value={newPost.text}
-          // ???
-          onChange={handleChange}
+          onChange={handleTextareaChange}
           placeholder="내용"
         />
         <button className="createBtn" onClick={handleSubmit}>

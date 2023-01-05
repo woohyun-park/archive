@@ -1,20 +1,41 @@
+import { collection, doc, getDoc, query } from "firebase/firestore";
 import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import { HiDotsHorizontal } from "react-icons/hi";
-import { COLOR, IPost, SIZE } from "../custom";
+import { db } from "../apis/firebase";
+import { COLOR, IPost, IUser, SIZE } from "../custom";
 
 type IProfileSmallProps = {
   post: IPost | null;
 };
 
 export default function ProfileSmall({ post }: IProfileSmallProps) {
+  const [profile, setProfile] = useState({ displayName: "", photoURL: "" });
+  async function getProfile() {
+    if (post?.uid) {
+      const snap = await getDoc(doc(db, "users", post.uid));
+      if (snap.exists()) {
+        const profile = snap.data();
+        setProfile({
+          displayName: snap.data().displayName,
+          photoURL: snap.data().photoURL,
+        });
+      } else {
+        console.log("No such doc");
+      }
+    }
+  }
+  useEffect(() => {
+    getProfile();
+  }, []);
   const router = useRouter();
   return (
     <>
       <div className="userCont">
         <div className="row">
-          <img className="userImg" src={post?.user.photoURL} />
+          <img className="userImg" src={profile.photoURL} />
           <div className="col">
-            <div className="userName">{post?.user.displayName}</div>
+            <div className="userName">{profile.displayName}</div>
             <div className="createdAt">{post?.createdAt}</div>
           </div>
         </div>

@@ -2,14 +2,14 @@ import create from "zustand";
 import { IUser } from "../custom";
 
 interface IUserState {
-  userState: IUser;
-  setUserState: (userState: IUser) => void;
+  user: IUser;
+  setUser: (user: IUser) => void;
 }
 
 export const useStore = create<IUserState>((set) => ({
-  userState: { uid: "", displayName: "", photoURL: "" },
-  setUserState: (userState) =>
+  user: { uid: "", displayName: "", photoURL: "" },
+  setUser: (user) =>
     set((state) => {
-      return { ...state, userState };
+      return { ...state, user };
     }),
 }));

@@ -7,8 +7,9 @@ import {
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { useStore } from "../apis/zustand";
-import { auth } from "../apis/firebase";
+import { auth, db } from "../apis/firebase";
 import Nav from "./Nav";
+import { addDoc, collection, doc, setDoc } from "firebase/firestore";
 
 interface ILayoutProps {
   children: React.ReactNode;
@@ -25,7 +26,7 @@ interface ILogin {
 export default function Layout({ children }: ILayoutProps) {
   const provider = new GoogleAuthProvider();
   const router = useRouter();
-  const { userState, setUserState } = useStore();
+  const { user, setUser } = useStore();
   const [login, setLogin] = useState<ILogin>({
     email: "",
     password: "",
@@ -38,7 +39,7 @@ export default function Layout({ children }: ILayoutProps) {
     auth.onAuthStateChanged((user) => {
       if (user) {
         setLogin({ ...login, isLoggedIn: true });
-        setUserState({
+        setUser({
           uid: user.uid,
           displayName: user.displayName || "",
           photoURL: user.photoURL || "",
@@ -47,6 +48,7 @@ export default function Layout({ children }: ILayoutProps) {
         setLogin({ ...login, isLoggedIn: false });
       }
     });
+    console.log(user.uid);
   }, []);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -59,10 +61,15 @@ export default function Layout({ children }: ILayoutProps) {
   }
   function handleSocialLogin() {
     signInWithPopup(auth, provider)
-      .then((result) => {
+      .then(async (result) => {
         const credential = GoogleAuthProvider.credentialFromResult(result);
         const token = credential?.accessToken;
         const user = result.user;
+        const res = await setDoc(doc(db, "users", user.uid), {
+          displayName: user.displayName,
+          photoURL: user.photoURL,
+        });
+        console.log(res);
       })
       .catch((e) => {
         console.log(e.message);
@@ -78,12 +85,19 @@ export default function Layout({ children }: ILayoutProps) {
           login.email,
           login.password
         );
+        console.log(user, user.uid);
+        const res = await setDoc(doc(db, "users", user.uid), {
+          displayName: user.displayName,
+          photoURL: user.photoURL,
+        });
+        console.log(res);
       } else {
         data = await signInWithEmailAndPassword(
           auth,
           login.email,
           login.password
         );
+        // update userinfo here
       }
     } catch (e) {
       if (e instanceof Error) {

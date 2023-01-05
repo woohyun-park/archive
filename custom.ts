@@ -27,7 +27,7 @@ export interface IUser {
 
 export interface IPost {
   id?: string;
-  user: IUser;
+  uid: string;
   createdAt: string;
   title: string;
   tags: string[];
