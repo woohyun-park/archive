@@ -4,68 +4,99 @@ import {
   signInWithEmailAndPassword,
   signInWithPopup,
 } from "firebase/auth";
-
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
+import { useStore } from "../apis/zustand";
 import { auth } from "../apis/firebase";
 import Nav from "./Nav";
 
 interface ILayoutProps {
   children: React.ReactNode;
-  isLoggedIn: boolean | null;
 }
 
-export default function Layout({ children, isLoggedIn }: ILayoutProps) {
+interface ILogin {
+  email: string;
+  password: string;
+  isNewAccount: boolean;
+  isLoggedIn: boolean | null;
+  error: string;
+}
+
+export default function Layout({ children }: ILayoutProps) {
   const provider = new GoogleAuthProvider();
   const router = useRouter();
+  const { userState, setUserState } = useStore();
+  const [login, setLogin] = useState<ILogin>({
+    email: "",
+    password: "",
+    isNewAccount: false,
+    isLoggedIn: null,
+    error: "",
+  });
+
+  useEffect(() => {
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        setLogin({ ...login, isLoggedIn: true });
+        setUserState({
+          uid: user.uid,
+          displayName: user.displayName || "",
+          photoURL: user.photoURL || "",
+        });
+      } else {
+        setLogin({ ...login, isLoggedIn: false });
+      }
+    });
+  }, []);
+
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const { name, value } = e.target;
+    if (name === "email") {
+      setLogin({ ...login, email: value });
+    } else if (name === "password") {
+      setLogin({ ...login, password: value });
+    }
+  }
   function handleSocialLogin() {
     signInWithPopup(auth, provider)
       .then((result) => {
         const credential = GoogleAuthProvider.credentialFromResult(result);
         const token = credential?.accessToken;
         const user = result.user;
-        console.log(user);
-        // user.photoURL
-        setUser(user.uid);
       })
       .catch((e) => {
         console.log(e.message);
       });
   }
-  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const { name, value } = e.target;
-    if (name === "email") {
-      setEmail(value);
-    } else if (name === "password") {
-      setPassword(value);
-    }
-  }
   async function handleEmailLogin(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     try {
       let data;
-      if (newAccount) {
-        data = await createUserWithEmailAndPassword(auth, email, password);
+      if (login.isNewAccount) {
+        data = await createUserWithEmailAndPassword(
+          auth,
+          login.email,
+          login.password
+        );
       } else {
-        data = await signInWithEmailAndPassword(auth, email, password);
+        data = await signInWithEmailAndPassword(
+          auth,
+          login.email,
+          login.password
+        );
       }
     } catch (e) {
       if (e instanceof Error) {
-        setError(e.message);
+        setLogin({ ...login, error: e.message });
       }
     }
   }
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [user, setUser] = useState(auth.currentUser);
-  const [newAccount, setNewAccount] = useState(false);
-  const [error, setError] = useState("");
 
   return (
     <>
-      {isLoggedIn === null ? (
+      {login.isLoggedIn === null ? (
         <>loading...</>
-      ) : isLoggedIn ? (
+      ) : login.isLoggedIn ? (
         <>
           <div className="pageCont">{children}</div>
           <Nav />
@@ -78,7 +109,7 @@ export default function Layout({ children, isLoggedIn }: ILayoutProps) {
               name="email"
               placeholder="email"
               required
-              value={email}
+              value={login.email}
               onChange={handleChange}
             />
             <input
@@ -86,20 +117,24 @@ export default function Layout({ children, isLoggedIn }: ILayoutProps) {
               name="password"
               placeholder="password"
               required
-              value={password}
+              value={login.password}
               onChange={handleChange}
             />
             <input
               type="submit"
-              value={newAccount ? "create account" : "login"}
+              value={login.isNewAccount ? "create account" : "login"}
               required
             />
           </form>
-          <button onClick={() => setNewAccount(!newAccount)}>
-            {newAccount ? "Log In" : "Create Account"}
+          <button
+            onClick={() =>
+              setLogin({ ...login, isNewAccount: !login.isNewAccount })
+            }
+          >
+            {login.isNewAccount ? "Log In" : "Create Account"}
           </button>
           <button onClick={handleSocialLogin}>login with google</button>
-          {error}
+          {login.error}
         </div>
       )}
       <style jsx global>
@@ -114,10 +149,10 @@ export default function Layout({ children, isLoggedIn }: ILayoutProps) {
             margin: 0;
             width: 100vw;
             max-width: 480px;
-            min-height: ${isLoggedIn ? "calc(100vh - 72px)" : "100vh"};
+            min-height: ${login.isLoggedIn ? "calc(100vh - 72px)" : "100vh"};
             background-color: white;
             box-sizing: border-box;
-            display: ${isLoggedIn ? "" : "flex"};
+            display: ${login.isLoggedIn ? "" : "flex"};
             justify-content: center;
             align-items: center;
           }

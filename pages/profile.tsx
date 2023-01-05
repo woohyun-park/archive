@@ -1,4 +1,4 @@
-import { useStore } from "../apis/store";
+import { useStore } from "../apis/zustand";
 
 export default function Profile() {
   const { userState, setUserState } = useStore();
