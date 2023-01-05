@@ -10,12 +10,13 @@ type IProfileSmallProps = {
 };
 
 export default function ProfileSmall({ post }: IProfileSmallProps) {
-  const [profile, setProfile] = useState({ displayName: "", photoURL: "" });
+  console.log(post);
+  const [profile, setProfile] = useState({});
+  const router = useRouter();
   async function getProfile() {
     if (post?.uid) {
       const snap = await getDoc(doc(db, "users", post.uid));
       if (snap.exists()) {
-        const profile = snap.data();
         setProfile({
           displayName: snap.data().displayName,
           photoURL: snap.data().photoURL,
@@ -27,8 +28,7 @@ export default function ProfileSmall({ post }: IProfileSmallProps) {
   }
   useEffect(() => {
     getProfile();
-  }, []);
-  const router = useRouter();
+  }, [post]);
   return (
     <>
       <div className="userCont">
@@ -78,7 +78,7 @@ export default function ProfileSmall({ post }: IProfileSmallProps) {
           }
           .followBtn {
             padding: 8px 12px;
-            background-color: ${COLOR.txt3};
+            background-color: ${COLOR.bg2};
             color: ${COLOR.txt2};
             font-size: 12px;
             border-radius: 4px;

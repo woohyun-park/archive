@@ -15,8 +15,10 @@ export const COLOR = {
   bgDark1: "#2C2C2C",
   bg2: "#D9D9D9",
   bgDark2: "#D9D9D9",
-  btn: "#000000",
-  btnDark: "#FFFFFF",
+  btn1: "#000000",
+  btnDark1: "#FFFFFF",
+  btn2: "#D9D9D9",
+  btnDark2: "#D9D9D9",
 };
 
 export interface IUser {
