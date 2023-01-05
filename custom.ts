@@ -23,6 +23,10 @@ export interface IUser {
   uid: string;
   displayName: string;
   photoURL: string;
+  tags: string[];
+  scraps: string[];
+  followers: string[];
+  followings: string[];
 }
 
 export interface IPost {
@@ -34,10 +38,8 @@ export interface IPost {
   text: string;
   imgs: string[];
   color: string;
-  numLikes: number;
-  arrLikes: number[];
-  numComments: number;
-  arrComments: IComment[];
+  likes: number[];
+  comments: IComment[];
 }
 
 export interface IComment {

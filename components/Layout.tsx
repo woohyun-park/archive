@@ -9,7 +9,8 @@ import React, { useEffect, useState } from "react";
 import { useStore } from "../apis/zustand";
 import { auth, db } from "../apis/firebase";
 import Nav from "./Nav";
-import { addDoc, collection, doc, setDoc } from "firebase/firestore";
+import { addDoc, collection, doc, getDoc, setDoc } from "firebase/firestore";
+import { IUser } from "../custom";
 
 interface ILayoutProps {
   children: React.ReactNode;
@@ -36,19 +37,20 @@ export default function Layout({ children }: ILayoutProps) {
   });
 
   useEffect(() => {
-    auth.onAuthStateChanged((user) => {
-      if (user) {
+    auth.onAuthStateChanged(async (curUser) => {
+      if (curUser) {
+        const snap = await getDoc(doc(db, "users", curUser.uid));
+        const profile: IUser = snap.data() as IUser;
         setLogin({ ...login, isLoggedIn: true });
         setUser({
-          uid: user.uid,
-          displayName: user.displayName || "",
-          photoURL: user.photoURL || "",
+          ...profile,
+          uid: curUser.uid,
         });
+        console.log(user);
       } else {
         setLogin({ ...login, isLoggedIn: false });
       }
     });
-    console.log(user.uid);
   }, []);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -68,8 +70,12 @@ export default function Layout({ children }: ILayoutProps) {
         const res = await setDoc(doc(db, "users", user.uid), {
           displayName: user.displayName,
           photoURL: user.photoURL,
+          posts: [],
+          tags: [],
+          scraps: [],
+          followers: [],
+          followings: [],
         });
-        console.log(res);
       })
       .catch((e) => {
         console.log(e.message);
@@ -80,24 +86,18 @@ export default function Layout({ children }: ILayoutProps) {
     try {
       let data;
       if (login.isNewAccount) {
-        data = await createUserWithEmailAndPassword(
-          auth,
-          login.email,
-          login.password
-        );
-        console.log(user, user.uid);
-        const res = await setDoc(doc(db, "users", user.uid), {
+        await createUserWithEmailAndPassword(auth, login.email, login.password);
+        await setDoc(doc(db, "users", user.uid), {
           displayName: user.displayName,
           photoURL: user.photoURL,
+          posts: [],
+          tags: [],
+          scraps: [],
+          followers: [],
+          followings: [],
         });
-        console.log(res);
       } else {
-        data = await signInWithEmailAndPassword(
-          auth,
-          login.email,
-          login.password
-        );
-        // update userinfo here
+        await signInWithEmailAndPassword(auth, login.email, login.password);
       }
     } catch (e) {
       if (e instanceof Error) {

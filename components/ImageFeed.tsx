@@ -3,9 +3,10 @@ import { IPost } from "../custom";
 
 type IImageFeedProps = {
   post: IPost;
+  size: string;
 };
 
-export default function ImageFeed({ post }: IImageFeedProps) {
+export default function ImageFeed({ post, size }: IImageFeedProps) {
   return (
     <>
       <div className="cont">
@@ -55,10 +56,11 @@ export default function ImageFeed({ post }: IImageFeedProps) {
         }
         .cont {
           position: relative;
-          width: 100%;
-          padding-bottom: 100%;
+          width: ${size === "small" ? "calc(50% - 8px)" : "100%"};
+          padding-bottom: ${size === "small" ? "calc(50% - 8px)" : "100%"};
           overflow: hidden;
           border-radius: 16px;
+          margin: ${size === "small" ? "4px" : ""};
         }
         .bg {
           position: absolute;

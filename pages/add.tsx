@@ -15,10 +15,8 @@ export default function Add() {
     imgs: [],
     color: "",
     createdAt: "",
-    numLikes: 0,
-    arrLikes: [],
-    numComments: 0,
-    arrComments: [],
+    likes: [],
+    comments: [],
   });
   const imageInputRef = useRef<HTMLInputElement>(null);
   const [imageFile, setImageFile] = useState<string>("");
@@ -86,6 +84,7 @@ export default function Add() {
             tags: newPost.tags[0].split(" "),
             imgs: [res.data.url],
           });
+          setUser({ ...user });
         });
     } else {
       await addDoc(collection(db, "posts"), {
@@ -93,6 +92,7 @@ export default function Add() {
         tags: newPost.tags[0].split(" "),
         color: "blue",
       });
+      setUser({ ...user });
     }
   }
   return (
