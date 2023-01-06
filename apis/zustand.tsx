@@ -1,5 +1,5 @@
 import create from "zustand";
-import { IUser } from "../custom";
+import { IUser, IDict } from "../custom";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "./firebase";
 
@@ -18,8 +18,8 @@ export const useStore = create<IUserState>((set) => ({
     posts: [],
     tags: [],
     scraps: [],
-    followers: [],
-    followings: [],
+    followers: {},
+    followings: {},
   },
   setCurUser: async (curUser) => {
     const userRef = doc(db, "users", curUser.uid);

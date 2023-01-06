@@ -5,6 +5,7 @@ import {
   getDoc,
   getDocs,
   query,
+  updateDoc,
   where,
 } from "firebase/firestore";
 import { auth, db } from "../../apis/firebase";
@@ -13,31 +14,63 @@ import { COLOR, IDict, IPost, IUser, SIZE } from "../../custom";
 import { HiOutlineCog } from "react-icons/hi";
 import { useStore } from "../../apis/zustand";
 import Link from "next/link";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Button from "../../components/Button";
 
 interface IProfileProps {
-  user: IUser;
+  uid: string;
   posts: IPost[];
 }
 
-export default function Profile({ user, posts }: IProfileProps) {
+export default function Profile({ uid, posts }: IProfileProps) {
   const { curUser, setCurUser, updateCurUser } = useStore();
+  const [user, setUser] = useState<IUser | null>(null);
+  async function getUser() {
+    const userRef = doc(db, "users", uid);
+    const userSnap = await getDoc(userRef);
+    const tempUser = { ...(userSnap.data() as IUser), uid };
+    console.log(tempUser.followers);
+    setUser(tempUser);
+  }
+  useEffect(() => {
+    console.log("useEffect");
+    getUser();
+  }, [curUser]);
+  function getFollowNum(obj: IDict<boolean>) {
+    let result = 0;
+    for (const key in obj) {
+      if (obj[key]) {
+        result++;
+      }
+    }
+    return result;
+  }
   function handleLogout() {
     signOut(auth);
   }
-  function handleFollow() {
-    const tempFollowings = {
+  async function handleFollow() {
+    const tempCurUserFollowings = {
       ...(curUser.followings as IDict<boolean>),
-      [user.uid]: !curUser.followings[user.uid],
+      [uid]: !curUser.followings[uid],
     };
-    const tempCurUser = { ...curUser, followings: tempFollowings };
+    const tempCurUser = { ...curUser, followings: tempCurUserFollowings };
     setCurUser(tempCurUser);
     updateCurUser(tempCurUser);
+
+    const userRef = doc(db, "users", uid);
+    const tempUserFollowers = {
+      ...(user?.followers as IDict<boolean>),
+      [curUser.uid]: !user?.followers[curUser.uid],
+    };
+    const tempUser = { ...user, followers: tempUserFollowers };
+    await updateDoc(userRef, tempUser);
   }
+  useEffect(() => {
+    console.log("changed");
+  }, [curUser]);
   return (
     <>
-      {user.uid === curUser.uid && (
+      {uid === curUser.uid && (
         <Link href="/setting">
           <div className="setting">
             <HiOutlineCog size={SIZE.icon} />
@@ -47,32 +80,36 @@ export default function Profile({ user, posts }: IProfileProps) {
       <div className="profileTopCont">
         <div className="profileLeftCont">
           <h1>
-            {user.uid === curUser.uid ? curUser.displayName : user.displayName}
+            {uid === curUser.uid ? curUser.displayName : user?.displayName}
           </h1>
           <div className="profileInfoCont">
             <div>
               <div className="profileType">아카이브</div>
-              <div className="profileNum">{user.posts.length}</div>
+              <div className="profileNum">{user?.posts.length}</div>
             </div>
             <div>
               <div className="profileType">팔로워</div>
-              <div className="profileNum">{user.followers.length}</div>
+              <div className="profileNum">
+                {user && getFollowNum(user.followers)}
+              </div>
             </div>
             <div>
               <div className="profileType">팔로잉</div>
-              <div className="profileNum">{user.followings.length}</div>
+              <div className="profileNum">
+                {user && Object.keys(user.followings).length}
+              </div>
             </div>
           </div>
         </div>
         <img
           className="profileImage"
-          src={user.uid === curUser.uid ? curUser.photoURL : user.photoURL}
+          src={uid === curUser.uid ? curUser.photoURL : user?.photoURL}
         />
       </div>
       {(() => {
         const result = [];
-        if (curUser.uid !== user.uid) {
-          if (curUser.followings[user.uid]) {
+        if (curUser.uid !== uid) {
+          if (curUser.followings[uid]) {
             result.push(
               <button onClick={handleFollow} className="g-button">
                 팔로잉
@@ -89,9 +126,9 @@ export default function Profile({ user, posts }: IProfileProps) {
         return result;
       })()}
       <div className="profileTxtCont">
-        {user.uid === curUser.uid ? curUser.txt : user.txt}
+        {uid === curUser.uid ? curUser.txt : user?.txt}
       </div>
-      {user.uid === curUser.uid ? (
+      {uid === curUser.uid ? (
         <>
           <button onClick={handleLogout} className="g-button">
             logout
@@ -167,10 +204,7 @@ export async function getServerSidePaths() {
 }
 
 export async function getServerSideProps({ params }: IServerSidePaths) {
-  const userRef = doc(db, "users", params.uid);
-  const userSnap = await getDoc(userRef);
-  const user = { ...userSnap.data(), uid: userSnap.id };
-
+  const uid = params.uid;
   const postRef = collection(db, "posts");
   const postSnap = await getDocs(
     query(postRef, where("uid", "==", params.uid))
@@ -180,5 +214,5 @@ export async function getServerSideProps({ params }: IServerSidePaths) {
     posts.push({ ...(doc.data() as IPost), id: doc.id });
   });
 
-  return { props: { user, posts } };
+  return { props: { uid, posts } };
 }
