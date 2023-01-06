@@ -93,7 +93,7 @@ interface IStaticProps {
   id: string;
 }
 
-export async function getStaticPaths() {
+export async function getServerSidePaths() {
   const snap = await getDocs(collection(db, "posts"));
   const paths: IStaticPaths[] = [];
   snap.forEach((post) => {
@@ -102,7 +102,7 @@ export async function getStaticPaths() {
   return { paths, fallback: false };
 }
 
-export async function getStaticProps({ params }: IStaticPaths) {
+export async function getServerSideProps({ params }: IStaticPaths) {
   const docRef = doc(db, "posts", params.id);
   const dosSnap = await getDoc(docRef);
   const post = dosSnap.data();
