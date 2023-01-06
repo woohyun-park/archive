@@ -144,7 +144,7 @@ export default function Add() {
           onChange={handleTextareaChange}
           placeholder="내용"
         />
-        <button className="g-button" onClick={handleSubmit}>
+        <button className="g-button1" onClick={handleSubmit}>
           생성
         </button>
       </form>

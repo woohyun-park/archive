@@ -111,13 +111,13 @@ export default function Profile({ uid, posts }: IProfileProps) {
         if (curUser.uid !== uid) {
           if (curUser.followings[uid]) {
             result.push(
-              <button onClick={handleFollow} className="g-button">
+              <button onClick={handleFollow} className="g-button2">
                 팔로잉
               </button>
             );
           } else {
             result.push(
-              <button onClick={handleFollow} className="g-button">
+              <button onClick={handleFollow} className="g-button1">
                 팔로우
               </button>
             );
@@ -130,7 +130,7 @@ export default function Profile({ uid, posts }: IProfileProps) {
       </div>
       {uid === curUser.uid ? (
         <>
-          <button onClick={handleLogout} className="g-button">
+          <button onClick={handleLogout} className="g-button1">
             logout
           </button>
         </>

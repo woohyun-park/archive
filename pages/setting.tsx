@@ -105,7 +105,7 @@ export default function Setting() {
           placeholder="소개"
           onChange={handleTextareaChange}
         />
-        <button className="g-button" onClick={handleSubmit}>
+        <button className="g-button1" onClick={handleSubmit}>
           변경
         </button>
       </form>

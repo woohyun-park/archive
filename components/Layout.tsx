@@ -187,13 +187,22 @@ export default function Layout({ children }: ILayoutProps) {
               : "48px"};
             padding-bottom: 96px;
           }
-          .g-button {
+          .g-button1 {
             margin: 8px 0;
             background-color: ${COLOR.btn1};
             border: none;
             border-radius: 8px;
             padding: 8px;
             color: ${COLOR.txtDark1};
+            width: 100%;
+          }
+          .g-button2 {
+            margin: 8px 0;
+            background-color: ${COLOR.btn2};
+            border: none;
+            border-radius: 8px;
+            padding: 8px;
+            color: ${COLOR.txtDark2};
             width: 100%;
           }
         `}
