@@ -11,7 +11,7 @@ export default function FeedPost({ post }: IFeedPostProps) {
   return (
     <>
       <ProfileSmall post={post} />
-      <ImagePost post={post} size="" />
+      <ImagePost post={post} style="feed" />
     </>
   );
 }

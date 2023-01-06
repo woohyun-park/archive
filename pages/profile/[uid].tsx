@@ -56,7 +56,7 @@ export default function Profile({ user, posts }: IProfileProps) {
         {selected === 1 ? (
           posts?.map((e) => {
             return (
-              <ImagePost post={{ ...e, id: e.id }} size="small"></ImagePost>
+              <ImagePost post={{ ...e, id: e.id }} style="profile"></ImagePost>
             );
           })
         ) : selected === 2 ? (

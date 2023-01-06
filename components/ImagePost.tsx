@@ -1,15 +1,16 @@
 import Link from "next/link";
+import { type } from "os";
 import { IPost } from "../custom";
 
-type IImagePostProps = {
+interface IImagePostProps {
   post: IPost;
-  size: string;
-};
+  style: string;
+}
 
-export default function ImagePost({ post, size }: IImagePostProps) {
+export default function ImagePost({ post, style }: IImagePostProps) {
   return (
     <>
-      <div className="cont">
+      <div className={`cont cont-${style}`}>
         {post.imgs.length === 0 ? (
           <div className="bg" />
         ) : (
@@ -56,11 +57,22 @@ export default function ImagePost({ post, size }: IImagePostProps) {
         }
         .cont {
           position: relative;
-          width: ${size === "small" ? "calc(50% - 8px)" : "100%"};
-          padding-bottom: ${size === "small" ? "calc(50% - 8px)" : "100%"};
           overflow: hidden;
           border-radius: 16px;
-          margin: ${size === "small" ? "4px" : ""};
+        }
+        .cont-feed {
+          width: 100%;
+          padding-bottom: 100%;
+        }
+        .cont-search {
+          width: calc(33% - 8px);
+          padding-bottom: calc(33% - 8px);
+          margin: 4px;
+        }
+        .cont-profile {
+          width: calc(50% - 8px);
+          padding-bottom: calc(50% - 8px);
+          margin: 4px;
         }
         .bg {
           position: absolute;
