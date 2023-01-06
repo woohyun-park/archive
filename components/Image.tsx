@@ -1,13 +1,12 @@
 import Link from "next/link";
-import { type } from "os";
 import { IPost } from "../custom";
 
-interface IImagePostProps {
+interface IImageProps {
   post: IPost;
   style: string;
 }
 
-export default function ImagePost({ post, style }: IImagePostProps) {
+export default function Image({ post, style }: IImageProps) {
   return (
     <>
       <div className={`cont cont-${style}`}>
@@ -58,16 +57,16 @@ export default function ImagePost({ post, style }: IImagePostProps) {
         .cont {
           position: relative;
           overflow: hidden;
-          border-radius: 16px;
+          border-radius: 8px;
         }
         .cont-feed {
           width: 100%;
           padding-bottom: 100%;
         }
         .cont-search {
-          width: calc(33% - 8px);
-          padding-bottom: calc(33% - 8px);
-          margin: 4px;
+          width: calc(33.33% - 4px);
+          padding-bottom: calc(33.33% - 4px);
+          margin: 2px;
         }
         .cont-profile {
           width: calc(50% - 8px);

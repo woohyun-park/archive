@@ -1,4 +1,4 @@
-import FeedPost from "../components/FeedPost";
+import PostFeed from "../components/PostFeed";
 import { IPost } from "../custom";
 
 interface IFeed {
@@ -10,7 +10,7 @@ export default function Feed({ posts }: IFeed) {
     <>
       <h1>feed</h1>
       {posts.map((post) => {
-        return <FeedPost post={post} key={post.id} />;
+        return <PostFeed post={post} key={post.id} />;
       })}
       <style jsx>{``}</style>
     </>

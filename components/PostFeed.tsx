@@ -1,17 +1,17 @@
 import { DocumentData, QueryDocumentSnapshot } from "firebase/firestore";
 import { IPost } from "../custom";
-import ImagePost from "./ImagePost";
+import Image from "./Image";
 import ProfileSmall from "./ProfileSmall";
 
-type IFeedPostProps = {
+type IPostFeedProps = {
   post: IPost;
 };
 
-export default function FeedPost({ post }: IFeedPostProps) {
+export default function PostFeed({ post }: IPostFeedProps) {
   return (
     <>
       <ProfileSmall post={post} />
-      <ImagePost post={post} style="feed" />
+      <Image post={post} style="feed" />
     </>
   );
 }
