@@ -1,7 +1,4 @@
 import { collection, doc, getDoc, getDocs } from "firebase/firestore";
-import { GetStaticPaths, GetStaticProps } from "next";
-import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
 import { db } from "../../apis/firebase";
 import Header from "../../components/Header";
 import ProfileSmall from "../../components/ProfileSmall";
@@ -94,17 +91,19 @@ interface IServerSideProps {
 }
 
 export async function getServerSidePaths() {
-  const snap = await getDocs(collection(db, "posts"));
+  const pathSnap = await getDocs(collection(db, "posts"));
   const paths: IServerSidePaths[] = [];
-  snap.forEach((post) => {
+  pathSnap.forEach((post) => {
     paths.push({ params: { id: post.id } });
   });
+
   return { paths, fallback: false };
 }
 
 export async function getServerSideProps({ params }: IServerSidePaths) {
-  const docRef = doc(db, "posts", params.id);
-  const dosSnap = await getDoc(docRef);
-  const post = dosSnap.data();
+  const postRef = doc(db, "posts", params.id);
+  const postSnap = await getDoc(postRef);
+  const post = postSnap.data();
+
   return { props: { post } };
 }

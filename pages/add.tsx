@@ -6,9 +6,9 @@ import { COLOR, IPost } from "../custom";
 import { useStore } from "../apis/zustand";
 
 export default function Add() {
-  const { user, setUser } = useStore();
+  const { curUser, setCurUser } = useStore();
   const [newPost, setNewPost] = useState<IPost>({
-    uid: user.uid,
+    uid: curUser.uid,
     title: "",
     tags: [],
     txt: "",
@@ -84,9 +84,9 @@ export default function Add() {
             tags: newPost.tags[0].split(" "),
             imgs: [res.data.url],
           });
-          const tempPosts = user.posts;
+          const tempPosts = curUser.posts;
           tempPosts.push(ref.id);
-          setUser({ ...user, posts: tempPosts });
+          setCurUser({ ...curUser, posts: tempPosts });
         });
     } else {
       const ref = await addDoc(collection(db, "posts"), {
@@ -94,9 +94,9 @@ export default function Add() {
         tags: newPost.tags[0].split(" "),
         color: "blue",
       });
-      const tempPosts = user.posts;
+      const tempPosts = curUser.posts;
       tempPosts.push(ref.id);
-      setUser({ ...user, posts: tempPosts });
+      setCurUser({ ...curUser, posts: tempPosts });
     }
   }
   return (

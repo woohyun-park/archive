@@ -27,7 +27,7 @@ interface ILogin {
 export default function Layout({ children }: ILayoutProps) {
   const provider = new GoogleAuthProvider();
   const router = useRouter();
-  const { user, setUser } = useStore();
+  const { curUser, setCurUser } = useStore();
   const [login, setLogin] = useState<ILogin>({
     email: "",
     password: "",
@@ -42,7 +42,7 @@ export default function Layout({ children }: ILayoutProps) {
         const snap = await getDoc(doc(db, "users", curUser.uid));
         const profile: IUser = snap.data() as IUser;
         setLogin({ ...login, isLoggedIn: true });
-        setUser({
+        setCurUser({
           ...profile,
           uid: curUser.uid,
         });
@@ -76,6 +76,7 @@ export default function Layout({ children }: ILayoutProps) {
           followers: [],
           followings: [],
         });
+        router.push("/");
       })
       .catch((e) => {
         console.log(e.message);
@@ -104,6 +105,7 @@ export default function Layout({ children }: ILayoutProps) {
       } else {
         await signInWithEmailAndPassword(auth, login.email, login.password);
       }
+      router.push("/");
     } catch (e) {
       if (e instanceof Error) {
         setLogin({ ...login, error: e.message });

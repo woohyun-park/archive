@@ -2,14 +2,12 @@ import { signOut } from "firebase/auth";
 import {
   collection,
   doc,
-  DocumentData,
   getDoc,
   getDocs,
   query,
-  QueryDocumentSnapshot,
   where,
 } from "firebase/firestore";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { auth, db } from "../../apis/firebase";
 import { useStore } from "../../apis/zustand";
 import ImagePost from "../../components/ImagePost";
@@ -21,22 +19,7 @@ interface IProfileProps {
 }
 
 export default function Profile({ user, posts }: IProfileProps) {
-  // const [posts, setPosts] = useState<IPost[]>([]);
-  // async function getPosts() {
-  //   const postsRef = collection(db, "posts");
-  //   const q = query(postsRef, where("uid", "==", user.uid));
-  //   const snap = await getDocs(q);
-  //   const tempPosts: IPost[] = [];
-  //   snap.forEach((doc) => {
-  //     tempPosts.push({ ...(doc.data() as IPost), id: doc.id });
-  //   });
-  //   setPosts(tempPosts);
-  // }
-  // useEffect(() => {
-  //   getPosts();
-  // }, []);
-
-  // const { user, setUser } = useStore();
+  const { curUser, setCurUser } = useStore();
   const [selected, setSelected] = useState(1);
   function handleLogout() {
     signOut(auth);
@@ -72,7 +55,6 @@ export default function Profile({ user, posts }: IProfileProps) {
       <div className="postCont">
         {selected === 1 ? (
           posts?.map((e) => {
-            console.log(e);
             return (
               <ImagePost post={{ ...e, id: e.id }} size="small"></ImagePost>
             );
@@ -90,6 +72,7 @@ export default function Profile({ user, posts }: IProfileProps) {
         {`
           h1 {
             margin-top: 0;
+            word-break: break-all;
           }
           .profileTopCont {
             display: flex;
@@ -155,30 +138,28 @@ interface IServerSideProps {
 }
 
 export async function getServerSidePaths() {
-  const snap = await getDocs(collection(db, "users"));
+  const pathsSnap = await getDocs(collection(db, "users"));
   const paths: IServerSidePaths[] = [];
-  snap.forEach((user) => {
-    paths.push({ params: { uid: user.id } });
+  pathsSnap.forEach((path) => {
+    paths.push({ params: { uid: path.id } });
   });
+
   return { paths, fallback: false };
 }
 
 export async function getServerSideProps({ params }: IServerSidePaths) {
-  console.log(params);
-  const docRef = doc(
-    db,
-    "users",
-    params.uid.substring(0, params.uid.length - 1)
-  );
-  const userSnap = await getDoc(docRef);
+  const userRef = doc(db, "users", params.uid);
+  const userSnap = await getDoc(userRef);
   const user = userSnap.data();
 
-  const postsRef = collection(db, "posts");
-  const q = query(postsRef, where("uid", "==", params.uid));
-  const postSnap = await getDocs(q);
+  const postRef = collection(db, "posts");
+  const postSnap = await getDocs(
+    query(postRef, where("uid", "==", params.uid))
+  );
   const posts: IPost[] = [];
   postSnap.forEach((doc) => {
     posts.push({ ...(doc.data() as IPost), id: doc.id });
   });
+
   return { props: { user, posts } };
 }

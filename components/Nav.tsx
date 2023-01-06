@@ -16,7 +16,7 @@ import { useStore } from "../apis/zustand";
 import { COLOR, SIZE } from "../custom";
 
 export default function Nav() {
-  const { user, setUser } = useStore();
+  const { curUser, setCurUser } = useStore();
   const router = useRouter();
   return (
     <>
@@ -58,9 +58,9 @@ export default function Nav() {
             )}
           </a>
         </Link>
-        <Link href={`/profile/${user.uid}}`} legacyBehavior>
+        <Link href={`/profile/${curUser.uid}`} legacyBehavior>
           <a>
-            {router.pathname === `/profile/${user.uid}` ? (
+            {router.query.uid === curUser.uid ? (
               <HiUser size={SIZE.icon} />
             ) : (
               <HiOutlineUser size={SIZE.icon} />

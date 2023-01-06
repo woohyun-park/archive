@@ -4,12 +4,13 @@ import { doc, updateDoc } from "firebase/firestore";
 import { db } from "./firebase";
 
 interface IUserState {
-  user: IUser;
-  setUser: (user: IUser) => void;
+  curUser: IUser;
+  setCurUser: (user: IUser) => void;
+  updateCurUser: (user: IUser) => void;
 }
 
 export const useStore = create<IUserState>((set) => ({
-  user: {
+  curUser: {
     uid: "",
     displayName: "",
     photoURL: "",
@@ -20,16 +21,16 @@ export const useStore = create<IUserState>((set) => ({
     followers: [],
     followings: [],
   },
-  setUser: async (user) => {
-    const userRef = doc(db, "users", user.uid);
+  setCurUser: async (curUser) => {
+    const userRef = doc(db, "users", curUser.uid);
     set((state) => {
-      return { ...state, user };
+      return { ...state, curUser };
     });
   },
-  updateUser: async (newUser: IUser) => {
-    const userRef = doc(db, "users", newUser.uid);
+  updateCurUser: async (newCurUser: IUser) => {
+    const userRef = doc(db, "users", newCurUser.uid);
     await updateDoc(userRef, {
-      ...newUser,
+      ...newCurUser,
     });
   },
 }));
