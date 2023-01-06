@@ -2,13 +2,14 @@ import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 import { db } from "../../apis/firebase";
 import Header from "../../components/Header";
 import ProfileSmall from "../../components/ProfileSmall";
-import { COLOR, IPost } from "../../custom";
+import { COLOR, IPost, IUser } from "../../custom";
 
 interface IPostProps {
   post: IPost;
+  user: IUser;
 }
 
-export default function Post({ post }: IPostProps) {
+export default function Post({ post, user }: IPostProps) {
   return (
     <>
       <Header post={post} />
@@ -19,7 +20,7 @@ export default function Post({ post }: IPostProps) {
           <img className="img" src={post?.imgs[0]} />
         </div>
       )}
-      <ProfileSmall post={post} />
+      <ProfileSmall post={post} user={user} style="post" />
       <h1 className="title">{post?.title}</h1>
       <div className="mainTag">{post && `#${post.tags[0]}`}</div>
       <div className="tagCont">
@@ -105,5 +106,9 @@ export async function getServerSideProps({ params }: IServerSidePaths) {
   const postSnap = await getDoc(postRef);
   const post = postSnap.data();
 
-  return { props: { post } };
+  const userRef = doc(db, "users", post?.uid);
+  const userSnap = await getDoc(userRef);
+  const user = userSnap.data();
+
+  return { props: { post, user } };
 }

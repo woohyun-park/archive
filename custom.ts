@@ -6,8 +6,8 @@ export const DEFAULT = {
 };
 
 export const SIZE = {
-  icon: "24px",
-  iconSmall: "16px",
+  icon: "32px",
+  iconSmall: "24px",
 };
 
 export const COLOR = {

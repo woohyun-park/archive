@@ -34,14 +34,16 @@ export default function Image({ post, style }: IImageProps) {
             </a>
           </Link>
           <div>
-            {post.tags.slice(1, post.tags.length).map((e, i) => (
-              <Link
-                href={{ pathname: `/tag/${post.tags[i + 1]}` }}
-                legacyBehavior
-              >
-                <span className="subTag" key={i}>{` #${e}`}</span>
-              </Link>
-            ))}
+            {style === "feed" ||
+              (style === "profile" &&
+                post.tags.slice(1, post.tags.length).map((e, i) => (
+                  <Link
+                    href={{ pathname: `/tag/${post.tags[i + 1]}` }}
+                    legacyBehavior
+                  >
+                    <span className="subTag" key={i}>{` #${e}`}</span>
+                  </Link>
+                )))}
           </div>
         </div>
       </div>
@@ -64,9 +66,9 @@ export default function Image({ post, style }: IImageProps) {
           padding-bottom: 100%;
         }
         .cont-search {
-          width: calc(33.33% - 4px);
-          padding-bottom: calc(33.33% - 4px);
-          margin: 2px;
+          width: calc(33.33% - 8px);
+          padding-bottom: calc(33.33% - 8px);
+          margin: 4px;
         }
         .cont-profile {
           width: calc(50% - 8px);

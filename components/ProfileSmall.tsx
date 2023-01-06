@@ -1,17 +1,25 @@
 import { collection, doc, getDoc, query } from "firebase/firestore";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { HiDotsHorizontal } from "react-icons/hi";
 import { db } from "../apis/firebase";
+import { useStore } from "../apis/zustand";
 import { COLOR, IPost, IUser, SIZE } from "../custom";
 
 type IProfileSmallProps = {
   user: IUser;
   post?: IPost;
+  style: string;
 };
 
-export default function ProfileSmall({ user, post }: IProfileSmallProps) {
+export default function ProfileSmall({
+  user,
+  style,
+  post,
+}: IProfileSmallProps) {
   const [profile, setProfile] = useState({});
+  const { curUser } = useStore();
   const router = useRouter();
   async function getProfile() {
     if (post?.uid) {
@@ -31,21 +39,45 @@ export default function ProfileSmall({ user, post }: IProfileSmallProps) {
   }, [post]);
   return (
     <>
-      <div className="userCont">
+      <div
+        className={
+          style === "post"
+            ? "userCont userCont-post"
+            : style === "search"
+            ? "userCont userCont-search"
+            : style === "feed"
+            ? "userCont userCont-feed"
+            : "userCont"
+        }
+      >
         <div className="row">
-          <img className="userImg" src={user?.photoURL} />
+          <Link href={`/profile/${user?.uid}`}>
+            <img className="userImg" src={user?.photoURL} />
+          </Link>
           <div className="col">
-            <div className="userName">{user?.displayName}</div>
+            <Link href={`/profile/${user?.uid}`} legacyBehavior>
+              <a className="userName">{user?.displayName}</a>
+            </Link>
             <div className="createdAt">{post?.createdAt}</div>
           </div>
         </div>
-        {post && router.pathname.split("/")[1] === "post" ? (
-          <div className="followBtn">팔로우</div>
-        ) : (
-          <div className="moreBtn">
-            <HiDotsHorizontal size={SIZE.icon} />
-          </div>
-        )}
+        {(() => {
+          const result = [];
+          if (style === "post" || style === "search") {
+            if (curUser.uid === user.uid) {
+              result.push(<></>);
+            } else {
+              result.push(<div className="followBtn">팔로우</div>);
+            }
+          } else {
+            result.push(
+              <div className="moreBtn">
+                <HiDotsHorizontal size={SIZE.iconSmall} />
+              </div>
+            );
+          }
+          return result;
+        })()}
       </div>
       <style jsx>
         {`
@@ -53,7 +85,13 @@ export default function ProfileSmall({ user, post }: IProfileSmallProps) {
             display: flex;
             justify-content: space-between;
             align-items: center;
+          }
+          .userCont-post,
+          .userCont-feed {
             margin: 32px 0 8px 0;
+          }
+          .userCont-search {
+            margin: 4px 0 12px 0;
           }
           .userImg {
             width: 32px;
@@ -63,6 +101,8 @@ export default function ProfileSmall({ user, post }: IProfileSmallProps) {
           }
           .userName {
             font-size: 16px;
+            text-decoration: none;
+            color: ${COLOR.txt1};
           }
           .createdAt {
             font-size: 12px;

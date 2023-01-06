@@ -9,7 +9,11 @@ import {
 } from "firebase/firestore";
 import { auth, db } from "../../apis/firebase";
 import List from "../../components/List";
-import { COLOR, IPost, IUser } from "../../custom";
+import { COLOR, IPost, IUser, SIZE } from "../../custom";
+import { HiOutlineCog } from "react-icons/hi";
+import { useStore } from "../../apis/zustand";
+import Link from "next/link";
+import { useEffect } from "react";
 
 interface IProfileProps {
   user: IUser;
@@ -17,14 +21,24 @@ interface IProfileProps {
 }
 
 export default function Profile({ user, posts }: IProfileProps) {
+  const { curUser } = useStore();
   function handleLogout() {
     signOut(auth);
   }
   return (
     <>
+      {user.uid === curUser.uid && (
+        <Link href="/setting">
+          <div className="setting">
+            <HiOutlineCog size={SIZE.icon} />
+          </div>
+        </Link>
+      )}
       <div className="profileTopCont">
         <div className="profileLeftCont">
-          <h1>{user.displayName}</h1>
+          <h1>
+            {user.uid === curUser.uid ? curUser.displayName : user.displayName}
+          </h1>
           <div className="profileInfoCont">
             <div>
               <div className="profileType">아카이브</div>
@@ -40,9 +54,14 @@ export default function Profile({ user, posts }: IProfileProps) {
             </div>
           </div>
         </div>
-        <img className="profileImage" src={user.photoURL} />
+        <img
+          className="profileImage"
+          src={user.uid === curUser.uid ? curUser.photoURL : user.photoURL}
+        />
       </div>
-      <div className="profileTextCont">{user.txt}</div>
+      <div className="profileTxtCont">
+        {user.uid === curUser.uid ? curUser.txt : user.txt}
+      </div>
       <List data={{ grid: posts, tag: [], scrap: [] }} style="profile" />
 
       <button onClick={handleLogout}>logout</button>
@@ -52,15 +71,23 @@ export default function Profile({ user, posts }: IProfileProps) {
             margin-top: 0;
             word-break: break-all;
           }
+          .setting{
+            display: flex;
+            justify-content: flex-end;
+            color:${COLOR.txt1};
+          }
           .profileTopCont {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-top: 22px;
+            margin-top: 64px;
           }
-          .profileTextCont {
-            height: 64px;
+          .profileTxtCont {
+            min-height: 64px;
+            max-height: 128px;
+            height: 100%;
             padding: 32px 0;
+            word-break: break-all;
           }
           .profileLeftCont {
             width: 70%;

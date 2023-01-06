@@ -6,7 +6,7 @@ import { COLOR, IPost } from "../custom";
 import { useStore } from "../apis/zustand";
 
 export default function Add() {
-  const { curUser, setCurUser } = useStore();
+  const { curUser, setCurUser, updateCurUser } = useStore();
   const [newPost, setNewPost] = useState<IPost>({
     uid: curUser.uid,
     title: "",
@@ -87,6 +87,7 @@ export default function Add() {
           const tempPosts = curUser.posts;
           tempPosts.push(ref.id);
           setCurUser({ ...curUser, posts: tempPosts });
+          updateCurUser({ ...curUser, posts: tempPosts });
         });
     } else {
       const ref = await addDoc(collection(db, "posts"), {
@@ -97,12 +98,13 @@ export default function Add() {
       const tempPosts = curUser.posts;
       tempPosts.push(ref.id);
       setCurUser({ ...curUser, posts: tempPosts });
+      updateCurUser({ ...curUser, posts: tempPosts });
     }
   }
   return (
     <>
       <h1>create</h1>
-      <div className="form">
+      <form>
         {newPost.imgs.length === 0 ? (
           <div className="imgBg" onClick={handleImageClick}>
             <div className="select">+</div>
@@ -140,15 +142,16 @@ export default function Add() {
         <button className="createBtn" onClick={handleSubmit}>
           생성
         </button>
-      </div>
+      </form>
       <style jsx>
         {`
           button:hover {
             cursor: pointer;
           }
-          .form {
+          form {
             display: flex;
             flex-direction: column;
+            margin-top: 36px;
           }
           .imgBg {
             position: relative;
@@ -182,8 +185,8 @@ export default function Add() {
             height: 100%;
             object-fit: cover;
           }
-          .form > input,
-          .form > textarea {
+          form > input,
+          form > textarea {
             margin: 8px 0;
             background-color: ${COLOR.bg2};
             padding: 8px;
@@ -191,11 +194,11 @@ export default function Add() {
             border-radius: 8px;
             font-family: inherit;
           }
-          .form > textarea {
+          form > textarea {
             height: 240px;
             resize: none;
           }
-          .form > button {
+          form > button {
             margin: 8px 0;
             background-color: ${COLOR.btn1};
             border: none;

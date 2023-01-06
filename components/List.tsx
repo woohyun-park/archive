@@ -16,12 +16,11 @@ interface IDataSearch {
   people: IUser[];
 }
 
-// interface IDataProfile {
-//   arr: Dict<string>[];
-//   grid: IPost[];
-//   tag: IPost[];
-//   scrap: IPost[];
-// }
+interface IDataProfile {
+  grid: IPost[];
+  tag: IPost[];
+  scrap: IPost[];
+}
 
 interface Dict<T> {
   [key: string]: T;
@@ -58,52 +57,35 @@ export default function List({ data, style }: IListProps) {
               ))}
             {selected === 3 &&
               (data as IDataSearch).people.map((e) => (
-                <ProfileSmall user={e} />
+                <ProfileSmall user={e} style={`${style}`} />
+              ))}
+          </>
+        ) : style === "profile" ? (
+          <>
+            {selected === 1 &&
+              (data as IDataProfile).grid.map((e) => (
+                <Image post={{ ...e, id: e.id }} style={`${style}`}></Image>
+              ))}
+            {selected === 2 &&
+              (data as IDataProfile).tag.map((e) => (
+                <Image post={{ ...e, id: e.id }} style={`${style}`}></Image>
+              ))}
+            {selected === 3 &&
+              (data as IDataProfile).scrap.map((e) => (
+                <Image post={{ ...e, id: e.id }} style={`${style}`}></Image>
               ))}
           </>
         ) : (
           <></>
         )}
-        {/* { ? (
-          <>
-            {selected === 1 ? (
-              data.post.map((e) => {
-                return (
-                  <Image post={{ ...e, id: e.id }} style={`${style}`}></Image>
-                );
-              })
-            ) : selected === 2 ? (
-              // Posts by tag
-              <></>
-            ) : (
-              // Posts by scrap
-              <></>
-            )}
-          </>
-        ) : style === "profile" ? (
-          <>
-            {selected === 1 ? (
-              data.grid.map((e) => {
-                return (
-                  <Image post={{ ...e, id: e.id }} style={`${style}`}></Image>
-                );
-              })
-            ) : selected === 2 ? (
-              // Posts by tag
-              <></>
-            ) : (
-              // Posts by scrap
-              <></>
-            )}
-          </>
-        ) : (
-          <></>
-        )} */}
       </div>
       <style jsx>{`
         .postCont {
           display: flex;
           flex-wrap: wrap;
+          flex-direction: ${style === "search" && selected === 3
+            ? "column"
+            : ""};
         }
         .postTypes {
           display: flex;

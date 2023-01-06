@@ -42,6 +42,9 @@ export default function Search({ posts, users }: ISearchProps) {
         style="search"
       />
       <style jsx>{`
+        h1 {
+          margin-bottom: 36px;
+        }
         .titleCont {
           display: flex;
           justify-content: space-between;

@@ -11,7 +11,7 @@ type IPostFeedProps = {
 export default function PostFeed({ post, user }: IPostFeedProps) {
   return (
     <>
-      <ProfileSmall post={post} user={user} />
+      <ProfileSmall post={post} user={user} style="feed" />
       <Image post={post} style="feed" />
     </>
   );
