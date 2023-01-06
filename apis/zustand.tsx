@@ -22,11 +22,14 @@ export const useStore = create<IUserState>((set) => ({
   },
   setUser: async (user) => {
     const userRef = doc(db, "users", user.uid);
-    await updateDoc(userRef, {
-      ...user,
-    });
     set((state) => {
       return { ...state, user };
+    });
+  },
+  updateUser: async (newUser: IUser) => {
+    const userRef = doc(db, "users", newUser.uid);
+    await updateDoc(userRef, {
+      ...newUser,
     });
   },
 }));

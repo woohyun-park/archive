@@ -1,3 +1,10 @@
+export const DEFAULT = {
+  user: {
+    photoURL:
+      "https://res.cloudinary.com/dl5qaj6le/image/upload/v1672976914/archive/static/default_user_photoURL.png",
+  },
+};
+
 export const SIZE = {
   icon: "24px",
 };

@@ -197,7 +197,7 @@ export default function Add() {
           }
           .form > button {
             margin: 8px 0;
-            background-color: ${COLOR.btn};
+            background-color: ${COLOR.btn1};
             border: none;
             border-radius: 8px;
             padding: 8px;

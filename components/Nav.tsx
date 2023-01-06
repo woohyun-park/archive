@@ -12,9 +12,11 @@ import {
   HiUser,
   HiOutlineUser,
 } from "react-icons/hi";
+import { useStore } from "../apis/zustand";
 import { COLOR, SIZE } from "../custom";
 
 export default function Nav() {
+  const { user, setUser } = useStore();
   const router = useRouter();
   return (
     <>
@@ -56,9 +58,9 @@ export default function Nav() {
             )}
           </a>
         </Link>
-        <Link href="/profile" legacyBehavior>
+        <Link href={`/profile/${user.uid}}`} legacyBehavior>
           <a>
-            {router.pathname === "/profile" ? (
+            {router.pathname === `/profile/${user.uid}` ? (
               <HiUser size={SIZE.icon} />
             ) : (
               <HiOutlineUser size={SIZE.icon} />

@@ -86,23 +86,23 @@ export default function Post({ post }: IPostProps) {
   );
 }
 
-interface IStaticPaths {
-  params: IStaticProps;
+interface IServerSidePaths {
+  params: IServerSideProps;
 }
-interface IStaticProps {
+interface IServerSideProps {
   id: string;
 }
 
 export async function getServerSidePaths() {
   const snap = await getDocs(collection(db, "posts"));
-  const paths: IStaticPaths[] = [];
+  const paths: IServerSidePaths[] = [];
   snap.forEach((post) => {
     paths.push({ params: { id: post.id } });
   });
   return { paths, fallback: false };
 }
 
-export async function getServerSideProps({ params }: IStaticPaths) {
+export async function getServerSideProps({ params }: IServerSidePaths) {
   const docRef = doc(db, "posts", params.id);
   const dosSnap = await getDoc(docRef);
   const post = dosSnap.data();

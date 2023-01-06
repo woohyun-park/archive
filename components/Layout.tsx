@@ -10,7 +10,7 @@ import { useStore } from "../apis/zustand";
 import { auth, db } from "../apis/firebase";
 import Nav from "./Nav";
 import { doc, getDoc, setDoc } from "firebase/firestore";
-import { IUser } from "../custom";
+import { DEFAULT, IUser } from "../custom";
 
 interface ILayoutProps {
   children: React.ReactNode;
@@ -86,10 +86,14 @@ export default function Layout({ children }: ILayoutProps) {
     try {
       let data;
       if (login.isNewAccount) {
-        await createUserWithEmailAndPassword(auth, login.email, login.password);
-        await setDoc(doc(db, "users", user.uid), {
-          displayName: user.displayName,
-          photoURL: user.photoURL,
+        const res = await createUserWithEmailAndPassword(
+          auth,
+          login.email,
+          login.password
+        );
+        await setDoc(doc(db, "users", res.user.uid), {
+          displayName: res.user.email,
+          photoURL: DEFAULT.user.photoURL,
           txt: "",
           posts: [],
           tags: [],
