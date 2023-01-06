@@ -1,16 +1,17 @@
 import PostFeed from "../components/PostFeed";
-import { IPost } from "../custom";
+import { IPost, IUser } from "../custom";
 
 interface IFeed {
   posts: IPost[];
+  users: IUser[];
 }
 
-export default function Feed({ posts }: IFeed) {
+export default function Feed({ posts, users }: IFeed) {
   return (
     <>
       <h1>feed</h1>
-      {posts.map((post) => {
-        return <PostFeed post={post} key={post.id} />;
+      {posts.map((post, i) => {
+        return <PostFeed post={post} user={users[i]} key={post.id} />;
       })}
       <style jsx>{``}</style>
     </>

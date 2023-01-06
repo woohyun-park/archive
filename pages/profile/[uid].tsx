@@ -43,7 +43,7 @@ export default function Profile({ user, posts }: IProfileProps) {
         <img className="profileImage" src={user.photoURL} />
       </div>
       <div className="profileTextCont">{user.txt}</div>
-      <List posts={posts} style="profile" />
+      <List data={{ grid: posts, tag: [], scrap: [] }} style="profile" />
 
       <button onClick={handleLogout}>logout</button>
       <style jsx>

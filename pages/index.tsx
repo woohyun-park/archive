@@ -1,21 +1,30 @@
 import { db } from "../apis/firebase";
-import { collection, getDocs } from "firebase/firestore";
-import { IPost } from "../custom";
+import { doc, collection, getDoc, getDocs } from "firebase/firestore";
+import { IPost, IUser } from "../custom";
 import Feed from "./feed";
 
 interface IIndex {
   posts: IPost[];
+  users: IUser[];
 }
 
-export default function Index({ posts }: IIndex) {
-  return <Feed posts={posts} />;
+export default function Index({ posts, users }: IIndex) {
+  return <Feed posts={posts} users={users} />;
 }
 
 export async function getServerSideProps() {
-  const querySnapshot = await getDocs(collection(db, "posts"));
+  const postSnap = await getDocs(collection(db, "posts"));
   const posts: IPost[] = [];
-  querySnapshot.forEach((doc) => {
-    posts.push({ ...doc.data(), id: doc.id } as IPost);
+  const uids: string[] = [];
+  postSnap.forEach((postSnapEach) => {
+    posts.push({ ...postSnapEach.data(), id: postSnapEach.id } as IPost);
+    uids.push(postSnapEach.data().uid);
   });
-  return { props: { posts } };
+
+  const users: IUser[] = [];
+  for await (const uid of uids) {
+    const userSnap = await getDoc(doc(db, "users", uid));
+    users.push(userSnap.data() as IUser);
+  }
+  return { props: { posts, users } };
 }

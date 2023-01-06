@@ -2,21 +2,67 @@ import { collection, getDocs } from "firebase/firestore";
 import { db } from "../apis/firebase";
 import Image from "../components/Image";
 import List from "../components/List";
-import { IPost } from "../custom";
+import { COLOR, IPost, IUser, SIZE } from "../custom";
+import { HiSearch } from "react-icons/hi";
+import { useState } from "react";
 
 interface ISearchProps {
   posts: IPost[];
+  users: IUser[];
 }
 
-export default function Search({ posts }: ISearchProps) {
+export default function Search({ posts, users }: ISearchProps) {
+  const [search, setSearch] = useState("");
+
+  function handleSearchClick() {
+    console.log("handleSearchClick");
+  }
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setSearch(e.currentTarget.value);
+  }
+
   return (
     <>
       <h1>search</h1>
-      <List posts={posts} style="search" />
+      <div className="search">
+        <HiSearch size={SIZE.iconSmall} onClick={handleSearchClick} />
+        <input
+          className="searchInput"
+          type="text"
+          value={search}
+          onChange={handleChange}
+        />
+      </div>
+      <List
+        data={{
+          post: posts,
+          tag: [],
+          people: users,
+        }}
+        style="search"
+      />
       <style jsx>{`
-        .cont {
+        .titleCont {
           display: flex;
-          flex-wrap: wrap;
+          justify-content: space-between;
+          align-items: baseline;
+        }
+        .search {
+          display: flex;
+          padding: 4px;
+          background-color: ${COLOR.btn2};
+          border-radius: 4px;
+          margin-bottom: 4px;
+          align-items: center;
+        }
+        .search:hover {
+          cursor: pointer;
+        }
+        .searchInput {
+          width: 100%;
+          margin: 2px;
+          border: none;
+          background-color: ${COLOR.bg2};
         }
       `}</style>
     </>
@@ -24,10 +70,17 @@ export default function Search({ posts }: ISearchProps) {
 }
 
 export async function getServerSideProps() {
-  const querySnapshot = await getDocs(collection(db, "posts"));
+  const postSnap = await getDocs(collection(db, "posts"));
   const posts: IPost[] = [];
-  querySnapshot.forEach((doc) => {
+  postSnap.forEach((doc) => {
     posts.push({ ...doc.data(), id: doc.id } as IPost);
   });
-  return { props: { posts } };
+
+  const userSnap = await getDocs(collection(db, "users"));
+  const users: IUser[] = [];
+  userSnap.forEach((doc) => {
+    users.push({ ...doc.data(), uid: doc.id } as IUser);
+  });
+
+  return { props: { posts, users } };
 }

@@ -3,13 +3,14 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { HiDotsHorizontal } from "react-icons/hi";
 import { db } from "../apis/firebase";
-import { COLOR, IPost, SIZE } from "../custom";
+import { COLOR, IPost, IUser, SIZE } from "../custom";
 
 type IProfileSmallProps = {
-  post: IPost | null;
+  user: IUser;
+  post?: IPost;
 };
 
-export default function ProfileSmall({ post }: IProfileSmallProps) {
+export default function ProfileSmall({ user, post }: IProfileSmallProps) {
   const [profile, setProfile] = useState({});
   const router = useRouter();
   async function getProfile() {
@@ -32,9 +33,9 @@ export default function ProfileSmall({ post }: IProfileSmallProps) {
     <>
       <div className="userCont">
         <div className="row">
-          <img className="userImg" src={profile.photoURL} />
+          <img className="userImg" src={user?.photoURL} />
           <div className="col">
-            <div className="userName">{profile.displayName}</div>
+            <div className="userName">{user?.displayName}</div>
             <div className="createdAt">{post?.createdAt}</div>
           </div>
         </div>

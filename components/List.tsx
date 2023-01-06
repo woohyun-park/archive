@@ -1,10 +1,30 @@
 import { useState } from "react";
 import Image from "./Image";
-import { COLOR, IPost } from "../custom";
+import { COLOR, IPost, IUser } from "../custom";
+import { arrayBuffer } from "stream/consumers";
+import ProfileSmall from "./ProfileSmall";
 
 interface IListProps {
-  posts: IPost[];
+  // data: IDataSearch | IDataProfile;
+  data: object;
   style: string;
+}
+
+interface IDataSearch {
+  post: IPost[];
+  tag: IPost[];
+  people: IUser[];
+}
+
+// interface IDataProfile {
+//   arr: Dict<string>[];
+//   grid: IPost[];
+//   tag: IPost[];
+//   scrap: IPost[];
+// }
+
+interface Dict<T> {
+  [key: string]: T;
 }
 
 interface IBox {
@@ -16,7 +36,7 @@ const BOX: IBox = {
   profile: ["grid", "tag", "scrap"],
 };
 
-export default function List({ posts, style }: IListProps) {
+export default function List({ data, style }: IListProps) {
   const [selected, setSelected] = useState(1);
   return (
     <>
@@ -26,17 +46,59 @@ export default function List({ posts, style }: IListProps) {
         ))}
       </div>
       <div className="postCont">
-        {selected === 1 ? (
-          posts?.map((e) => {
-            return <Image post={{ ...e, id: e.id }} style={`${style}`}></Image>;
-          })
-        ) : selected === 2 ? (
-          // Posts by tag
-          <></>
+        {style === "search" ? (
+          <>
+            {selected === 1 &&
+              (data as IDataSearch).post.map((e) => (
+                <Image post={{ ...e, id: e.id }} style={`${style}`}></Image>
+              ))}
+            {selected === 2 &&
+              (data as IDataSearch).tag.map((e) => (
+                <Image post={{ ...e, id: e.id }} style={`${style}`}></Image>
+              ))}
+            {selected === 3 &&
+              (data as IDataSearch).people.map((e) => (
+                <ProfileSmall user={e} />
+              ))}
+          </>
         ) : (
-          // Posts by scrap
           <></>
         )}
+        {/* { ? (
+          <>
+            {selected === 1 ? (
+              data.post.map((e) => {
+                return (
+                  <Image post={{ ...e, id: e.id }} style={`${style}`}></Image>
+                );
+              })
+            ) : selected === 2 ? (
+              // Posts by tag
+              <></>
+            ) : (
+              // Posts by scrap
+              <></>
+            )}
+          </>
+        ) : style === "profile" ? (
+          <>
+            {selected === 1 ? (
+              data.grid.map((e) => {
+                return (
+                  <Image post={{ ...e, id: e.id }} style={`${style}`}></Image>
+                );
+              })
+            ) : selected === 2 ? (
+              // Posts by tag
+              <></>
+            ) : (
+              // Posts by scrap
+              <></>
+            )}
+          </>
+        ) : (
+          <></>
+        )} */}
       </div>
       <style jsx>{`
         .postCont {
