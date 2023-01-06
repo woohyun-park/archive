@@ -22,10 +22,6 @@ interface IDataProfile {
   scrap: IPost[];
 }
 
-interface Dict<T> {
-  [key: string]: T;
-}
-
 interface IBox {
   [key: string]: string[];
 }

@@ -105,7 +105,7 @@ export default function Setting() {
           placeholder="소개"
           onChange={handleTextareaChange}
         />
-        <button className="createBtn" onClick={handleSubmit}>
+        <button className="g-button" onClick={handleSubmit}>
           변경
         </button>
       </form>
@@ -132,14 +132,6 @@ export default function Setting() {
           form > textarea {
             height: 64px;
             resize: none;
-          }
-          form > button {
-            margin: 8px 0;
-            background-color: ${COLOR.btn1};
-            border: none;
-            border-radius: 8px;
-            padding: 8px;
-            color: ${COLOR.txtDark1};
           }
           .photoCont {
             text-align: center;

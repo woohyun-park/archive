@@ -9,7 +9,7 @@ import {
 } from "firebase/firestore";
 import { auth, db } from "../../apis/firebase";
 import List from "../../components/List";
-import { COLOR, IPost, IUser, SIZE } from "../../custom";
+import { COLOR, IDict, IPost, IUser, SIZE } from "../../custom";
 import { HiOutlineCog } from "react-icons/hi";
 import { useStore } from "../../apis/zustand";
 import Link from "next/link";
@@ -22,9 +22,18 @@ interface IProfileProps {
 }
 
 export default function Profile({ user, posts }: IProfileProps) {
-  const { curUser } = useStore();
+  const { curUser, setCurUser, updateCurUser } = useStore();
   function handleLogout() {
     signOut(auth);
+  }
+  function handleFollow() {
+    const tempFollowings = {
+      ...(curUser.followings as IDict<boolean>),
+      [user.uid]: !curUser.followings[user.uid],
+    };
+    const tempCurUser = { ...curUser, followings: tempFollowings };
+    setCurUser(tempCurUser);
+    updateCurUser(tempCurUser);
   }
   return (
     <>
@@ -60,6 +69,25 @@ export default function Profile({ user, posts }: IProfileProps) {
           src={user.uid === curUser.uid ? curUser.photoURL : user.photoURL}
         />
       </div>
+      {(() => {
+        const result = [];
+        if (curUser.uid !== user.uid) {
+          if (curUser.followings[user.uid]) {
+            result.push(
+              <button onClick={handleFollow} className="g-button">
+                팔로잉
+              </button>
+            );
+          } else {
+            result.push(
+              <button onClick={handleFollow} className="g-button">
+                팔로우
+              </button>
+            );
+          }
+        }
+        return result;
+      })()}
       <div className="profileTxtCont">
         {user.uid === curUser.uid ? curUser.txt : user.txt}
       </div>
@@ -92,7 +120,6 @@ export default function Profile({ user, posts }: IProfileProps) {
             margin-top: 64px;
           }
           .profileTxtCont {
-            min-height: 64px;
             max-height: 128px;
             height: 100%;
             padding: 32px 0;
@@ -142,7 +169,7 @@ export async function getServerSidePaths() {
 export async function getServerSideProps({ params }: IServerSidePaths) {
   const userRef = doc(db, "users", params.uid);
   const userSnap = await getDoc(userRef);
-  const user = userSnap.data();
+  const user = { ...userSnap.data(), uid: userSnap.id };
 
   const postRef = collection(db, "posts");
   const postSnap = await getDocs(

@@ -29,6 +29,10 @@ export const COLOR = {
   btnDark2: "#D9D9D9",
 };
 
+export interface IDict<T> {
+  [key: string]: T;
+}
+
 export interface IUser {
   uid: string;
   displayName: string;
@@ -37,8 +41,8 @@ export interface IUser {
   posts: string[];
   tags: string[];
   scraps: string[];
-  followers: string[];
-  followings: string[];
+  followers: IDict<boolean>;
+  followings: IDict<boolean>;
 }
 
 export interface IPost {
