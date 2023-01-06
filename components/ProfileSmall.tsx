@@ -10,7 +10,6 @@ type IProfileSmallProps = {
 };
 
 export default function ProfileSmall({ post }: IProfileSmallProps) {
-  console.log(post);
   const [profile, setProfile] = useState({});
   const router = useRouter();
   async function getProfile() {

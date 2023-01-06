@@ -9,7 +9,7 @@ import React, { useEffect, useState } from "react";
 import { useStore } from "../apis/zustand";
 import { auth, db } from "../apis/firebase";
 import Nav from "./Nav";
-import { addDoc, collection, doc, getDoc, setDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import { IUser } from "../custom";
 
 interface ILayoutProps {

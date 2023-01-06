@@ -1,4 +1,5 @@
-import { doc, getDoc } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs } from "firebase/firestore";
+import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { db } from "../../apis/firebase";
@@ -6,23 +7,11 @@ import Header from "../../components/Header";
 import ProfileSmall from "../../components/ProfileSmall";
 import { COLOR, IPost } from "../../custom";
 
-export default function Post({}) {
-  const router = useRouter();
-  const [post, setPost] = useState<IPost | null>(null);
-  async function getPost() {
-    if (typeof router.query.id === "string") {
-      const docRef = doc(db, "posts", router.query.id);
-      const docSnap = await getDoc(docRef);
-      setPost(docSnap.data() as IPost);
-    }
-  }
-  useEffect(() => {
-    if (typeof router.query.post === "string") {
-      setPost(JSON.parse(router.query.post));
-    } else {
-      getPost();
-    }
-  }, [router.isReady]);
+interface IPostProps {
+  post: IPost;
+}
+
+export default function Post({ post }: IPostProps) {
   return (
     <>
       <Header post={post} />
@@ -44,7 +33,7 @@ export default function Post({}) {
           return <div className="subTag">{`#${post?.tags[i]}`}</div>;
         })}
       </div>
-      <div className="text">{post?.text}</div>
+      <div className="text">{post?.txt}</div>
 
       <style jsx>{`
         .imgCont {
@@ -95,4 +84,27 @@ export default function Post({}) {
       `}</style>
     </>
   );
+}
+
+interface IStaticPaths {
+  params: IStaticProps;
+}
+interface IStaticProps {
+  id: string;
+}
+
+export async function getStaticPaths() {
+  const snap = await getDocs(collection(db, "posts"));
+  const paths: IStaticPaths[] = [];
+  snap.forEach((post) => {
+    paths.push({ params: { id: post.id } });
+  });
+  return { paths, fallback: false };
+}
+
+export async function getStaticProps({ params }: IStaticPaths) {
+  const docRef = doc(db, "posts", params.id);
+  const dosSnap = await getDoc(docRef);
+  const post = dosSnap.data();
+  return { props: { post } };
 }
