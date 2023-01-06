@@ -10,6 +10,7 @@ interface IPostProps {
 }
 
 export default function Post({ post, user }: IPostProps) {
+  console.log(post, user);
   return (
     <>
       <Header post={post} />
@@ -104,11 +105,11 @@ export async function getServerSidePaths() {
 export async function getServerSideProps({ params }: IServerSidePaths) {
   const postRef = doc(db, "posts", params.id);
   const postSnap = await getDoc(postRef);
-  const post = postSnap.data();
+  const post: IPost = { ...(postSnap.data() as IPost), id: postSnap.id };
 
   const userRef = doc(db, "users", post?.uid);
   const userSnap = await getDoc(userRef);
-  const user = userSnap.data();
+  const user: IUser = { ...(userSnap.data() as IUser), uid: userSnap.id };
 
   return { props: { post, user } };
 }

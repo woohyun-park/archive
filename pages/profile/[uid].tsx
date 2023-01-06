@@ -14,6 +14,7 @@ import { HiOutlineCog } from "react-icons/hi";
 import { useStore } from "../../apis/zustand";
 import Link from "next/link";
 import { useEffect } from "react";
+import Button from "../../components/Button";
 
 interface IProfileProps {
   user: IUser;
@@ -62,9 +63,17 @@ export default function Profile({ user, posts }: IProfileProps) {
       <div className="profileTxtCont">
         {user.uid === curUser.uid ? curUser.txt : user.txt}
       </div>
-      <List data={{ grid: posts, tag: [], scrap: [] }} style="profile" />
+      {user.uid === curUser.uid ? (
+        <>
+          <button onClick={handleLogout} className="g-button">
+            logout
+          </button>
+        </>
+      ) : (
+        <></>
+      )}
 
-      <button onClick={handleLogout}>logout</button>
+      <List data={{ grid: posts, tag: [], scrap: [] }} style="profile" />
       <style jsx>
         {`
           h1 {

@@ -18,25 +18,25 @@ export default function ProfileSmall({
   style,
   post,
 }: IProfileSmallProps) {
-  const [profile, setProfile] = useState({});
-  const { curUser } = useStore();
+  const { curUser, setCurUser, updateCurUser } = useStore();
   const router = useRouter();
-  async function getProfile() {
-    if (post?.uid) {
-      const snap = await getDoc(doc(db, "users", post.uid));
-      if (snap.exists()) {
-        setProfile({
-          displayName: snap.data().displayName,
-          photoURL: snap.data().photoURL,
-        });
-      } else {
-        console.log("No such doc");
-      }
-    }
-  }
-  useEffect(() => {
-    getProfile();
-  }, [post]);
+  // const [profile, setProfile] = useState({});
+  // async function getProfile() {
+  //   if (post?.uid) {
+  //     const snap = await getDoc(doc(db, "users", post.uid));
+  //     if (snap.exists()) {
+  //       setProfile({
+  //         displayName: snap.data().displayName,
+  //         photoURL: snap.data().photoURL,
+  //       });
+  //     } else {
+  //       console.log("No such doc");
+  //     }
+  //   }
+  // }
+  // useEffect(() => {
+  //   getProfile();
+  // }, [post]);
   return (
     <>
       <div

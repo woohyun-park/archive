@@ -4,6 +4,8 @@ import React, { useRef, useState } from "react";
 import { db } from "../apis/firebase";
 import { COLOR, IPost } from "../custom";
 import { useStore } from "../apis/zustand";
+import Button from "../components/Button";
+import { useRouter } from "next/router";
 
 export default function Add() {
   const { curUser, setCurUser, updateCurUser } = useStore();
@@ -19,7 +21,8 @@ export default function Add() {
     comments: [],
   });
   const imageInputRef = useRef<HTMLInputElement>(null);
-  const [imageFile, setImageFile] = useState<string>("");
+  const [imageFile, setImageFile] = useState("");
+  const router = useRouter();
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.currentTarget;
@@ -61,6 +64,7 @@ export default function Add() {
     };
   }
   async function handleSubmit(e: React.MouseEvent<HTMLButtonElement>) {
+    e.preventDefault();
     if (newPost.imgs.length === 1) {
       const formData = new FormData();
       const config: AxiosRequestConfig<FormData> = {
@@ -100,6 +104,7 @@ export default function Add() {
       setCurUser({ ...curUser, posts: tempPosts });
       updateCurUser({ ...curUser, posts: tempPosts });
     }
+    router.push("/");
   }
   return (
     <>
@@ -139,7 +144,7 @@ export default function Add() {
           onChange={handleTextareaChange}
           placeholder="내용"
         />
-        <button className="createBtn" onClick={handleSubmit}>
+        <button className="g-button" onClick={handleSubmit}>
           생성
         </button>
       </form>
@@ -159,6 +164,9 @@ export default function Add() {
             padding-bottom: 100%;
             background-color: ${COLOR.bg2};
             border-radius: 8px;
+          }
+          .imgBg:hover {
+            cursor: pointer;
           }
           .select {
             position: absolute;
@@ -197,14 +205,6 @@ export default function Add() {
           form > textarea {
             height: 240px;
             resize: none;
-          }
-          form > button {
-            margin: 8px 0;
-            background-color: ${COLOR.btn1};
-            border: none;
-            border-radius: 8px;
-            padding: 8px;
-            color: ${COLOR.txtDark1};
           }
         `}
       </style>

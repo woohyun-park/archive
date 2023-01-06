@@ -10,7 +10,7 @@ import { useStore } from "../apis/zustand";
 import { auth, db } from "../apis/firebase";
 import Nav from "./Nav";
 import { doc, getDoc, setDoc } from "firebase/firestore";
-import { DEFAULT, IUser } from "../custom";
+import { COLOR, DEFAULT, IUser } from "../custom";
 
 interface ILayoutProps {
   children: React.ReactNode;
@@ -119,7 +119,7 @@ export default function Layout({ children }: ILayoutProps) {
         <>loading...</>
       ) : login.isLoggedIn ? (
         <>
-          <div className="pageCont">{children}</div>
+          <div className="g-pageCont">{children}</div>
           <Nav />
         </>
       ) : (
@@ -180,12 +180,21 @@ export default function Layout({ children }: ILayoutProps) {
           body::-webkit-scrollbar {
             display: none;
           }
-          .pageCont {
+          .g-pageCont {
             padding: 16px;
             padding-top: ${router.pathname.split("/")[1] === "post"
               ? "0"
               : "48px"};
             padding-bottom: 96px;
+          }
+          .g-button {
+            margin: 8px 0;
+            background-color: ${COLOR.btn1};
+            border: none;
+            border-radius: 8px;
+            padding: 8px;
+            color: ${COLOR.txtDark1};
+            width: 100%;
           }
         `}
       </style>
