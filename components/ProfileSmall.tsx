@@ -32,21 +32,21 @@ export default function ProfileSmall({
           </div>
         </div>
         {(() => {
-          const result = [];
           if (style === "post" || style === "search") {
             if (curUser.uid === user.uid) {
-              result.push(<></>);
+              return <></>;
             } else {
-              result.push(<div className="followBtn">팔로우</div>);
+              return <div className="followBtn">팔로우</div>;
             }
           } else {
-            result.push(
-              <div className="moreBtn">
-                <HiDotsHorizontal size={SIZE.iconSmall} />
-              </div>
+            return (
+              <>
+                <div className="moreBtn">
+                  <HiDotsHorizontal size={SIZE.iconSmall} />
+                </div>
+              </>
             );
           }
-          return result;
         })()}
       </div>
 

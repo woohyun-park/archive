@@ -31,7 +31,9 @@ export default function List({ data, style }: IListProps) {
     <>
       <div className="postTypes">
         {BOX[style].map((e, i) => (
-          <div onClick={() => setSelected(i + 1)}>{e}</div>
+          <div onClick={() => setSelected(i + 1)} key={i}>
+            {e}
+          </div>
         ))}
       </div>
       <div className="postCont">
@@ -39,30 +41,50 @@ export default function List({ data, style }: IListProps) {
           <>
             {selected === 1 &&
               (data as IDataSearch).post.map((e) => (
-                <Image post={{ ...e, id: e.id }} style={`${style}`}></Image>
+                <Image
+                  post={{ ...e, id: e.id }}
+                  style={`${style}`}
+                  key={e.id}
+                ></Image>
               ))}
             {selected === 2 &&
               (data as IDataSearch).tag.map((e) => (
-                <Image post={{ ...e, id: e.id }} style={`${style}`}></Image>
+                <Image
+                  post={{ ...e, id: e.id }}
+                  style={`${style}`}
+                  key={e.id}
+                ></Image>
               ))}
             {selected === 3 &&
               (data as IDataSearch).people.map((e) => (
-                <ProfileSmall user={e} style={`${style}`} />
+                <ProfileSmall user={e} style={`${style}`} key={e.uid} />
               ))}
           </>
         ) : style === "profile" ? (
           <>
             {selected === 1 &&
               (data as IDataProfile).grid.map((e) => (
-                <Image post={{ ...e, id: e.id }} style={`${style}`}></Image>
+                <Image
+                  post={{ ...e, id: e.id }}
+                  style={`${style}`}
+                  key={e.id}
+                ></Image>
               ))}
             {selected === 2 &&
               (data as IDataProfile).tag.map((e) => (
-                <Image post={{ ...e, id: e.id }} style={`${style}`}></Image>
+                <Image
+                  post={{ ...e, id: e.id }}
+                  style={`${style}`}
+                  key={e.id}
+                ></Image>
               ))}
             {selected === 3 &&
               (data as IDataProfile).scrap.map((e) => (
-                <Image post={{ ...e, id: e.id }} style={`${style}`}></Image>
+                <Image
+                  post={{ ...e, id: e.id }}
+                  style={`${style}`}
+                  key={e.id}
+                ></Image>
               ))}
           </>
         ) : (
