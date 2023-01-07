@@ -10,7 +10,6 @@ interface IPostProps {
 }
 
 export default function Post({ post, user }: IPostProps) {
-  console.log(post, user);
   return (
     <>
       <Header post={post} />

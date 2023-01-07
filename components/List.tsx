@@ -1,13 +1,11 @@
 import { useState } from "react";
 import Image from "./Image";
-import { COLOR, IPost, IUser } from "../custom";
-import { arrayBuffer } from "stream/consumers";
+import { COLOR, IPost, IUser, IStyle, IDict } from "../custom";
 import ProfileSmall from "./ProfileSmall";
 
 interface IListProps {
-  // data: IDataSearch | IDataProfile;
-  data: object;
-  style: string;
+  data: IDataSearch | IDataProfile;
+  style: IStyle;
 }
 
 interface IDataSearch {
@@ -22,11 +20,7 @@ interface IDataProfile {
   scrap: IPost[];
 }
 
-interface IBox {
-  [key: string]: string[];
-}
-
-const BOX: IBox = {
+const BOX: IDict<string[]> = {
   search: ["post", "tag", "people"],
   profile: ["grid", "tag", "scrap"],
 };

@@ -1,16 +1,13 @@
-import { collection, doc, getDoc, query } from "firebase/firestore";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
 import { HiDotsHorizontal } from "react-icons/hi";
-import { db } from "../apis/firebase";
 import { useStore } from "../apis/zustand";
-import { COLOR, IPost, IUser, SIZE } from "../custom";
+import { COLOR, IPost, IStyle, IUser, SIZE } from "../custom";
 
 type IProfileSmallProps = {
   user: IUser;
   post?: IPost;
-  style: string;
+  style: IStyle;
 };
 
 export default function ProfileSmall({
@@ -18,38 +15,11 @@ export default function ProfileSmall({
   style,
   post,
 }: IProfileSmallProps) {
-  const { curUser, setCurUser, updateCurUser } = useStore();
-  const router = useRouter();
-  // const [profile, setProfile] = useState({});
-  // async function getProfile() {
-  //   if (post?.uid) {
-  //     const snap = await getDoc(doc(db, "users", post.uid));
-  //     if (snap.exists()) {
-  //       setProfile({
-  //         displayName: snap.data().displayName,
-  //         photoURL: snap.data().photoURL,
-  //       });
-  //     } else {
-  //       console.log("No such doc");
-  //     }
-  //   }
-  // }
-  // useEffect(() => {
-  //   getProfile();
-  // }, [post]);
+  const { curUser } = useStore();
+
   return (
     <>
-      <div
-        className={
-          style === "post"
-            ? "userCont userCont-post"
-            : style === "search"
-            ? "userCont userCont-search"
-            : style === "feed"
-            ? "userCont userCont-feed"
-            : "userCont"
-        }
-      >
+      <div className={`userCont userCont-${style}`}>
         <div className="row">
           <Link href={`/profile/${user?.uid}`}>
             <img className="userImg" src={user?.photoURL} />
@@ -79,6 +49,7 @@ export default function ProfileSmall({
           return result;
         })()}
       </div>
+
       <style jsx>
         {`
           .userCont {

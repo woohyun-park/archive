@@ -20,11 +20,11 @@ export async function getServerSideProps() {
     posts.push({ ...postSnapEach.data(), id: postSnapEach.id } as IPost);
     uids.push(postSnapEach.data().uid);
   });
-
   const users: IUser[] = [];
   for await (const uid of uids) {
     const userSnap = await getDoc(doc(db, "users", uid));
     users.push({ ...(userSnap.data() as IUser), uid: userSnap.id });
   }
+
   return { props: { posts, users } };
 }

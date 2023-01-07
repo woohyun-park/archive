@@ -15,7 +15,6 @@ import { HiOutlineCog } from "react-icons/hi";
 import { useStore } from "../../apis/zustand";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import Button from "../../components/Button";
 
 interface IProfileProps {
   uid: string;
@@ -25,17 +24,11 @@ interface IProfileProps {
 export default function Profile({ uid, posts }: IProfileProps) {
   const { curUser, setCurUser, updateCurUser } = useStore();
   const [user, setUser] = useState<IUser | null>(null);
-  async function getUser() {
-    const userRef = doc(db, "users", uid);
-    const userSnap = await getDoc(userRef);
-    const tempUser = { ...(userSnap.data() as IUser), uid };
-    console.log(tempUser.followers);
-    setUser(tempUser);
-  }
+
   useEffect(() => {
-    console.log("useEffect");
     getUser();
   }, [curUser]);
+
   function getFollowNum(obj: IDict<boolean>) {
     let result = 0;
     for (const key in obj) {
@@ -43,7 +36,14 @@ export default function Profile({ uid, posts }: IProfileProps) {
         result++;
       }
     }
+
     return result;
+  }
+  async function getUser() {
+    const userRef = doc(db, "users", uid);
+    const userSnap = await getDoc(userRef);
+    const tempUser = { ...(userSnap.data() as IUser), uid };
+    setUser(tempUser);
   }
   function handleLogout() {
     signOut(auth);
@@ -65,9 +65,7 @@ export default function Profile({ uid, posts }: IProfileProps) {
     const tempUser = { ...user, followers: tempUserFollowers };
     await updateDoc(userRef, tempUser);
   }
-  useEffect(() => {
-    console.log("changed");
-  }, [curUser]);
+
   return (
     <>
       {uid === curUser.uid && (
@@ -137,8 +135,8 @@ export default function Profile({ uid, posts }: IProfileProps) {
       ) : (
         <></>
       )}
-
       <List data={{ grid: posts, tag: [], scrap: [] }} style="profile" />
+
       <style jsx>
         {`
           h1 {

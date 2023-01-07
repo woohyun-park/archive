@@ -3,7 +3,7 @@ import { HiArrowLeft, HiDotsHorizontal } from "react-icons/hi";
 import { SIZE, COLOR, IPost } from "../custom";
 
 type IHeaderProps = {
-  post: IPost | null;
+  post: IPost;
 };
 
 export default function Header({ post }: IHeaderProps) {

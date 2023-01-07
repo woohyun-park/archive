@@ -1,4 +1,3 @@
-import { DocumentData, QueryDocumentSnapshot } from "firebase/firestore";
 import { IPost, IUser } from "../custom";
 import Image from "./Image";
 import ProfileSmall from "./ProfileSmall";

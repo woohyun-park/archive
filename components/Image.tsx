@@ -1,9 +1,9 @@
 import Link from "next/link";
-import { IPost } from "../custom";
+import { IPost, IStyle } from "../custom";
 
 interface IImageProps {
   post: IPost;
-  style: string;
+  style: IStyle;
 }
 
 export default function Image({ post, style }: IImageProps) {

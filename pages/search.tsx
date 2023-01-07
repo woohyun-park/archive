@@ -1,6 +1,5 @@
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../apis/firebase";
-import Image from "../components/Image";
 import List from "../components/List";
 import { COLOR, IPost, IUser, SIZE } from "../custom";
 import { HiSearch } from "react-icons/hi";
@@ -14,9 +13,7 @@ interface ISearchProps {
 export default function Search({ posts, users }: ISearchProps) {
   const [search, setSearch] = useState("");
 
-  function handleSearchClick() {
-    console.log("handleSearchClick");
-  }
+  function handleSearchClick() {}
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setSearch(e.currentTarget.value);
   }
@@ -41,6 +38,7 @@ export default function Search({ posts, users }: ISearchProps) {
         }}
         style="search"
       />
+
       <style jsx>{`
         h1 {
           margin-bottom: 36px;
@@ -78,7 +76,6 @@ export async function getServerSideProps() {
   postSnap.forEach((doc) => {
     posts.push({ ...doc.data(), id: doc.id } as IPost);
   });
-
   const userSnap = await getDocs(collection(db, "users"));
   const users: IUser[] = [];
   userSnap.forEach((doc) => {

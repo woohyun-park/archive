@@ -13,7 +13,6 @@ export default function Feed({ posts, users }: IFeed) {
       {posts.map((post, i) => {
         return <PostFeed post={post} user={users[i]} key={post.id} />;
       })}
-      <style jsx>{``}</style>
     </>
   );
 }

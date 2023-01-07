@@ -4,7 +4,6 @@ import React, { useRef, useState } from "react";
 import { db } from "../apis/firebase";
 import { COLOR, IPost } from "../custom";
 import { useStore } from "../apis/zustand";
-import Button from "../components/Button";
 import { useRouter } from "next/router";
 
 export default function Add() {
@@ -20,8 +19,8 @@ export default function Add() {
     likes: [],
     comments: [],
   });
-  const imageInputRef = useRef<HTMLInputElement>(null);
   const [imageFile, setImageFile] = useState("");
+  const imageInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -106,6 +105,7 @@ export default function Add() {
     }
     router.push("/");
   }
+
   return (
     <>
       <h1>create</h1>
@@ -148,6 +148,7 @@ export default function Add() {
           생성
         </button>
       </form>
+
       <style jsx>
         {`
           button:hover {
