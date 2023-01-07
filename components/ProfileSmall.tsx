@@ -34,7 +34,13 @@ export default function ProfileSmall({
         {(() => {
           if (style === "post" || style === "search") {
             if (curUser.uid === user.uid) {
-              return <></>;
+              return (
+                <>
+                  <div className="moreBtn">
+                    <HiDotsHorizontal size={SIZE.iconSmall} />
+                  </div>
+                </>
+              );
             } else {
               return <div className="followBtn">팔로우</div>;
             }

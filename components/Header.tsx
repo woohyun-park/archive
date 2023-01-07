@@ -14,9 +14,6 @@ export default function Header({ post }: IHeaderProps) {
         <div className="back" onClick={() => router.back()}>
           <HiArrowLeft size={SIZE.icon} />
         </div>
-        <div className="more">
-          <HiDotsHorizontal size={SIZE.icon} />
-        </div>
       </div>
       <style jsx>{`
         .cont {

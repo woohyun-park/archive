@@ -2,9 +2,10 @@ import axios, { AxiosRequestConfig } from "axios";
 import { addDoc, collection } from "firebase/firestore";
 import React, { useRef, useState } from "react";
 import { db } from "../apis/firebase";
-import { COLOR, IPost } from "../custom";
+import { COLOR, IPost, SIZE } from "../custom";
 import { useStore } from "../apis/zustand";
 import { useRouter } from "next/router";
+import { HiArrowLeft } from "react-icons/hi";
 
 export default function Add() {
   const { curUser, setCurUser, updateCurUser } = useStore();
@@ -108,7 +109,9 @@ export default function Add() {
 
   return (
     <>
-      <h1>create</h1>
+      <div className="back" onClick={() => router.back()}>
+        <HiArrowLeft size={SIZE.icon} />
+      </div>
       <form>
         {newPost.imgs.length === 0 ? (
           <div className="imgBg" onClick={handleImageClick}>
@@ -204,7 +207,7 @@ export default function Add() {
             font-family: inherit;
           }
           form > textarea {
-            height: 240px;
+            height: 192px;
             resize: none;
           }
         `}

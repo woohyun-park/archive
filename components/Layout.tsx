@@ -120,7 +120,12 @@ export default function Layout({ children }: ILayoutProps) {
       ) : login.isLoggedIn ? (
         <>
           <div className="g-pageCont">{children}</div>
-          <Nav />
+          {console.log(router.pathname)}
+          {router.pathname === "/setting" || router.pathname === "/add" ? (
+            <></>
+          ) : (
+            <Nav />
+          )}
         </>
       ) : (
         <div>
@@ -170,7 +175,15 @@ export default function Layout({ children }: ILayoutProps) {
             margin: 0;
             width: 100vw;
             max-width: 480px;
-            min-height: ${login.isLoggedIn ? "calc(100vh - 72px)" : "100vh"};
+            min-height: ${!login.isLoggedIn
+              ? "100vh"
+              : router.pathname === "/setting" || router.pathname === "/add"
+              ? "100vh"
+              : "calc(100vh - 72px)"};
+            max-height: ${router.pathname === "/setting" ||
+            router.pathname === "/add"
+              ? "100vh"
+              : ""};
             background-color: white;
             box-sizing: border-box;
             display: ${login.isLoggedIn ? "" : "flex"};
@@ -185,7 +198,10 @@ export default function Layout({ children }: ILayoutProps) {
             padding-top: ${router.pathname.split("/")[1] === "post"
               ? "0"
               : "48px"};
-            padding-bottom: 96px;
+            padding-bottom: ${router.pathname === "/setting" ||
+            router.pathname === "/add"
+              ? ""
+              : "96px"};
           }
           .g-button1 {
             margin: 8px 0;
