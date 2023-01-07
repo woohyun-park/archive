@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig } from "axios";
 import { useRouter } from "next/router";
-import { useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { useStore } from "../apis/zustand";
 import { COLOR, IUser } from "../custom";
 import { useForm } from "react-hook-form";
@@ -14,9 +14,8 @@ interface IForm {
 export default function Setting() {
   const { curUser, setCurUser, updateCurUser } = useStore();
   const [preview, setPreview] = useState(curUser.photoURL);
-
   const router = useRouter();
-  const { register, handleSubmit, watch } = useForm<IForm>({
+  const { register, handleSubmit } = useForm<IForm>({
     defaultValues: {
       file: undefined,
       displayName: curUser.displayName,
@@ -26,12 +25,7 @@ export default function Setting() {
   const file = register("file");
   const fileRef = useRef<HTMLInputElement | null>(null);
 
-  function onValid(data: IForm) {
-    console.log("onValid");
-    submit(data);
-  }
-
-  async function submit(data: IForm) {
+  async function onValid(data: IForm) {
     if (curUser.photoURL === preview) {
       const tempUser = {
         ...curUser,
@@ -70,50 +64,36 @@ export default function Setting() {
     }
     router.push(`/profile/${curUser.uid}`);
   }
-  function handleImageClick() {
-    fileRef.current?.click();
+  function handleImageOnChange(e: React.ChangeEvent<HTMLInputElement>) {
+    file.onChange(e);
+    if (!e.target.files) {
+      return;
+    }
+    const reader = new FileReader();
+    reader.readAsDataURL(e.target.files[0]);
+    reader.onloadend = () => {
+      if (typeof reader.result === "string") {
+        setPreview(reader.result);
+      }
+    };
   }
-  // function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
-  //   if (e.target.files === null) {
-  //     return;
-  //   }
-  //   const file = e.target.files[0];
-  //   const reader = new FileReader();
-  //   reader.readAsDataURL(file);
-  //   reader.onloadend = () => {
-  //     if (typeof reader.result === "string") {
-  //       setNewUser({ ...newUser, photoURL: reader.result });
-  //       setPreview(reader.result);
-  //     }
-  //     e.target.value = "";
-  //   };
-  // }
 
-  const imageInputRef = useRef<HTMLInputElement>(null);
   return (
     <>
       <h1>setting</h1>
       <div className="photoCont">
-        <img className="photo" src={preview} onClick={handleImageClick} />
+        <img
+          className="photo"
+          src={preview}
+          onClick={() => fileRef.current?.click()}
+        />
       </div>
       <form onSubmit={handleSubmit((data) => onValid(data))}>
         <input
           type="file"
           accept="image/*"
           {...register("file")}
-          onChange={(e) => {
-            file.onChange(e);
-            if (!e.target.files) {
-              return;
-            }
-            const reader = new FileReader();
-            reader.readAsDataURL(e.target.files[0]);
-            reader.onloadend = () => {
-              if (typeof reader.result === "string") {
-                setPreview(reader.result);
-              }
-            };
-          }}
+          onChange={handleImageOnChange}
           ref={(e) => {
             file.ref(e);
             fileRef.current = e;
