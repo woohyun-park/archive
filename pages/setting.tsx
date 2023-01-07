@@ -2,8 +2,9 @@ import axios, { AxiosRequestConfig } from "axios";
 import { useRouter } from "next/router";
 import React, { useRef, useState } from "react";
 import { useStore } from "../apis/zustand";
-import { COLOR, IUser } from "../custom";
+import { COLOR, IUser, SIZE } from "../custom";
 import { useForm } from "react-hook-form";
+import { HiArrowLeft } from "react-icons/hi";
 
 interface IForm {
   file: File[];
@@ -15,7 +16,11 @@ export default function Setting() {
   const { curUser, setCurUser, updateCurUser } = useStore();
   const [preview, setPreview] = useState(curUser.photoURL);
   const router = useRouter();
-  const { register, handleSubmit } = useForm<IForm>({
+  const {
+    register,
+    handleSubmit,
+    formState: { isSubmitting },
+  } = useForm<IForm>({
     defaultValues: {
       file: undefined,
       displayName: curUser.displayName,
@@ -80,7 +85,10 @@ export default function Setting() {
 
   return (
     <>
-      <h1>setting</h1>
+      {isSubmitting && <div className="submitting"></div>}
+      <div className="back" onClick={() => router.back()}>
+        <HiArrowLeft size={SIZE.icon} />
+      </div>
       <div className="photoCont">
         <img
           className="photo"
@@ -105,7 +113,7 @@ export default function Setting() {
           type="text"
           placeholder="이름"
         />
-        <textarea {...register("txt", { required: true })} placeholder="소개" />
+        <textarea {...register("txt", { maxLength: 150 })} placeholder="소개" />
         <button type="submit" className="g-button1">
           변경
         </button>
@@ -133,6 +141,14 @@ export default function Setting() {
           form > textarea {
             height: 64px;
             resize: none;
+          }
+          .submitting {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.2);
           }
           .photoCont {
             text-align: center;

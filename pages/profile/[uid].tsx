@@ -40,6 +40,10 @@ export default function Profile({ uid, posts }: IProfileProps) {
     return result;
   }
   async function getUser() {
+    if (curUser.uid === uid) {
+      setUser(curUser);
+      return;
+    }
     const userRef = doc(db, "users", uid);
     const userSnap = await getDoc(userRef);
     const tempUser = { ...(userSnap.data() as IUser), uid };
@@ -77,9 +81,7 @@ export default function Profile({ uid, posts }: IProfileProps) {
       )}
       <div className="profileTopCont">
         <div className="profileLeftCont">
-          <h1>
-            {uid === curUser.uid ? curUser.displayName : user?.displayName}
-          </h1>
+          <h1>{user?.displayName}</h1>
           <div className="profileInfoCont">
             <div>
               <div className="profileType">아카이브</div>
@@ -94,15 +96,12 @@ export default function Profile({ uid, posts }: IProfileProps) {
             <div>
               <div className="profileType">팔로잉</div>
               <div className="profileNum">
-                {user && Object.keys(user.followings).length}
+                {user && getFollowNum(user.followings)}
               </div>
             </div>
           </div>
         </div>
-        <img
-          className="profileImage"
-          src={uid === curUser.uid ? curUser.photoURL : user?.photoURL}
-        />
+        <img className="profileImage" src={user?.photoURL} />
       </div>
       {(() => {
         const result = [];
@@ -123,9 +122,7 @@ export default function Profile({ uid, posts }: IProfileProps) {
         }
         return result;
       })()}
-      <div className="profileTxtCont">
-        {uid === curUser.uid ? curUser.txt : user?.txt}
-      </div>
+      <div className="profileTxtCont">{user?.txt}</div>
       {uid === curUser.uid ? (
         <>
           <button onClick={handleLogout} className="g-button1">
