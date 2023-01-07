@@ -1,35 +1,45 @@
 import axios, { AxiosRequestConfig } from "axios";
-import { addDoc, collection } from "firebase/firestore";
 import { useRouter } from "next/router";
 import { useRef, useState } from "react";
-import { db } from "../apis/firebase";
 import { useStore } from "../apis/zustand";
 import { COLOR, IUser } from "../custom";
+import { useForm } from "react-hook-form";
+
+interface IForm {
+  file: File[];
+  displayName: string;
+  txt: string;
+}
 
 export default function Setting() {
   const { curUser, setCurUser, updateCurUser } = useStore();
-  const [newUser, setNewUser] = useState<IUser>(curUser);
-  const [imageFile, setImageFile] = useState("");
+  const [preview, setPreview] = useState(curUser.photoURL);
+
   const router = useRouter();
-  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const { name, value } = e.currentTarget;
-    setNewUser({
-      ...newUser,
-      [name]: [value],
-    });
+  const { register, handleSubmit, watch } = useForm<IForm>({
+    defaultValues: {
+      file: undefined,
+      displayName: curUser.displayName,
+      txt: curUser.txt,
+    },
+  });
+  const file = register("file");
+  const fileRef = useRef<HTMLInputElement | null>(null);
+
+  function onValid(data: IForm) {
+    console.log("onValid");
+    submit(data);
   }
-  function handleTextareaChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
-    const { name, value } = e.currentTarget;
-    setNewUser({
-      ...newUser,
-      [name]: value,
-    });
-  }
-  async function handleSubmit(e: React.MouseEvent<HTMLButtonElement>) {
-    e.preventDefault();
-    if (imageFile === "") {
-      setCurUser(newUser);
-      updateCurUser(newUser);
+
+  async function submit(data: IForm) {
+    if (curUser.photoURL === preview) {
+      const tempUser = {
+        ...curUser,
+        displayName: data.displayName,
+        txt: data.txt,
+      };
+      setCurUser(tempUser);
+      updateCurUser(tempUser);
     } else {
       const formData = new FormData();
       const config: AxiosRequestConfig<FormData> = {
@@ -40,7 +50,7 @@ export default function Setting() {
         "upload_preset",
         process.env.NEXT_PUBLIC_CD_UPLOADE_PRESET || ""
       );
-      formData.append(`file`, imageFile);
+      formData.append(`file`, data.file[0]);
       await axios
         .post(
           `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CD_CLOUD_NAME}/image/upload`,
@@ -48,64 +58,75 @@ export default function Setting() {
           config
         )
         .then(async (res) => {
-          setCurUser({ ...newUser, photoURL: res.data.url });
-          updateCurUser({ ...newUser, photoURL: res.data.url });
+          const tempUser = {
+            ...curUser,
+            displayName: data.displayName,
+            txt: data.txt,
+            photoURL: res.data.url,
+          };
+          setCurUser(tempUser);
+          updateCurUser(tempUser);
         });
     }
-    router.push(`/profile/${newUser.uid}`);
+    router.push(`/profile/${curUser.uid}`);
   }
   function handleImageClick() {
-    imageInputRef.current?.click();
+    fileRef.current?.click();
   }
-  function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
-    if (e.target.files === null) {
-      return;
-    }
-    const file = e.target.files[0];
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onloadend = () => {
-      if (typeof reader.result === "string") {
-        setNewUser({ ...newUser, photoURL: reader.result });
-        setImageFile(reader.result);
-      }
-      e.target.value = "";
-    };
-  }
+  // function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
+  //   if (e.target.files === null) {
+  //     return;
+  //   }
+  //   const file = e.target.files[0];
+  //   const reader = new FileReader();
+  //   reader.readAsDataURL(file);
+  //   reader.onloadend = () => {
+  //     if (typeof reader.result === "string") {
+  //       setNewUser({ ...newUser, photoURL: reader.result });
+  //       setPreview(reader.result);
+  //     }
+  //     e.target.value = "";
+  //   };
+  // }
 
   const imageInputRef = useRef<HTMLInputElement>(null);
   return (
     <>
       <h1>setting</h1>
       <div className="photoCont">
-        <img
-          className="photo"
-          src={newUser.photoURL}
-          onClick={handleImageClick}
-        />
+        <img className="photo" src={preview} onClick={handleImageClick} />
       </div>
-      <form>
+      <form onSubmit={handleSubmit((data) => onValid(data))}>
         <input
-          ref={imageInputRef}
           type="file"
           accept="image/*"
-          onChange={handleImageChange}
+          {...register("file")}
+          onChange={(e) => {
+            file.onChange(e);
+            if (!e.target.files) {
+              return;
+            }
+            const reader = new FileReader();
+            reader.readAsDataURL(e.target.files[0]);
+            reader.onloadend = () => {
+              if (typeof reader.result === "string") {
+                setPreview(reader.result);
+              }
+            };
+          }}
+          ref={(e) => {
+            file.ref(e);
+            fileRef.current = e;
+          }}
           hidden
         />
         <input
+          {...register("displayName", { required: true, maxLength: 16 })}
           type="text"
-          name="displayName"
-          value={newUser.displayName}
           placeholder="이름"
-          onChange={handleChange}
         />
-        <textarea
-          name="txt"
-          value={newUser.txt}
-          placeholder="소개"
-          onChange={handleTextareaChange}
-        />
-        <button className="g-button1" onClick={handleSubmit}>
+        <textarea {...register("txt", { required: true })} placeholder="소개" />
+        <button type="submit" className="g-button1">
           변경
         </button>
       </form>

@@ -1,3 +1,5 @@
+import { Style } from "util";
+
 export const DEFAULT = {
   user: {
     photoURL:
@@ -28,6 +30,10 @@ export const COLOR = {
   btn2: "#D9D9D9",
   btnDark2: "#D9D9D9",
 };
+
+Object.freeze(DEFAULT);
+Object.freeze(SIZE);
+Object.freeze(COLOR);
 
 export type IStyle = "post" | "feed" | "search" | "add" | "alarm" | "profile";
 
