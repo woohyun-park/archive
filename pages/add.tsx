@@ -72,7 +72,8 @@ export default function Add() {
           const ref = await addDoc(collection(db, "posts"), {
             color: "",
             comments: [],
-            createdAt: serverTimestamp(),
+            // createdAt: serverTimestamp(),
+            createdAt: "",
             imgs: [res.data.url],
             tags: data.tags[0].split(" "),
             title: data.title,
@@ -104,15 +105,16 @@ export default function Add() {
   }
   function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
     file.onChange(e);
-    if (e.target.files) {
-      const reader = new FileReader();
-      reader.readAsDataURL(e.target.files[0]);
-      reader.onloadend = () => {
-        if (typeof reader.result === "string") {
-          setPreview(reader.result);
-        }
-      };
+    if (!e.target.files) {
+      return;
     }
+    const reader = new FileReader();
+    reader.readAsDataURL(e.target.files[0]);
+    reader.onloadend = () => {
+      if (typeof reader.result === "string") {
+        setPreview(reader.result);
+      }
+    };
   }
   function handleImageClick() {
     fileRef.current?.click();
@@ -221,13 +223,14 @@ export default function Add() {
           </div>
         )}
         <input
+          {...register("file")}
+          type="file"
+          accept="image/*"
+          onChange={handleImageChange}
           ref={(e) => {
             file.ref(e);
             fileRef.current = e;
           }}
-          type="file"
-          accept="image/*"
-          onChange={handleImageChange}
           hidden
         />
         <input {...register("title")} placeholder="제목" />
