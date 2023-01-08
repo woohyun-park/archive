@@ -17,7 +17,11 @@ export async function getServerSideProps() {
   const posts: IPost[] = [];
   const uids: string[] = [];
   postSnap.forEach((postSnapEach) => {
-    posts.push({ ...postSnapEach.data(), id: postSnapEach.id } as IPost);
+    posts.push({
+      ...postSnapEach.data(),
+      createdAt: JSON.stringify(postSnapEach.data().createdAt.toDate()),
+      id: postSnapEach.id,
+    } as IPost);
     uids.push(postSnapEach.data().uid);
   });
   const users: IUser[] = [];

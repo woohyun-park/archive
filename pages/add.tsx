@@ -72,8 +72,7 @@ export default function Add() {
           const ref = await addDoc(collection(db, "posts"), {
             color: "",
             comments: [],
-            // createdAt: serverTimestamp(),
-            createdAt: "",
+            createdAt: serverTimestamp(),
             imgs: [res.data.url],
             tags: data.tags[0].split(" "),
             title: data.title,

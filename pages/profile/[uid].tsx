@@ -206,7 +206,11 @@ export async function getServerSideProps({ params }: IServerSidePaths) {
   );
   const posts: IPost[] = [];
   postSnap.forEach((doc) => {
-    posts.push({ ...(doc.data() as IPost), id: doc.id });
+    posts.push({
+      ...(doc.data() as IPost),
+      createdAt: JSON.stringify(doc.data().createdAt.toDate()),
+      id: doc.id,
+    });
   });
 
   return { props: { uid, posts } };

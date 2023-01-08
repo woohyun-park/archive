@@ -74,7 +74,11 @@ export async function getServerSideProps() {
   const postSnap = await getDocs(collection(db, "posts"));
   const posts: IPost[] = [];
   postSnap.forEach((doc) => {
-    posts.push({ ...doc.data(), id: doc.id } as IPost);
+    posts.push({
+      ...doc.data(),
+      createdAt: JSON.stringify(doc.data().createdAt.toDate()),
+      id: doc.id,
+    } as IPost);
   });
   const userSnap = await getDocs(collection(db, "users"));
   const users: IUser[] = [];
