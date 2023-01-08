@@ -180,10 +180,7 @@ export default function Layout({ children }: ILayoutProps) {
               : router.pathname === "/setting" || router.pathname === "/add"
               ? "100vh"
               : "calc(100vh - 72px)"};
-            max-height: ${router.pathname === "/setting" ||
-            router.pathname === "/add"
-              ? "100vh"
-              : ""};
+            max-height: ${router.pathname === "/setting" ? "100vh" : ""};
             background-color: white;
             box-sizing: border-box;
             display: ${login.isLoggedIn ? "" : "flex"};

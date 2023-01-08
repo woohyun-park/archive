@@ -1,3 +1,4 @@
+import { Timestamp } from "firebase/firestore";
 import { Style } from "util";
 
 export const DEFAULT = {

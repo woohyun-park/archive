@@ -1,71 +1,57 @@
 import axios, { AxiosRequestConfig } from "axios";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import React, { useRef, useState } from "react";
 import { db } from "../apis/firebase";
 import { COLOR, IPost, SIZE } from "../custom";
 import { useStore } from "../apis/zustand";
 import { useRouter } from "next/router";
 import { HiArrowLeft } from "react-icons/hi";
+import { useForm } from "react-hook-form";
+import { userAgent } from "next/server";
+
+interface IForm {
+  file: File[];
+  title: string;
+  tags: string[];
+  txt: string;
+  color: string;
+}
 
 export default function Add() {
   const { curUser, setCurUser, updateCurUser } = useStore();
-  const [newPost, setNewPost] = useState<IPost>({
-    uid: curUser.uid,
-    title: "",
-    tags: [],
-    txt: "",
-    imgs: [],
-    color: "",
-    createdAt: "",
-    likes: [],
-    comments: [],
+  // const [newPost, setNewPost] = useState<IPost>({
+  //   uid: curUser.uid,
+  //   title: "",
+  //   tags: [],
+  //   txt: "",
+  //   imgs: [],
+  //   color: "",
+  //   createdAt: "",
+  //   likes: [],
+  //   comments: [],
+  // });
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { isSubmitting },
+  } = useForm<IForm>({
+    defaultValues: {
+      file: undefined,
+      title: "",
+      tags: [],
+      txt: "",
+      color: "",
+    },
   });
-  const [imageFile, setImageFile] = useState("");
-  const imageInputRef = useRef<HTMLInputElement>(null);
+  const file = register("file");
+  const fileRef = useRef<HTMLInputElement | null>(null);
+  const [preview, setPreview] = useState(curUser.photoURL);
   const router = useRouter();
 
-  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const { name, value } = e.currentTarget;
-    if (name === "tags") {
-      setNewPost({
-        ...newPost,
-        [name]: [value],
-      });
-    } else {
-      setNewPost({
-        ...newPost,
-        [name]: value,
-      });
-    }
-  }
-  function handleTextareaChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
-    const { name, value } = e.currentTarget;
-    setNewPost({
-      ...newPost,
-      [name]: value,
-    });
-  }
-  function handleImageClick() {
-    imageInputRef.current?.click();
-  }
-  function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
-    if (e.target.files === null) {
-      return;
-    }
-    const file = e.target.files[0];
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onloadend = () => {
-      if (typeof reader.result === "string") {
-        setNewPost({ ...newPost, imgs: [reader.result] });
-        setImageFile(reader.result);
-      }
-      e.target.value = "";
-    };
-  }
-  async function handleSubmit(e: React.MouseEvent<HTMLButtonElement>) {
-    e.preventDefault();
-    if (newPost.imgs.length === 1) {
+  async function onValid(data: IForm) {
+    // handleSubmit
+    if (data.file !== undefined) {
       const formData = new FormData();
       const config: AxiosRequestConfig<FormData> = {
         headers: { "Content-Type": "multipart/form-data" },
@@ -75,7 +61,7 @@ export default function Add() {
         "upload_preset",
         process.env.NEXT_PUBLIC_CD_UPLOADE_PRESET || ""
       );
-      formData.append(`file`, imageFile);
+      formData.append(`file`, data.file[0]);
       await axios
         .post(
           `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CD_CLOUD_NAME}/image/upload`,
@@ -84,9 +70,14 @@ export default function Add() {
         )
         .then(async (res) => {
           const ref = await addDoc(collection(db, "posts"), {
-            ...newPost,
-            tags: newPost.tags[0].split(" "),
+            color: "",
+            comments: [],
+            createdAt: serverTimestamp(),
             imgs: [res.data.url],
+            tags: data.tags[0].split(" "),
+            title: data.title,
+            txt: data.txt,
+            uid: curUser.uid,
           });
           const tempPosts = curUser.posts;
           tempPosts.push(ref.id);
@@ -95,9 +86,14 @@ export default function Add() {
         });
     } else {
       const ref = await addDoc(collection(db, "posts"), {
-        ...newPost,
-        tags: newPost.tags[0].split(" "),
-        color: "blue",
+        color: "",
+        comments: [],
+        createdAt: serverTimestamp(),
+        imgs: [],
+        tags: data.tags[0].split(" "),
+        title: data.title,
+        txt: data.txt,
+        uid: curUser.uid,
       });
       const tempPosts = curUser.posts;
       tempPosts.push(ref.id);
@@ -106,30 +102,138 @@ export default function Add() {
     }
     router.push("/");
   }
+  function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
+    file.onChange(e);
+    if (e.target.files) {
+      const reader = new FileReader();
+      reader.readAsDataURL(e.target.files[0]);
+      reader.onloadend = () => {
+        if (typeof reader.result === "string") {
+          setPreview(reader.result);
+        }
+      };
+    }
+  }
+  function handleImageClick() {
+    fileRef.current?.click();
+  }
+
+  // const [imageFile, setImageFile] = useState("");
+  // const imageInputRef = useRef<HTMLInputElement>(null);
+
+  // function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+  //   const { name, value } = e.currentTarget;
+  //   if (name === "tags") {
+  //     setNewPost({
+  //       ...newPost,
+  //       [name]: [value],
+  //     });
+  //   } else {
+  //     setNewPost({
+  //       ...newPost,
+  //       [name]: value,
+  //     });
+  //   }
+  // }
+  // function handleTextareaChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
+  //   const { name, value } = e.currentTarget;
+  //   setNewPost({
+  //     ...newPost,
+  //     [name]: value,
+  //   });
+  // }
+  // function handleImageClick() {
+  //   imageInputRef.current?.click();
+  // }
+  // function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
+  //   if (e.target.files === null) {
+  //     return;
+  //   }
+  //   const file = e.target.files[0];
+  //   const reader = new FileReader();
+  //   reader.readAsDataURL(file);
+  //   reader.onloadend = () => {
+  //     if (typeof reader.result === "string") {
+  //       setNewPost({ ...newPost, imgs: [reader.result] });
+  //       setImageFile(reader.result);
+  //     }
+  //     e.target.value = "";
+  //   };
+  // }
+
+  // async function handleSubmit(e: React.MouseEvent<HTMLButtonElement>) {
+  //   e.preventDefault();
+  //   if (newPost.imgs.length === 1) {
+  //     const formData = new FormData();
+  //     const config: AxiosRequestConfig<FormData> = {
+  //       headers: { "Content-Type": "multipart/form-data" },
+  //     };
+  //     formData.append("api_key", process.env.NEXT_PUBLIC_CD_API_KEY || "");
+  //     formData.append(
+  //       "upload_preset",
+  //       process.env.NEXT_PUBLIC_CD_UPLOADE_PRESET || ""
+  //     );
+  //     formData.append(`file`, imageFile);
+  //     await axios
+  //       .post(
+  //         `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CD_CLOUD_NAME}/image/upload`,
+  //         formData,
+  //         config
+  //       )
+  //       .then(async (res) => {
+  //         const ref = await addDoc(collection(db, "posts"), {
+  //           ...newPost,
+  //           tags: newPost.tags[0].split(" "),
+  //           imgs: [res.data.url],
+  //         });
+  //         const tempPosts = curUser.posts;
+  //         tempPosts.push(ref.id);
+  //         setCurUser({ ...curUser, posts: tempPosts });
+  //         updateCurUser({ ...curUser, posts: tempPosts });
+  //       });
+  //   } else {
+  //     const ref = await addDoc(collection(db, "posts"), {
+  //       ...newPost,
+  //       tags: newPost.tags[0].split(" "),
+  //       color: "blue",
+  //     });
+  //     const tempPosts = curUser.posts;
+  //     tempPosts.push(ref.id);
+  //     setCurUser({ ...curUser, posts: tempPosts });
+  //     updateCurUser({ ...curUser, posts: tempPosts });
+  //   }
+  //   router.push("/");
+  // }
 
   return (
     <>
       <div className="back" onClick={() => router.back()}>
         <HiArrowLeft size={SIZE.icon} />
       </div>
-      <form>
-        {newPost.imgs.length === 0 ? (
+      <form onSubmit={handleSubmit((data) => onValid(data))}>
+        {watch("file") === undefined ? (
           <div className="imgBg" onClick={handleImageClick}>
             <div className="select">+</div>
           </div>
         ) : (
           <div className="imgCont" onClick={handleImageClick}>
-            <img className="img" src={newPost.imgs[0]} />
+            <img className="img" src={preview} />
           </div>
         )}
         <input
-          ref={imageInputRef}
+          ref={(e) => {
+            file.ref(e);
+            fileRef.current = e;
+          }}
           type="file"
           accept="image/*"
           onChange={handleImageChange}
           hidden
         />
-        <input
+        <input {...register("title")} placeholder="제목" />
+        <input {...register("tags")} placeholder="태그" />
+        <textarea {...register("txt")} placeholder="내용" />
+        {/* <input
           name="title"
           value={newPost.title}
           onChange={handleChange}
@@ -146,8 +250,8 @@ export default function Add() {
           value={newPost.txt}
           onChange={handleTextareaChange}
           placeholder="내용"
-        />
-        <button className="g-button1" onClick={handleSubmit}>
+        /> */}
+        <button className="g-button1" type="submit">
           생성
         </button>
       </form>
@@ -207,7 +311,7 @@ export default function Add() {
             font-family: inherit;
           }
           form > textarea {
-            height: 192px;
+            height: 128px;
             resize: none;
           }
         `}
