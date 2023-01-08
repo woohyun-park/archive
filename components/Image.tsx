@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { IPost, IStyle } from "../custom";
+import { COLOR, IPost, IStyle } from "../custom";
 
 interface IImageProps {
   post: IPost;
@@ -50,7 +50,7 @@ export default function Image({ post, style }: IImageProps) {
 
       <style jsx>{`
         * {
-          color: white;
+          color: ${COLOR.txt1};
         }
         .mainTag:hover,
         .subTag:hover {
@@ -88,7 +88,7 @@ export default function Image({ post, style }: IImageProps) {
           position: absolute;
           width: 100%;
           height: 100%;
-          background-color: rgba(0, 0, 0, 0.2);
+          background-color: rgba(0, 0, 0, 0.1);
         }
         .title {
           position: absolute;

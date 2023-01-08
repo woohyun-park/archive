@@ -169,7 +169,7 @@ export default function Layout({ children }: ILayoutProps) {
             display: flex;
             justify-content: center;
             width: 100%;
-            background-color: #d9d9d9;
+            background-color: ${COLOR.bg2};
           }
           body {
             margin: 0;

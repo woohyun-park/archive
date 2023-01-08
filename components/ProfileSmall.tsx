@@ -1,8 +1,10 @@
+import { doc, updateDoc } from "firebase/firestore";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { HiDotsHorizontal } from "react-icons/hi";
+import { db } from "../apis/firebase";
 import { useStore } from "../apis/zustand";
-import { COLOR, IPost, IStyle, IUser, SIZE } from "../custom";
+import { COLOR, IDict, IPost, IStyle, IUser, SIZE } from "../custom";
 
 type IProfileSmallProps = {
   user: IUser;
@@ -15,7 +17,25 @@ export default function ProfileSmall({
   style,
   post,
 }: IProfileSmallProps) {
-  const { curUser } = useStore();
+  const { curUser, setCurUser, updateCurUser } = useStore();
+
+  async function handleFollow() {
+    const tempCurUserFollowings = {
+      ...(curUser.followings as IDict<boolean>),
+      [user.uid]: !curUser.followings[user.uid],
+    };
+    const tempCurUser = { ...curUser, followings: tempCurUserFollowings };
+    setCurUser(tempCurUser);
+    updateCurUser(tempCurUser);
+
+    const userRef = doc(db, "users", user.uid);
+    const tempUserFollowers = {
+      ...(user?.followers as IDict<boolean>),
+      [curUser.uid]: !user?.followers[curUser.uid],
+    };
+    const tempUser = { ...user, followers: tempUserFollowers };
+    await updateDoc(userRef, tempUser);
+  }
 
   return (
     <>
@@ -41,8 +61,21 @@ export default function ProfileSmall({
                   </div>
                 </>
               );
+            } else if (curUser.followings[user.uid]) {
+              return (
+                <div className="followBtn" onClick={handleFollow}>
+                  팔로잉
+                </div>
+              );
             } else {
-              return <div className="followBtn">팔로우</div>;
+              return (
+                <div
+                  className="followBtn followBtn-follow"
+                  onClick={handleFollow}
+                >
+                  팔로우
+                </div>
+              );
             }
           } else {
             return (
@@ -99,6 +132,10 @@ export default function ProfileSmall({
             color: ${COLOR.txt2};
             font-size: 12px;
             border-radius: 4px;
+          }
+          .followBtn-follow {
+            background-color: ${COLOR.bgDark1};
+            color: ${COLOR.txtDark1};
           }
           .userImg,
           .userName,
