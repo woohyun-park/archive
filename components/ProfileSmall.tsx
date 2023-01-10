@@ -5,6 +5,7 @@ import { HiDotsHorizontal } from "react-icons/hi";
 import { db } from "../apis/firebase";
 import { useStore } from "../apis/zustand";
 import { COLOR, IDict, IPost, IStyle, IUser, SIZE } from "../custom";
+import dayjs from "dayjs";
 
 type IProfileSmallProps = {
   user: IUser;
@@ -36,6 +37,21 @@ export default function ProfileSmall({
     const tempUser = { ...user, followers: tempUserFollowers };
     await updateDoc(userRef, tempUser);
   }
+  function displayDate() {
+    const curDate = dayjs(new Date());
+    const postDate = dayjs(post?.createdAt);
+    if (curDate.diff(postDate) < 60000) {
+      return `${curDate.diff(postDate, "s")}초 전`;
+    } else if (curDate.diff(postDate) < 3600000) {
+      return `${curDate.diff(postDate, "m")}분 전`;
+    } else if (curDate.diff(postDate) < 86400000) {
+      return `${curDate.diff(postDate, "h")}시간 전`;
+    } else if (curDate.diff(postDate) < 86400000 * 3) {
+      return `${curDate.diff(postDate, "d")}일 전`;
+    } else {
+      return postDate.format("MM월 DD, YYYY");
+    }
+  }
 
   return (
     <>
@@ -48,7 +64,7 @@ export default function ProfileSmall({
             <Link href={`/profile/${user?.uid}`} legacyBehavior>
               <a className="userName">{user?.displayName}</a>
             </Link>
-            <div className="createdAt">{post?.createdAt.toDateString()}</div>
+            <div className="createdAt">{displayDate()}</div>
           </div>
         </div>
         {(() => {
