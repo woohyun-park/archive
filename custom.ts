@@ -30,6 +30,14 @@ export const COLOR = {
   btnDark1: "#FFFFFF",
   btn2: "#D9D9D9",
   btnDark2: "#D9D9D9",
+
+  red: "#EF4552",
+  orange: "#F7892B",
+  yellow: "#F7D733",
+  green: "#2EB87C",
+  blue: "#1BC0DB",
+  navy: "#0B4F92",
+  purple: "#602E84",
 };
 
 Object.freeze(DEFAULT);

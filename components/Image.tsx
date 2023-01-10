@@ -50,7 +50,7 @@ export default function Image({ post, style }: IImageProps) {
 
       <style jsx>{`
         * {
-          color: ${COLOR.txt1};
+          color: ${COLOR.txtDark1};
         }
         .mainTag:hover,
         .subTag:hover {

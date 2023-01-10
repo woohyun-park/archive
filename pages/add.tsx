@@ -8,6 +8,8 @@ import { useRouter } from "next/router";
 import { HiArrowLeft } from "react-icons/hi";
 import { useForm } from "react-hook-form";
 import { userAgent } from "next/server";
+import { watch } from "fs";
+import Color from "../components/Color";
 
 interface IForm {
   file: File[];
@@ -22,6 +24,7 @@ export default function Add() {
   const {
     register,
     handleSubmit,
+    setValue,
     watch,
     formState: { isSubmitting },
   } = useForm<IForm>({
@@ -35,12 +38,14 @@ export default function Add() {
   });
   const file = register("file");
   const fileRef = useRef<HTMLInputElement | null>(null);
-  const [preview, setPreview] = useState(curUser.photoURL);
+  const [preview, setPreview] = useState<string>("");
+  const [isImage, setIsImage] = useState(true);
+  const [selectedColor, setSelectedColor] = useState(COLOR.red);
   const router = useRouter();
+  console.log(watch());
 
   async function onValid(data: IForm) {
-    // handleSubmit
-    if (data.file !== undefined) {
+    if (isImage) {
       const formData = new FormData();
       const config: AxiosRequestConfig<FormData> = {
         headers: { "Content-Type": "multipart/form-data" },
@@ -74,8 +79,9 @@ export default function Add() {
           updateCurUser({ ...curUser, posts: tempPosts });
         });
     } else {
+      console.log(data.color);
       const ref = await addDoc(collection(db, "posts"), {
-        color: "",
+        color: data.color,
         comments: [],
         createdAt: serverTimestamp(),
         imgs: [],
@@ -107,93 +113,14 @@ export default function Add() {
   function handleImageClick() {
     fileRef.current?.click();
   }
-
-  // const [imageFile, setImageFile] = useState("");
-  // const imageInputRef = useRef<HTMLInputElement>(null);
-
-  // function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-  //   const { name, value } = e.currentTarget;
-  //   if (name === "tags") {
-  //     setNewPost({
-  //       ...newPost,
-  //       [name]: [value],
-  //     });
-  //   } else {
-  //     setNewPost({
-  //       ...newPost,
-  //       [name]: value,
-  //     });
-  //   }
-  // }
-  // function handleTextareaChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
-  //   const { name, value } = e.currentTarget;
-  //   setNewPost({
-  //     ...newPost,
-  //     [name]: value,
-  //   });
-  // }
-  // function handleImageClick() {
-  //   imageInputRef.current?.click();
-  // }
-  // function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
-  //   if (e.target.files === null) {
-  //     return;
-  //   }
-  //   const file = e.target.files[0];
-  //   const reader = new FileReader();
-  //   reader.readAsDataURL(file);
-  //   reader.onloadend = () => {
-  //     if (typeof reader.result === "string") {
-  //       setNewPost({ ...newPost, imgs: [reader.result] });
-  //       setImageFile(reader.result);
-  //     }
-  //     e.target.value = "";
-  //   };
-  // }
-
-  // async function handleSubmit(e: React.MouseEvent<HTMLButtonElement>) {
-  //   e.preventDefault();
-  //   if (newPost.imgs.length === 1) {
-  //     const formData = new FormData();
-  //     const config: AxiosRequestConfig<FormData> = {
-  //       headers: { "Content-Type": "multipart/form-data" },
-  //     };
-  //     formData.append("api_key", process.env.NEXT_PUBLIC_CD_API_KEY || "");
-  //     formData.append(
-  //       "upload_preset",
-  //       process.env.NEXT_PUBLIC_CD_UPLOADE_PRESET || ""
-  //     );
-  //     formData.append(`file`, imageFile);
-  //     await axios
-  //       .post(
-  //         `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CD_CLOUD_NAME}/image/upload`,
-  //         formData,
-  //         config
-  //       )
-  //       .then(async (res) => {
-  //         const ref = await addDoc(collection(db, "posts"), {
-  //           ...newPost,
-  //           tags: newPost.tags[0].split(" "),
-  //           imgs: [res.data.url],
-  //         });
-  //         const tempPosts = curUser.posts;
-  //         tempPosts.push(ref.id);
-  //         setCurUser({ ...curUser, posts: tempPosts });
-  //         updateCurUser({ ...curUser, posts: tempPosts });
-  //       });
-  //   } else {
-  //     const ref = await addDoc(collection(db, "posts"), {
-  //       ...newPost,
-  //       tags: newPost.tags[0].split(" "),
-  //       color: "blue",
-  //     });
-  //     const tempPosts = curUser.posts;
-  //     tempPosts.push(ref.id);
-  //     setCurUser({ ...curUser, posts: tempPosts });
-  //     updateCurUser({ ...curUser, posts: tempPosts });
-  //   }
-  //   router.push("/");
-  // }
+  function handleToggleClick(e: React.MouseEvent<HTMLButtonElement>) {
+    e.preventDefault();
+    setIsImage(!isImage);
+  }
+  function handleColorClick(color: string) {
+    setValue("color", color);
+    setSelectedColor(color);
+  }
 
   return (
     <>
@@ -201,13 +128,67 @@ export default function Add() {
         <HiArrowLeft size={SIZE.icon} />
       </div>
       <form onSubmit={handleSubmit((data) => onValid(data))}>
-        {watch("file") === undefined ? (
-          <div className="imgBg" onClick={handleImageClick}>
-            <div className="select">+</div>
-          </div>
+        <div className="btnCont">
+          <button
+            className={isImage ? "btn-left g-button1" : "btn-left g-button2"}
+            onClick={handleToggleClick}
+          >
+            이미지 업로드
+          </button>
+          <button
+            className={isImage ? "g-button2" : "g-button1"}
+            onClick={handleToggleClick}
+          >
+            배경색 선택
+          </button>
+        </div>
+        {isImage ? (
+          preview === "" ? (
+            <div className="imgBg" onClick={handleImageClick}>
+              <div className="select">+</div>
+            </div>
+          ) : (
+            <div className="imgCont" onClick={handleImageClick}>
+              <img className="img" src={preview} />
+            </div>
+          )
         ) : (
-          <div className="imgCont" onClick={handleImageClick}>
-            <img className="img" src={preview} />
+          <div className="colorCont">
+            <Color
+              color={COLOR.red}
+              onClick={() => handleColorClick(COLOR.red)}
+              selected={selectedColor === COLOR.red}
+            ></Color>
+            <Color
+              color={COLOR.orange}
+              onClick={() => handleColorClick(COLOR.orange)}
+              selected={selectedColor === COLOR.orange}
+            ></Color>
+            <Color
+              color={COLOR.yellow}
+              onClick={() => handleColorClick(COLOR.yellow)}
+              selected={selectedColor === COLOR.yellow}
+            ></Color>
+            <Color
+              color={COLOR.green}
+              onClick={() => handleColorClick(COLOR.green)}
+              selected={selectedColor === COLOR.green}
+            ></Color>
+            <Color
+              color={COLOR.blue}
+              onClick={() => handleColorClick(COLOR.blue)}
+              selected={selectedColor === COLOR.blue}
+            ></Color>
+            <Color
+              color={COLOR.navy}
+              onClick={() => handleColorClick(COLOR.navy)}
+              selected={selectedColor === COLOR.navy}
+            ></Color>
+            <Color
+              color={COLOR.purple}
+              onClick={() => handleColorClick(COLOR.purple)}
+              selected={selectedColor === COLOR.purple}
+            ></Color>
           </div>
         )}
         <input
@@ -224,24 +205,6 @@ export default function Add() {
         <input {...register("title")} placeholder="제목" />
         <input {...register("tags")} placeholder="태그" />
         <textarea {...register("txt")} placeholder="내용" />
-        {/* <input
-          name="title"
-          value={newPost.title}
-          onChange={handleChange}
-          placeholder="제목"
-        />
-        <input
-          name="tags"
-          value={newPost.tags}
-          onChange={handleChange}
-          placeholder="태그(첫번째 태그가 메인태그, 띄어쓰기로 구분)"
-        />
-        <textarea
-          name="txt"
-          value={newPost.txt}
-          onChange={handleTextareaChange}
-          placeholder="내용"
-        /> */}
         <button className="g-button1" type="submit">
           생성
         </button>
@@ -256,6 +219,13 @@ export default function Add() {
             display: flex;
             flex-direction: column;
             margin-top: 36px;
+          }
+          .btnCont {
+            display: flex;
+            justify-content: space-evenly;
+          }
+          .btn-left {
+            margin-right: 8px;
           }
           .imgBg {
             position: relative;
@@ -282,6 +252,11 @@ export default function Add() {
             padding-bottom: 100%;
             overflow: hidden;
             border-radius: 16px;
+          }
+          .colorCont {
+            display: flex;
+            justify-content: space-between;
+            margin: 16px 0;
           }
           .img {
             position: absolute;
