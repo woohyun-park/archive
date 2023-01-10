@@ -1,11 +1,9 @@
 import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 import Link from "next/link";
-import { useState } from "react";
 import { db } from "../../apis/firebase";
-import Header from "../../components/Back";
+import Back from "../../components/Back";
 import ProfileSmall from "../../components/ProfileSmall";
-import { COLOR, IPost, IUser, FUNC } from "../../custom";
-import useDict from "../../hooks/useDict";
+import { IPost, IUser } from "../../custom";
 
 interface IPostProps {
   post: IPost;
@@ -13,10 +11,9 @@ interface IPostProps {
 }
 
 export default function Post({ post, user }: IPostProps) {
-  const [tags, setTags] = useDict(post.tags);
   return (
     <>
-      <Header post={post} />
+      <Back />
       {post?.imgs.length === 0 ? (
         <div className="bg"></div>
       ) : (
@@ -26,11 +23,13 @@ export default function Post({ post, user }: IPostProps) {
       )}
       <ProfileSmall post={post} user={user} style="post" />
       <h1 className="title">{post?.title}</h1>
-      {tags.map((tag, i) => (
-        <Link key={i} href={{ pathname: `/tag/${tag}` }} legacyBehavior>
-          <div className="mainTag">{`#${tag}`}</div>
-        </Link>
-      ))}
+      <div className="tagCont">
+        {post.tags.map((tag, i) => (
+          <Link key={i} href={{ pathname: `/tag/${tag}` }} legacyBehavior>
+            <div className="mainTag g-button1">{`#${tag}`}</div>
+          </Link>
+        ))}
+      </div>
       <div className="text">{post?.txt}</div>
 
       <style jsx>{`
@@ -63,18 +62,18 @@ export default function Post({ post, user }: IPostProps) {
         }
         .title {
           word-break: keep-all;
+          margin-bottom: 4px;
+          font-size: 48px;
         }
         .tagCont {
           display: flex;
           justify-content: flex-end;
+          width: 100%;
+          margin-bottom: 32px;
         }
         .mainTag {
-          text-align: right;
-          font-size: 24px;
-        }
-        .subTag {
           margin-left: 4px;
-          color: ${COLOR.txt2};
+          width: fit-content;
         }
         .text {
           margin-top: 8px;

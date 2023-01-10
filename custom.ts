@@ -30,6 +30,8 @@ export const COLOR = {
   btnDark1: "#FFFFFF",
   btn2: "#D9D9D9",
   btnDark2: "#D9D9D9",
+  btnOverlay: "rgba(0, 0, 0, 0.75)",
+  btnOverlayDark: "rgba(255, 255, 255, 0.75)",
 
   red: "#EF4552",
   orange: "#F7892B",

@@ -29,9 +29,9 @@ export default function Image({ post, style }: IImageProps) {
         </Link>
         <div className="tagCont">
           {(style === "feed" || style === "profile") &&
-            post.tags.map((tag, i) => (
+            [...post.tags].reverse().map((tag, i) => (
               <Link key={i} href={{ pathname: `/tag/${tag}` }} legacyBehavior>
-                <div className="mainTag">{`#${tag}`}</div>
+                <button className="mainTag g-button1">{`#${tag}`}</button>
               </Link>
             ))}
         </div>
@@ -94,16 +94,20 @@ export default function Image({ post, style }: IImageProps) {
           bottom: 0;
           right: 0;
           margin: 16px;
+
+          display: flex;
+          flex-wrap: wrap-reverse;
+          flex-direction: row-reverse;
         }
         .mainTagCont {
           text-decoration: none;
         }
         .mainTag {
-          font-size: 24px;
-          font-weight: bold;
-        }
-        .subTag {
-          font-size: 16px;
+          margin: 2px 0;
+          margin-left: 4px;
+          width: fit-content;
+          background-color: ${COLOR.btnOverlay};
+          color: ${COLOR.txtDark1};
         }
       `}</style>
     </>

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { HiDotsHorizontal } from "react-icons/hi";
 import { db } from "../apis/firebase";
 import { useStore } from "../apis/zustand";
-import { COLOR, IDict, IPost, IStyle, IUser, SIZE } from "../custom";
+import { COLOR, IPost, IStyle, IUser, SIZE } from "../custom";
 import dayjs from "dayjs";
 import { useState } from "react";
 
@@ -67,16 +67,12 @@ export default function ProfileSmall({
       return postDate.format("MM월 DD, YYYY");
     }
   }
-  function displayTxt() {
-    return user.txt;
-  }
 
   return (
     <>
       <div className={`userCont userCont-${style}`}>
         <div className={user.uid === curUser.uid ? "row row-cur" : "row"}>
           <Link href={`/profile/${user?.uid}`}>
-            {/* <div className="overlay"></div> */}
             <img className="userImg" src={user?.photoURL} />
           </Link>
           <div className="col">
@@ -86,7 +82,7 @@ export default function ProfileSmall({
             {style === "feed" ? (
               <div className="createdAt">{displayCreatedAt()}</div>
             ) : (
-              <div className="txt">{displayTxt()}</div>
+              <div className="txt">{user.txt}</div>
             )}
           </div>
         </div>
@@ -142,15 +138,6 @@ export default function ProfileSmall({
             height: 32px;
             border-radius: 32px;
             margin-right: 8px;
-          }
-           {
-            /* .overlay {
-            position: absolute;
-            width: 32px;
-            height: 32px;
-            border-radius: 32px;
-            background-color: rgba(0, 0, 0, 0.1);
-          } */
           }
           .userName {
             font-size: 16px;
