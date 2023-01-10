@@ -83,29 +83,6 @@ export default function Setting() {
       }
     };
   }
-  // interface IError {
-  //   message: string;
-  //   type: string;
-  // }
-  // function onInvalid(data: IDict<IError>) {
-  //   console.log(data);
-  //   const tempError: IDict<string> = {};
-  //   for (const each in data) {
-  //     const { type } = data[each];
-  //     if (type === "required") {
-  //       if (each === "displayName") {
-  //         tempError[each] = "이름을 입력하세요.";
-  //       }
-  //     } else if (type === "maxLength") {
-  //       if (each === "displayName") {
-  //         tempError[each] = "이름은 16자를 넘을 수 없습니다.";
-  //       } else if (each === "txt") {
-  //         tempError[each] = "소개는 150자를 넘을 수 없습니다.";
-  //       }
-  //     }
-  //   }
-  //   setError(tempError);
-  // }
 
   return (
     <>
@@ -120,12 +97,7 @@ export default function Setting() {
           onClick={() => fileRef.current?.click()}
         />
       </div>
-      <form
-        onSubmit={handleSubmit(
-          (data) => onValid(data)
-          // (data) => onInvalid(data as IDict<IError>)
-        )}
-      >
+      <form onSubmit={handleSubmit((data) => onValid(data))}>
         <input
           type="file"
           accept="image/*"

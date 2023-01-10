@@ -2,10 +2,10 @@ import axios, { AxiosRequestConfig } from "axios";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import React, { useRef, useState } from "react";
 import { db } from "../apis/firebase";
-import { COLOR, IPost, SIZE } from "../custom";
+import { COLOR, IDict, IPost, SIZE, FUNC } from "../custom";
 import { useStore } from "../apis/zustand";
 import { useRouter } from "next/router";
-import { HiArrowLeft } from "react-icons/hi";
+import { HiArrowLeft, HiX } from "react-icons/hi";
 import { useForm } from "react-hook-form";
 import { userAgent } from "next/server";
 import { watch } from "fs";
@@ -14,7 +14,7 @@ import Color from "../components/Color";
 interface IForm {
   file: File[];
   title: string;
-  tags: string[];
+  tags: IDict<boolean>;
   txt: string;
   color: string;
 }
@@ -31,7 +31,7 @@ export default function Add() {
     defaultValues: {
       file: undefined,
       title: "",
-      tags: [],
+      tags: {},
       txt: "",
       color: "",
     },
@@ -41,6 +41,8 @@ export default function Add() {
   const [preview, setPreview] = useState<string>("");
   const [isImage, setIsImage] = useState(true);
   const [selectedColor, setSelectedColor] = useState(COLOR.red);
+  const [tag, setTag] = useState("");
+  const [tags, setTags] = useState({});
   const router = useRouter();
   console.log(watch());
 
@@ -64,34 +66,35 @@ export default function Add() {
         )
         .then(async (res) => {
           const ref = await addDoc(collection(db, "posts"), {
-            color: "",
-            comments: [],
-            createdAt: serverTimestamp(),
-            imgs: [res.data.url],
-            tags: data.tags[0].split(" "),
-            title: data.title,
-            txt: data.txt,
             uid: curUser.uid,
+            createdAt: serverTimestamp(),
+            title: data.title,
+            tags: FUNC.filterFalse(data.tags),
+            txt: data.txt,
+            imgs: [res.data.url],
+            color: "",
+            likes: {},
+            comments: {},
           });
-          const tempPosts = curUser.posts;
-          tempPosts.push(ref.id);
+          const tempPosts = { ...curUser.posts };
+          tempPosts[ref.id] = true;
           setCurUser({ ...curUser, posts: tempPosts });
           updateCurUser({ ...curUser, posts: tempPosts });
         });
     } else {
-      console.log(data.color);
       const ref = await addDoc(collection(db, "posts"), {
-        color: data.color,
-        comments: [],
-        createdAt: serverTimestamp(),
-        imgs: [],
-        tags: data.tags[0].split(" "),
-        title: data.title,
-        txt: data.txt,
         uid: curUser.uid,
+        createdAt: serverTimestamp(),
+        title: data.title,
+        tags: FUNC.filterFalse(data.tags),
+        txt: data.txt,
+        imgs: [],
+        color: data.color,
+        likes: {},
+        comments: {},
       });
-      const tempPosts = curUser.posts;
-      tempPosts.push(ref.id);
+      const tempPosts = { ...curUser.posts };
+      tempPosts[ref.id] = true;
       setCurUser({ ...curUser, posts: tempPosts });
       updateCurUser({ ...curUser, posts: tempPosts });
     }
@@ -113,13 +116,33 @@ export default function Add() {
   function handleImageClick() {
     fileRef.current?.click();
   }
-  function handleToggleClick(e: React.MouseEvent<HTMLButtonElement>) {
+  function handleToggleClick(e: React.MouseEvent<HTMLDivElement>) {
     e.preventDefault();
     setIsImage(!isImage);
   }
   function handleColorClick(color: string) {
     setValue("color", color);
     setSelectedColor(color);
+  }
+  function handleTagChange(e: React.ChangeEvent<HTMLInputElement>) {
+    e.preventDefault();
+    if (e.target.value === " ") {
+      setTag("");
+    } else if (
+      e.target.value.length !== 1 &&
+      e.target.value.split(" ").length === 2
+    ) {
+      setTags({ ...tags, [tag]: true });
+      setValue("tags", { ...tags, [tag]: true });
+      setTag("");
+    } else {
+      setTag(e.target.value);
+    }
+  }
+  function handleTagRemove(e: React.MouseEvent<HTMLSpanElement>) {
+    const tag = e.currentTarget.id;
+    setTags({ ...tags, [tag]: false });
+    setValue("tags", { ...tags, [tag]: false });
   }
 
   return (
@@ -129,18 +152,18 @@ export default function Add() {
       </div>
       <form onSubmit={handleSubmit((data) => onValid(data))}>
         <div className="btnCont">
-          <button
+          <div
             className={isImage ? "btn-left g-button1" : "btn-left g-button2"}
             onClick={handleToggleClick}
           >
             이미지 업로드
-          </button>
-          <button
-            className={isImage ? "g-button2" : "g-button1"}
+          </div>
+          <div
+            className={isImage ? "btn-right g-button2" : "btn-right g-button1"}
             onClick={handleToggleClick}
           >
             배경색 선택
-          </button>
+          </div>
         </div>
         {isImage ? (
           preview === "" ? (
@@ -203,7 +226,43 @@ export default function Add() {
           hidden
         />
         <input {...register("title")} placeholder="제목" />
-        <input {...register("tags")} placeholder="태그" />
+        <div className="tagCont">
+          {(() => {
+            const result = [];
+            let i = 0;
+            for (const each in watch("tags")) {
+              if (!watch("tags")[each]) {
+                continue;
+              } else if (i++ === 0) {
+                result.push(
+                  <span className="tag tag-main">
+                    <span className="tagTxt">{each}</span>
+                    <span id={each} onClick={handleTagRemove}>
+                      <HiX />
+                    </span>
+                  </span>
+                );
+              } else {
+                result.push(
+                  <span className="tag">
+                    <span className="tagTxt">{each}</span>
+                    <span id={each} onClick={handleTagRemove}>
+                      <HiX />
+                    </span>
+                  </span>
+                );
+              }
+            }
+            return result;
+          })()}
+        </div>
+        <input
+          onChange={handleTagChange}
+          // onKeyDown={handleEnterTag}
+          value={tag}
+          placeholder="태그"
+        />
+        {/* <input {...register("tags")} placeholder="태그" /> */}
         <textarea {...register("txt")} placeholder="내용" />
         <button className="g-button1" type="submit">
           생성
@@ -224,9 +283,15 @@ export default function Add() {
             display: flex;
             justify-content: space-evenly;
           }
+          .btn-left,
+          .btn-right {
+            font-size: 16px;
+            text-align: center;
+          }
           .btn-left {
             margin-right: 8px;
           }
+
           .imgBg {
             position: relative;
             width: 100%;
@@ -266,6 +331,23 @@ export default function Add() {
             width: 100%;
             height: 100%;
             object-fit: cover;
+          }
+          .tag {
+            display: inline-block;
+            background-color: ${COLOR.txtDark2};
+            padding: 4px 8px;
+            border-radius: 8px;
+            width: fit-content;
+            margin: 4px 0;
+            margin-right: 4px;
+            color: ${COLOR.txtDark1};
+          }
+          .tag-main {
+            background-color: ${COLOR.btn1};
+            color: ${COLOR.txtDark1};
+          }
+          .tagTxt {
+            margin-right: 4px;
           }
           form > input,
           form > textarea {

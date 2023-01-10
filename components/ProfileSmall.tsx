@@ -61,6 +61,7 @@ export default function ProfileSmall({
       <div className={`userCont userCont-${style}`}>
         <div className={user.uid === curUser.uid ? "row row-cur" : "row"}>
           <Link href={`/profile/${user?.uid}`}>
+            {/* <div className="overlay"></div> */}
             <img className="userImg" src={user?.photoURL} />
           </Link>
           <div className="col">
@@ -126,6 +127,15 @@ export default function ProfileSmall({
             height: 32px;
             border-radius: 32px;
             margin-right: 8px;
+          }
+           {
+            /* .overlay {
+            position: absolute;
+            width: 32px;
+            height: 32px;
+            border-radius: 32px;
+            background-color: rgba(0, 0, 0, 0.1);
+          } */
           }
           .userName {
             font-size: 16px;

@@ -1,8 +1,11 @@
 import { collection, doc, getDoc, getDocs } from "firebase/firestore";
+import Link from "next/link";
+import { useState } from "react";
 import { db } from "../../apis/firebase";
 import Header from "../../components/Header";
 import ProfileSmall from "../../components/ProfileSmall";
-import { COLOR, IPost, IUser } from "../../custom";
+import { COLOR, IPost, IUser, FUNC } from "../../custom";
+import useDict from "../../hooks/useDict";
 
 interface IPostProps {
   post: IPost;
@@ -10,6 +13,7 @@ interface IPostProps {
 }
 
 export default function Post({ post, user }: IPostProps) {
+  const [tags, setTags] = useDict(post.tags);
   return (
     <>
       <Header post={post} />
@@ -22,15 +26,11 @@ export default function Post({ post, user }: IPostProps) {
       )}
       <ProfileSmall post={post} user={user} style="post" />
       <h1 className="title">{post?.title}</h1>
-      <div className="mainTag">{post && `#${post.tags[0]}`}</div>
-      <div className="tagCont">
-        {post?.tags.map((e, i) => {
-          if (i === 0) {
-            return;
-          }
-          return <div className="subTag">{`#${post?.tags[i]}`}</div>;
-        })}
-      </div>
+      {tags.map((tag, i) => (
+        <Link key={i} href={{ pathname: `/tag/${tag}` }} legacyBehavior>
+          <div className="mainTag">{`#${tag}`}</div>
+        </Link>
+      ))}
       <div className="text">{post?.txt}</div>
 
       <style jsx>{`
@@ -78,6 +78,10 @@ export default function Post({ post, user }: IPostProps) {
         }
         .text {
           margin-top: 8px;
+        }
+        .mainTag:hover,
+        .subTag:hover {
+          cursor: pointer;
         }
       `}</style>
     </>

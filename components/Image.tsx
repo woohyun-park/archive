@@ -1,5 +1,7 @@
 import Link from "next/link";
+import { useState } from "react";
 import { COLOR, IPost, IStyle } from "../custom";
+import useDict from "../hooks/useDict";
 
 interface IImageProps {
   post: IPost;
@@ -7,6 +9,7 @@ interface IImageProps {
 }
 
 export default function Image({ post, style }: IImageProps) {
+  const [tags, setTags] = useDict(post.tags);
   return (
     <>
       <div className={`cont cont-${style}`}>
@@ -28,23 +31,12 @@ export default function Image({ post, style }: IImageProps) {
           <div className="title">{post.title}</div>
         </Link>
         <div className="tagCont">
-          <Link href={{ pathname: `/tag/${post.tags[0]}` }} legacyBehavior>
-            <a className="mainTagCont">
-              <div className="mainTag">{`#${post.tags[0]}`}</div>
-            </a>
-          </Link>
-          <div>
-            {style === "feed" ||
-              (style === "profile" &&
-                post.tags.slice(1, post.tags.length).map((e, i) => (
-                  <Link
-                    href={{ pathname: `/tag/${post.tags[i + 1]}` }}
-                    legacyBehavior
-                  >
-                    <span className="subTag" key={i}>{` #${e}`}</span>
-                  </Link>
-                )))}
-          </div>
+          {(style === "feed" || style === "profile") &&
+            tags.map((tag, i) => (
+              <Link key={i} href={{ pathname: `/tag/${tag}` }} legacyBehavior>
+                <div className="mainTag">{`#${tag}`}</div>
+              </Link>
+            ))}
         </div>
       </div>
 

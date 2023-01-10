@@ -44,6 +44,18 @@ Object.freeze(DEFAULT);
 Object.freeze(SIZE);
 Object.freeze(COLOR);
 
+export const FUNC = {
+  filterFalse: function (dict: IDict<boolean>) {
+    const newDict: IDict<boolean> = {};
+    for (const each in dict) {
+      if (dict[each]) {
+        newDict[each] = true;
+      }
+    }
+    return newDict;
+  },
+};
+
 export type IStyle = "post" | "feed" | "search" | "add" | "alarm" | "profile";
 
 export interface IDict<T> {
@@ -55,9 +67,10 @@ export interface IUser {
   displayName: string;
   photoURL: string;
   txt: string;
-  posts: string[];
-  tags: string[];
-  scraps: string[];
+  posts: IDict<boolean>;
+  tags: IDict<boolean>;
+  likes: IDict<boolean>;
+  scraps: IDict<boolean>;
   followers: IDict<boolean>;
   followings: IDict<boolean>;
 }
@@ -67,12 +80,12 @@ export interface IPost {
   uid: string;
   createdAt: Date;
   title: string;
-  tags: string[];
+  tags: IDict<boolean>;
   txt: string;
   imgs: string[];
   color: string;
-  likes: number[];
-  comments: IComment[];
+  likes: IDict<boolean>;
+  comments: IDict<IComment>;
 }
 
 export interface IComment {

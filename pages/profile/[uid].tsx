@@ -128,7 +128,7 @@ export default function Profile({ uid, posts }: IProfileProps) {
       {uid === curUser.uid ? (
         <>
           <button onClick={handleLogout} className="g-button1">
-            logout
+            로그아웃
           </button>
         </>
       ) : (

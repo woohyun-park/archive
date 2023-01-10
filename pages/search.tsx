@@ -20,7 +20,7 @@ export default function Search({ posts, users }: ISearchProps) {
 
   return (
     <>
-      <h1>search</h1>
+      <h1>검색</h1>
       <div className="search">
         <HiSearch size={SIZE.iconSmall} onClick={handleSearchClick} />
         <input

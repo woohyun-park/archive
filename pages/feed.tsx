@@ -9,7 +9,7 @@ interface IFeed {
 export default function Feed({ posts, users }: IFeed) {
   return (
     <>
-      <h1>feed</h1>
+      <h1>피드</h1>
       {posts.map((post, i) => {
         return <PostFeed post={post} user={users[i]} key={post.id} />;
       })}

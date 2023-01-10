@@ -70,11 +70,12 @@ export default function Layout({ children }: ILayoutProps) {
           displayName: user.displayName,
           photoURL: user.photoURL,
           txt: "",
-          posts: [],
-          tags: [],
-          scraps: [],
-          followers: [],
-          followings: [],
+          posts: {},
+          tags: {},
+          likes: {},
+          scraps: {},
+          followers: {},
+          followings: {},
         });
         router.push("/");
       })
@@ -96,11 +97,12 @@ export default function Layout({ children }: ILayoutProps) {
           displayName: res.user.email,
           photoURL: DEFAULT.user.photoURL,
           txt: "",
-          posts: [],
-          tags: [],
-          scraps: [],
-          followers: [],
-          followings: [],
+          posts: {},
+          tags: {},
+          likes: {},
+          scraps: {},
+          followers: {},
+          followings: {},
         });
       } else {
         await signInWithEmailAndPassword(auth, login.email, login.password);
@@ -208,6 +210,7 @@ export default function Layout({ children }: ILayoutProps) {
             padding: 8px;
             color: ${COLOR.txtDark1};
             width: 100%;
+            font-size: 16px;
           }
           .g-button2 {
             margin: 8px 0;
