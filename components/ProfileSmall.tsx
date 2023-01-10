@@ -1,11 +1,11 @@
-import { doc, updateDoc } from "firebase/firestore";
+import { arrayRemove, arrayUnion, doc, updateDoc } from "firebase/firestore";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import { HiDotsHorizontal } from "react-icons/hi";
 import { db } from "../apis/firebase";
 import { useStore } from "../apis/zustand";
 import { COLOR, IDict, IPost, IStyle, IUser, SIZE } from "../custom";
 import dayjs from "dayjs";
+import { useState } from "react";
 
 type IProfileSmallProps = {
   user: IUser;
@@ -19,23 +19,38 @@ export default function ProfileSmall({
   post,
 }: IProfileSmallProps) {
   const { curUser, setCurUser, updateCurUser } = useStore();
+  const [isFollowing, setIsFollowing] = useState(() =>
+    curUser.followings.find((elem) => elem === user.uid) ? true : false
+  );
 
-  async function handleFollow() {
-    const tempCurUserFollowings = {
-      ...(curUser.followings as IDict<boolean>),
-      [user.uid]: !curUser.followings[user.uid],
-    };
-    const tempCurUser = { ...curUser, followings: tempCurUserFollowings };
-    setCurUser(tempCurUser);
-    updateCurUser(tempCurUser);
-
+  async function handleToggleFollow() {
+    const curUserRef = doc(db, "users", curUser.uid);
     const userRef = doc(db, "users", user.uid);
-    const tempUserFollowers = {
-      ...(user?.followers as IDict<boolean>),
-      [curUser.uid]: !user?.followers[curUser.uid],
-    };
-    const tempUser = { ...user, followers: tempUserFollowers };
-    await updateDoc(userRef, tempUser);
+    if (isFollowing) {
+      await updateDoc(curUserRef, { followings: arrayRemove(user.uid) });
+      await updateDoc(userRef, {
+        followers: arrayRemove(curUser.uid),
+      });
+    } else {
+      await updateDoc(curUserRef, {
+        followings: arrayUnion(user.uid),
+      });
+      await updateDoc(userRef, {
+        followers: arrayUnion(curUser.uid),
+      });
+    }
+
+    const tempFollowings = new Set(curUser.followings);
+    if (isFollowing) {
+      tempFollowings.delete(user.uid);
+    } else {
+      tempFollowings.add(user.uid);
+    }
+    const followings = Array.from(tempFollowings) as string[];
+    setCurUser({ ...curUser, followings });
+    updateCurUser({ ...curUser, followings });
+
+    setIsFollowing(!isFollowing);
   }
   function displayCreatedAt() {
     const curDate = dayjs(new Date());
@@ -79,9 +94,9 @@ export default function ProfileSmall({
           if (style === "post" || style === "search") {
             if (curUser.uid === user.uid) {
               return <></>;
-            } else if (curUser.followings[user.uid]) {
+            } else if (isFollowing) {
               return (
-                <div className="followBtn" onClick={handleFollow}>
+                <div className="followBtn" onClick={handleToggleFollow}>
                   팔로잉
                 </div>
               );
@@ -89,7 +104,7 @@ export default function ProfileSmall({
               return (
                 <div
                   className="followBtn followBtn-follow"
-                  onClick={handleFollow}
+                  onClick={handleToggleFollow}
                 >
                   팔로우
                 </div>
