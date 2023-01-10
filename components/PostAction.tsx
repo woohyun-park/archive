@@ -19,6 +19,9 @@ type IPostActionProps = {
 
 export default function PostAction({ post, user }: IPostActionProps) {
   const { curUser, setCurUser, updateCurUser } = useStore();
+  const [initIsLiked, setInitIsLiked] = useState(
+    curUser.likes.find((elem) => elem === post.id) ? true : false
+  );
   const [isLiked, setIsLiked] = useState(
     curUser.likes.find((elem) => elem === post.id) ? true : false
   );
@@ -37,7 +40,6 @@ export default function PostAction({ post, user }: IPostActionProps) {
         likes: arrayUnion(curUser.uid),
       });
     }
-
     const tempLikes = new Set(curUser.likes);
     if (isLiked) {
       tempLikes.delete(post.id || "");
@@ -50,7 +52,6 @@ export default function PostAction({ post, user }: IPostActionProps) {
 
     setIsLiked(!isLiked);
   }
-
   async function handleToggleScrap() {
     const postRef = doc(db, "posts", post.id || "");
     if (isScraped) {
@@ -62,7 +63,6 @@ export default function PostAction({ post, user }: IPostActionProps) {
         scraps: arrayUnion(curUser.uid),
       });
     }
-
     const tempScraps = new Set(curUser.scraps);
     if (isScraped) {
       tempScraps.delete(post.id || "");
@@ -74,6 +74,21 @@ export default function PostAction({ post, user }: IPostActionProps) {
     updateCurUser({ ...curUser, scraps });
 
     setIsScraped(!isScraped);
+  }
+  function displayLikes() {
+    if (initIsLiked) {
+      if (isLiked) {
+        return post.likes.length;
+      } else {
+        return post.likes.length - 1;
+      }
+    } else {
+      if (isLiked) {
+        return post.likes.length + 1;
+      } else {
+        return post.likes.length;
+      }
+    }
   }
 
   return (
@@ -102,7 +117,7 @@ export default function PostAction({ post, user }: IPostActionProps) {
         </div>
       </div>
       <div className="count">
-        {`좋아요 ${post.likes.length}`}&nbsp;&nbsp;
+        {`좋아요 ${displayLikes()}`}&nbsp;&nbsp;
         {`댓글 ${post.comments.length}`}
       </div>
       <style jsx>
