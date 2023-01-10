@@ -27,6 +27,7 @@ const BOX: IDict<string[]> = {
 
 export default function List({ data, style }: IListProps) {
   const [selected, setSelected] = useState(1);
+
   return (
     <>
       <div className="postTypes">

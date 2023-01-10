@@ -12,6 +12,7 @@ interface IUserState {
 export const useStore = create<IUserState>((set) => ({
   curUser: {
     uid: "",
+    email: "",
     displayName: "",
     photoURL: "",
     txt: "",

@@ -1,7 +1,5 @@
 import Link from "next/link";
-import { useState } from "react";
 import { COLOR, IPost, IStyle } from "../custom";
-import useDict from "../hooks/useDict";
 
 interface IImageProps {
   post: IPost;

@@ -1,13 +1,10 @@
 import { useRouter } from "next/router";
-import { HiArrowLeft, HiDotsHorizontal } from "react-icons/hi";
-import { SIZE, COLOR, IPost } from "../custom";
+import { HiArrowLeft } from "react-icons/hi";
+import { SIZE, COLOR } from "../custom";
 
-type IHeaderProps = {
-  post: IPost;
-};
-
-export default function Header({ post }: IHeaderProps) {
+export default function Back({}) {
   const router = useRouter();
+
   return (
     <>
       <div className="cont">
@@ -15,6 +12,7 @@ export default function Header({ post }: IHeaderProps) {
           <HiArrowLeft size={SIZE.icon} />
         </div>
       </div>
+
       <style jsx>{`
         .cont {
           display: flex;

@@ -63,13 +63,12 @@ export default function Layout({ children }: ILayoutProps) {
   function handleSocialLogin() {
     signInWithPopup(auth, provider)
       .then(async (result) => {
-        const credential = GoogleAuthProvider.credentialFromResult(result);
-        const token = credential?.accessToken;
         const user = result.user;
         const tempUser: IUser = {
           uid: user.uid,
-          displayName: user.displayName || "아카이버",
-          photoURL: user.photoURL || DEFAULT.user.photoURL,
+          email: String(user.email),
+          displayName: `아카이버-${user.uid.slice(0, 11)}`,
+          photoURL: DEFAULT.user.photoURL,
           txt: "",
           posts: [],
           tags: [],
@@ -78,7 +77,7 @@ export default function Layout({ children }: ILayoutProps) {
           followers: [],
           followings: [],
         };
-        const res = await setDoc(doc(db, "users", user.uid), tempUser);
+        await setDoc(doc(db, "users", user.uid), tempUser);
         router.push("/");
       })
       .catch((e) => {
@@ -97,7 +96,8 @@ export default function Layout({ children }: ILayoutProps) {
         );
         const tempUser: IUser = {
           uid: res.user.uid,
-          displayName: res.user.email || "아카이버",
+          email: String(res.user.email),
+          displayName: `아카이버-${res.user.uid.slice(0, 11)}`,
           photoURL: DEFAULT.user.photoURL,
           txt: "",
           posts: [],

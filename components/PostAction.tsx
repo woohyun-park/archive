@@ -1,6 +1,5 @@
-import { arrayUnion, doc, updateDoc } from "firebase/firestore";
+import { arrayRemove, arrayUnion, doc, updateDoc } from "firebase/firestore";
 import { useState } from "react";
-import { IconBase } from "react-icons";
 import {
   HiBookmark,
   HiOutlineBookmark,
@@ -27,56 +26,54 @@ export default function PostAction({ post, user }: IPostActionProps) {
   );
 
   async function handleToggleLike() {
-    const postRef = doc(db, "posts", post.id);
-    const res = await updateDoc(postRef, {
-      likes: arrayUnion(curUser.uid),
-    });
+    const postRef = doc(db, "posts", post.id || "");
+    if (isLiked) {
+      await updateDoc(postRef, {
+        likes: arrayRemove(curUser.uid),
+      });
+    } else {
+      await updateDoc(postRef, {
+        likes: arrayUnion(curUser.uid),
+      });
+    }
 
-    const tempCurUserLikes = {
-      ...curUser.likes,
-      [post.id]: !user.likes[post.id],
-    };
-    setCurUser({ ...curUser, likes: tempCurUserLikes });
-    updateCurUser({ ...curUser, likes: tempCurUserLikes });
+    const tempLikes = new Set(curUser.likes);
+    if (isLiked) {
+      tempLikes.delete(post.id || "");
+    } else {
+      tempLikes.add(post.id || "");
+    }
+    const likes = Array.from(tempLikes) as string[];
+    setCurUser({ ...curUser, likes });
+    updateCurUser({ ...curUser, likes });
 
     setIsLiked(!isLiked);
   }
 
   async function handleToggleScrap() {
-    const postRef = doc(db, "posts", post.id);
-    const tempPostScraped = {
-      ...post.scraps,
-      [curUser.uid]: !post.scraps[curUser.uid],
-    };
-    await updateDoc(postRef, { ...post, scraps: tempPostScraped });
+    const postRef = doc(db, "posts", post.id || "");
+    if (isScraped) {
+      await updateDoc(postRef, {
+        scraps: arrayRemove(curUser.uid),
+      });
+    } else {
+      await updateDoc(postRef, {
+        scraps: arrayUnion(curUser.uid),
+      });
+    }
 
-    const tempCurUserScraps = {
-      ...curUser.scraps,
-      [post.id]: !user.scraps[post.id],
-    };
-    setCurUser({ ...curUser, scraps: tempCurUserScraps });
-    updateCurUser({ ...curUser, scraps: tempCurUserScraps });
+    const tempScraps = new Set(curUser.scraps);
+    if (isScraped) {
+      tempScraps.delete(post.id || "");
+    } else {
+      tempScraps.add(post.id || "");
+    }
+    const scraps = Array.from(tempScraps) as string[];
+    setCurUser({ ...curUser, scraps });
+    updateCurUser({ ...curUser, scraps });
 
     setIsScraped(!isScraped);
   }
-
-  //   async function handleFollow() {
-  //     const tempCurUserFollowings = {
-  //       ...(curUser.followings as IDict<boolean>),
-  //       [user.uid]: !curUser.followings[user.uid],
-  //     };
-  //     const tempCurUser = { ...curUser, followings: tempCurUserFollowings };
-  //     setCurUser(tempCurUser);
-  //     updateCurUser(tempCurUser);
-
-  //     const userRef = doc(db, "users", user.uid);
-  //     const tempUserFollowers = {
-  //       ...(user?.followers as IDict<boolean>),
-  //       [curUser.uid]: !user?.followers[curUser.uid],
-  //     };
-  //     const tempUser = { ...user, followers: tempUserFollowers };
-  //     await updateDoc(userRef, tempUser);
-  //   }
 
   return (
     <>

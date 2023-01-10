@@ -1,11 +1,11 @@
+import { HiCheck } from "react-icons/hi";
+import { COLOR, SIZE } from "../custom";
+
 interface IColorProps {
   color: string;
   selected: boolean;
   onClick: (e: React.MouseEvent<HTMLDivElement>) => void;
 }
-
-import { HiCheck } from "react-icons/hi";
-import { COLOR, SIZE } from "../custom";
 
 export default function Color({ color, selected, onClick }: IColorProps) {
   return (
@@ -19,6 +19,7 @@ export default function Color({ color, selected, onClick }: IColorProps) {
           <></>
         )}
       </div>
+
       <style jsx>
         {`
           .color {

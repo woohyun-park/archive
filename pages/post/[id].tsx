@@ -2,7 +2,7 @@ import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 import Link from "next/link";
 import { useState } from "react";
 import { db } from "../../apis/firebase";
-import Header from "../../components/Header";
+import Header from "../../components/Back";
 import ProfileSmall from "../../components/ProfileSmall";
 import { COLOR, IPost, IUser, FUNC } from "../../custom";
 import useDict from "../../hooks/useDict";
