@@ -19,17 +19,6 @@ interface IForm {
 
 export default function Add() {
   const { curUser, setCurUser, updateCurUser } = useStore();
-  // const [newPost, setNewPost] = useState<IPost>({
-  //   uid: curUser.uid,
-  //   title: "",
-  //   tags: [],
-  //   txt: "",
-  //   imgs: [],
-  //   color: "",
-  //   createdAt: "",
-  //   likes: [],
-  //   comments: [],
-  // });
   const {
     register,
     handleSubmit,

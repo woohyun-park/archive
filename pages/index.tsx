@@ -19,9 +19,7 @@ export async function getServerSideProps() {
   postSnap.forEach((postSnapEach) => {
     posts.push({
       ...postSnapEach.data(),
-      createdAt: JSON.parse(
-        JSON.stringify(postSnapEach.data().createdAt.toDate())
-      ),
+      createdAt: postSnapEach.data().createdAt.toDate(),
       id: postSnapEach.id,
     } as IPost);
     uids.push(postSnapEach.data().uid);

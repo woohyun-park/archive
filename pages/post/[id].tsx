@@ -106,7 +106,7 @@ export async function getServerSideProps({ params }: IServerSidePaths) {
   const postSnap = await getDoc(postRef);
   const post: IPost = {
     ...(postSnap.data() as IPost),
-    createdAt: JSON.parse(JSON.stringify(postSnap.data()?.createdAt.toDate())),
+    createdAt: postSnap.data()?.createdAt.toDate(),
     id: postSnap.id,
   };
 

@@ -48,7 +48,7 @@ export default function ProfileSmall({
             <Link href={`/profile/${user?.uid}`} legacyBehavior>
               <a className="userName">{user?.displayName}</a>
             </Link>
-            <div className="createdAt">{post?.createdAt}</div>
+            <div className="createdAt">{post?.createdAt.toDateString()}</div>
           </div>
         </div>
         {(() => {

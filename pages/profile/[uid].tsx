@@ -208,7 +208,7 @@ export async function getServerSideProps({ params }: IServerSidePaths) {
   postSnap.forEach((doc) => {
     posts.push({
       ...(doc.data() as IPost),
-      createdAt: JSON.parse(JSON.stringify(doc.data().createdAt.toDate())),
+      createdAt: doc.data().createdAt.toDate(),
       id: doc.id,
     });
   });
