@@ -25,7 +25,7 @@ export default function Image({ post, style }: IImageProps) {
           }}
           as={`/post/${post.id}`}
         >
-          <div className="title">{post.title}</div>
+          <div className={`title title-${style}`}>{post.title}</div>
         </Link>
         <div className="tagCont">
           {(style === "feed" || style === "profile") &&
@@ -83,10 +83,19 @@ export default function Image({ post, style }: IImageProps) {
           position: absolute;
           top: 0;
           left: 0;
-          font-size: 32px;
+          font-size: 48px;
           font-weight: bold;
           margin: 16px;
           word-break: keep-all;
+        }
+        .title-feed {
+          font-size: 48px;
+        }
+        .title-search {
+          font-size: 24px;
+        }
+        .title-profile {
+          font-size: 36px;
         }
         .tagCont {
           position: absolute;
@@ -94,7 +103,6 @@ export default function Image({ post, style }: IImageProps) {
           bottom: 0;
           right: 0;
           margin: 16px;
-
           display: flex;
           flex-wrap: wrap-reverse;
           flex-direction: row-reverse;

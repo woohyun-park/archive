@@ -1,5 +1,7 @@
 import { signOut } from "firebase/auth";
 import {
+  arrayRemove,
+  arrayUnion,
   collection,
   doc,
   getDoc,
@@ -24,21 +26,14 @@ interface IProfileProps {
 export default function Profile({ uid, posts }: IProfileProps) {
   const { curUser, setCurUser, updateCurUser } = useStore();
   const [user, setUser] = useState<IUser | null>(null);
+  const [isFollowing, setIsFollowing] = useState(() =>
+    curUser.followings.find((elem) => elem === uid) ? true : false
+  );
 
   useEffect(() => {
     getUser();
   }, [curUser]);
 
-  function getFollowNum(obj: IDict<boolean>) {
-    let result = 0;
-    for (const key in obj) {
-      if (obj[key]) {
-        result++;
-      }
-    }
-
-    return result;
-  }
   async function getUser() {
     if (curUser.uid === uid) {
       setUser(curUser);
@@ -52,22 +47,53 @@ export default function Profile({ uid, posts }: IProfileProps) {
   function handleLogout() {
     signOut(auth);
   }
-  async function handleFollow() {
-    const tempCurUserFollowings = {
-      ...(curUser.followings as IDict<boolean>),
-      [uid]: !curUser.followings[uid],
-    };
-    const tempCurUser = { ...curUser, followings: tempCurUserFollowings };
-    setCurUser(tempCurUser);
-    updateCurUser(tempCurUser);
+  // async function handleFollow() {
+  //   const tempCurUserFollowings = {
+  //     ...(curUser.followings as IDict<boolean>),
+  //     [uid]: !curUser.followings[uid],
+  //   };
+  //   const tempCurUser = { ...curUser, followings: tempCurUserFollowings };
+  //   setCurUser(tempCurUser);
+  //   updateCurUser(tempCurUser);
 
+  //   const userRef = doc(db, "users", uid);
+  //   const tempUserFollowers = {
+  //     ...(user?.followers as IDict<boolean>),
+  //     [curUser.uid]: !user?.followers[curUser.uid],
+  //   };
+  //   const tempUser = { ...user, followers: tempUserFollowers };
+  //   await updateDoc(userRef, tempUser);
+  // }
+
+  async function handleToggleFollow() {
+    console.log("handleToggleFollow");
+    const curUserRef = doc(db, "users", curUser.uid);
     const userRef = doc(db, "users", uid);
-    const tempUserFollowers = {
-      ...(user?.followers as IDict<boolean>),
-      [curUser.uid]: !user?.followers[curUser.uid],
-    };
-    const tempUser = { ...user, followers: tempUserFollowers };
-    await updateDoc(userRef, tempUser);
+    if (isFollowing) {
+      await updateDoc(curUserRef, { followings: arrayRemove(uid) });
+      await updateDoc(userRef, {
+        followers: arrayRemove(curUser.uid),
+      });
+    } else {
+      await updateDoc(curUserRef, {
+        followings: arrayUnion(uid),
+      });
+      await updateDoc(userRef, {
+        followers: arrayUnion(curUser.uid),
+      });
+    }
+
+    const tempFollowings = new Set(curUser.followings);
+    if (isFollowing) {
+      tempFollowings.delete(uid);
+    } else {
+      tempFollowings.add(uid);
+    }
+    const followings = Array.from(tempFollowings) as string[];
+    setCurUser({ ...curUser, followings });
+    updateCurUser({ ...curUser, followings });
+
+    setIsFollowing(!isFollowing);
   }
 
   return (
@@ -91,15 +117,11 @@ export default function Profile({ uid, posts }: IProfileProps) {
             </div>
             <div>
               <div className="profileType">팔로워</div>
-              <div className="profileNum">
-                {user && getFollowNum(user.followers)}
-              </div>
+              <div className="profileNum">{user?.followers.length}</div>
             </div>
             <div>
               <div className="profileType">팔로잉</div>
-              <div className="profileNum">
-                {user && getFollowNum(user.followings)}
-              </div>
+              <div className="profileNum">{user?.followings.length}</div>
             </div>
           </div>
         </div>
@@ -108,15 +130,15 @@ export default function Profile({ uid, posts }: IProfileProps) {
       {(() => {
         const result = [];
         if (curUser.uid !== uid) {
-          if (curUser.followings[uid]) {
+          if (curUser.followings.find((elem) => elem === uid)) {
             result.push(
-              <button onClick={handleFollow} className="g-button2">
+              <button onClick={handleToggleFollow} className="g-button2">
                 팔로잉
               </button>
             );
           } else {
             result.push(
-              <button onClick={handleFollow} className="g-button1">
+              <button onClick={handleToggleFollow} className="g-button1">
                 팔로우
               </button>
             );

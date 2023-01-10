@@ -10,6 +10,7 @@ import {
 import { db } from "../apis/firebase";
 import { useStore } from "../apis/zustand";
 import { IPost, IUser, SIZE } from "../custom";
+import PostComment from "./PostComment";
 
 type IPostActionProps = {
   post: IPost;
@@ -100,15 +101,23 @@ export default function PostAction({ post, user }: IPostActionProps) {
           </span>
         </div>
       </div>
+      <div className="count">
+        {`좋아요 ${post.likes.length}`}&nbsp;&nbsp;
+        {`댓글 ${post.comments.length}`}
+      </div>
       <style jsx>
         {`
           .cont {
             display: flex;
             justify-content: space-between;
-            margin: 8px 0;
+            margin: 8px 0 2px 0;
           }
           .heart {
             margin-right: 8px;
+          }
+          .count {
+            font-size: 12px;
+            margin-bottom: 8px;
           }
           span:hover {
             cursor: pointer;

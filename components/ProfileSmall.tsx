@@ -73,7 +73,7 @@ export default function ProfileSmall({
       <div className={`userCont userCont-${style}`}>
         <div className={user.uid === curUser.uid ? "row row-cur" : "row"}>
           <Link href={`/profile/${user?.uid}`}>
-            <img className="userImg" src={user?.photoURL} />
+            <img className="g-profileImg" src={user?.photoURL} />
           </Link>
           <div className="col">
             <Link href={`/profile/${user?.uid}`} legacyBehavior>
@@ -132,12 +132,6 @@ export default function ProfileSmall({
           }
           .userCont-search {
             margin: 4px 0 12px 0;
-          }
-          .userImg {
-            width: 32px;
-            height: 32px;
-            border-radius: 32px;
-            margin-right: 8px;
           }
           .userName {
             font-size: 16px;

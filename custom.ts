@@ -74,12 +74,13 @@ export interface IUser {
   tags: string[];
   likes: string[];
   scraps: string[];
+  comments: string[];
   followers: string[];
   followings: string[];
 }
 
 export interface IPost {
-  id?: string;
+  id: string;
   uid: string;
   createdAt: Date;
   title: string;
@@ -94,7 +95,7 @@ export interface IPost {
 
 export interface IComment {
   id: string;
-  user: IUser;
-  createdAt: string;
-  text: string;
+  uid: string;
+  createdAt: Date;
+  txt: string;
 }

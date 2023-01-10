@@ -2,6 +2,8 @@ import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 import Link from "next/link";
 import { db } from "../../apis/firebase";
 import Back from "../../components/Back";
+import PostAction from "../../components/PostAction";
+import PostComment from "../../components/PostComment";
 import ProfileSmall from "../../components/ProfileSmall";
 import { IPost, IUser } from "../../custom";
 
@@ -31,6 +33,8 @@ export default function Post({ post, user }: IPostProps) {
         ))}
       </div>
       <div className="text">{post?.txt}</div>
+      <PostAction post={post} user={user} />
+      <PostComment post={post} comments={post.comments} />
 
       <style jsx>{`
         .imgCont {
@@ -77,6 +81,7 @@ export default function Post({ post, user }: IPostProps) {
         }
         .text {
           margin-top: 8px;
+          margin-bottom: 36px;
         }
         .mainTag:hover,
         .subTag:hover {

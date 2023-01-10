@@ -74,6 +74,7 @@ export default function Layout({ children }: ILayoutProps) {
           tags: [],
           likes: [],
           scraps: [],
+          comments: [],
           followers: [],
           followings: [],
         };
@@ -104,6 +105,7 @@ export default function Layout({ children }: ILayoutProps) {
           tags: [],
           likes: [],
           scraps: [],
+          comments: [],
           followers: [],
           followings: [],
         };
@@ -223,6 +225,13 @@ export default function Layout({ children }: ILayoutProps) {
             padding: 8px;
             color: ${COLOR.txtDark2};
             width: 100%;
+            font-size: 16px;
+          }
+          .g-profileImg {
+            width: 32px;
+            height: 32px;
+            border-radius: 32px;
+            margin-right: 8px;
           }
         `}
       </style>
