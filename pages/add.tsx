@@ -7,8 +7,6 @@ import { useStore } from "../apis/zustand";
 import { useRouter } from "next/router";
 import { HiArrowLeft, HiX } from "react-icons/hi";
 import { useForm } from "react-hook-form";
-import { userAgent } from "next/server";
-import { watch } from "fs";
 import Color from "../components/Color";
 
 interface IForm {
@@ -233,15 +231,6 @@ export default function Add() {
             for (const each in watch("tags")) {
               if (!watch("tags")[each]) {
                 continue;
-              } else if (i++ === 0) {
-                result.push(
-                  <span className="tag tag-main">
-                    <span className="tagTxt">{each}</span>
-                    <span id={each} onClick={handleTagRemove}>
-                      <HiX />
-                    </span>
-                  </span>
-                );
               } else {
                 result.push(
                   <span className="tag">
@@ -334,15 +323,11 @@ export default function Add() {
           }
           .tag {
             display: inline-block;
-            background-color: ${COLOR.txtDark2};
             padding: 4px 8px;
             border-radius: 8px;
             width: fit-content;
             margin: 4px 0;
             margin-right: 4px;
-            color: ${COLOR.txtDark1};
-          }
-          .tag-main {
             background-color: ${COLOR.btn1};
             color: ${COLOR.txtDark1};
           }
