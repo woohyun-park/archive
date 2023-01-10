@@ -73,11 +73,13 @@ export default function Profile({ uid, posts }: IProfileProps) {
   return (
     <>
       {uid === curUser.uid && (
-        <Link href="/setting">
-          <div className="setting">
-            <HiOutlineCog size={SIZE.icon} />
-          </div>
-        </Link>
+        <div className="settingCont">
+          <Link href="/setting" legacyBehavior>
+            <div className="setting">
+              <HiOutlineCog size={SIZE.icon} />
+            </div>
+          </Link>
+        </div>
       )}
       <div className="profileTopCont">
         <div className="profileLeftCont">
@@ -140,6 +142,10 @@ export default function Profile({ uid, posts }: IProfileProps) {
             margin-top: 0;
             word-break: break-all;
           }
+          .settingCont{
+            display:flex;
+            justify-content: flex-end;
+          }
           .setting{
             display: flex;
             justify-content: flex-end;
@@ -173,6 +179,9 @@ export default function Profile({ uid, posts }: IProfileProps) {
           }
           .profileType {
             color: ${COLOR.txt3};s
+          }
+          .setting:hover{
+            cursor:pointer;
           }
         `}
       </style>

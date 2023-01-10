@@ -37,7 +37,7 @@ export default function ProfileSmall({
     const tempUser = { ...user, followers: tempUserFollowers };
     await updateDoc(userRef, tempUser);
   }
-  function displayDate() {
+  function displayCreatedAt() {
     const curDate = dayjs(new Date());
     const postDate = dayjs(post?.createdAt);
     if (curDate.diff(postDate) < 60000) {
@@ -52,11 +52,14 @@ export default function ProfileSmall({
       return postDate.format("MM월 DD, YYYY");
     }
   }
+  function displayTxt() {
+    return user.txt;
+  }
 
   return (
     <>
       <div className={`userCont userCont-${style}`}>
-        <div className="row">
+        <div className={user.uid === curUser.uid ? "row row-cur" : "row"}>
           <Link href={`/profile/${user?.uid}`}>
             <img className="userImg" src={user?.photoURL} />
           </Link>
@@ -64,19 +67,17 @@ export default function ProfileSmall({
             <Link href={`/profile/${user?.uid}`} legacyBehavior>
               <a className="userName">{user?.displayName}</a>
             </Link>
-            <div className="createdAt">{displayDate()}</div>
+            {style === "feed" ? (
+              <div className="createdAt">{displayCreatedAt()}</div>
+            ) : (
+              <div className="txt">{displayTxt()}</div>
+            )}
           </div>
         </div>
         {(() => {
           if (style === "post" || style === "search") {
             if (curUser.uid === user.uid) {
-              return (
-                <>
-                  <div className="moreBtn">
-                    <HiDotsHorizontal size={SIZE.iconSmall} />
-                  </div>
-                </>
-              );
+              return <></>;
             } else if (curUser.followings[user.uid]) {
               return (
                 <div className="followBtn" onClick={handleFollow}>
@@ -111,6 +112,7 @@ export default function ProfileSmall({
             display: flex;
             justify-content: space-between;
             align-items: center;
+            width: 100%;
           }
           .userCont-post,
           .userCont-feed {
@@ -134,13 +136,26 @@ export default function ProfileSmall({
             font-size: 12px;
             color: ${COLOR.txt2};
           }
+          .txt {
+            font-size: 12px;
+            color: ${COLOR.txt2};
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            width: 100%;
+          }
           .row {
             display: flex;
             flex-direction: row;
+            width: calc(100% - 48px);
+          }
+          .row-cur {
+            width: calc(100% - 18px);
           }
           .col {
             display: flex;
             flex-direction: column;
+            width: inherit;
           }
           .followBtn {
             padding: 8px 12px;
@@ -152,6 +167,13 @@ export default function ProfileSmall({
           .followBtn-follow {
             background-color: ${COLOR.bgDark1};
             color: ${COLOR.txtDark1};
+          }
+          .moreBtn,
+          .followBtn {
+            width: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
           }
           .userImg,
           .userName,
