@@ -104,7 +104,11 @@ export async function getServerSidePaths() {
 export async function getServerSideProps({ params }: IServerSidePaths) {
   const postRef = doc(db, "posts", params.id);
   const postSnap = await getDoc(postRef);
-  const post: IPost = { ...(postSnap.data() as IPost), id: postSnap.id };
+  const post: IPost = {
+    ...(postSnap.data() as IPost),
+    createdAt: JSON.parse(JSON.stringify(postSnap.data()?.createdAt.toDate())),
+    id: postSnap.id,
+  };
 
   const userRef = doc(db, "users", post?.uid);
   const userSnap = await getDoc(userRef);
