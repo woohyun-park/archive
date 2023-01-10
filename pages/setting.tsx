@@ -2,9 +2,9 @@ import axios, { AxiosRequestConfig } from "axios";
 import { useRouter } from "next/router";
 import React, { useRef, useState } from "react";
 import { useStore } from "../apis/zustand";
-import { COLOR, IUser, SIZE } from "../custom";
+import { COLOR, IDict, IUser, SIZE } from "../custom";
 import { useForm } from "react-hook-form";
-import { HiArrowLeft } from "react-icons/hi";
+import { HiArrowLeft, HiX } from "react-icons/hi";
 
 interface IForm {
   file: File[];
@@ -19,6 +19,7 @@ export default function Setting() {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { isSubmitting },
   } = useForm<IForm>({
     defaultValues: {
@@ -82,6 +83,29 @@ export default function Setting() {
       }
     };
   }
+  // interface IError {
+  //   message: string;
+  //   type: string;
+  // }
+  // function onInvalid(data: IDict<IError>) {
+  //   console.log(data);
+  //   const tempError: IDict<string> = {};
+  //   for (const each in data) {
+  //     const { type } = data[each];
+  //     if (type === "required") {
+  //       if (each === "displayName") {
+  //         tempError[each] = "이름을 입력하세요.";
+  //       }
+  //     } else if (type === "maxLength") {
+  //       if (each === "displayName") {
+  //         tempError[each] = "이름은 16자를 넘을 수 없습니다.";
+  //       } else if (each === "txt") {
+  //         tempError[each] = "소개는 150자를 넘을 수 없습니다.";
+  //       }
+  //     }
+  //   }
+  //   setError(tempError);
+  // }
 
   return (
     <>
@@ -96,7 +120,12 @@ export default function Setting() {
           onClick={() => fileRef.current?.click()}
         />
       </div>
-      <form onSubmit={handleSubmit((data) => onValid(data))}>
+      <form
+        onSubmit={handleSubmit(
+          (data) => onValid(data)
+          // (data) => onInvalid(data as IDict<IError>)
+        )}
+      >
         <input
           type="file"
           accept="image/*"
@@ -108,12 +137,26 @@ export default function Setting() {
           }}
           hidden
         />
+        <div className="labelCont">
+          <label className="label">사용자 이름</label>
+          <div
+            className={
+              watch("displayName").length === 0
+                ? "txtLen txtLen-invalid "
+                : "txtLen"
+            }
+          >{`${watch("displayName").length}/16`}</div>
+        </div>
         <input
           {...register("displayName", { required: true, maxLength: 16 })}
           type="text"
-          placeholder="이름"
+          maxLength={16}
         />
-        <textarea {...register("txt", { maxLength: 150 })} placeholder="소개" />
+        <div className="labelCont">
+          <label className="label">소개</label>
+          <div className="txtLen">{`${watch("txt").length}/150`}</div>
+        </div>
+        <textarea {...register("txt", { maxLength: 150 })} maxLength={150} />
         <button type="submit" className="g-button1">
           변경
         </button>
@@ -141,6 +184,21 @@ export default function Setting() {
           form > textarea {
             height: 64px;
             resize: none;
+          }
+          .labelCont {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+          }
+          .label {
+            font-size: 16px;
+            margin-top: 8px;
+          }
+          .txtLen {
+            font-size: 12px;
+          }
+          .txtLen-invalid {
+            color: red;
           }
           .submitting {
             position: absolute;
