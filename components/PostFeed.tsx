@@ -1,6 +1,6 @@
 import { IPost, IUser } from "../custom";
 import Image from "./Image";
-import PostInter from "./PostInter";
+import PostAction from "./PostAction";
 import ProfileSmall from "./ProfileSmall";
 
 type IPostFeedProps = {
@@ -13,7 +13,7 @@ export default function PostFeed({ post, user }: IPostFeedProps) {
     <>
       <ProfileSmall post={post} user={user} style="feed" />
       <Image post={post} style="feed" />
-      <PostInter post={post} user={user} />
+      <PostAction post={post} user={user} />
     </>
   );
 }

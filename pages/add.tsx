@@ -1,5 +1,11 @@
 import axios, { AxiosRequestConfig } from "axios";
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  FieldValue,
+  serverTimestamp,
+  Timestamp,
+} from "firebase/firestore";
 import React, { useRef, useState } from "react";
 import { db } from "../apis/firebase";
 import { COLOR, IDict, IPost, SIZE, FUNC } from "../custom";
@@ -12,9 +18,22 @@ import Color from "../components/Color";
 interface IForm {
   file: File[];
   title: string;
-  tags: IDict<boolean>;
+  tags: string[];
   txt: string;
   color: string;
+}
+
+interface ITempPost {
+  uid: string;
+  createdAt: FieldValue;
+  title: string;
+  tags: string[];
+  txt: string;
+  imgs: string[];
+  color: string;
+  likes: string[];
+  scraps: string[];
+  comments: string[];
 }
 
 export default function Add() {
@@ -29,7 +48,7 @@ export default function Add() {
     defaultValues: {
       file: undefined,
       title: "",
-      tags: {},
+      tags: [],
       txt: "",
       color: "",
     },
@@ -40,7 +59,7 @@ export default function Add() {
   const [isImage, setIsImage] = useState(true);
   const [selectedColor, setSelectedColor] = useState(COLOR.red);
   const [tag, setTag] = useState("");
-  const [tags, setTags] = useState({});
+  const [tags, setTags] = useState<string[]>([]);
   const router = useRouter();
   console.log(watch());
 
@@ -56,6 +75,7 @@ export default function Add() {
         process.env.NEXT_PUBLIC_CD_UPLOADE_PRESET || ""
       );
       formData.append(`file`, data.file[0]);
+
       await axios
         .post(
           `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CD_CLOUD_NAME}/image/upload`,
@@ -63,36 +83,40 @@ export default function Add() {
           config
         )
         .then(async (res) => {
-          const ref = await addDoc(collection(db, "posts"), {
+          const tempPost: ITempPost = {
             uid: curUser.uid,
             createdAt: serverTimestamp(),
             title: data.title,
-            tags: FUNC.filterFalse(data.tags),
+            tags: data.tags,
             txt: data.txt,
             imgs: [res.data.url],
             color: "",
-            likes: {},
-            comments: {},
-          });
-          const tempPosts = { ...curUser.posts };
-          tempPosts[ref.id] = true;
+            likes: [],
+            scraps: [],
+            comments: [],
+          };
+          const ref = await addDoc(collection(db, "posts"), tempPost);
+          const tempPosts = [...curUser.posts];
+          tempPosts.push(ref.id);
           setCurUser({ ...curUser, posts: tempPosts });
           updateCurUser({ ...curUser, posts: tempPosts });
         });
     } else {
-      const ref = await addDoc(collection(db, "posts"), {
+      const tempPost: ITempPost = {
         uid: curUser.uid,
         createdAt: serverTimestamp(),
         title: data.title,
-        tags: FUNC.filterFalse(data.tags),
+        tags: data.tags,
         txt: data.txt,
         imgs: [],
         color: data.color,
-        likes: {},
-        comments: {},
-      });
-      const tempPosts = { ...curUser.posts };
-      tempPosts[ref.id] = true;
+        likes: [],
+        scraps: [],
+        comments: [],
+      };
+      const ref = await addDoc(collection(db, "posts"), tempPost);
+      const tempPosts = [...curUser.posts];
+      tempPosts.push(ref.id);
       setCurUser({ ...curUser, posts: tempPosts });
       updateCurUser({ ...curUser, posts: tempPosts });
     }
@@ -124,23 +148,42 @@ export default function Add() {
   }
   function handleTagChange(e: React.ChangeEvent<HTMLInputElement>) {
     e.preventDefault();
+    const tempTag = e.target.value.split(" ")[0];
     if (e.target.value === " ") {
       setTag("");
     } else if (
       e.target.value.length !== 1 &&
       e.target.value.split(" ").length === 2
     ) {
-      setTags({ ...tags, [tag]: true });
-      setValue("tags", { ...tags, [tag]: true });
+      let tempTags = [...tags];
+      const tagIndex = tempTags.findIndex((elem) => {
+        return elem == tempTag;
+      });
+      if (tagIndex === -1) {
+        tempTags.push(tempTag);
+      } else {
+        tempTags = [
+          ...tempTags.slice(0, tagIndex),
+          ...tempTags.slice(tagIndex + 1, tempTags.length),
+        ];
+        tempTags.unshift(tempTag);
+      }
+      setTags(tempTags);
+      setValue("tags", tempTags);
       setTag("");
     } else {
-      setTag(e.target.value);
+      setTag(tempTag);
     }
   }
   function handleTagRemove(e: React.MouseEvent<HTMLSpanElement>) {
     const tag = e.currentTarget.id;
-    setTags({ ...tags, [tag]: false });
-    setValue("tags", { ...tags, [tag]: false });
+    const tagIndex = tags.findIndex((elem) => elem === tag);
+    const tempTags = [
+      ...[...tags].slice(0, tagIndex),
+      ...[...tags].slice(tagIndex + 1, [...tags].length),
+    ];
+    setTags(tempTags);
+    setValue("tags", tempTags);
   }
 
   return (
@@ -225,10 +268,18 @@ export default function Add() {
         />
         <input {...register("title")} placeholder="제목" />
         <div className="tagCont">
-          {(() => {
+          {watch("tags").map((each) => (
+            <span className="tag">
+              <span className="tagTxt">{each}</span>
+              <span id={each} onClick={handleTagRemove}>
+                <HiX />
+              </span>
+            </span>
+          ))}
+          {/* {(() => {
             const result = [];
             let i = 0;
-            for (const each in watch("tags")) {
+            for (const each of watch("tags")) {
               if (!watch("tags")[each]) {
                 continue;
               } else {
@@ -243,7 +294,7 @@ export default function Add() {
               }
             }
             return result;
-          })()}
+          })()} */}
         </div>
         <input
           onChange={handleTagChange}

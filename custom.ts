@@ -67,12 +67,12 @@ export interface IUser {
   displayName: string;
   photoURL: string;
   txt: string;
-  posts: IDict<boolean>;
-  tags: IDict<boolean>;
-  likes: IDict<boolean>;
-  scraps: IDict<boolean>;
-  followers: IDict<boolean>;
-  followings: IDict<boolean>;
+  posts: string[];
+  tags: string[];
+  likes: string[];
+  scraps: string[];
+  followers: string[];
+  followings: string[];
 }
 
 export interface IPost {
@@ -80,12 +80,13 @@ export interface IPost {
   uid: string;
   createdAt: Date;
   title: string;
-  tags: IDict<boolean>;
+  tags: string[];
   txt: string;
   imgs: string[];
   color: string;
-  likes: IDict<boolean>;
-  comments: IDict<IComment>;
+  likes: string[];
+  scraps: string[];
+  comments: string[];
 }
 
 export interface IComment {

@@ -66,17 +66,19 @@ export default function Layout({ children }: ILayoutProps) {
         const credential = GoogleAuthProvider.credentialFromResult(result);
         const token = credential?.accessToken;
         const user = result.user;
-        const res = await setDoc(doc(db, "users", user.uid), {
-          displayName: user.displayName,
-          photoURL: user.photoURL,
+        const tempUser: IUser = {
+          uid: user.uid,
+          displayName: user.displayName || "아카이버",
+          photoURL: user.photoURL || DEFAULT.user.photoURL,
           txt: "",
-          posts: {},
-          tags: {},
-          likes: {},
-          scraps: {},
-          followers: {},
-          followings: {},
-        });
+          posts: [],
+          tags: [],
+          likes: [],
+          scraps: [],
+          followers: [],
+          followings: [],
+        };
+        const res = await setDoc(doc(db, "users", user.uid), tempUser);
         router.push("/");
       })
       .catch((e) => {
@@ -93,17 +95,19 @@ export default function Layout({ children }: ILayoutProps) {
           login.email,
           login.password
         );
-        await setDoc(doc(db, "users", res.user.uid), {
-          displayName: res.user.email,
+        const tempUser: IUser = {
+          uid: res.user.uid,
+          displayName: res.user.email || "아카이버",
           photoURL: DEFAULT.user.photoURL,
           txt: "",
-          posts: {},
-          tags: {},
-          likes: {},
-          scraps: {},
-          followers: {},
-          followings: {},
-        });
+          posts: [],
+          tags: [],
+          likes: [],
+          scraps: [],
+          followers: [],
+          followings: [],
+        };
+        await setDoc(doc(db, "users", res.user.uid), tempUser);
       } else {
         await signInWithEmailAndPassword(auth, login.email, login.password);
       }
@@ -122,7 +126,6 @@ export default function Layout({ children }: ILayoutProps) {
       ) : login.isLoggedIn ? (
         <>
           <div className="g-pageCont">{children}</div>
-          {console.log(router.pathname)}
           {router.pathname === "/setting" || router.pathname === "/add" ? (
             <></>
           ) : (

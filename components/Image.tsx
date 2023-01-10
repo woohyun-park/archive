@@ -9,7 +9,6 @@ interface IImageProps {
 }
 
 export default function Image({ post, style }: IImageProps) {
-  const [tags, setTags] = useDict(post.tags);
   return (
     <>
       <div className={`cont cont-${style}`}>
@@ -32,7 +31,7 @@ export default function Image({ post, style }: IImageProps) {
         </Link>
         <div className="tagCont">
           {(style === "feed" || style === "profile") &&
-            tags.map((tag, i) => (
+            post.tags.map((tag, i) => (
               <Link key={i} href={{ pathname: `/tag/${tag}` }} legacyBehavior>
                 <div className="mainTag">{`#${tag}`}</div>
               </Link>

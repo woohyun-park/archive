@@ -15,12 +15,12 @@ export const useStore = create<IUserState>((set) => ({
     displayName: "",
     photoURL: "",
     txt: "",
-    posts: {},
-    tags: {},
-    likes: {},
-    scraps: {},
-    followers: {},
-    followings: {},
+    posts: [],
+    tags: [],
+    likes: [],
+    scraps: [],
+    followers: [],
+    followings: [],
   },
   setCurUser: async (curUser) => {
     set((state) => {
