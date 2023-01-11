@@ -5,6 +5,7 @@ import {
   FieldValue,
   serverTimestamp,
   Timestamp,
+  updateDoc,
 } from "firebase/firestore";
 import React, { useRef, useState } from "react";
 import { db } from "../apis/firebase";
@@ -96,6 +97,7 @@ export default function Add() {
             comments: [],
           };
           const ref = await addDoc(collection(db, "posts"), tempPost);
+          await updateDoc(ref, { id: ref.id });
           const tempPosts = [...curUser.posts];
           tempPosts.push(ref.id);
           setCurUser({ ...curUser, posts: tempPosts });
@@ -115,6 +117,7 @@ export default function Add() {
         comments: [],
       };
       const ref = await addDoc(collection(db, "posts"), tempPost);
+      await updateDoc(ref, { id: ref.id });
       const tempPosts = [...curUser.posts];
       tempPosts.push(ref.id);
       setCurUser({ ...curUser, posts: tempPosts });
@@ -151,10 +154,7 @@ export default function Add() {
     const tempTag = e.target.value.split(" ")[0];
     if (e.target.value === " ") {
       setTag("");
-    } else if (
-      e.target.value.length !== 1 &&
-      e.target.value.split(" ").length === 2
-    ) {
+    } else if (e.target.value.split(" ").length === 2) {
       let tempTags = [...tags];
       const tagIndex = tempTags.findIndex((elem) => {
         return elem == tempTag;
@@ -276,33 +276,8 @@ export default function Add() {
               </span>
             </span>
           ))}
-          {/* {(() => {
-            const result = [];
-            let i = 0;
-            for (const each of watch("tags")) {
-              if (!watch("tags")[each]) {
-                continue;
-              } else {
-                result.push(
-                  <span className="tag">
-                    <span className="tagTxt">{each}</span>
-                    <span id={each} onClick={handleTagRemove}>
-                      <HiX />
-                    </span>
-                  </span>
-                );
-              }
-            }
-            return result;
-          })()} */}
         </div>
-        <input
-          onChange={handleTagChange}
-          // onKeyDown={handleEnterTag}
-          value={tag}
-          placeholder="태그"
-        />
-        {/* <input {...register("tags")} placeholder="태그" /> */}
+        <input onChange={handleTagChange} value={tag} placeholder="태그" />
         <textarea {...register("txt")} placeholder="내용" />
         <button className="g-button1" type="submit">
           생성

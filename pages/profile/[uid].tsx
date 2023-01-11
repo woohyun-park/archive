@@ -4,6 +4,7 @@ import {
   arrayUnion,
   collection,
   doc,
+  FieldPath,
   getDoc,
   getDocs,
   query,
@@ -19,31 +20,40 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 interface IProfileProps {
-  uid: string;
-  posts: IPost[];
+  initUser: IUser;
+  initPosts: IPost[];
+  initScraps: IPost[];
 }
 
-export default function Profile({ uid, posts }: IProfileProps) {
+export default function Profile({
+  initUser,
+  initPosts,
+  initScraps,
+}: IProfileProps) {
   const { curUser, setCurUser, updateCurUser } = useStore();
-  const [user, setUser] = useState<IUser | null>(null);
+  const [user, setUser] = useState<IUser>(initUser);
+  const [posts, setPosts] = useState(initPosts);
+  const [scraps, setScraps] = useState(initScraps);
   const [isFollowing, setIsFollowing] = useState(() =>
-    curUser.followings.find((elem) => elem === uid) ? true : false
+    curUser.followings.find((elem) => elem === user.uid) ? true : false
   );
+  console.log(initUser, initPosts, initScraps);
 
   useEffect(() => {
-    getUser();
+    update();
   }, [curUser]);
 
-  async function getUser() {
-    if (curUser.uid === uid) {
+  async function update() {
+    if (curUser.uid === user.uid) {
       setUser(curUser);
       return;
     }
-    const userRef = doc(db, "users", uid);
+    const userRef = doc(db, "users", user.uid);
     const userSnap = await getDoc(userRef);
-    const tempUser = { ...(userSnap.data() as IUser), uid };
+    const tempUser = { ...(userSnap.data() as IUser), uid: user.uid };
     setUser(tempUser);
   }
+
   function handleLogout() {
     signOut(auth);
   }
@@ -68,15 +78,15 @@ export default function Profile({ uid, posts }: IProfileProps) {
   async function handleToggleFollow() {
     console.log("handleToggleFollow");
     const curUserRef = doc(db, "users", curUser.uid);
-    const userRef = doc(db, "users", uid);
+    const userRef = doc(db, "users", user.uid);
     if (isFollowing) {
-      await updateDoc(curUserRef, { followings: arrayRemove(uid) });
+      await updateDoc(curUserRef, { followings: arrayRemove(user.uid) });
       await updateDoc(userRef, {
         followers: arrayRemove(curUser.uid),
       });
     } else {
       await updateDoc(curUserRef, {
-        followings: arrayUnion(uid),
+        followings: arrayUnion(user.uid),
       });
       await updateDoc(userRef, {
         followers: arrayUnion(curUser.uid),
@@ -85,9 +95,9 @@ export default function Profile({ uid, posts }: IProfileProps) {
 
     const tempFollowings = new Set(curUser.followings);
     if (isFollowing) {
-      tempFollowings.delete(uid);
+      tempFollowings.delete(user.uid);
     } else {
-      tempFollowings.add(uid);
+      tempFollowings.add(user.uid);
     }
     const followings = Array.from(tempFollowings) as string[];
     setCurUser({ ...curUser, followings });
@@ -98,7 +108,7 @@ export default function Profile({ uid, posts }: IProfileProps) {
 
   return (
     <>
-      {uid === curUser.uid && (
+      {user.uid === curUser.uid && (
         <div className="settingCont">
           <Link href="/setting" legacyBehavior>
             <div className="setting">
@@ -129,8 +139,8 @@ export default function Profile({ uid, posts }: IProfileProps) {
       </div>
       {(() => {
         const result = [];
-        if (curUser.uid !== uid) {
-          if (curUser.followings.find((elem) => elem === uid)) {
+        if (curUser.uid !== user.uid) {
+          if (curUser.followings.find((elem) => elem === user.uid)) {
             result.push(
               <button onClick={handleToggleFollow} className="g-button2">
                 팔로잉
@@ -147,7 +157,7 @@ export default function Profile({ uid, posts }: IProfileProps) {
         return result;
       })()}
       <div className="profileTxtCont">{user?.txt}</div>
-      {uid === curUser.uid ? (
+      {user.uid === curUser.uid ? (
         <>
           <button onClick={handleLogout} className="g-button1">
             로그아웃
@@ -156,7 +166,7 @@ export default function Profile({ uid, posts }: IProfileProps) {
       ) : (
         <></>
       )}
-      <List data={{ grid: posts, tag: [], scrap: [] }} style="profile" />
+      <List data={{ grid: posts, tag: [], scrap: scraps }} style="profile" />
 
       <style jsx>
         {`
@@ -235,14 +245,30 @@ export async function getServerSideProps({ params }: IServerSidePaths) {
   const postSnap = await getDocs(
     query(postRef, where("uid", "==", params.uid))
   );
-  const posts: IPost[] = [];
+  const initPosts: IPost[] = [];
   postSnap.forEach((doc) => {
-    posts.push({
+    initPosts.push({
       ...(doc.data() as IPost),
       createdAt: doc.data().createdAt.toDate(),
       id: doc.id,
     });
   });
 
-  return { props: { uid, posts } };
+  const userRef = doc(db, "users", uid);
+  const userSnap = await getDoc(userRef);
+  const initUser: IUser = { ...(userSnap.data() as IUser), uid: userSnap.id };
+
+  const scrapSnap = await getDocs(
+    query(postRef, where("id", "in", initUser.scraps))
+  );
+  const initScraps: IPost[] = [];
+  scrapSnap.forEach((doc) => {
+    initScraps.push({
+      ...(doc.data() as IPost),
+      createdAt: doc.data().createdAt.toDate(),
+      id: doc.id,
+    });
+  });
+
+  return { props: { initUser, initPosts, initScraps } };
 }

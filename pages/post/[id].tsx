@@ -5,7 +5,6 @@ import { db } from "../../apis/firebase";
 import { useStore } from "../../apis/zustand";
 import Back from "../../components/Back";
 import PostAction from "../../components/PostAction";
-import PostComment from "../../components/PostComment";
 import ProfileSmall from "../../components/ProfileSmall";
 import { IPost, IUser } from "../../custom";
 
