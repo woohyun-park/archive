@@ -35,6 +35,9 @@ interface ITempComment {
 
 export default function PostAction({ post, style }: IPostActionProps) {
   const { curUser, setCurUser, updateCurUser } = useStore();
+  const [initIsLiked, setInitIsLiked] = useState(
+    curUser.likes.find((elem) => elem === post.id) ? true : false
+  );
   const [isLiked, setIsLiked] = useState(
     curUser.likes.find((elem) => elem === post.id) ? true : false
   );
@@ -130,6 +133,21 @@ export default function PostAction({ post, style }: IPostActionProps) {
   function handleCommentClick(e: React.MouseEvent<SVGElement>) {
     commentRef.current?.focus();
   }
+  function displayLike() {
+    if (initIsLiked) {
+      if (isLiked) {
+        return post.likes.length;
+      } else {
+        return post.likes.length - 1;
+      }
+    } else {
+      if (isLiked) {
+        return post.likes.length + 1;
+      } else {
+        return post.likes.length;
+      }
+    }
+  }
 
   return (
     <>
@@ -160,7 +178,7 @@ export default function PostAction({ post, style }: IPostActionProps) {
         </div>
       </div>
       <div className="count">
-        {`좋아요 ${post.likes.length}`}&nbsp;&nbsp;
+        {`좋아요 ${displayLike()}`}&nbsp;&nbsp;
         {`댓글 ${post.comments.length}`}
       </div>
       {style === "post" &&

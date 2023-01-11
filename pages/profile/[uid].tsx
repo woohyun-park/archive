@@ -57,23 +57,6 @@ export default function Profile({
   function handleLogout() {
     signOut(auth);
   }
-  // async function handleFollow() {
-  //   const tempCurUserFollowings = {
-  //     ...(curUser.followings as IDict<boolean>),
-  //     [uid]: !curUser.followings[uid],
-  //   };
-  //   const tempCurUser = { ...curUser, followings: tempCurUserFollowings };
-  //   setCurUser(tempCurUser);
-  //   updateCurUser(tempCurUser);
-
-  //   const userRef = doc(db, "users", uid);
-  //   const tempUserFollowers = {
-  //     ...(user?.followers as IDict<boolean>),
-  //     [curUser.uid]: !user?.followers[curUser.uid],
-  //   };
-  //   const tempUser = { ...user, followers: tempUserFollowers };
-  //   await updateDoc(userRef, tempUser);
-  // }
 
   async function handleToggleFollow() {
     console.log("handleToggleFollow");

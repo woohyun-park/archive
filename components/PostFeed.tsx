@@ -13,7 +13,7 @@ export default function PostFeed({ post, user }: IPostFeedProps) {
     <>
       <ProfileSmall post={post} user={user} style="feed" />
       <Image post={post} style="feed" />
-      <PostAction post={post} user={user} />
+      <PostAction post={post} style="feed" />
     </>
   );
 }
