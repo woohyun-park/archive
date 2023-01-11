@@ -9,7 +9,7 @@ import {
   serverTimestamp,
   updateDoc,
 } from "firebase/firestore";
-import { useState } from "react";
+import React, { RefObject, useRef, useState } from "react";
 import {
   HiBookmark,
   HiOutlineBookmark,
@@ -42,6 +42,7 @@ export default function PostAction({ post, style }: IPostActionProps) {
     curUser.scraps.find((elem) => elem === post.id) ? true : false
   );
   const [comment, setComment] = useState("");
+  const commentRef: RefObject<HTMLInputElement> = useRef(null);
 
   async function handleToggleLike() {
     const postRef = doc(db, "posts", post.id || "");
@@ -126,6 +127,9 @@ export default function PostAction({ post, style }: IPostActionProps) {
     setCurUser({ ...curUser, comments });
     updateCurUser({ ...curUser, comments });
   }
+  function handleCommentClick(e: React.MouseEvent<SVGElement>) {
+    commentRef.current?.focus();
+  }
 
   return (
     <>
@@ -139,7 +143,10 @@ export default function PostAction({ post, style }: IPostActionProps) {
             )}
           </span>
           <span>
-            <HiOutlineChatBubbleOvalLeft size={SIZE.icon} />
+            <HiOutlineChatBubbleOvalLeft
+              size={SIZE.icon}
+              onClick={handleCommentClick}
+            />
           </span>
         </div>
         <div>
@@ -166,6 +173,7 @@ export default function PostAction({ post, style }: IPostActionProps) {
             placeholder={`${curUser.displayName}(으)로 댓글 달기...`}
             value={comment}
             onChange={handleChange}
+            ref={commentRef}
           />
           <button className="g-button1 button" onClick={handleSubmit}>
             게시
