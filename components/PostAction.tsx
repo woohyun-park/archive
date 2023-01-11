@@ -38,6 +38,9 @@ export default function PostAction({ post, style }: IPostActionProps) {
   const [initIsLiked, setInitIsLiked] = useState(
     curUser.likes.find((elem) => elem === post.id) ? true : false
   );
+  const [initIsScraped, setInitIsScraped] = useState(
+    curUser.scraps.find((elem) => elem === post.id) ? true : false
+  );
   const [isLiked, setIsLiked] = useState(
     curUser.likes.find((elem) => elem === post.id) ? true : false
   );
@@ -148,6 +151,21 @@ export default function PostAction({ post, style }: IPostActionProps) {
       }
     }
   }
+  function displayScraps() {
+    if (initIsScraped) {
+      if (isScraped) {
+        return post.scraps.length;
+      } else {
+        return post.scraps.length - 1;
+      }
+    } else {
+      if (isScraped) {
+        return post.scraps.length + 1;
+      } else {
+        return post.scraps.length;
+      }
+    }
+  }
 
   return (
     <>
@@ -178,9 +196,14 @@ export default function PostAction({ post, style }: IPostActionProps) {
         </div>
       </div>
       <div className="count">
-        {`좋아요 ${style === "feed" ? displayLike() : post.likes.length}`}
-        &nbsp;&nbsp;
-        {`댓글 ${post.comments.length}`}
+        <div>
+          {`좋아요 ${style === "feed" ? displayLike() : post.likes.length}`}
+          &nbsp;&nbsp;
+          {`댓글 ${post.comments.length}`}
+        </div>
+        <div>{`스크랩 ${
+          style === "feed" ? displayScraps() : post.scraps.length
+        }`}</div>
       </div>
       {style === "post" &&
         post.comments.map((id) => <Comment id={id} onClick={handleDelete} />)}
@@ -213,6 +236,8 @@ export default function PostAction({ post, style }: IPostActionProps) {
           .count {
             font-size: 12px;
             margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
           }
           .inputCont {
             display: flex;

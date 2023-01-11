@@ -241,6 +241,12 @@ export async function getServerSideProps({ params }: IServerSidePaths) {
   const userSnap = await getDoc(userRef);
   const initUser: IUser = { ...(userSnap.data() as IUser), uid: userSnap.id };
 
+  // scraps가 []인 경우에는 where()에서 "in"을 사용할 시 에러가 난다.
+  if (initUser.scraps.length === 0) {
+    const initScraps: IPost[] = [];
+    return { props: { initUser, initPosts, initScraps } };
+  }
+
   const scrapSnap = await getDocs(
     query(postRef, where("id", "in", initUser.scraps))
   );
