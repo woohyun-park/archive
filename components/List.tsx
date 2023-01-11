@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Image from "./Image";
-import { COLOR, IPost, IUser, IStyle, IDict } from "../custom";
+import { COLOR, IPost, IUser, IStyle, IDict, SIZE } from "../custom";
 import ProfileSmall from "./ProfileSmall";
 import ListTag from "./ListTag";
 import { HiArrowLeft, HiBackspace } from "react-icons/hi";
@@ -93,36 +93,55 @@ export default function List({ data, style }: IListProps) {
                   key={e.id}
                 ></Image>
               ))} */}
-            <div className="tagCont">
-              {(() => {
+            {(() => {
+              const tags = (data as IDataProfile).tag;
+              if (selected !== 2) {
+                return <></>;
+              } else if (selectedTag === "") {
                 const result = [];
-                const tags = (data as IDataProfile).tag;
-                if (selected !== 2) {
-                  return <></>;
-                } else if (selectedTag === "") {
-                  for (const tag in tags) {
-                    result.push(
-                      <ListTag
-                        uid={(tags[tag][0] as IPost).uid}
-                        tag={tag}
+                for (const tag in tags) {
+                  result.push(
+                    <>
+                      <Image
+                        post={{
+                          id: "",
+                          uid: "",
+                          createdAt: new Date(),
+                          title: `#${tag}`,
+                          txt: "",
+                          tags: [],
+                          imgs: [],
+                          color: "",
+                          likes: [],
+                          scraps: [],
+                          comments: [],
+                        }}
+                        style="tag"
                         onClick={() => setSelectedTag(tag)}
                       />
-                    );
-                  }
-                } else {
-                  return (
-                    <>
-                      <HiArrowLeft onClick={() => setSelectedTag("")} />
-                      {tags[selectedTag].map((e) => (
-                        <Image post={e} style="profile" />
-                      ))}
                     </>
                   );
                 }
-
                 return result;
-              })()}
-            </div>
+              } else {
+                return (
+                  <>
+                    <div className="tagBack">
+                      <HiArrowLeft
+                        size={SIZE.icon}
+                        onClick={() => setSelectedTag("")}
+                      />
+                    </div>
+
+                    <div className="tagCont">
+                      {tags[selectedTag].map((e) => (
+                        <Image post={e} style="profile" />
+                      ))}
+                    </div>
+                  </>
+                );
+              }
+            })()}
 
             {selected === 3 &&
               (data as IDataProfile).scrap.map((e) => (
@@ -167,7 +186,9 @@ export default function List({ data, style }: IListProps) {
           width: 100%;
           display: flex;
           flex-wrap: wrap;
-          justify-content: space-between;
+        }
+        .tagBack {
+          margin-bottom: 8px;
         }
       `}</style>
     </>

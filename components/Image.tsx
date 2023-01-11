@@ -2,40 +2,52 @@ import Link from "next/link";
 import { COLOR, IPost, IStyle } from "../custom";
 
 interface IImageProps {
-  post: IPost;
+  post: IPost | null;
   style: IStyle;
+  onClick?: () => void;
 }
 
-export default function Image({ post, style }: IImageProps) {
+export default function Image({ post, style, onClick }: IImageProps) {
   return (
     <>
-      <div className={`cont cont-${style}`}>
-        {post.imgs.length === 0 ? (
-          <div className="bg" />
-        ) : (
-          <>
-            <img className="bg" src={post.imgs[0]} />
+      {post === null || style === "tag" ? (
+        <>
+          <div className={`cont cont-profile`} onClick={onClick}>
+            <div className="bg" />
             <div className="overlay"></div>
-          </>
-        )}
-        <Link
-          href={{
-            pathname: `/post/${post.id}`,
-            query: { post: JSON.stringify(post) },
-          }}
-          as={`/post/${post.id}`}
-        >
-          <div className={`title title-${style}`}>{post.title}</div>
-        </Link>
-        <div className="tagCont">
-          {(style === "feed" || style === "profile") &&
-            [...post.tags].reverse().map((tag, i) => (
-              <Link key={i} href={{ pathname: `/tag/${tag}` }} legacyBehavior>
-                <button className="mainTag g-button1">{`#${tag}`}</button>
-              </Link>
-            ))}
+
+            <div className={`title title-profile`}>{post?.title}</div>
+          </div>
+        </>
+      ) : (
+        <div className={`cont cont-${style}`}>
+          {post.imgs.length === 0 ? (
+            <div className="bg" />
+          ) : (
+            <>
+              <img className="bg" src={post.imgs[0]} />
+              <div className="overlay"></div>
+            </>
+          )}
+          <Link
+            href={{
+              pathname: `/post/${post.id}`,
+              query: { post: JSON.stringify(post) },
+            }}
+            as={`/post/${post.id}`}
+          >
+            <div className={`title title-${style}`}>{post.title}</div>
+          </Link>
+          <div className="tagCont">
+            {(style === "feed" || style === "profile") &&
+              [...post.tags].reverse().map((tag, i) => (
+                <Link key={i} href={{ pathname: `/tag/${tag}` }} legacyBehavior>
+                  <button className="mainTag g-button1">{`#${tag}`}</button>
+                </Link>
+              ))}
+          </div>
         </div>
-      </div>
+      )}
 
       <style jsx>{`
         * {
@@ -71,7 +83,7 @@ export default function Image({ post, style }: IImageProps) {
           width: 100%;
           height: 100%;
           object-fit: cover;
-          background-color: ${post.color};
+          background-color: ${post?.color || COLOR.primary};
         }
         .overlay {
           position: absolute;

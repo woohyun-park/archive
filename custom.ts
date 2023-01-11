@@ -59,7 +59,14 @@ export const FUNC = {
   },
 };
 
-export type IStyle = "post" | "feed" | "search" | "add" | "alarm" | "profile";
+export type IStyle =
+  | "post"
+  | "feed"
+  | "search"
+  | "add"
+  | "alarm"
+  | "profile"
+  | "tag";
 
 export interface IDict<T> {
   [key: string]: T;
