@@ -27,7 +27,7 @@ export default function Image({ post, style }: IImageProps) {
         >
           <div className={`title title-${style}`}>{post.title}</div>
         </Link>
-        <div className="tagCont">
+        <div className={`tagCont tagCont-${style}`}>
           {(style === "feed" || style === "profile") &&
             [...post.tags].reverse().map((tag, i) => (
               <Link key={i} href={{ pathname: `/tag/${tag}` }} legacyBehavior>
@@ -78,7 +78,7 @@ export default function Image({ post, style }: IImageProps) {
           position: absolute;
           width: 100%;
           height: 100%;
-          background-color: rgba(0, 0, 0, 0.1);
+          background-color: rgba(0, 0, 0, 0.25);
         }
         .title {
           position: absolute;
@@ -90,7 +90,8 @@ export default function Image({ post, style }: IImageProps) {
           word-break: keep-all;
         }
         .title-feed {
-          font-size: 48px;
+          font-size: 64px;
+          margin: 24px;
         }
         .title-search {
           font-size: 24px;
@@ -107,6 +108,9 @@ export default function Image({ post, style }: IImageProps) {
           display: flex;
           flex-wrap: wrap-reverse;
           flex-direction: row-reverse;
+        }
+        .tagCont-feed {
+          margin: 24px;
         }
         .mainTagCont {
           text-decoration: none;

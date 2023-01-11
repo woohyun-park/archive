@@ -11,7 +11,7 @@ interface IImageProps {
 export default function Image({ tag, posts, onClick }: IImageProps) {
   return (
     <>
-      <>
+      {posts.length !== 0 && (
         <div className="cont">
           <div className="bg">
             {posts.length >= 4 ? (
@@ -37,7 +37,7 @@ export default function Image({ tag, posts, onClick }: IImageProps) {
             {`#${tag}`}
           </div>
         </div>
-      </>
+      )}
 
       <style jsx>{`
         * {
@@ -67,7 +67,7 @@ export default function Image({ tag, posts, onClick }: IImageProps) {
           position: absolute;
           width: 100%;
           height: 100%;
-          background-color: rgba(0, 0, 0, 0.1);
+          background-color: rgba(0, 0, 0, 0.25);
         }
         .title {
           position: absolute;

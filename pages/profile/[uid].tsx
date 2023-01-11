@@ -225,6 +225,9 @@ export async function getServerSideProps({ params }: IServerSidePaths) {
   );
   const initPosts: IPost[] = [];
   postSnap.forEach((doc) => {
+    if (doc.data().isDeleted) {
+      return;
+    }
     initPosts.push({
       ...(doc.data() as IPost),
       createdAt: doc.data().createdAt.toDate(),
@@ -246,6 +249,9 @@ export async function getServerSideProps({ params }: IServerSidePaths) {
       query(postRef, where("id", "in", initUser.scraps))
     );
     scrapSnap.forEach((doc) => {
+      if (doc.data().isDeleted) {
+        return;
+      }
       initScraps.push({
         ...(doc.data() as IPost),
         createdAt: doc.data().createdAt.toDate(),
@@ -263,6 +269,9 @@ export async function getServerSideProps({ params }: IServerSidePaths) {
       );
       const tagPosts: IPost[] = [];
       tagSnap.forEach((doc) => {
+        if (doc.data().isDeleted) {
+          return;
+        }
         tagPosts.push({
           ...(doc.data() as IPost),
           createdAt: doc.data().createdAt.toDate(),

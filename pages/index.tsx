@@ -17,6 +17,9 @@ export async function getServerSideProps() {
   const posts: IPost[] = [];
   const uids: string[] = [];
   postSnap.forEach((postSnapEach) => {
+    if (postSnapEach.data().isDeleted) {
+      return;
+    }
     posts.push({
       ...postSnapEach.data(),
       createdAt: postSnapEach.data().createdAt.toDate(),

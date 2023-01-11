@@ -74,6 +74,9 @@ export async function getServerSideProps() {
   const postSnap = await getDocs(collection(db, "posts"));
   const posts: IPost[] = [];
   postSnap.forEach((doc) => {
+    if (doc.data().isDeleted) {
+      return;
+    }
     posts.push({
       ...doc.data(),
       createdAt: doc.data().createdAt.toDate(),

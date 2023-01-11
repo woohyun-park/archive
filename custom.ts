@@ -99,6 +99,7 @@ export interface IPost {
   likes: string[];
   scraps: string[];
   comments: string[];
+  isDeleted: boolean;
 }
 
 export interface IComment {

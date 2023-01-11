@@ -1,11 +1,18 @@
-import { arrayRemove, arrayUnion, doc, updateDoc } from "firebase/firestore";
+import {
+  arrayRemove,
+  arrayUnion,
+  deleteDoc,
+  doc,
+  updateDoc,
+} from "firebase/firestore";
 import Link from "next/link";
-import { HiDotsHorizontal } from "react-icons/hi";
+import { HiPencil, HiX } from "react-icons/hi";
 import { db } from "../apis/firebase";
 import { useStore } from "../apis/zustand";
 import { COLOR, IPost, IStyle, IUser, SIZE } from "../custom";
 import dayjs from "dayjs";
 import { useState } from "react";
+import { IconBase } from "react-icons";
 
 type IProfileSmallProps = {
   user: IUser;
@@ -39,7 +46,6 @@ export default function ProfileSmall({
         followers: arrayUnion(curUser.uid),
       });
     }
-
     const tempFollowings = new Set(curUser.followings);
     if (isFollowing) {
       tempFollowings.delete(user.uid);
@@ -65,6 +71,25 @@ export default function ProfileSmall({
       return `${curDate.diff(postDate, "d")}일 전`;
     } else {
       return postDate.format("MM월 DD, YYYY");
+    }
+  }
+  function handleModify() {}
+  async function handleDelete() {
+    if (confirm("정말 삭제하시겠습니까?")) {
+      await updateDoc(doc(db, "posts", post?.id || ""), {
+        id: post?.id,
+        uid: "",
+        createdAt: 0,
+        title: "",
+        tags: [],
+        txt: "",
+        imgs: [],
+        color: "",
+        likes: [],
+        scraps: [],
+        comments: [],
+        isDeleted: true,
+      });
     }
   }
 
@@ -106,14 +131,21 @@ export default function ProfileSmall({
                 </div>
               );
             }
-          } else {
+          } else if (user.uid === curUser.uid) {
             return (
               <>
-                <div className="moreBtn">
-                  <HiDotsHorizontal size={SIZE.iconSmall} />
+                <div className="actionCont">
+                  <div className="svg" onClick={handleModify}>
+                    <HiPencil size={SIZE.iconSmall} />
+                  </div>
+                  <div className="svg" onClick={handleDelete}>
+                    <HiX size={SIZE.iconSmall} />
+                  </div>
                 </div>
               </>
             );
+          } else {
+            return <div></div>;
           }
         })()}
       </div>
@@ -181,10 +213,14 @@ export default function ProfileSmall({
             align-items: center;
             justify-content: center;
           }
-          .userImg,
-          .userName,
+          .actionCont {
+            display: flex;
+          }
+          .userImg:hover,
+          .userName:hover,
           .followBtn:hover,
-          .moreBtn:hover {
+          .moreBtn:hover,
+          .svg:hover {
             cursor: pointer;
           }
         `}

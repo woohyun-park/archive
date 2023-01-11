@@ -35,6 +35,7 @@ interface ITempPost {
   likes: string[];
   scraps: string[];
   comments: string[];
+  isDeleted: boolean;
 }
 
 export default function Add() {
@@ -95,6 +96,7 @@ export default function Add() {
             likes: [],
             scraps: [],
             comments: [],
+            isDeleted: false,
           };
           const ref = await addDoc(collection(db, "posts"), tempPost);
           await updateDoc(ref, { id: ref.id });
@@ -124,6 +126,7 @@ export default function Add() {
         likes: [],
         scraps: [],
         comments: [],
+        isDeleted: false,
       };
 
       const ref = await addDoc(collection(db, "posts"), tempPost);
