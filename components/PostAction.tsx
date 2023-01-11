@@ -178,7 +178,8 @@ export default function PostAction({ post, style }: IPostActionProps) {
         </div>
       </div>
       <div className="count">
-        {`좋아요 ${displayLike()}`}&nbsp;&nbsp;
+        {`좋아요 ${style === "feed" ? displayLike() : post.likes.length}`}
+        &nbsp;&nbsp;
         {`댓글 ${post.comments.length}`}
       </div>
       {style === "post" &&
