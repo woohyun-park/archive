@@ -59,7 +59,6 @@ export default function Post({ initPost, initUser }: IPostProps) {
       </div>
       <div className="text">{post?.txt}</div>
       <PostAction post={post} style="post" />
-
       <style jsx>{`
         .imgCont {
           position: relative;

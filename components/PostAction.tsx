@@ -9,6 +9,7 @@ import {
   serverTimestamp,
   updateDoc,
 } from "firebase/firestore";
+import { useRouter } from "next/router";
 import React, { RefObject, useRef, useState } from "react";
 import {
   HiBookmark,
@@ -49,6 +50,7 @@ export default function PostAction({ post, style }: IPostActionProps) {
   );
   const [comment, setComment] = useState("");
   const commentRef: RefObject<HTMLInputElement> = useRef(null);
+  const router = useRouter();
 
   async function handleToggleLike() {
     const postRef = doc(db, "posts", post.id || "");
@@ -134,7 +136,17 @@ export default function PostAction({ post, style }: IPostActionProps) {
     updateCurUser({ ...curUser, comments });
   }
   function handleCommentClick(e: React.MouseEvent<SVGElement>) {
-    commentRef.current?.focus();
+    if (style === "post") {
+      commentRef.current?.focus();
+    } else if (style === "feed") {
+      router.push(
+        {
+          pathname: `/post/${post.id}`,
+          query: { isCommentFocused: true },
+        },
+        `/post/${post.id}`
+      );
+    }
   }
   function displayLike() {
     if (initIsLiked) {
@@ -216,6 +228,7 @@ export default function PostAction({ post, style }: IPostActionProps) {
             value={comment}
             onChange={handleChange}
             ref={commentRef}
+            autoFocus={router.query.isCommentFocused ? true : false}
           />
           <button className="g-button1 button" onClick={handleSubmit}>
             게시
