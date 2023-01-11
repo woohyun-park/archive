@@ -3,6 +3,7 @@ import {
   arrayRemove,
   arrayUnion,
   collection,
+  deleteDoc,
   doc,
   getDoc,
   getDocs,
@@ -218,6 +219,8 @@ export async function getServerSidePaths() {
 }
 
 export async function getServerSideProps({ params }: IServerSidePaths) {
+  const deletedPosts = new Set();
+
   const uid = params.uid;
   const postRef = collection(db, "posts");
   const postSnap = await getDocs(
@@ -226,6 +229,7 @@ export async function getServerSideProps({ params }: IServerSidePaths) {
   const initPosts: IPost[] = [];
   postSnap.forEach((doc) => {
     if (doc.data().isDeleted) {
+      deletedPosts.add(doc.data().id);
       return;
     }
     initPosts.push({
@@ -250,6 +254,7 @@ export async function getServerSideProps({ params }: IServerSidePaths) {
     );
     scrapSnap.forEach((doc) => {
       if (doc.data().isDeleted) {
+        deletedPosts.add(doc.data().id);
         return;
       }
       initScraps.push({
@@ -270,6 +275,7 @@ export async function getServerSideProps({ params }: IServerSidePaths) {
       const tagPosts: IPost[] = [];
       tagSnap.forEach((doc) => {
         if (doc.data().isDeleted) {
+          deletedPosts.add(doc.data().id);
           return;
         }
         tagPosts.push({
@@ -281,6 +287,51 @@ export async function getServerSideProps({ params }: IServerSidePaths) {
       initTags[tag] = tagPosts;
     }
   }
+
+  console.log(deletedPosts);
+  const toDelete = Array.from(deletedPosts);
+
+  if (toDelete.length === 0) {
+    return { props: { initUser, initPosts, initScraps, initTags } };
+  }
+
+  // Delete deleted comments
+  const commentRef = collection(db, "comments");
+  const commentSnap = getDocs(
+    query(commentRef, where("target", "in", toDelete))
+  );
+  (await commentSnap).forEach((each) => {
+    console.log(each.id);
+    deleteDoc(doc(db, "comments", each.id));
+  });
+
+  // Delete deleted posts from likes, posts, scraps, and tags of user
+  const tempLikes = [...initUser.likes].filter(
+    (each) => !toDelete.includes(each)
+  );
+  const tempPosts = [...initUser.posts].filter(
+    (each) => !toDelete.includes(each)
+  );
+  const tempScraps = [...initUser.scraps].filter(
+    (each) => !toDelete.includes(each)
+  );
+  const tempTags: IDict<string[]> = {};
+  const tags = initUser.tags as IDict<string[]>;
+  for (const tag in tags) {
+    const arr = [...initUser.tags[tag]].filter(
+      (each) => !toDelete.includes(each)
+    );
+    if (arr.length === 0) {
+    } else {
+      tempTags[tag] = arr;
+    }
+  }
+  await updateDoc(userRef, {
+    likes: tempLikes,
+    posts: tempPosts,
+    scraps: tempScraps,
+    tags: tempTags,
+  });
 
   return { props: { initUser, initPosts, initScraps, initTags } };
 }

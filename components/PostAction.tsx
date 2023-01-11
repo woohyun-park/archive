@@ -32,6 +32,7 @@ interface ITempComment {
   uid: string;
   createdAt: FieldValue;
   txt: string;
+  target: string;
 }
 
 export default function PostAction({ post, style }: IPostActionProps) {
@@ -108,17 +109,17 @@ export default function PostAction({ post, style }: IPostActionProps) {
       uid: curUser.uid,
       createdAt: serverTimestamp(),
       txt: comment,
+      target: post.id,
     };
     const ref = await addDoc(collection(db, "comments"), tempComment);
     // Update post comments array
-    console.log(ref.id, post.id);
     await updateDoc(doc(db, "posts", post.id), {
       comments: arrayUnion(ref.id),
     });
     // Update user comments array
-    const comments = [...curUser.comments, ref.id];
-    setCurUser({ ...curUser, comments });
-    updateCurUser({ ...curUser, comments });
+    // const comments = [...curUser.comments, ref.id];
+    // setCurUser({ ...curUser, comments });
+    // updateCurUser({ ...curUser, comments });
     // Clean input
     setComment("");
   }
@@ -131,9 +132,9 @@ export default function PostAction({ post, style }: IPostActionProps) {
       comments: arrayRemove(id),
     });
     // Update user comments array
-    const comments = [...curUser.comments].filter((e) => e !== id);
-    setCurUser({ ...curUser, comments });
-    updateCurUser({ ...curUser, comments });
+    // const comments = [...curUser.comments].filter((e) => e !== id);
+    // setCurUser({ ...curUser, comments });
+    // updateCurUser({ ...curUser, comments });
   }
   function handleCommentClick(e: React.MouseEvent<SVGElement>) {
     if (style === "post") {

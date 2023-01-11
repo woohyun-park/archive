@@ -82,7 +82,7 @@ export interface IUser {
   tags: IDict<string[]>;
   likes: string[];
   scraps: string[];
-  comments: string[];
+  // comments: string[];
   followers: string[];
   followings: string[];
 }

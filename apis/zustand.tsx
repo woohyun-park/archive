@@ -20,7 +20,6 @@ export const useStore = create<IUserState>((set) => ({
     tags: {},
     likes: [],
     scraps: [],
-    comments: [],
     followers: [],
     followings: [],
   },
