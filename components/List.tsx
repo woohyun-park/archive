@@ -3,6 +3,7 @@ import Image from "./Image";
 import { COLOR, IPost, IUser, IStyle, IDict } from "../custom";
 import ProfileSmall from "./ProfileSmall";
 import ListTag from "./ListTag";
+import { HiArrowLeft, HiBackspace } from "react-icons/hi";
 
 interface IListProps {
   data: IDataSearch | IDataProfile;
@@ -29,6 +30,7 @@ const BOX: IDict<string[]> = {
 export default function List({ data, style }: IListProps) {
   console.log(data);
   const [selected, setSelected] = useState(1);
+  const [selectedTag, setSelectedTag] = useState<string>("");
 
   return (
     <>
@@ -93,16 +95,31 @@ export default function List({ data, style }: IListProps) {
               ))} */}
             <div className="tagCont">
               {(() => {
-                if (selected !== 2) {
-                  return <></>;
-                }
                 const result = [];
                 const tags = (data as IDataProfile).tag;
-                for (const tag in tags) {
-                  result.push(
-                    <ListTag uid={(tags[tag][0] as IPost).uid} tag={tag} />
+                if (selected !== 2) {
+                  return <></>;
+                } else if (selectedTag === "") {
+                  for (const tag in tags) {
+                    result.push(
+                      <ListTag
+                        uid={(tags[tag][0] as IPost).uid}
+                        tag={tag}
+                        onClick={() => setSelectedTag(tag)}
+                      />
+                    );
+                  }
+                } else {
+                  return (
+                    <>
+                      <HiArrowLeft onClick={() => setSelectedTag("")} />
+                      {tags[selectedTag].map((e) => (
+                        <Image post={e} style="profile" />
+                      ))}
+                    </>
                   );
                 }
+
                 return result;
               })()}
             </div>

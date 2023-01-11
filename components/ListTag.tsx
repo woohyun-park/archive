@@ -4,20 +4,15 @@ import { COLOR } from "../custom";
 interface IListTagProps {
   uid: string;
   tag: string;
+  onClick: () => void;
 }
 
-export default function ListTag({ uid, tag }: IListTagProps) {
+export default function ListTag({ uid, tag, onClick }: IListTagProps) {
   return (
     <>
       <div className="cont">
-        <Link href={`/profile/${uid}/${tag}`}>
-          <div className="bg"></div>
-        </Link>
-        <Link href={`/profile/${uid}/${tag}`} legacyBehavior>
-          <a className="tag">
-            <div>{`#${tag}`}</div>
-          </a>
-        </Link>
+        <div className="bg" onClick={onClick}></div>
+        <div onClick={onClick}>{`#${tag}`}</div>
       </div>
 
       <style jsx>{`
