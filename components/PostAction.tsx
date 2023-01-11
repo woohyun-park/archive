@@ -1,4 +1,14 @@
-import { arrayRemove, arrayUnion, doc, updateDoc } from "firebase/firestore";
+import {
+  addDoc,
+  arrayRemove,
+  arrayUnion,
+  collection,
+  deleteDoc,
+  doc,
+  FieldValue,
+  serverTimestamp,
+  updateDoc,
+} from "firebase/firestore";
 import { useState } from "react";
 import {
   HiBookmark,
@@ -9,25 +19,29 @@ import {
 } from "react-icons/hi2";
 import { db } from "../apis/firebase";
 import { useStore } from "../apis/zustand";
-import { IPost, IUser, SIZE } from "../custom";
-import PostComment from "./PostComment";
+import { COLOR, IPost, IStyle, IUser, SIZE } from "../custom";
+import Comment from "./Comment";
 
 type IPostActionProps = {
   post: IPost;
-  user: IUser;
+  style: IStyle;
 };
 
-export default function PostAction({ post, user }: IPostActionProps) {
+interface ITempComment {
+  uid: string;
+  createdAt: FieldValue;
+  txt: string;
+}
+
+export default function PostAction({ post, style }: IPostActionProps) {
   const { curUser, setCurUser, updateCurUser } = useStore();
-  const [initIsLiked, setInitIsLiked] = useState(
-    curUser.likes.find((elem) => elem === post.id) ? true : false
-  );
   const [isLiked, setIsLiked] = useState(
     curUser.likes.find((elem) => elem === post.id) ? true : false
   );
   const [isScraped, setIsScraped] = useState(
     curUser.scraps.find((elem) => elem === post.id) ? true : false
   );
+  const [comment, setComment] = useState("");
 
   async function handleToggleLike() {
     const postRef = doc(db, "posts", post.id || "");
@@ -75,20 +89,42 @@ export default function PostAction({ post, user }: IPostActionProps) {
 
     setIsScraped(!isScraped);
   }
-  function displayLikes() {
-    if (initIsLiked) {
-      if (isLiked) {
-        return post.likes.length;
-      } else {
-        return post.likes.length - 1;
-      }
-    } else {
-      if (isLiked) {
-        return post.likes.length + 1;
-      } else {
-        return post.likes.length;
-      }
-    }
+
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setComment(e.target.value);
+  }
+  async function handleSubmit(e: React.MouseEvent<HTMLButtonElement>) {
+    // Add comment
+    const tempComment: ITempComment = {
+      uid: curUser.uid,
+      createdAt: serverTimestamp(),
+      txt: comment,
+    };
+    const ref = await addDoc(collection(db, "comments"), tempComment);
+    // Update post comments array
+    console.log(ref.id, post.id);
+    await updateDoc(doc(db, "posts", post.id), {
+      comments: arrayUnion(ref.id),
+    });
+    // Update user comments array
+    const comments = [...curUser.comments, ref.id];
+    setCurUser({ ...curUser, comments });
+    updateCurUser({ ...curUser, comments });
+    // Clean input
+    setComment("");
+  }
+  async function handleDelete(e: React.MouseEvent<SVGElement>) {
+    // Delete comment
+    const id = e.currentTarget.id;
+    await deleteDoc(doc(db, "comments", id));
+    // Update post comments array
+    await updateDoc(doc(db, "posts", post.id), {
+      comments: arrayRemove(id),
+    });
+    // Update user comments array
+    const comments = [...curUser.comments].filter((e) => e !== id);
+    setCurUser({ ...curUser, comments });
+    updateCurUser({ ...curUser, comments });
   }
 
   return (
@@ -117,9 +153,26 @@ export default function PostAction({ post, user }: IPostActionProps) {
         </div>
       </div>
       <div className="count">
-        {`좋아요 ${displayLikes()}`}&nbsp;&nbsp;
+        {`좋아요 ${post.likes.length}`}&nbsp;&nbsp;
         {`댓글 ${post.comments.length}`}
       </div>
+      {style === "post" &&
+        post.comments.map((id) => <Comment id={id} onClick={handleDelete} />)}
+      {style === "post" && (
+        <div className="inputCont">
+          <img className="img" src={curUser.photoURL} />
+          <input
+            className="g-button2 input"
+            placeholder={`${curUser.displayName}(으)로 댓글 달기...`}
+            value={comment}
+            onChange={handleChange}
+          />
+          <button className="g-button1 button" onClick={handleSubmit}>
+            게시
+          </button>
+        </div>
+      )}
+
       <style jsx>
         {`
           .cont {
@@ -134,6 +187,25 @@ export default function PostAction({ post, user }: IPostActionProps) {
             font-size: 12px;
             margin-bottom: 8px;
           }
+          .inputCont {
+            display: flex;
+            align-items: center;
+          }
+          .img {
+            width: 32px;
+            height: 32px;
+            border-radius: 32px;
+            margin-right: 8px;
+          }
+          .input {
+            color: ${COLOR.txt1};
+            width: 75%;
+          }
+          .button {
+            width: 48px;
+            margin: 4px 0 4px 4px;
+          }
+          .button:hover,
           span:hover {
             cursor: pointer;
           }

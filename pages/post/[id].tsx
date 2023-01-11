@@ -1,6 +1,8 @@
 import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { db } from "../../apis/firebase";
+import { useStore } from "../../apis/zustand";
 import Back from "../../components/Back";
 import PostAction from "../../components/PostAction";
 import PostComment from "../../components/PostComment";
@@ -8,11 +10,35 @@ import ProfileSmall from "../../components/ProfileSmall";
 import { IPost, IUser } from "../../custom";
 
 interface IPostProps {
-  post: IPost;
-  user: IUser;
+  initPost: IPost;
+  initUser: IUser;
 }
 
-export default function Post({ post, user }: IPostProps) {
+export default function Post({ initPost, initUser }: IPostProps) {
+  const [post, setPost] = useState(initPost);
+  const [user, setUser] = useState(initUser);
+  const { curUser } = useStore();
+
+  useEffect(() => {
+    update();
+  }, [curUser]);
+
+  async function update() {
+    const postRef = doc(db, "posts", post.id);
+    const postSnap = await getDoc(postRef);
+    const newPost: IPost = {
+      ...(postSnap.data() as IPost),
+      createdAt: postSnap.data()?.createdAt.toDate(),
+      id: postSnap.id,
+    };
+    setPost(newPost);
+
+    const userRef = doc(db, "users", post?.uid);
+    const userSnap = await getDoc(userRef);
+    const newUser: IUser = { ...(userSnap.data() as IUser), uid: userSnap.id };
+    setUser(newUser);
+  }
+
   return (
     <>
       <Back />
@@ -33,8 +59,7 @@ export default function Post({ post, user }: IPostProps) {
         ))}
       </div>
       <div className="text">{post?.txt}</div>
-      <PostAction post={post} user={user} />
-      <PostComment post={post} />
+      <PostAction post={post} style="post" />
 
       <style jsx>{`
         .imgCont {
@@ -112,15 +137,15 @@ export async function getServerSidePaths() {
 export async function getServerSideProps({ params }: IServerSidePaths) {
   const postRef = doc(db, "posts", params.id);
   const postSnap = await getDoc(postRef);
-  const post: IPost = {
+  const initPost: IPost = {
     ...(postSnap.data() as IPost),
     createdAt: postSnap.data()?.createdAt.toDate(),
     id: postSnap.id,
   };
 
-  const userRef = doc(db, "users", post?.uid);
+  const userRef = doc(db, "users", initPost?.uid);
   const userSnap = await getDoc(userRef);
-  const user: IUser = { ...(userSnap.data() as IUser), uid: userSnap.id };
+  const initUser: IUser = { ...(userSnap.data() as IUser), uid: userSnap.id };
 
-  return { props: { post, user } };
+  return { props: { initPost, initUser } };
 }
