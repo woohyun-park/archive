@@ -2,6 +2,7 @@ import { useState } from "react";
 import Image from "./Image";
 import { COLOR, IPost, IUser, IStyle, IDict } from "../custom";
 import ProfileSmall from "./ProfileSmall";
+import ListTag from "./ListTag";
 
 interface IListProps {
   data: IDataSearch | IDataProfile;
@@ -10,13 +11,13 @@ interface IListProps {
 
 interface IDataSearch {
   post: IPost[];
-  tag: IPost[];
+  tag: IDict<IPost[]>;
   people: IUser[];
 }
 
 interface IDataProfile {
   grid: IPost[];
-  tag: IPost[];
+  tag: IDict<IPost[]>;
   scrap: IPost[];
 }
 
@@ -49,14 +50,24 @@ export default function List({ data, style }: IListProps) {
                   key={e.id}
                 ></Image>
               ))}
-            {selected === 2 &&
+            {/* {selected === 2 &&
               (data as IDataSearch).tag.map((e) => (
                 <Image
                   post={{ ...e, id: e.id }}
                   style={`${style}`}
                   key={e.id}
                 ></Image>
-              ))}
+              ))} */}
+            {(() => {
+              if (selected !== 2) {
+                return <></>;
+              }
+              const result = [];
+              for (const tag in (data as IDataSearch).tag) {
+                result.push(<div>{tag[0]}</div>);
+              }
+              return result;
+            })()}
             {selected === 3 &&
               (data as IDataSearch).people.map((e) => (
                 <ProfileSmall user={e} style={`${style}`} key={e.uid} />
@@ -72,14 +83,30 @@ export default function List({ data, style }: IListProps) {
                   key={e.id}
                 ></Image>
               ))}
-            {selected === 2 &&
+            {/* {selected === 2 &&
               (data as IDataProfile).tag.map((e) => (
                 <Image
                   post={{ ...e, id: e.id }}
                   style={`${style}`}
                   key={e.id}
                 ></Image>
-              ))}
+              ))} */}
+            <div className="tagCont">
+              {(() => {
+                if (selected !== 2) {
+                  return <></>;
+                }
+                const result = [];
+                const tags = (data as IDataProfile).tag;
+                for (const tag in tags) {
+                  result.push(
+                    <ListTag uid={(tags[tag][0] as IPost).uid} tag={tag} />
+                  );
+                }
+                return result;
+              })()}
+            </div>
+
             {selected === 3 &&
               (data as IDataProfile).scrap.map((e) => (
                 <Image
@@ -118,6 +145,12 @@ export default function List({ data, style }: IListProps) {
         .postTypes > div:nth-of-type(${selected}) {
           font-weight: 800;
           border-bottom: 2px solid ${COLOR.txt1};
+        }
+        .tagCont {
+          width: 100%;
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: space-between;
         }
       `}</style>
     </>

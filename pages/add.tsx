@@ -98,10 +98,19 @@ export default function Add() {
           };
           const ref = await addDoc(collection(db, "posts"), tempPost);
           await updateDoc(ref, { id: ref.id });
-          const tempPosts = [...curUser.posts];
-          tempPosts.push(ref.id);
-          setCurUser({ ...curUser, posts: tempPosts });
-          updateCurUser({ ...curUser, posts: tempPosts });
+
+          const tags = { ...curUser.tags };
+          data.tags.forEach((tag) => {
+            if (tags[tag]) {
+              tags[tag].push(ref.id);
+            } else {
+              tags[tag] = [ref.id];
+            }
+          });
+          const posts = [...curUser.posts];
+          posts.push(ref.id);
+          setCurUser({ ...curUser, posts, tags });
+          updateCurUser({ ...curUser, posts, tags });
         });
     } else {
       const tempPost: ITempPost = {
@@ -116,13 +125,24 @@ export default function Add() {
         scraps: [],
         comments: [],
       };
+
       const ref = await addDoc(collection(db, "posts"), tempPost);
       await updateDoc(ref, { id: ref.id });
-      const tempPosts = [...curUser.posts];
-      tempPosts.push(ref.id);
-      setCurUser({ ...curUser, posts: tempPosts });
-      updateCurUser({ ...curUser, posts: tempPosts });
+
+      const tags = { ...curUser.tags };
+      data.tags.forEach((tag) => {
+        if (tags[tag]) {
+          tags[tag].push(ref.id);
+        } else {
+          tags[tag] = [ref.id];
+        }
+      });
+      const posts = [...curUser.posts];
+      posts.push(ref.id);
+      setCurUser({ ...curUser, posts, tags });
+      updateCurUser({ ...curUser, posts, tags });
     }
+
     router.push("/");
   }
   function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {

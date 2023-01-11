@@ -17,7 +17,7 @@ export const useStore = create<IUserState>((set) => ({
     photoURL: "",
     txt: "",
     posts: [],
-    tags: [],
+    tags: {},
     likes: [],
     scraps: [],
     comments: [],

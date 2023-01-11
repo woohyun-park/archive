@@ -33,7 +33,7 @@ export default function Search({ posts, users }: ISearchProps) {
       <List
         data={{
           post: posts,
-          tag: [],
+          tag: {},
           people: users,
         }}
         style="search"

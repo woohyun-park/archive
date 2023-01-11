@@ -32,6 +32,7 @@ export const COLOR = {
   btnDark2: "#D9D9D9",
   btnOverlay: "rgba(0, 0, 0, 0.75)",
   btnOverlayDark: "rgba(255, 255, 255, 0.75)",
+  primary: "#3B4998",
 
   red: "#EF4552",
   orange: "#F7892B",
@@ -71,7 +72,7 @@ export interface IUser {
   photoURL: string;
   txt: string;
   posts: string[];
-  tags: string[];
+  tags: IDict<string[]>;
   likes: string[];
   scraps: string[];
   comments: string[];

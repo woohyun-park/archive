@@ -4,7 +4,6 @@ import {
   arrayUnion,
   collection,
   doc,
-  FieldPath,
   getDoc,
   getDocs,
   query,
@@ -23,21 +22,23 @@ interface IProfileProps {
   initUser: IUser;
   initPosts: IPost[];
   initScraps: IPost[];
+  initTags: IDict<IPost[]>;
 }
 
 export default function Profile({
   initUser,
   initPosts,
   initScraps,
+  initTags,
 }: IProfileProps) {
   const { curUser, setCurUser, updateCurUser } = useStore();
   const [user, setUser] = useState<IUser>(initUser);
   const [posts, setPosts] = useState(initPosts);
   const [scraps, setScraps] = useState(initScraps);
+  const [tags, setTags] = useState(initTags);
   const [isFollowing, setIsFollowing] = useState(() =>
     curUser.followings.find((elem) => elem === user.uid) ? true : false
   );
-  console.log(initUser, initPosts, initScraps);
 
   useEffect(() => {
     update();
@@ -53,13 +54,7 @@ export default function Profile({
     const tempUser = { ...(userSnap.data() as IUser), uid: user.uid };
     setUser(tempUser);
   }
-
-  function handleLogout() {
-    signOut(auth);
-  }
-
   async function handleToggleFollow() {
-    console.log("handleToggleFollow");
     const curUserRef = doc(db, "users", curUser.uid);
     const userRef = doc(db, "users", user.uid);
     if (isFollowing) {
@@ -142,14 +137,14 @@ export default function Profile({
       <div className="profileTxtCont">{user?.txt}</div>
       {user.uid === curUser.uid ? (
         <>
-          <button onClick={handleLogout} className="g-button1">
+          <button onClick={() => signOut(auth)} className="g-button1">
             로그아웃
           </button>
         </>
       ) : (
         <></>
       )}
-      <List data={{ grid: posts, tag: [], scrap: scraps }} style="profile" />
+      <List data={{ grid: posts, tag: tags, scrap: scraps }} style="profile" />
 
       <style jsx>
         {`
@@ -241,23 +236,42 @@ export async function getServerSideProps({ params }: IServerSidePaths) {
   const userSnap = await getDoc(userRef);
   const initUser: IUser = { ...(userSnap.data() as IUser), uid: userSnap.id };
 
-  // scraps가 []인 경우에는 where()에서 "in"을 사용할 시 에러가 난다.
+  // scraps가 []인 경우에는 where()에서 "in"을 사용할 시 에러가 나므로 아래와 같이 분기해서 처리한다.
+  let initScraps: IPost[];
   if (initUser.scraps.length === 0) {
-    const initScraps: IPost[] = [];
-    return { props: { initUser, initPosts, initScraps } };
+    initScraps = [];
+  } else {
+    initScraps = [];
+    const scrapSnap = await getDocs(
+      query(postRef, where("id", "in", initUser.scraps))
+    );
+    scrapSnap.forEach((doc) => {
+      initScraps.push({
+        ...(doc.data() as IPost),
+        createdAt: doc.data().createdAt.toDate(),
+        id: doc.id,
+      });
+    });
   }
 
-  const scrapSnap = await getDocs(
-    query(postRef, where("id", "in", initUser.scraps))
-  );
-  const initScraps: IPost[] = [];
-  scrapSnap.forEach((doc) => {
-    initScraps.push({
-      ...(doc.data() as IPost),
-      createdAt: doc.data().createdAt.toDate(),
-      id: doc.id,
-    });
-  });
+  let initTags: IDict<IPost[]> = {};
+  const user: IDict<string[]> = initUser.tags as IDict<string[]>;
+  for (const tag in user) {
+    if (user[tag].length !== 0) {
+      const tagSnap = await getDocs(
+        query(postRef, where("id", "in", user[tag]))
+      );
+      const tagPosts: IPost[] = [];
+      tagSnap.forEach((doc) => {
+        tagPosts.push({
+          ...(doc.data() as IPost),
+          createdAt: doc.data().createdAt.toDate(),
+          id: doc.id,
+        });
+      });
+      initTags[tag] = tagPosts;
+    }
+  }
 
-  return { props: { initUser, initPosts, initScraps } };
+  return { props: { initUser, initPosts, initScraps, initTags } };
 }
