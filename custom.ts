@@ -3,8 +3,32 @@ import { Style } from "util";
 
 export const DEFAULT = {
   user: {
+    uid: "",
+    email: "",
+    displayName: "",
     photoURL:
       "https://res.cloudinary.com/dl5qaj6le/image/upload/v1672976914/archive/static/default_user_photoURL.png",
+    txt: "",
+    posts: [],
+    tags: {},
+    likes: [],
+    scraps: [],
+    followers: [],
+    followings: [],
+  },
+  postDeleted: {
+    id: "",
+    uid: "",
+    createdAt: 0,
+    title: "",
+    tags: [],
+    txt: "",
+    imgs: [],
+    color: "",
+    likes: [],
+    scraps: [],
+    comments: [],
+    isDeleted: true,
   },
 };
 
@@ -82,7 +106,6 @@ export interface IUser {
   tags: IDict<string[]>;
   likes: string[];
   scraps: string[];
-  // comments: string[];
   followers: string[];
   followings: string[];
 }

@@ -27,7 +27,7 @@ interface ILogin {
 export default function Layout({ children }: ILayoutProps) {
   const provider = new GoogleAuthProvider();
   const router = useRouter();
-  const { curUser, setCurUser } = useStore();
+  const { setCurUser } = useStore();
   const [login, setLogin] = useState<ILogin>({
     email: "",
     password: "",
@@ -40,10 +40,9 @@ export default function Layout({ children }: ILayoutProps) {
     auth.onAuthStateChanged(async (curUser) => {
       if (curUser) {
         const snap = await getDoc(doc(db, "users", curUser.uid));
-        const profile: IUser = snap.data() as IUser;
         setLogin({ ...login, isLoggedIn: true });
         setCurUser({
-          ...profile,
+          ...(snap.data() as IUser),
           uid: curUser.uid,
         });
       } else {
@@ -54,29 +53,17 @@ export default function Layout({ children }: ILayoutProps) {
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
-    if (name === "email") {
-      setLogin({ ...login, email: value });
-    } else if (name === "password") {
-      setLogin({ ...login, password: value });
-    }
+    setLogin({ ...login, [name]: value });
   }
   function handleSocialLogin() {
     signInWithPopup(auth, provider)
-      .then(async (result) => {
-        const user = result.user;
+      .then(async (res) => {
+        const user = res.user;
         const tempUser: IUser = {
+          ...DEFAULT.user,
           uid: user.uid,
           email: String(user.email),
           displayName: `아카이버-${user.uid.slice(0, 11)}`,
-          photoURL: DEFAULT.user.photoURL,
-          txt: "",
-          posts: [],
-          tags: {},
-          likes: [],
-          scraps: [],
-          comments: [],
-          followers: [],
-          followings: [],
         };
         await setDoc(doc(db, "users", user.uid), tempUser);
         router.push("/");
@@ -88,28 +75,20 @@ export default function Layout({ children }: ILayoutProps) {
   async function handleEmailLogin(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     try {
-      let data;
       if (login.isNewAccount) {
         const res = await createUserWithEmailAndPassword(
           auth,
           login.email,
           login.password
         );
+        const user = res.user;
         const tempUser: IUser = {
-          uid: res.user.uid,
-          email: String(res.user.email),
-          displayName: `아카이버-${res.user.uid.slice(0, 11)}`,
-          photoURL: DEFAULT.user.photoURL,
-          txt: "",
-          posts: [],
-          tags: {},
-          likes: [],
-          scraps: [],
-          comments: [],
-          followers: [],
-          followings: [],
+          ...DEFAULT.user,
+          uid: user.uid,
+          email: String(user.email),
+          displayName: `아카이버-${user.uid.slice(0, 11)}`,
         };
-        await setDoc(doc(db, "users", res.user.uid), tempUser);
+        await setDoc(doc(db, "users", user.uid), tempUser);
       } else {
         await signInWithEmailAndPassword(auth, login.email, login.password);
       }
@@ -170,6 +149,7 @@ export default function Layout({ children }: ILayoutProps) {
           {login.error}
         </div>
       )}
+
       <style jsx global>
         {`
           :root {

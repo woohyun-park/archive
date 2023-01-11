@@ -2,7 +2,7 @@ import { useState } from "react";
 import Image from "./Image";
 import { COLOR, IPost, IUser, IStyle, IDict, SIZE } from "../custom";
 import ProfileSmall from "./ProfileSmall";
-import { HiArrowLeft, HiBackspace } from "react-icons/hi";
+import { HiArrowLeft } from "react-icons/hi";
 import Cont from "./Cont";
 
 interface IListProps {
@@ -22,20 +22,22 @@ interface IDataProfile {
   scrap: IPost[];
 }
 
-const BOX: IDict<string[]> = {
+const TAB: IDict<string[]> = {
   search: ["post", "tag", "people"],
   profile: ["grid", "tag", "scrap"],
 };
 
 export default function List({ data, style }: IListProps) {
-  const [selected, setSelected] = useState(1);
-  const [selectedTag, setSelectedTag] = useState<string>("");
+  const [selected, setSelected] = useState({
+    tab: 1,
+    tag: "",
+  });
 
   return (
     <>
       <div className="postTypes">
-        {BOX[style].map((e, i) => (
-          <div onClick={() => setSelected(i + 1)} key={i}>
+        {TAB[style].map((e, i) => (
+          <div onClick={() => setSelected({ ...selected, tab: i + 1 })} key={i}>
             {e}
           </div>
         ))}
@@ -43,7 +45,7 @@ export default function List({ data, style }: IListProps) {
       <div className="postCont">
         {style === "search" ? (
           <>
-            {selected === 1 &&
+            {selected.tab === 1 &&
               (data as IDataSearch).post.map((e) => (
                 <Image
                   post={{ ...e, id: e.id }}
@@ -51,32 +53,52 @@ export default function List({ data, style }: IListProps) {
                   key={e.id}
                 ></Image>
               ))}
-            {/* {selected === 2 &&
-              (data as IDataSearch).tag.map((e) => (
-                <Image
-                  post={{ ...e, id: e.id }}
-                  style={`${style}`}
-                  key={e.id}
-                ></Image>
-              ))} */}
             {(() => {
-              if (selected !== 2) {
+              const tags = (data as IDataSearch).tag;
+              if (selected.tab !== 2) {
                 return <></>;
               }
-              const result = [];
-              for (const tag in (data as IDataSearch).tag) {
-                result.push(<div>{tag[0]}</div>);
+              // 현재 선택된 tag가 없으면 모든 tag를 표시한다
+              else if (selected.tag === "") {
+                const result = [];
+                for (const tag in tags) {
+                  result.push(
+                    <Cont
+                      tag={tag}
+                      posts={tags[tag]}
+                      onClick={() => setSelected({ ...selected, tag })}
+                    />
+                  );
+                }
+                return result;
               }
-              return result;
+              // 현재 선택된 tag가 있으면 해당 tag를 가진 post를 표시한다
+              else {
+                return (
+                  <>
+                    <div className="tagBack">
+                      <HiArrowLeft
+                        size={SIZE.icon}
+                        onClick={() => setSelected({ ...selected, tag: "" })}
+                      />
+                    </div>
+                    <div className="tagCont">
+                      {tags[selected.tag].map((e) => (
+                        <Image post={e} style="profile" />
+                      ))}
+                    </div>
+                  </>
+                );
+              }
             })()}
-            {selected === 3 &&
+            {selected.tab === 3 &&
               (data as IDataSearch).people.map((e) => (
                 <ProfileSmall user={e} style={`${style}`} key={e.uid} />
               ))}
           </>
         ) : style === "profile" ? (
           <>
-            {selected === 1 &&
+            {selected.tab === 1 &&
               (data as IDataProfile).grid.map((e) => (
                 <Image
                   post={{ ...e, id: e.id }}
@@ -84,29 +106,19 @@ export default function List({ data, style }: IListProps) {
                   key={e.id}
                 ></Image>
               ))}
-            {/* {selected === 2 &&
-              (data as IDataProfile).tag.map((e) => (
-                <Image
-                  post={{ ...e, id: e.id }}
-                  style={`${style}`}
-                  key={e.id}
-                ></Image>
-              ))} */}
             {(() => {
               const tags = (data as IDataProfile).tag;
-              if (selected !== 2) {
+              if (selected.tab !== 2) {
                 return <></>;
-              } else if (selectedTag === "") {
+              } else if (selected.tag === "") {
                 const result = [];
                 for (const tag in tags) {
                   result.push(
-                    <>
-                      <Cont
-                        tag={tag}
-                        posts={tags[tag]}
-                        onClick={() => setSelectedTag(tag)}
-                      />
-                    </>
+                    <Cont
+                      tag={tag}
+                      posts={tags[tag]}
+                      onClick={() => setSelected({ ...selected, tag })}
+                    />
                   );
                 }
                 return result;
@@ -116,12 +128,11 @@ export default function List({ data, style }: IListProps) {
                     <div className="tagBack">
                       <HiArrowLeft
                         size={SIZE.icon}
-                        onClick={() => setSelectedTag("")}
+                        onClick={() => setSelected({ ...selected, tag: "" })}
                       />
                     </div>
-
                     <div className="tagCont">
-                      {tags[selectedTag].map((e) => (
+                      {tags[selected.tag].map((e) => (
                         <Image post={e} style="profile" />
                       ))}
                     </div>
@@ -129,8 +140,7 @@ export default function List({ data, style }: IListProps) {
                 );
               }
             })()}
-
-            {selected === 3 &&
+            {selected.tab === 3 &&
               (data as IDataProfile).scrap.map((e) => (
                 <Image
                   post={{ ...e, id: e.id }}
@@ -143,11 +153,12 @@ export default function List({ data, style }: IListProps) {
           <></>
         )}
       </div>
+
       <style jsx>{`
         .postCont {
           display: flex;
           flex-wrap: wrap;
-          flex-direction: ${style === "search" && selected === 3
+          flex-direction: ${style === "search" && selected.tab === 3
             ? "column"
             : ""};
         }

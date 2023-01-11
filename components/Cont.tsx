@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { COLOR, IPost, IStyle } from "../custom";
+import { COLOR, IPost } from "../custom";
 import ContImage from "./ContImage";
 
 interface IImageProps {
@@ -8,7 +8,7 @@ interface IImageProps {
   onClick?: () => void;
 }
 
-export default function Image({ tag, posts, onClick }: IImageProps) {
+export default function Cont({ tag, posts, onClick }: IImageProps) {
   return (
     <>
       {posts.length !== 0 && (

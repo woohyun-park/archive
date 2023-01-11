@@ -1,12 +1,9 @@
-import { deleteDoc, doc, getDoc } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { HiX } from "react-icons/hi";
 import { db } from "../apis/firebase";
 import { useStore } from "../apis/zustand";
-import { COLOR, IComment, IPost, IUser } from "../custom";
-import Image from "./Image";
-import PostAction from "./PostAction";
-import ProfileSmall from "./ProfileSmall";
+import { COLOR, IComment, IUser } from "../custom";
 
 type ICommentProps = {
   id: string;
@@ -16,13 +13,14 @@ type ICommentProps = {
 export default function Comment({ id, onClick }: ICommentProps) {
   const [comment, setComment] = useState<IComment | null>(null);
   const [user, setUser] = useState<IUser | null>(null);
-  const { curUser, setCurUser, updateCurUser } = useStore();
+  const { curUser } = useStore();
 
   useEffect(() => {
     init();
   }, []);
 
   async function init() {
+    // 만약 유저를 cache해놓고 cache hit일때는 바로 가져오도록 하면 더 빠르지 않을까
     const commentRef = doc(db, "comments", id);
     const commentSnap = await getDoc(commentRef);
     const tempComment = { ...(commentSnap.data() as IComment) };

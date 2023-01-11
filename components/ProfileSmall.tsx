@@ -1,18 +1,11 @@
-import {
-  arrayRemove,
-  arrayUnion,
-  deleteDoc,
-  doc,
-  updateDoc,
-} from "firebase/firestore";
+import { arrayRemove, arrayUnion, doc, updateDoc } from "firebase/firestore";
 import Link from "next/link";
 import { HiPencil, HiX } from "react-icons/hi";
 import { db } from "../apis/firebase";
 import { useStore } from "../apis/zustand";
-import { COLOR, IPost, IStyle, IUser, SIZE } from "../custom";
+import { COLOR, DEFAULT, IPost, IStyle, IUser, SIZE } from "../custom";
 import dayjs from "dayjs";
 import { useState } from "react";
-import { IconBase } from "react-icons";
 
 type IProfileSmallProps = {
   user: IUser;
@@ -55,7 +48,6 @@ export default function ProfileSmall({
     const followings = Array.from(tempFollowings) as string[];
     setCurUser({ ...curUser, followings });
     updateCurUser({ ...curUser, followings });
-
     setIsFollowing(!isFollowing);
   }
   function displayCreatedAt() {
@@ -77,18 +69,8 @@ export default function ProfileSmall({
   async function handleDelete() {
     if (confirm("정말 삭제하시겠습니까?")) {
       await updateDoc(doc(db, "posts", post?.id || ""), {
+        ...DEFAULT.postDeleted,
         id: post?.id,
-        uid: "",
-        createdAt: 0,
-        title: "",
-        tags: [],
-        txt: "",
-        imgs: [],
-        color: "",
-        likes: [],
-        scraps: [],
-        comments: [],
-        isDeleted: true,
       });
     }
   }

@@ -16,8 +16,9 @@ import { useStore } from "../apis/zustand";
 import { COLOR, SIZE } from "../custom";
 
 export default function Nav() {
-  const { curUser, setCurUser } = useStore();
+  const { curUser } = useStore();
   const router = useRouter();
+
   return (
     <>
       <div className="cont">

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { COLOR, IPost, IStyle } from "../custom";
+import { COLOR, IPost } from "../custom";
 
 interface IContImageProps {
   post: IPost;

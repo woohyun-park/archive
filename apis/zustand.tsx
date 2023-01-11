@@ -2,6 +2,7 @@ import create from "zustand";
 import { IUser } from "../custom";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "./firebase";
+import { stat } from "fs";
 
 interface IUserState {
   curUser: IUser;

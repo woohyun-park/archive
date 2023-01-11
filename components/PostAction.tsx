@@ -20,7 +20,7 @@ import {
 } from "react-icons/hi2";
 import { db } from "../apis/firebase";
 import { useStore } from "../apis/zustand";
-import { COLOR, IPost, IStyle, IUser, SIZE } from "../custom";
+import { COLOR, IPost, IStyle, SIZE } from "../custom";
 import Comment from "./Comment";
 
 type IPostActionProps = {
@@ -37,25 +37,21 @@ interface ITempComment {
 
 export default function PostAction({ post, style }: IPostActionProps) {
   const { curUser, setCurUser, updateCurUser } = useStore();
-  const [initIsLiked, setInitIsLiked] = useState(
-    curUser.likes.find((elem) => elem === post.id) ? true : false
-  );
-  const [initIsScraped, setInitIsScraped] = useState(
-    curUser.scraps.find((elem) => elem === post.id) ? true : false
-  );
-  const [isLiked, setIsLiked] = useState(
-    curUser.likes.find((elem) => elem === post.id) ? true : false
-  );
-  const [isScraped, setIsScraped] = useState(
-    curUser.scraps.find((elem) => elem === post.id) ? true : false
-  );
+  const [status, setStatus] = useState({
+    initIsLiked: curUser.likes.find((elem) => elem === post.id) ? true : false,
+    isLiked: curUser.likes.find((elem) => elem === post.id) ? true : false,
+    initIsScraped: curUser.scraps.find((elem) => elem === post.id)
+      ? true
+      : false,
+    isScraped: curUser.scraps.find((elem) => elem === post.id) ? true : false,
+  });
   const [comment, setComment] = useState("");
   const commentRef: RefObject<HTMLInputElement> = useRef(null);
   const router = useRouter();
 
   async function handleToggleLike() {
     const postRef = doc(db, "posts", post.id || "");
-    if (isLiked) {
+    if (status.isLiked) {
       await updateDoc(postRef, {
         likes: arrayRemove(curUser.uid),
       });
@@ -65,7 +61,7 @@ export default function PostAction({ post, style }: IPostActionProps) {
       });
     }
     const tempLikes = new Set(curUser.likes);
-    if (isLiked) {
+    if (status.isLiked) {
       tempLikes.delete(post.id || "");
     } else {
       tempLikes.add(post.id || "");
@@ -73,12 +69,11 @@ export default function PostAction({ post, style }: IPostActionProps) {
     const likes = Array.from(tempLikes) as string[];
     setCurUser({ ...curUser, likes });
     updateCurUser({ ...curUser, likes });
-
-    setIsLiked(!isLiked);
+    setStatus({ ...status, isLiked: !status.isLiked });
   }
   async function handleToggleScrap() {
     const postRef = doc(db, "posts", post.id || "");
-    if (isScraped) {
+    if (status.isScraped) {
       await updateDoc(postRef, {
         scraps: arrayRemove(curUser.uid),
       });
@@ -88,7 +83,7 @@ export default function PostAction({ post, style }: IPostActionProps) {
       });
     }
     const tempScraps = new Set(curUser.scraps);
-    if (isScraped) {
+    if (status.isScraped) {
       tempScraps.delete(post.id || "");
     } else {
       tempScraps.add(post.id || "");
@@ -96,15 +91,12 @@ export default function PostAction({ post, style }: IPostActionProps) {
     const scraps = Array.from(tempScraps) as string[];
     setCurUser({ ...curUser, scraps });
     updateCurUser({ ...curUser, scraps });
-
-    setIsScraped(!isScraped);
+    setStatus({ ...status, isScraped: !status.isScraped });
   }
-
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setComment(e.target.value);
   }
   async function handleSubmit(e: React.MouseEvent<HTMLButtonElement>) {
-    // Add comment
     const tempComment: ITempComment = {
       uid: curUser.uid,
       createdAt: serverTimestamp(),
@@ -112,29 +104,17 @@ export default function PostAction({ post, style }: IPostActionProps) {
       target: post.id,
     };
     const ref = await addDoc(collection(db, "comments"), tempComment);
-    // Update post comments array
     await updateDoc(doc(db, "posts", post.id), {
       comments: arrayUnion(ref.id),
     });
-    // Update user comments array
-    // const comments = [...curUser.comments, ref.id];
-    // setCurUser({ ...curUser, comments });
-    // updateCurUser({ ...curUser, comments });
-    // Clean input
     setComment("");
   }
   async function handleDelete(e: React.MouseEvent<SVGElement>) {
-    // Delete comment
     const id = e.currentTarget.id;
     await deleteDoc(doc(db, "comments", id));
-    // Update post comments array
     await updateDoc(doc(db, "posts", post.id), {
       comments: arrayRemove(id),
     });
-    // Update user comments array
-    // const comments = [...curUser.comments].filter((e) => e !== id);
-    // setCurUser({ ...curUser, comments });
-    // updateCurUser({ ...curUser, comments });
   }
   function handleCommentClick(e: React.MouseEvent<SVGElement>) {
     if (style === "post") {
@@ -150,14 +130,14 @@ export default function PostAction({ post, style }: IPostActionProps) {
     }
   }
   function displayLike() {
-    if (initIsLiked) {
-      if (isLiked) {
+    if (status.initIsLiked) {
+      if (status.isLiked) {
         return post.likes.length;
       } else {
         return post.likes.length - 1;
       }
     } else {
-      if (isLiked) {
+      if (status.isLiked) {
         return post.likes.length + 1;
       } else {
         return post.likes.length;
@@ -165,14 +145,14 @@ export default function PostAction({ post, style }: IPostActionProps) {
     }
   }
   function displayScraps() {
-    if (initIsScraped) {
-      if (isScraped) {
+    if (status.initIsScraped) {
+      if (status.isScraped) {
         return post.scraps.length;
       } else {
         return post.scraps.length - 1;
       }
     } else {
-      if (isScraped) {
+      if (status.isScraped) {
         return post.scraps.length + 1;
       } else {
         return post.scraps.length;
@@ -185,7 +165,7 @@ export default function PostAction({ post, style }: IPostActionProps) {
       <div className="cont">
         <div>
           <span className="heart">
-            {isLiked ? (
+            {status.isLiked ? (
               <HiHeart size={SIZE.icon} onClick={handleToggleLike} />
             ) : (
               <HiOutlineHeart size={SIZE.icon} onClick={handleToggleLike} />
@@ -200,7 +180,7 @@ export default function PostAction({ post, style }: IPostActionProps) {
         </div>
         <div>
           <span>
-            {isScraped ? (
+            {status.isScraped ? (
               <HiBookmark onClick={handleToggleScrap} size={SIZE.icon} />
             ) : (
               <HiOutlineBookmark onClick={handleToggleScrap} size={SIZE.icon} />

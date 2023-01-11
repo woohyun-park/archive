@@ -23,42 +23,52 @@ export default function Post({ initPost, initUser }: IPostProps) {
   }, [curUser]);
 
   async function update() {
-    const postRef = doc(db, "posts", post.id);
-    const postSnap = await getDoc(postRef);
+    if (post === null && user === null) {
+      return;
+    }
+    const postSnap = await getDoc(doc(db, "posts", post.id));
+    if ((postSnap.data() as IPost).isDeleted) {
+      return;
+    }
     const newPost: IPost = {
       ...(postSnap.data() as IPost),
       createdAt: postSnap.data()?.createdAt.toDate(),
       id: postSnap.id,
     };
     setPost(newPost);
-
-    const userRef = doc(db, "users", post?.uid);
-    const userSnap = await getDoc(userRef);
+    const userSnap = await getDoc(doc(db, "users", post?.uid));
     const newUser: IUser = { ...(userSnap.data() as IUser), uid: userSnap.id };
     setUser(newUser);
   }
 
   return (
     <>
-      <Back />
-      {post?.imgs.length === 0 ? (
-        <div className="bg"></div>
+      {post === null && user === null ? (
+        <div>존재하지 않는 페이지입니다</div>
       ) : (
-        <div className="imgCont">
-          <img className="img" src={post?.imgs[0]} />
-        </div>
+        <>
+          <Back />
+          {post?.imgs.length === 0 ? (
+            <div className="bg"></div>
+          ) : (
+            <div className="imgCont">
+              <img className="img" src={post?.imgs[0]} />
+            </div>
+          )}
+          <ProfileSmall post={post} user={user} style="post" />
+          <h1 className="title">{post?.title}</h1>
+          <div className="tagCont">
+            {post.tags.map((tag, i) => (
+              <Link key={i} href={{ pathname: `/tag/${tag}` }} legacyBehavior>
+                <div className="mainTag g-button1">{`#${tag}`}</div>
+              </Link>
+            ))}
+          </div>
+          <div className="text">{post?.txt}</div>
+          <PostAction post={post} style="post" />
+        </>
       )}
-      <ProfileSmall post={post} user={user} style="post" />
-      <h1 className="title">{post?.title}</h1>
-      <div className="tagCont">
-        {post.tags.map((tag, i) => (
-          <Link key={i} href={{ pathname: `/tag/${tag}` }} legacyBehavior>
-            <div className="mainTag g-button1">{`#${tag}`}</div>
-          </Link>
-        ))}
-      </div>
-      <div className="text">{post?.txt}</div>
-      <PostAction post={post} style="post" />
+
       <style jsx>{`
         .imgCont {
           position: relative;
@@ -133,17 +143,19 @@ export async function getServerSidePaths() {
 }
 
 export async function getServerSideProps({ params }: IServerSidePaths) {
-  const postRef = doc(db, "posts", params.id);
-  const postSnap = await getDoc(postRef);
-  const initPost: IPost = {
+  let initPost = null;
+  let initUser = null;
+  const postSnap = await getDoc(doc(db, "posts", params.id));
+  const post = postSnap.data() as IPost;
+  if ((postSnap.data() as IPost).isDeleted) {
+    return { props: { initPost, initUser } };
+  }
+  initPost = {
     ...(postSnap.data() as IPost),
     createdAt: postSnap.data()?.createdAt.toDate(),
     id: postSnap.id,
   };
-
-  const userRef = doc(db, "users", initPost?.uid);
-  const userSnap = await getDoc(userRef);
-  const initUser: IUser = { ...(userSnap.data() as IUser), uid: userSnap.id };
-
+  const userSnap = await getDoc(doc(db, "users", initPost?.uid));
+  initUser = { ...(userSnap.data() as IUser), uid: userSnap.id };
   return { props: { initPost, initUser } };
 }
