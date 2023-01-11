@@ -34,7 +34,7 @@ export default function Post({ post, user }: IPostProps) {
       </div>
       <div className="text">{post?.txt}</div>
       <PostAction post={post} user={user} />
-      <PostComment post={post} comments={post.comments} />
+      <PostComment post={post} />
 
       <style jsx>{`
         .imgCont {

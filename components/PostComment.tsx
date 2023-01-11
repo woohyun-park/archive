@@ -1,13 +1,15 @@
 import {
   addDoc,
+  arrayRemove,
   collection,
+  deleteDoc,
   doc,
   FieldValue,
   serverTimestamp,
   Timestamp,
   updateDoc,
 } from "firebase/firestore";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { db } from "../apis/firebase";
 import { useStore } from "../apis/zustand";
 import { COLOR, IComment, IPost, IUser } from "../custom";
@@ -15,7 +17,6 @@ import Comment from "./Comment";
 
 type IPostCommentProps = {
   post: IPost;
-  comments: string[];
 };
 
 interface ITempComment {
@@ -24,27 +25,46 @@ interface ITempComment {
   txt: string;
 }
 
-export default function PostComment({ post, comments }: IPostCommentProps) {
+export default function PostComment({ post }: IPostCommentProps) {
   const { curUser, setCurUser, updateCurUser } = useStore();
   const [comment, setComment] = useState("");
-  function handleCommentChange(e: React.ChangeEvent<HTMLInputElement>) {
+  const [comments, setComments] = useState(post.comments);
+
+  function updateComments() {}
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setComment(e.target.value);
   }
-  async function handleCommentSubmit(e: React.MouseEvent<HTMLButtonElement>) {
+  async function handleSubmit(e: React.MouseEvent<HTMLButtonElement>) {
+    // Add comment
     const tempComment: ITempComment = {
       uid: curUser.uid,
       createdAt: serverTimestamp(),
       txt: comment,
     };
     const ref = await addDoc(collection(db, "comments"), tempComment);
-
-    const tempPostComments = [...post.comments];
-    tempPostComments.push(ref.id);
-    const postRef = doc(db, "posts", post.id);
-    await updateDoc(postRef, { comments: tempPostComments });
-
-    const comments = [...curUser.comments];
-    comments.push(ref.id);
+    // Update post comments array
+    setComments([...post.comments, ref.id]);
+    await updateDoc(doc(db, "posts", post.id), {
+      comments: arrayRemove(ref.id),
+    });
+    // Update user comments array
+    const comments = [...curUser.comments, ref.id];
+    setCurUser({ ...curUser, comments });
+    updateCurUser({ ...curUser, comments });
+    // Clean input
+    setComment("");
+  }
+  async function handleDelete(e: React.MouseEvent<SVGElement>) {
+    // Delete comment
+    const id = e.currentTarget.id;
+    await deleteDoc(doc(db, "comments", id));
+    // Update post comments array
+    setComments([...post.comments].filter((e) => e !== id));
+    await updateDoc(doc(db, "posts", post.id), {
+      comments: arrayRemove(id),
+    });
+    // Update user comments array
+    const comments = [...curUser.comments].filter((e) => e !== id);
     setCurUser({ ...curUser, comments });
     updateCurUser({ ...curUser, comments });
   }
@@ -52,7 +72,7 @@ export default function PostComment({ post, comments }: IPostCommentProps) {
   return (
     <>
       {comments.map((id) => (
-        <Comment id={id} />
+        <Comment id={id} onClick={handleDelete} />
       ))}
       <div className="inputCont">
         <img className="img" src={curUser.photoURL} />
@@ -60,10 +80,10 @@ export default function PostComment({ post, comments }: IPostCommentProps) {
           className="g-button2 input"
           placeholder={`${curUser.displayName}(으)로 댓글 달기...`}
           value={comment}
-          onChange={handleCommentChange}
+          onChange={handleChange}
         />
-        <button className="g-button1 button" onClick={handleCommentSubmit}>
-          개시
+        <button className="g-button1 button" onClick={handleSubmit}>
+          게시
         </button>
       </div>
 

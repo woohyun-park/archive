@@ -1,4 +1,4 @@
-import { doc, getDoc } from "firebase/firestore";
+import { deleteDoc, doc, getDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { HiX } from "react-icons/hi";
 import { db } from "../apis/firebase";
@@ -10,12 +10,17 @@ import ProfileSmall from "./ProfileSmall";
 
 type ICommentProps = {
   id: string;
+  onClick: (e: React.MouseEvent<SVGElement>) => void;
 };
 
-export default function Comment({ id }: ICommentProps) {
+export default function Comment({ id, onClick }: ICommentProps) {
   const [comment, setComment] = useState<IComment | null>(null);
   const [user, setUser] = useState<IUser | null>(null);
-  const { curUser } = useStore();
+  const { curUser, setCurUser, updateCurUser } = useStore();
+
+  useEffect(() => {
+    init();
+  }, []);
 
   async function init() {
     const commentRef = doc(db, "comments", id);
@@ -27,9 +32,7 @@ export default function Comment({ id }: ICommentProps) {
     const tempUser = { ...(userSnap.data() as IUser) };
     setUser(tempUser);
   }
-  useEffect(() => {
-    init();
-  }, []);
+
   return (
     <>
       <div className="cont">
@@ -40,7 +43,7 @@ export default function Comment({ id }: ICommentProps) {
             <div className="txt">{comment?.txt}</div>
           </div>
         </div>
-        {user?.uid === curUser.uid ? <HiX /> : <></>}
+        {user?.uid === curUser.uid ? <HiX onClick={onClick} id={id} /> : <></>}
       </div>
 
       <style jsx>
