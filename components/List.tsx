@@ -2,8 +2,8 @@ import { useState } from "react";
 import Image from "./Image";
 import { COLOR, IPost, IUser, IStyle, IDict, SIZE } from "../custom";
 import ProfileSmall from "./ProfileSmall";
-import ListTag from "./ListTag";
 import { HiArrowLeft, HiBackspace } from "react-icons/hi";
+import Cont from "./Cont";
 
 interface IListProps {
   data: IDataSearch | IDataProfile;
@@ -28,7 +28,6 @@ const BOX: IDict<string[]> = {
 };
 
 export default function List({ data, style }: IListProps) {
-  console.log(data);
   const [selected, setSelected] = useState(1);
   const [selectedTag, setSelectedTag] = useState<string>("");
 
@@ -102,21 +101,9 @@ export default function List({ data, style }: IListProps) {
                 for (const tag in tags) {
                   result.push(
                     <>
-                      <Image
-                        post={{
-                          id: "",
-                          uid: "",
-                          createdAt: new Date(),
-                          title: `#${tag}`,
-                          txt: "",
-                          tags: [],
-                          imgs: [],
-                          color: "",
-                          likes: [],
-                          scraps: [],
-                          comments: [],
-                        }}
-                        style="tag"
+                      <Cont
+                        tag={tag}
+                        posts={tags[tag]}
                         onClick={() => setSelectedTag(tag)}
                       />
                     </>
@@ -189,6 +176,9 @@ export default function List({ data, style }: IListProps) {
         }
         .tagBack {
           margin-bottom: 8px;
+        }
+        .tagBack:hover {
+          cursor: pointer;
         }
       `}</style>
     </>
