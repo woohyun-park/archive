@@ -176,7 +176,7 @@ export default function List({ data, style }: IListProps) {
         .postTypes > div:hover {
           cursor: pointer;
         }
-        .postTypes > div:nth-of-type(${selected}) {
+        .postTypes > div:nth-of-type(${selected.tab}) {
           font-weight: 800;
           border-bottom: 2px solid ${COLOR.txt1};
         }

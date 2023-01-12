@@ -11,7 +11,7 @@ import {
   updateDoc,
   where,
 } from "firebase/firestore";
-import { auth, db } from "../../apis/firebase";
+import { auth, db, getData, getPath } from "../../apis/firebase";
 import List from "../../components/List";
 import { COLOR, IDict, IPost, IUser, SIZE } from "../../custom";
 import { HiOutlineCog } from "react-icons/hi";
@@ -32,6 +32,8 @@ export default function Profile({
   initScraps,
   initTags,
 }: IProfileProps) {
+  if (!initUser) return <div>존재하지 않는 페이지입니다</div>;
+
   const { curUser, setCurUser, updateCurUser } = useStore();
   const [user, setUser] = useState<IUser>(initUser);
   const [posts, setPosts] = useState(initPosts);
@@ -50,14 +52,12 @@ export default function Profile({
       setUser(curUser);
       return;
     }
-    const userRef = doc(db, "users", user.uid);
-    const userSnap = await getDoc(userRef);
-    const tempUser = { ...(userSnap.data() as IUser), uid: user.uid };
-    setUser(tempUser);
+    const newUser = (await getData("users", user.uid)) as IUser;
+    setUser(newUser);
   }
   async function handleToggleFollow() {
     const curUserRef = doc(db, "users", curUser.uid);
-    const userRef = doc(db, "users", user.uid);
+    const userRef = doc(db, "users", user.uid || "");
     if (isFollowing) {
       await updateDoc(curUserRef, { followings: arrayRemove(user.uid) });
       await updateDoc(userRef, {
@@ -74,9 +74,9 @@ export default function Profile({
 
     const tempFollowings = new Set(curUser.followings);
     if (isFollowing) {
-      tempFollowings.delete(user.uid);
+      tempFollowings.delete(user.uid || "");
     } else {
-      tempFollowings.add(user.uid);
+      tempFollowings.add(user.uid || "");
     }
     const followings = Array.from(tempFollowings) as string[];
     setCurUser({ ...curUser, followings });
@@ -87,65 +87,70 @@ export default function Profile({
 
   return (
     <>
-      {user.uid === curUser.uid && (
-        <div className="settingCont">
-          <Link href="/setting" legacyBehavior>
-            <div className="setting">
-              <HiOutlineCog size={SIZE.icon} />
-            </div>
-          </Link>
-        </div>
-      )}
-      <div className="profileTopCont">
-        <div className="profileLeftCont">
-          <h1>{user?.displayName}</h1>
-          <div className="profileInfoCont">
-            <div>
-              <div className="profileType">아카이브</div>
-              <div className="profileNum">{user?.posts.length}</div>
-            </div>
-            <div>
-              <div className="profileType">팔로워</div>
-              <div className="profileNum">{user?.followers.length}</div>
-            </div>
-            <div>
-              <div className="profileType">팔로잉</div>
-              <div className="profileNum">{user?.followings.length}</div>
+      <>
+        {user.uid === curUser.uid && (
+          <div className="settingCont">
+            <Link href="/setting" legacyBehavior>
+              <div className="setting">
+                <HiOutlineCog size={SIZE.icon} />
+              </div>
+            </Link>
+          </div>
+        )}
+        <div className="profileTopCont">
+          <div className="profileLeftCont">
+            <h1>{user.displayName}</h1>
+            <div className="profileInfoCont">
+              <div>
+                <div className="profileType">아카이브</div>
+                <div className="profileNum">{user.posts.length}</div>
+              </div>
+              <div>
+                <div className="profileType">팔로워</div>
+                <div className="profileNum">{user.followers.length}</div>
+              </div>
+              <div>
+                <div className="profileType">팔로잉</div>
+                <div className="profileNum">{user.followings.length}</div>
+              </div>
             </div>
           </div>
+          <img className="profileImage" src={user.photoURL} />
         </div>
-        <img className="profileImage" src={user?.photoURL} />
-      </div>
-      {(() => {
-        const result = [];
-        if (curUser.uid !== user.uid) {
-          if (curUser.followings.find((elem) => elem === user.uid)) {
-            result.push(
-              <button onClick={handleToggleFollow} className="g-button2">
-                팔로잉
-              </button>
-            );
-          } else {
-            result.push(
-              <button onClick={handleToggleFollow} className="g-button1">
-                팔로우
-              </button>
-            );
+        {(() => {
+          const result = [];
+          if (curUser.uid !== user.uid) {
+            if (curUser.followings.find((elem) => elem === user.uid)) {
+              result.push(
+                <button onClick={handleToggleFollow} className="g-button2">
+                  팔로잉
+                </button>
+              );
+            } else {
+              result.push(
+                <button onClick={handleToggleFollow} className="g-button1">
+                  팔로우
+                </button>
+              );
+            }
           }
-        }
-        return result;
-      })()}
-      <div className="profileTxtCont">{user?.txt}</div>
-      {user.uid === curUser.uid ? (
-        <>
-          <button onClick={() => signOut(auth)} className="g-button1">
-            로그아웃
-          </button>
-        </>
-      ) : (
-        <></>
-      )}
-      <List data={{ grid: posts, tag: tags, scrap: scraps }} style="profile" />
+          return result;
+        })()}
+        <div className="profileTxtCont">{user.txt}</div>
+        {user.uid === curUser.uid ? (
+          <>
+            <button onClick={() => signOut(auth)} className="g-button1">
+              로그아웃
+            </button>
+          </>
+        ) : (
+          <></>
+        )}
+        <List
+          data={{ grid: posts, tag: tags, scrap: scraps }}
+          style="profile"
+        />
+      </>
 
       <style jsx>
         {`
@@ -209,12 +214,7 @@ interface IServerSideProps {
 }
 
 export async function getServerSidePaths() {
-  const pathsSnap = await getDocs(collection(db, "users"));
-  const paths: IServerSidePaths[] = [];
-  pathsSnap.forEach((path) => {
-    paths.push({ params: { uid: path.id } });
-  });
-
+  const paths = getPath("users", "uid");
   return { paths, fallback: false };
 }
 
@@ -222,6 +222,15 @@ export async function getServerSideProps({ params }: IServerSidePaths) {
   const deletedPosts = new Set();
 
   const uid = params.uid;
+
+  const initUser = await getData("users", uid);
+  if (initUser === null) {
+    return {
+      props: { initUser, initPosts: null, initScraps: null, initTags: null },
+    };
+  }
+  console.log(initUser);
+
   const postRef = collection(db, "posts");
   const postSnap = await getDocs(
     query(postRef, where("uid", "==", params.uid))
@@ -238,10 +247,6 @@ export async function getServerSideProps({ params }: IServerSidePaths) {
       id: doc.id,
     });
   });
-
-  const userRef = doc(db, "users", uid);
-  const userSnap = await getDoc(userRef);
-  const initUser: IUser = { ...(userSnap.data() as IUser), uid: userSnap.id };
 
   // scraps가 []인 경우에는 where()에서 "in"을 사용할 시 에러가 나므로 아래와 같이 분기해서 처리한다.
   let initScraps: IPost[];

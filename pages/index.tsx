@@ -1,4 +1,4 @@
-import { db } from "../apis/firebase";
+import { db, getData } from "../apis/firebase";
 import { doc, collection, getDoc, getDocs } from "firebase/firestore";
 import { IPost, IUser } from "../custom";
 import Feed from "./feed";
@@ -29,9 +29,8 @@ export async function getServerSideProps() {
   });
   const users: IUser[] = [];
   for await (const uid of uids) {
-    const userSnap = await getDoc(doc(db, "users", uid));
-    users.push({ ...(userSnap.data() as IUser), uid: userSnap.id });
+    const user = (await getData("users", uid)) as IUser;
+    users.push(user);
   }
-
   return { props: { posts, users } };
 }

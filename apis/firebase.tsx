@@ -1,7 +1,14 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  getFirestore,
+} from "firebase/firestore";
 import { getAuth, connectAuthEmulator } from "firebase/auth";
 import { getAnalytics } from "firebase/analytics";
+import { IPost, IUser } from "../custom";
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -23,3 +30,39 @@ export const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 export const auth = getAuth(app);
 // export const analytics = getAnalytics(app);
+
+export async function getData(
+  type: string,
+  id: string
+): Promise<IPost | IUser | null> {
+  if (type === "posts") {
+    const snap = await getDoc(doc(db, "posts", id));
+    console.log(snap);
+    if (!snap.data()) return null;
+    const post: IPost = {
+      ...(snap.data() as IPost),
+      createdAt: snap.data()?.createdAt.toDate(),
+      id: snap.id,
+    };
+    return post.isDeleted ? null : post;
+  }
+  if (type === "users") {
+    const snap = await getDoc(doc(db, "users", id));
+    if (!snap.data()) return null;
+    const user: IUser = {
+      ...(snap.data() as IUser),
+      uid: snap.id,
+    };
+    return user;
+  }
+  return null;
+}
+
+export async function getPath(type: string, param: string) {
+  const snap = await getDocs(collection(db, type));
+  const paths: unknown[] = [];
+  snap.forEach((post) => {
+    paths.push({ params: { [param]: post.id } });
+  });
+  return paths;
+}

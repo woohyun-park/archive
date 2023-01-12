@@ -32,7 +32,7 @@ export default function Cont({ tag, posts, onClick }: IImageProps) {
               <ContImage post={posts[0]} type="img" />
             )}
           </div>
-          <div className="overlay"></div>
+          {posts[0].imgs.length !== 0 && <div className="overlay"></div>}
           <div className="title" onClick={onClick}>
             {`#${tag}`}
           </div>
@@ -67,7 +67,7 @@ export default function Cont({ tag, posts, onClick }: IImageProps) {
           position: absolute;
           width: 100%;
           height: 100%;
-          background-color: rgba(0, 0, 0, 0.25);
+          background-color: rgba(0, 0, 0, 0.1);
         }
         .title {
           position: absolute;

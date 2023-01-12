@@ -1,7 +1,7 @@
 import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { db } from "../../apis/firebase";
+import { db, getData, getPath } from "../../apis/firebase";
 import { useStore } from "../../apis/zustand";
 import Back from "../../components/Back";
 import PostAction from "../../components/PostAction";
@@ -23,21 +23,13 @@ export default function Post({ initPost, initUser }: IPostProps) {
   }, [curUser]);
 
   async function update() {
-    if (post === null && user === null) {
+    if (post === null || user === null) {
       return;
     }
-    const postSnap = await getDoc(doc(db, "posts", post.id));
-    if ((postSnap.data() as IPost).isDeleted) {
-      return;
-    }
-    const newPost: IPost = {
-      ...(postSnap.data() as IPost),
-      createdAt: postSnap.data()?.createdAt.toDate(),
-      id: postSnap.id,
-    };
+    const newPost = (await getData("posts", post.id)) as IPost;
+    if (newPost === null) return;
     setPost(newPost);
-    const userSnap = await getDoc(doc(db, "users", post?.uid));
-    const newUser: IUser = { ...(userSnap.data() as IUser), uid: userSnap.id };
+    const newUser = (await getData("users", post.uid)) as IUser;
     setUser(newUser);
   }
 
@@ -133,29 +125,13 @@ interface IServerSideProps {
 }
 
 export async function getServerSidePaths() {
-  const pathSnap = await getDocs(collection(db, "posts"));
-  const paths: IServerSidePaths[] = [];
-  pathSnap.forEach((post) => {
-    paths.push({ params: { id: post.id } });
-  });
-
+  const paths = await getPath("posts", "id");
   return { paths, fallback: false };
 }
 
 export async function getServerSideProps({ params }: IServerSidePaths) {
-  let initPost = null;
-  let initUser = null;
-  const postSnap = await getDoc(doc(db, "posts", params.id));
-  const post = postSnap.data() as IPost;
-  if ((postSnap.data() as IPost).isDeleted) {
-    return { props: { initPost, initUser } };
-  }
-  initPost = {
-    ...(postSnap.data() as IPost),
-    createdAt: postSnap.data()?.createdAt.toDate(),
-    id: postSnap.id,
-  };
-  const userSnap = await getDoc(doc(db, "users", initPost?.uid));
-  initUser = { ...(userSnap.data() as IUser), uid: userSnap.id };
+  const initPost = await getData("posts", params.id);
+  if (initPost === null) return { props: { initPost, initUser: null } };
+  const initUser = await getData("users", initPost.uid);
   return { props: { initPost, initUser } };
 }

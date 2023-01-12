@@ -11,7 +11,9 @@ export default function Image({ post, style }: IImageProps) {
     <>
       <div className={`cont cont-${style}`}>
         {post.imgs.length === 0 ? (
-          <div className="bg" />
+          <>
+            <div className="bg" />
+          </>
         ) : (
           <>
             <img className="bg" src={post.imgs[0]} />
@@ -78,7 +80,7 @@ export default function Image({ post, style }: IImageProps) {
           position: absolute;
           width: 100%;
           height: 100%;
-          background-color: rgba(0, 0, 0, 0.25);
+          background-color: rgba(0, 0, 0, 0.1);
         }
         .title {
           position: absolute;
