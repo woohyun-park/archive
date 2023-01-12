@@ -23,7 +23,7 @@ import { COLOR, IDict, IPost, IUser, SIZE } from "../../custom";
 import { HiOutlineCog } from "react-icons/hi";
 import { useStore } from "../../apis/zustand";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 interface IProfileProps {
   initUser: IUser;
@@ -40,14 +40,19 @@ export default function Profile({
 }: IProfileProps) {
   if (!initUser) return <div>존재하지 않는 페이지입니다</div>;
 
-  const { curUser, setCurUser, updateCurUser } = useStore();
+  const { curUser, setCurUser, updateCurUser, refreshCurUser } = useStore();
   // const [user, setUser] = useState<IUser>(initUser);
   // const [posts, setPosts] = useState(initPosts);
   // const [scraps, setScraps] = useState(initScraps);
   // const [tags, setTags] = useState(initTags);
-  const [isFollowing, setIsFollowing] = useState(() =>
-    curUser.followings.find((elem) => elem === initUser.id) ? true : false
-  );
+  const [user, setUser] = useState({
+    initIsFollowing: curUser.followings.find((elem) => elem === initUser.id)
+      ? true
+      : false,
+    isFollowing: curUser.followings.find((elem) => elem === initUser.id)
+      ? true
+      : false,
+  });
 
   // useEffect(() => {
   //   update();
@@ -64,7 +69,7 @@ export default function Profile({
   async function handleToggleFollow() {
     const curUserRef = doc(db, "users", curUser.id);
     const userRef = doc(db, "users", initUser.id || "");
-    if (isFollowing) {
+    if (user.isFollowing) {
       await updateDoc(curUserRef, { followings: arrayRemove(initUser.id) });
       await updateDoc(userRef, {
         followers: arrayRemove(curUser.id),
@@ -77,18 +82,24 @@ export default function Profile({
         followers: arrayUnion(curUser.id),
       });
     }
-
-    const tempFollowings = new Set(curUser.followings);
-    if (isFollowing) {
-      tempFollowings.delete(initUser.id || "");
+    // const tempFollowings = new Set(curUser.followings);
+    // if (isFollowing) {
+    //   tempFollowings.delete(initUser.id);
+    // } else {
+    //   tempFollowings.add(initUser.id);
+    // }
+    // const followings = Array.from(tempFollowings) as string[];
+    // setCurUser({ ...curUser, followings });
+    // updateCurUser({ ...curUser, followings });
+    let len = initUser.followers.length;
+    if (user.initIsFollowing === user.isFollowing) {
+    } else if (user.initIsFollowing) {
+      len--;
     } else {
-      tempFollowings.add(initUser.id || "");
+      len++;
     }
-    const followings = Array.from(tempFollowings) as string[];
-    setCurUser({ ...curUser, followings });
-    updateCurUser({ ...curUser, followings });
-
-    setIsFollowing(!isFollowing);
+    setUser({ ...user, isFollowing: !user.isFollowing });
+    refreshCurUser(curUser.id);
   }
 
   return (
@@ -113,7 +124,18 @@ export default function Profile({
               </div>
               <div>
                 <div className="profileType">팔로워</div>
-                <div className="profileNum">{initUser.followers.length}</div>
+                <div className="profileNum">
+                  {(() => {
+                    const len = initUser.followers.length;
+                    if (user.initIsFollowing === user.isFollowing) {
+                      return len;
+                    } else if (user.initIsFollowing) {
+                      return len - 1;
+                    } else {
+                      return len + 1;
+                    }
+                  })()}
+                </div>
               </div>
               <div>
                 <div className="profileType">팔로잉</div>

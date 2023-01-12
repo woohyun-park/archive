@@ -1,12 +1,13 @@
 import create from "zustand";
 import { IUser } from "../custom";
-import { doc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "./firebase";
 
 interface IUserState {
   curUser: IUser;
   setCurUser: (user: IUser) => void;
   updateCurUser: (user: IUser) => void;
+  refreshCurUser: (uid: string) => void;
 }
 
 export const useStore = create<IUserState>((set) => ({
@@ -28,6 +29,12 @@ export const useStore = create<IUserState>((set) => ({
     const userRef = doc(db, "users", newCurUser.id);
     await updateDoc(userRef, {
       ...newCurUser,
+    });
+  },
+  refreshCurUser: async (uid: string) => {
+    const snap = await getDoc(doc(db, "users", uid));
+    set((state) => {
+      return { ...state, curUser: snap.data() as IUser };
     });
   },
 }));
