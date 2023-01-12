@@ -18,6 +18,7 @@ import Color from "../components/Color";
 
 interface IForm {
   file: File[];
+
   title: string;
   tags: string[];
   txt: string;
@@ -40,6 +41,11 @@ interface ITempPost {
 
 export default function Add() {
   const { curUser, setCurUser, updateCurUser } = useStore();
+  const router = useRouter();
+  let modifyPost = null;
+  if (router.query.post) {
+    modifyPost = JSON.parse(router.query.post as string) as IPost;
+  }
   const {
     register,
     handleSubmit,
@@ -49,20 +55,26 @@ export default function Add() {
   } = useForm<IForm>({
     defaultValues: {
       file: undefined,
-      title: "",
-      tags: [],
-      txt: "",
-      color: "",
+      title: modifyPost ? modifyPost.title : "",
+      tags: modifyPost ? modifyPost.tags : [],
+      txt: modifyPost ? modifyPost.txt : "",
+      color: modifyPost ? modifyPost.color : "",
     },
   });
   const file = register("file");
   const fileRef = useRef<HTMLInputElement | null>(null);
-  const [preview, setPreview] = useState<string>("");
-  const [isImage, setIsImage] = useState(true);
-  const [selectedColor, setSelectedColor] = useState(COLOR.red);
+  const [preview, setPreview] = useState<string>(
+    modifyPost && modifyPost.imgs.length !== 0 ? modifyPost.imgs[0] : ""
+  );
+  const [isImage, setIsImage] = useState(
+    modifyPost ? (modifyPost.imgs.length !== 0 ? true : false) : true
+  );
+  const [selectedColor, setSelectedColor] = useState(
+    modifyPost && modifyPost.imgs.length === 0 ? modifyPost.color : COLOR.red
+  );
   const [tag, setTag] = useState("");
   const [tags, setTags] = useState<string[]>([]);
-  const router = useRouter();
+
   console.log(watch());
 
   async function onValid(data: IForm) {
@@ -211,7 +223,12 @@ export default function Add() {
 
   return (
     <>
-      <div className="back" onClick={() => router.back()}>
+      <div
+        className="back"
+        onClick={() => {
+          if (confirm("아카이브 작성을 취소하시겠습니까?")) router.back();
+        }}
+      >
         <HiArrowLeft size={SIZE.icon} />
       </div>
       <form onSubmit={handleSubmit((data) => onValid(data))}>

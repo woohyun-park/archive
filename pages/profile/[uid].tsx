@@ -223,13 +223,12 @@ export async function getServerSideProps({ params }: IServerSidePaths) {
 
   const uid = params.uid;
 
-  const initUser = await getData("users", uid);
+  const initUser = (await getData("users", uid)) as IUser;
   if (initUser === null) {
     return {
       props: { initUser, initPosts: null, initScraps: null, initTags: null },
     };
   }
-  console.log(initUser);
 
   const postRef = collection(db, "posts");
   const postSnap = await getDocs(
@@ -331,6 +330,7 @@ export async function getServerSideProps({ params }: IServerSidePaths) {
       tempTags[tag] = arr;
     }
   }
+  const userRef = doc(db, "users", uid);
   await updateDoc(userRef, {
     likes: tempLikes,
     posts: tempPosts,

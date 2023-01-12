@@ -6,6 +6,7 @@ import { useStore } from "../apis/zustand";
 import { COLOR, DEFAULT, IPost, IStyle, IUser, SIZE } from "../custom";
 import dayjs from "dayjs";
 import { useState } from "react";
+import Router, { useRouter } from "next/router";
 
 type IProfileSmallProps = {
   user: IUser;
@@ -22,6 +23,7 @@ export default function ProfileSmall({
   const [isFollowing, setIsFollowing] = useState(() =>
     curUser.followings.find((elem) => elem === user.uid) ? true : false
   );
+  const router = useRouter();
 
   async function handleToggleFollow() {
     const curUserRef = doc(db, "users", curUser.uid);
@@ -65,7 +67,15 @@ export default function ProfileSmall({
       return postDate.format("MM월 DD, YYYY");
     }
   }
-  function handleModify() {}
+  function handleModify() {
+    router.push(
+      {
+        pathname: "/add",
+        query: { post: JSON.stringify(post) },
+      },
+      "/modify"
+    );
+  }
   async function handleDelete() {
     if (confirm("정말 삭제하시겠습니까?")) {
       await updateDoc(doc(db, "posts", post?.id || ""), {
