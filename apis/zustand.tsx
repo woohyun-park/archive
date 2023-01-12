@@ -2,7 +2,6 @@ import create from "zustand";
 import { IUser } from "../custom";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "./firebase";
-import { stat } from "fs";
 
 interface IUserState {
   curUser: IUser;
@@ -12,15 +11,11 @@ interface IUserState {
 
 export const useStore = create<IUserState>((set) => ({
   curUser: {
-    uid: "",
+    id: "",
     email: "",
     displayName: "",
     photoURL: "",
     txt: "",
-    posts: [],
-    tags: {},
-    likes: [],
-    scraps: [],
     followers: [],
     followings: [],
   },
@@ -30,7 +25,7 @@ export const useStore = create<IUserState>((set) => ({
     });
   },
   updateCurUser: async (newCurUser: IUser) => {
-    const userRef = doc(db, "users", newCurUser.uid);
+    const userRef = doc(db, "users", newCurUser.id);
     await updateDoc(userRef, {
       ...newCurUser,
     });

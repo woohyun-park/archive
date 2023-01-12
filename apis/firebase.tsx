@@ -5,6 +5,9 @@ import {
   getDoc,
   getDocs,
   getFirestore,
+  query,
+  where,
+  WhereFilterOp,
 } from "firebase/firestore";
 import { getAuth, connectAuthEmulator } from "firebase/auth";
 import { getAnalytics } from "firebase/analytics";
@@ -37,7 +40,6 @@ export async function getData(
 ): Promise<IPost | IUser | null> {
   if (type === "posts") {
     const snap = await getDoc(doc(db, "posts", id));
-    console.log(snap);
     if (!snap.data()) return null;
     const post: IPost = {
       ...(snap.data() as IPost),
@@ -51,11 +53,32 @@ export async function getData(
     if (!snap.data()) return null;
     const user: IUser = {
       ...(snap.data() as IUser),
-      uid: snap.id,
+      id: snap.id,
     };
     return user;
   }
   return null;
+}
+
+export async function getDataByQuery(
+  type: string,
+  p1: string,
+  p2: string,
+  p3: string
+) {
+  const ref = collection(db, type);
+  const snap = await getDocs(query(ref, where(p1, p2 as WhereFilterOp, p3)));
+  if (type === "posts") {
+    const posts: IPost[] = [];
+    snap.forEach((doc) => {
+      posts.push({
+        ...(doc.data() as IPost),
+        createdAt: doc.data().createdAt.toDate(),
+        id: doc.id,
+      });
+    });
+    return posts;
+  }
 }
 
 export async function getPath(type: string, param: string) {

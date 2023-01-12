@@ -41,7 +41,7 @@ export default function Comment({ id, onClick }: ICommentProps) {
             <div className="txt">{comment?.txt}</div>
           </div>
         </div>
-        {user?.uid === curUser.uid ? <HiX onClick={onClick} id={id} /> : <></>}
+        {user?.id === curUser.id ? <HiX onClick={onClick} id={id} /> : <></>}
       </div>
 
       <style jsx>

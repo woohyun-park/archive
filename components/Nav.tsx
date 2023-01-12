@@ -59,9 +59,9 @@ export default function Nav() {
             )}
           </a>
         </Link>
-        <Link href={`/profile/${curUser.uid}`} legacyBehavior>
+        <Link href={`/profile/${curUser.id}`} legacyBehavior>
           <a>
-            {router.query.uid === curUser.uid ? (
+            {router.query.uid === curUser.id ? (
               <HiUser size={SIZE.icon} />
             ) : (
               <HiOutlineUser size={SIZE.icon} />

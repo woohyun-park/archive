@@ -37,13 +37,13 @@ export default function Layout({ children }: ILayoutProps) {
   });
 
   useEffect(() => {
-    auth.onAuthStateChanged(async (curUser) => {
-      if (curUser) {
-        const snap = await getDoc(doc(db, "users", curUser.uid));
+    auth.onAuthStateChanged(async (authState) => {
+      if (authState) {
+        const snap = await getDoc(doc(db, "users", authState.uid));
         setLogin({ ...login, isLoggedIn: true });
         setCurUser({
           ...(snap.data() as IUser),
-          uid: curUser.uid,
+          id: authState.uid,
         });
       } else {
         setLogin({ ...login, isLoggedIn: false });
@@ -61,7 +61,7 @@ export default function Layout({ children }: ILayoutProps) {
         const user = res.user;
         const tempUser: IUser = {
           ...DEFAULT.user,
-          uid: user.uid,
+          id: user.uid,
           email: String(user.email),
           displayName: `아카이버-${user.uid.slice(0, 11)}`,
         };
@@ -84,7 +84,7 @@ export default function Layout({ children }: ILayoutProps) {
         const user = res.user;
         const tempUser: IUser = {
           ...DEFAULT.user,
-          uid: user.uid,
+          id: user.uid,
           email: String(user.email),
           displayName: `아카이버-${user.uid.slice(0, 11)}`,
         };

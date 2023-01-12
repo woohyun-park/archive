@@ -93,7 +93,7 @@ export default function List({ data, style }: IListProps) {
             })()}
             {selected.tab === 3 &&
               (data as IDataSearch).people.map((e) => (
-                <ProfileSmall user={e} style={`${style}`} key={e.uid} />
+                <ProfileSmall user={e} style={`${style}`} key={e.id} />
               ))}
           </>
         ) : style === "profile" ? (

@@ -3,32 +3,32 @@ import { Style } from "util";
 
 export const DEFAULT = {
   user: {
-    uid: "",
+    id: "",
     email: "",
     displayName: "",
     photoURL:
       "https://res.cloudinary.com/dl5qaj6le/image/upload/v1672976914/archive/static/default_user_photoURL.png",
     txt: "",
-    posts: [],
-    tags: {},
-    likes: [],
-    scraps: [],
     followers: [],
     followings: [],
+    // posts: [],
+    // tags: [],
+    // likes: [],
+    // scraps: [],
   },
   postDeleted: {
     id: "",
     uid: "",
     createdAt: 0,
     title: "",
-    tags: [],
     txt: "",
     imgs: [],
     color: "",
-    likes: [],
-    scraps: [],
-    comments: [],
-    isDeleted: true,
+    // isDeleted: true,
+    // likes: [],
+    // scraps: [],
+    // comments: [],
+    // tags: [],
   },
 };
 
@@ -97,17 +97,17 @@ export interface IDict<T> {
 }
 
 export interface IUser {
-  uid: string;
+  id: string;
   email: string;
   displayName: string;
   photoURL: string;
   txt: string;
-  posts: string[];
-  tags: IDict<string[]>;
-  likes: string[];
-  scraps: string[];
   followers: string[];
   followings: string[];
+  // posts: string[];
+  // tags: string[];
+  // likes: string[];
+  // scraps: string[];
 }
 
 export interface IPost {
@@ -115,19 +115,20 @@ export interface IPost {
   uid: string;
   createdAt: Date;
   title: string;
-  tags: string[];
   txt: string;
   imgs: string[];
   color: string;
-  likes: string[];
-  scraps: string[];
-  comments: string[];
   isDeleted: boolean;
+  // likes: string[];
+  // scraps: string[];
+  // comments: string[];
+  // tags: string[];
 }
 
 export interface IComment {
   id: string;
   uid: string;
+  pid: string;
   createdAt: Date;
   txt: string;
 }
