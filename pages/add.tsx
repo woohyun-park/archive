@@ -2,19 +2,22 @@ import axios, { AxiosRequestConfig } from "axios";
 import {
   addDoc,
   collection,
+  deleteDoc,
+  doc,
   FieldValue,
   serverTimestamp,
   Timestamp,
   updateDoc,
 } from "firebase/firestore";
 import React, { useRef, useState } from "react";
-import { db } from "../apis/firebase";
+import { db, getDataByQuery } from "../apis/firebase";
 import { COLOR, IDict, IPost, SIZE, FUNC, ITag } from "../custom";
 import { useStore } from "../apis/zustand";
 import { useRouter } from "next/router";
 import { HiArrowLeft, HiX } from "react-icons/hi";
 import { useForm } from "react-hook-form";
 import Color from "../components/Color";
+import { createImportSpecifier } from "typescript";
 
 interface IForm {
   file: File[];
@@ -42,10 +45,11 @@ interface IForm {
 export default function Add() {
   const { curUser, setCurUser } = useStore();
   const router = useRouter();
-  let modifyPost = null;
+  let modifyPost: IPost | null = null;
   if (router.query.post) {
     modifyPost = JSON.parse(router.query.post as string) as IPost;
   }
+  console.log(modifyPost);
   const {
     register,
     handleSubmit,
@@ -58,6 +62,7 @@ export default function Add() {
       title: modifyPost ? modifyPost.title : "",
       txt: modifyPost ? modifyPost.txt : "",
       color: modifyPost ? modifyPost.color : "",
+      tags: modifyPost ? modifyPost.tags : [],
     },
   });
   const file = register("file");
@@ -72,8 +77,7 @@ export default function Add() {
     modifyPost && modifyPost.imgs.length === 0 ? modifyPost.color : COLOR.red
   );
   const [tag, setTag] = useState("");
-  const [tags, setTags] = useState<string[]>([]);
-  console.log(watch());
+  const [tags, setTags] = useState<string[]>(modifyPost ? modifyPost.tags : []);
 
   async function onValid(data: IForm) {
     if (isImage) {
@@ -95,50 +99,108 @@ export default function Add() {
           config
         )
         .then(async (res) => {
-          const tempPost: IPost = {
-            uid: curUser.id,
-            createdAt: serverTimestamp(),
-            title: data.title,
-            txt: data.txt,
-            imgs: [res.data.url],
-            color: "",
-            tags: tags,
-          };
-          const postRef = await addDoc(collection(db, "posts"), tempPost);
-          await updateDoc(postRef, { id: postRef.id });
-          for await (const tag of data.tags) {
-            const tempTag: ITag = {
+          if (modifyPost) {
+            const deleteTags = (await getDataByQuery(
+              "tags",
+              "pid",
+              "==",
+              modifyPost.id as string
+            )) as ITag[];
+            for (const tag of deleteTags) {
+              await deleteDoc(doc(db, "tags", tag.id as string));
+            }
+            await updateDoc(doc(db, "posts", modifyPost.id as string), {
+              title: data.title,
+              txt: data.txt,
+              imgs: [res.data.url],
+              color: "",
+              tags,
+            });
+            for await (const tag of data.tags) {
+              const tempTag: ITag = {
+                uid: curUser.id,
+                pid: modifyPost.id,
+                name: tag,
+              };
+              const tagRef = await addDoc(collection(db, "tags"), tempTag);
+              await updateDoc(tagRef, { id: tagRef.id });
+            }
+            setCurUser({ id: curUser.id });
+          } else {
+            const tempPost: IPost = {
               uid: curUser.id,
-              pid: postRef.id,
-              name: tag,
+              createdAt: serverTimestamp(),
+              title: data.title,
+              txt: data.txt,
+              imgs: [res.data.url],
+              color: "",
+              tags,
             };
-            const tagRef = await addDoc(collection(db, "tags"), tempTag);
-            await updateDoc(tagRef, { id: tagRef.id });
+            const postRef = await addDoc(collection(db, "posts"), tempPost);
+            await updateDoc(postRef, { id: postRef.id });
+            for await (const tag of data.tags) {
+              const tempTag: ITag = {
+                uid: curUser.id,
+                pid: postRef.id,
+                name: tag,
+              };
+              const tagRef = await addDoc(collection(db, "tags"), tempTag);
+              await updateDoc(tagRef, { id: tagRef.id });
+            }
+            setCurUser({ id: curUser.id });
           }
-          setCurUser({ id: curUser.id });
         });
     } else {
-      const tempPost: IPost = {
-        uid: curUser.id,
-        createdAt: serverTimestamp(),
-        title: data.title,
-        txt: data.txt,
-        imgs: [],
-        color: data.color,
-        tags: tags,
-      };
-      const postRef = await addDoc(collection(db, "posts"), tempPost);
-      await updateDoc(postRef, { id: postRef.id });
-      for await (const tag of data.tags) {
-        const tempTag: ITag = {
+      if (modifyPost) {
+        const deleteTags = (await getDataByQuery(
+          "tags",
+          "pid",
+          "==",
+          modifyPost.id as string
+        )) as ITag[];
+        for (const tag of deleteTags) {
+          await deleteDoc(doc(db, "tags", tag.id as string));
+        }
+        await updateDoc(doc(db, "posts", modifyPost.id as string), {
+          title: data.title,
+          txt: data.txt,
+          imgs: [],
+          color: data.color,
+          tags,
+        });
+        for await (const tag of data.tags) {
+          const tempTag: ITag = {
+            uid: curUser.id,
+            pid: modifyPost.id,
+            name: tag,
+          };
+          const tagRef = await addDoc(collection(db, "tags"), tempTag);
+          await updateDoc(tagRef, { id: tagRef.id });
+        }
+        setCurUser({ id: curUser.id });
+      } else {
+        const tempPost: IPost = {
           uid: curUser.id,
-          pid: postRef.id,
-          name: tag,
+          createdAt: serverTimestamp(),
+          title: data.title,
+          txt: data.txt,
+          imgs: [],
+          color: data.color,
+          tags,
         };
-        const tagRef = await addDoc(collection(db, "tags"), tempTag);
-        await updateDoc(tagRef, { id: tagRef.id });
+        const postRef = await addDoc(collection(db, "posts"), tempPost);
+        await updateDoc(postRef, { id: postRef.id });
+        for await (const tag of data.tags) {
+          const tempTag: ITag = {
+            uid: curUser.id,
+            pid: postRef.id,
+            name: tag,
+          };
+          const tagRef = await addDoc(collection(db, "tags"), tempTag);
+          await updateDoc(tagRef, { id: tagRef.id });
+        }
+        setCurUser({ id: curUser.id });
       }
-      setCurUser({ id: curUser.id });
     }
     router.push("/");
   }
