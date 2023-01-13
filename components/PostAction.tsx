@@ -5,12 +5,8 @@ import {
   collection,
   deleteDoc,
   doc,
-  FieldValue,
-  getDocs,
-  query,
   serverTimestamp,
   updateDoc,
-  where,
 } from "firebase/firestore";
 import { useRouter } from "next/router";
 import React, { RefObject, useEffect, useRef, useState } from "react";
@@ -21,10 +17,9 @@ import {
   HiOutlineHeart,
   HiOutlineChatBubbleOvalLeft,
 } from "react-icons/hi2";
-import { idText } from "typescript";
 import { db } from "../apis/firebase";
 import { useStore } from "../apis/zustand";
-import { COLOR, IComment, ILike, IPost, IStyle, SIZE } from "../custom";
+import { COLOR, IComment, ILike, IPost, IScrap, IStyle, SIZE } from "../custom";
 import Comment from "./Comment";
 
 type IPostActionProps = {
@@ -45,10 +40,6 @@ export default function PostAction({ post, style }: IPostActionProps) {
   const router = useRouter();
 
   useEffect(() => {
-    updateStatus();
-  }, [curUser]);
-
-  function updateStatus() {
     setStatus({
       ...status,
       isLiked: curUser.likes?.find((each) => each.pid === post.id)
@@ -58,10 +49,10 @@ export default function PostAction({ post, style }: IPostActionProps) {
         ? true
         : false,
     });
-  }
+  }, [curUser]);
 
   async function handleToggleLike() {
-    const like = curUser.likes?.find((like) => like.pid === post.id);
+    const like = curUser.likes?.find((each) => each.pid === post.id);
     if (like) {
       const id = like.id as string;
       await deleteDoc(doc(db, "likes", id));
@@ -78,18 +69,22 @@ export default function PostAction({ post, style }: IPostActionProps) {
     setCurUser({ id: curUser.id });
   }
   async function handleToggleScrap() {
-    const postRef = doc(db, "posts", post.id || "");
-    if (status.isScraped) {
-      await updateDoc(postRef, {
-        scraps: arrayRemove(curUser.id),
-      });
+    const scrap = curUser.scraps?.find((each) => each.pid === post.id);
+    if (scrap) {
+      const id = scrap.id as string;
+      await deleteDoc(doc(db, "scraps", id));
     } else {
-      await updateDoc(postRef, {
-        scraps: arrayUnion(curUser.id),
+      const newScrap: IScrap = {
+        uid: curUser.id,
+        pid: post.id || "",
+        cont: "모든 아카이브",
+      };
+      const ref = await addDoc(collection(db, "scraps"), newScrap);
+      await updateDoc(ref, {
+        id: ref.id,
       });
     }
     setCurUser({ id: curUser.id });
-    setStatus({ ...status, isScraped: !status.isScraped });
   }
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setComment(e.target.value);
