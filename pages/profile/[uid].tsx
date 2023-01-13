@@ -225,7 +225,7 @@ export async function getServerSidePaths() {
   return { paths, fallback: false };
 }
 
-export async function getServerSideProps({ params }: IServerSidePaths) {
+export async function getServerSideProps({ params, res }: IServerSidePaths) {
   const uid = params.uid;
   const initUser = await getData<IUser>("users", uid);
   const initPosts = await getDataByQuery<IPost>("posts", "uid", "==", uid);
