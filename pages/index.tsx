@@ -24,33 +24,43 @@ export async function getServerSideProps() {
     uids.push(doc.data().uid);
   });
   for await (const post of posts) {
-    const likes = await getDataByQuery("likes", "pid", "==", post.id || "");
-    const scraps = await getDataByQuery("scraps", "pid", "==", post.id || "");
-    const comments = await getDataByQuery(
+    const likes = await getDataByQuery<ILike>(
+      "likes",
+      "pid",
+      "==",
+      post.id || ""
+    );
+    const scraps = await getDataByQuery<IScrap>(
+      "scraps",
+      "pid",
+      "==",
+      post.id || ""
+    );
+    const comments = await getDataByQuery<IComment>(
       "comments",
       "pid",
       "==",
       post.id || ""
     );
     if (likes) {
-      post.likes = likes as ILike[];
+      post.likes = likes;
     } else {
       post.likes = [];
     }
     if (scraps) {
-      post.scraps = likes as IScrap[];
+      post.scraps = scraps;
     } else {
       post.scraps = [];
     }
     if (comments) {
-      post.comments = likes as IComment[];
+      post.comments = comments;
     } else {
       post.comments = [];
     }
   }
   const users: IUser[] = [];
   for await (const uid of uids) {
-    const user = (await getData("users", uid)) as IUser;
+    const user = await getData<IUser>("users", uid);
     users.push(user);
   }
   return { props: { posts, users } };

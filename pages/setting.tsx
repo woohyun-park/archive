@@ -5,6 +5,7 @@ import { useStore } from "../apis/zustand";
 import { COLOR, IDict, IUser, SIZE } from "../custom";
 import { useForm } from "react-hook-form";
 import { HiArrowLeft, HiX } from "react-icons/hi";
+import Back from "../components/Back";
 
 interface IForm {
   file: File[];
@@ -83,9 +84,7 @@ export default function Setting() {
   return (
     <>
       {isSubmitting && <div className="submitting"></div>}
-      <div className="back" onClick={() => router.back()}>
-        <HiArrowLeft size={SIZE.icon} />
-      </div>
+      <Back style={"post"} />
       <div className="photoCont">
         <img
           className="photo"
@@ -105,13 +104,14 @@ export default function Setting() {
           }}
           hidden
         />
-        <div className="labelCont">
-          <label className="label">사용자 이름</label>
+
+        <div className="g_input_labelCont">
+          <label className="g_input_label">사용자 이름</label>
           <div
             className={
               watch("displayName").length === 0
-                ? "txtLen txtLen-invalid "
-                : "txtLen"
+                ? "g_input_txtLen g_input_txtLen-invalid "
+                : "g_input_txtLen"
             }
           >{`${watch("displayName").length}/16`}</div>
         </div>
@@ -120,11 +120,13 @@ export default function Setting() {
           type="text"
           maxLength={16}
         />
-        <div className="labelCont">
-          <label className="label">소개</label>
-          <div className="txtLen">{`${watch("txt").length}/150`}</div>
+
+        <div className="g_input_labelCont">
+          <label className="g_input_label">소개</label>
+          <div className="g_input_txtLen">{`${watch("txt").length}/150`}</div>
         </div>
         <textarea {...register("txt", { maxLength: 150 })} maxLength={150} />
+
         <button type="submit" className="g-button1">
           변경
         </button>
@@ -152,21 +154,6 @@ export default function Setting() {
           form > textarea {
             height: 64px;
             resize: none;
-          }
-          .labelCont {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-          }
-          .label {
-            font-size: 16px;
-            margin-top: 8px;
-          }
-          .txtLen {
-            font-size: 12px;
-          }
-          .txtLen-invalid {
-            color: red;
           }
           .submitting {
             position: absolute;

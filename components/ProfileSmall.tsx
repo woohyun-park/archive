@@ -96,20 +96,15 @@ export default function ProfileSmall({
     if (confirm("정말 삭제하시겠습니까?")) {
       const id = post?.id as string;
       await deleteDoc(doc(db, "posts", id));
-      const likes = (await getDataByQuery("likes", "pid", "==", id)) as ILike[];
-      const scraps = (await getDataByQuery(
-        "scraps",
-        "pid",
-        "==",
-        id
-      )) as IScrap[];
-      const comments = (await getDataByQuery(
+      const likes = await getDataByQuery<ILike>("likes", "pid", "==", id);
+      const scraps = await getDataByQuery<IScrap>("scraps", "pid", "==", id);
+      const comments = await getDataByQuery<IComment>(
         "comments",
         "pid",
         "==",
         id
-      )) as IComment[];
-      const tags = (await getDataByQuery("tags", "pid", "==", id)) as ITag[];
+      );
+      const tags = await getDataByQuery<ITag>("tags", "pid", "==", id);
       for await (const each of likes) {
         const id = each.id as string;
         await deleteDoc(doc(db, "likes", id));

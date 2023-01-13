@@ -210,6 +210,30 @@ export default function Layout({ children }: ILayoutProps) {
             border-radius: 32px;
             margin-right: 8px;
           }
+          .g-button1:hover,
+          .g-button2:hover {
+            cursor: pointer;
+          }
+
+          .g_input_labelCont {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+          }
+          .g_input_label {
+            font-size: 16px;
+            margin-top: 8px;
+          }
+          .g_input_txtLen {
+            font-size: 12px;
+          }
+          .g_input_txtLen-invalid {
+            color: red;
+          }
+
+          .g-hover:hover {
+            cursor: pointer;
+          }
         `}
       </style>
     </>

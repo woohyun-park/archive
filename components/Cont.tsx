@@ -33,7 +33,7 @@ export default function Cont({ tag, posts, onClick }: IImageProps) {
           </div>
           {posts[0].imgs?.length !== 0 && <div className="overlay"></div>}
           <div className="title" onClick={onClick}>
-            {tag === "모든 아카이브" ? tag : `#${tag}`}
+            {tag === "모든 스크랩" ? tag : `#${tag}`}
           </div>
         </div>
       )}

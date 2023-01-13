@@ -2,14 +2,9 @@ import { signOut } from "firebase/auth";
 import {
   arrayRemove,
   arrayUnion,
-  collection,
-  deleteDoc,
   doc,
   getDoc,
-  getDocs,
-  query,
   updateDoc,
-  where,
 } from "firebase/firestore";
 import {
   auth,
@@ -232,15 +227,10 @@ export async function getServerSidePaths() {
 
 export async function getServerSideProps({ params }: IServerSidePaths) {
   const uid = params.uid;
-  const initUser = await getData("users", uid);
-  const initPosts = await getDataByQuery("posts", "uid", "==", uid);
+  const initUser = await getData<IUser>("users", uid);
+  const initPosts = await getDataByQuery<IPost>("posts", "uid", "==", uid);
 
-  const resScraps = (await getDataByQuery(
-    "scraps",
-    "uid",
-    "==",
-    uid
-  )) as IScrap[];
+  const resScraps = await getDataByQuery<IScrap>("scraps", "uid", "==", uid);
   const initScraps: IDict<IPost[]> = {};
   for await (const scrap of resScraps) {
     const res = await getDoc(doc(db, "posts", scrap.pid));
@@ -255,7 +245,7 @@ export async function getServerSideProps({ params }: IServerSidePaths) {
     }
   }
 
-  const resTags = (await getDataByQuery("tags", "uid", "==", uid)) as ITag[];
+  const resTags = await getDataByQuery<ITag>("tags", "uid", "==", uid);
   const initTags: IDict<IPost[]> = {};
   for await (const tag of resTags) {
     const res = await getDoc(doc(db, "posts", tag.pid as string));

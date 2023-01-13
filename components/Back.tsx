@@ -1,14 +1,18 @@
 import { useRouter } from "next/router";
 import { HiArrowLeft } from "react-icons/hi";
-import { SIZE, COLOR } from "../custom";
+import { SIZE, COLOR, IStyle } from "../custom";
 
-export default function Back({}) {
+interface IBackProps {
+  style: IStyle;
+}
+
+export default function Back({ style }: IBackProps) {
   const router = useRouter();
 
   return (
     <>
       <div className="cont">
-        <div className="back" onClick={() => router.back()}>
+        <div className="g-hover" onClick={() => router.back()}>
           <HiArrowLeft size={SIZE.icon} />
         </div>
       </div>
@@ -17,7 +21,7 @@ export default function Back({}) {
         .cont {
           display: flex;
           justify-content: space-between;
-          padding-top: 48px;
+          padding-top: ${style === "post" ? "48px" : ""};
           background-color: ${COLOR.bg1};
           width: calc(100% + 32px);
           max-width: 480px;
@@ -25,10 +29,6 @@ export default function Back({}) {
         }
         .cont > div {
           margin: 16px;
-        }
-        .back:hover,
-        .more:hover {
-          cursor: pointer;
         }
       `}</style>
     </>

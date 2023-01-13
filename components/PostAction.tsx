@@ -80,7 +80,7 @@ export default function PostAction({ post, style }: IPostActionProps) {
       const newScrap: IScrap = {
         uid: curUser.id,
         pid: postState.id || "",
-        cont: "모든 아카이브",
+        cont: "모든 스크랩",
       };
       const ref = await addDoc(collection(db, "scraps"), newScrap);
       await updateDoc(ref, {

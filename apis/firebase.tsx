@@ -9,15 +9,9 @@ import {
   where,
   WhereFilterOp,
 } from "firebase/firestore";
-import { getAuth, connectAuthEmulator } from "firebase/auth";
-import { getAnalytics } from "firebase/analytics";
-import { IComment, ILike, IPost, IScrap, ITag, IUser } from "../custom";
+import { getAuth } from "firebase/auth";
+import { IComment, IDict, ILike, IPost, IScrap, ITag, IUser } from "../custom";
 
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FB_API_KEY,
   authDomain: process.env.NEXT_PUBLIC_FB_AUTH_DOMAIN,
@@ -28,96 +22,51 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FB_MEASUREMENT_ID,
 };
 
-// Initialize Firebase
 export const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 export const auth = getAuth(app);
-// export const analytics = getAnalytics(app);
 
-export async function getData(
-  type: string,
-  id: string
-): Promise<IPost | IUser | null> {
-  if (type === "posts") {
-    const snap = await getDoc(doc(db, "posts", id));
-    if (!snap.data()) return null;
-    const post: IPost = {
-      ...(snap.data() as IPost),
-      createdAt: snap.data()?.createdAt.toDate(),
-      id: snap.id,
-    };
-    return post;
-  }
-  if (type === "users") {
-    const snap = await getDoc(doc(db, "users", id));
-    if (!snap.data()) return null;
-    const user: IUser = {
-      ...(snap.data() as IUser),
-      id: snap.id,
-    };
-    return user;
-  }
-  return null;
+interface IPathParams {
+  params: { [param: string]: string };
 }
 
-export async function getDataByQuery(
+export async function getData<T>(type: string, id: string): Promise<T> {
+  const snap = await getDoc(doc(db, type, id));
+  const data = snap.data() as IDict<any>;
+  if (data.createdAt) {
+    return { ...(data as T), createdAt: data?.createdAt.toDate() };
+  } else {
+    return data as T;
+  }
+}
+
+export async function getDataByQuery<T>(
   type: string,
   p1: string,
   p2: string,
   p3: string
-) {
+): Promise<T[]> {
   const ref = collection(db, type);
   const snap = await getDocs(query(ref, where(p1, p2 as WhereFilterOp, p3)));
-  if (type === "posts") {
-    const posts: IPost[] = [];
-    snap.forEach((doc) => {
-      posts.push({
-        ...(doc.data() as IPost),
-        createdAt: doc.data().createdAt.toDate(),
-        id: doc.id,
-      });
-    });
-    return posts;
-  } else if (type === "tags") {
-    const tags: ITag[] = [];
-    snap.forEach((doc) => {
-      tags.push({
-        ...(doc.data() as ITag),
-      });
-    });
-    return tags;
-  } else if (type === "likes") {
-    const likes: ILike[] = [];
-    snap.forEach((doc) => {
-      likes.push({
-        ...(doc.data() as ILike),
-      });
-    });
-    return likes;
-  } else if (type === "scraps") {
-    const scraps: IScrap[] = [];
-    snap.forEach((doc) => {
-      scraps.push({
-        ...(doc.data() as IScrap),
-      });
-    });
-    return scraps;
-  } else if (type === "comments") {
-    const comments: IComment[] = [];
-    snap.forEach((doc) => {
-      comments.push({
-        ...(doc.data() as IComment),
+  const datas: T[] = [];
+  snap.forEach((doc) => {
+    if (doc.data().createdAt) {
+      datas.push({
+        ...(doc.data() as T),
         createdAt: doc.data().createdAt.toDate(),
       });
-    });
-    return comments;
-  }
-  return null;
+    } else {
+      datas.push({
+        ...(doc.data() as T),
+      });
+    }
+  });
+  return datas;
 }
 
 export async function getPath(type: string, param: string) {
   const snap = await getDocs(collection(db, type));
-  const paths: unknown[] = [];
+  const paths: IPathParams[] = [];
   snap.forEach((post) => {
     paths.push({ params: { [param]: post.id } });
   });

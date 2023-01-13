@@ -1,8 +1,5 @@
-import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { db, getData, getDataByQuery, getPath } from "../../apis/firebase";
-import { useStore } from "../../apis/zustand";
+import { getData, getDataByQuery, getPath } from "../../apis/firebase";
 import Back from "../../components/Back";
 import PostAction from "../../components/PostAction";
 import ProfileSmall from "../../components/ProfileSmall";
@@ -21,7 +18,7 @@ export default function Post({ initPost, initUser }: IPostProps) {
         <div>존재하지 않는 페이지입니다</div>
       ) : (
         <>
-          <Back />
+          <Back style="post" />
           {initPost.imgs.length === 0 ? (
             <div className="bg"></div>
           ) : (
@@ -112,12 +109,7 @@ export async function getServerSidePaths() {
 }
 
 export async function getServerSideProps({ params }: IServerSidePaths) {
-  // const initPost = await getData("posts", params.id);
-  // if (initPost === null) return { props: { initPost, initUser: null } };
-  // const initUser = await getData("users", initPost.uid);
-  // return { props: { initPost, initUser } };
-
-  const initPost = (await getData("posts", params.id)) as IPost;
+  const initPost = await getData<IPost>("posts", params.id);
   if (initPost === null)
     return {
       props: {
@@ -128,7 +120,7 @@ export async function getServerSideProps({ params }: IServerSidePaths) {
         initScraps: null,
       },
     };
-  const initUser = await getData("users", initPost.uid as string);
+  const initUser = await getData<IUser>("users", initPost.uid as string);
 
   const likes = await getDataByQuery(
     "likes",

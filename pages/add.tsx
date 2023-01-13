@@ -100,12 +100,12 @@ export default function Add() {
         )
         .then(async (res) => {
           if (modifyPost) {
-            const deleteTags = (await getDataByQuery(
+            const deleteTags = await getDataByQuery<ITag>(
               "tags",
               "pid",
               "==",
               modifyPost.id as string
-            )) as ITag[];
+            );
             for (const tag of deleteTags) {
               await deleteDoc(doc(db, "tags", tag.id as string));
             }
@@ -152,12 +152,12 @@ export default function Add() {
         });
     } else {
       if (modifyPost) {
-        const deleteTags = (await getDataByQuery(
+        const deleteTags = await getDataByQuery<ITag>(
           "tags",
           "pid",
           "==",
           modifyPost.id as string
-        )) as ITag[];
+        );
         for (const tag of deleteTags) {
           await deleteDoc(doc(db, "tags", tag.id as string));
         }
