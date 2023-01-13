@@ -20,7 +20,7 @@ import {
 } from "react-icons/hi2";
 import { db } from "../apis/firebase";
 import { useStore } from "../apis/zustand";
-import { COLOR, IPost, IStyle, SIZE } from "../custom";
+import { COLOR, IComment, IPost, IStyle, SIZE } from "../custom";
 import Comment from "./Comment";
 
 type IPostActionProps = {
@@ -28,22 +28,19 @@ type IPostActionProps = {
   style: IStyle;
 };
 
-interface ITempComment {
-  uid: string;
-  createdAt: FieldValue;
-  txt: string;
-  target: string;
-}
-
 export default function PostAction({ post, style }: IPostActionProps) {
-  const { curUser, setCurUser, updateCurUser } = useStore();
+  const { curUser, setCurUser, updateCurUser, refreshCurUser } = useStore();
   const [status, setStatus] = useState({
-    initIsLiked: curUser.likes.find((elem) => elem === post.id) ? true : false,
-    isLiked: curUser.likes.find((elem) => elem === post.id) ? true : false,
-    initIsScraped: curUser.scraps.find((elem) => elem === post.id)
+    initIsLiked: curUser.likes?.find((elem) => elem.pid === post.id)
       ? true
       : false,
-    isScraped: curUser.scraps.find((elem) => elem === post.id) ? true : false,
+    isLiked: curUser.likes?.find((elem) => elem.pid === post.id) ? true : false,
+    initIsScraped: curUser.scraps?.find((elem) => elem.pid === post.id)
+      ? true
+      : false,
+    isScraped: curUser.scraps?.find((elem) => elem.pid === post.id)
+      ? true
+      : false,
   });
   const [comment, setComment] = useState("");
   const commentRef: RefObject<HTMLInputElement> = useRef(null);
@@ -53,68 +50,49 @@ export default function PostAction({ post, style }: IPostActionProps) {
     const postRef = doc(db, "posts", post.id || "");
     if (status.isLiked) {
       await updateDoc(postRef, {
-        likes: arrayRemove(curUser.uid),
+        likes: arrayRemove(curUser.id),
       });
     } else {
       await updateDoc(postRef, {
-        likes: arrayUnion(curUser.uid),
+        likes: arrayUnion(curUser.id),
       });
     }
-    const tempLikes = new Set(curUser.likes);
-    if (status.isLiked) {
-      tempLikes.delete(post.id || "");
-    } else {
-      tempLikes.add(post.id || "");
-    }
-    const likes = Array.from(tempLikes) as string[];
-    setCurUser({ ...curUser, likes });
-    updateCurUser({ ...curUser, likes });
+    const curUserLike = post.likes?.filter((like) => like.uid === curUser.id);
+    console.log(curUserLike);
+    refreshCurUser(curUser.id);
     setStatus({ ...status, isLiked: !status.isLiked });
   }
   async function handleToggleScrap() {
     const postRef = doc(db, "posts", post.id || "");
     if (status.isScraped) {
       await updateDoc(postRef, {
-        scraps: arrayRemove(curUser.uid),
+        scraps: arrayRemove(curUser.id),
       });
     } else {
       await updateDoc(postRef, {
-        scraps: arrayUnion(curUser.uid),
+        scraps: arrayUnion(curUser.id),
       });
     }
-    const tempScraps = new Set(curUser.scraps);
-    if (status.isScraped) {
-      tempScraps.delete(post.id || "");
-    } else {
-      tempScraps.add(post.id || "");
-    }
-    const scraps = Array.from(tempScraps) as string[];
-    setCurUser({ ...curUser, scraps });
-    updateCurUser({ ...curUser, scraps });
+    refreshCurUser(curUser.id);
     setStatus({ ...status, isScraped: !status.isScraped });
   }
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setComment(e.target.value);
   }
   async function handleSubmit(e: React.MouseEvent<HTMLButtonElement>) {
-    const tempComment: ITempComment = {
-      uid: curUser.uid,
-      createdAt: serverTimestamp(),
+    const tempComment: IComment = {
+      uid: curUser.id,
+      pid: post.id || "",
       txt: comment,
-      target: post.id,
+      createdAt: serverTimestamp(),
     };
     const ref = await addDoc(collection(db, "comments"), tempComment);
-    await updateDoc(doc(db, "posts", post.id), {
-      comments: arrayUnion(ref.id),
-    });
+    refreshCurUser(curUser.id);
     setComment("");
   }
   async function handleDelete(e: React.MouseEvent<SVGElement>) {
     const id = e.currentTarget.id;
     await deleteDoc(doc(db, "comments", id));
-    await updateDoc(doc(db, "posts", post.id), {
-      comments: arrayRemove(id),
-    });
   }
   function handleCommentClick(e: React.MouseEvent<SVGElement>) {
     if (style === "post") {
@@ -130,32 +108,36 @@ export default function PostAction({ post, style }: IPostActionProps) {
     }
   }
   function displayLike() {
+    const len = post.likes?.length;
+    if (len === undefined) return 0;
     if (status.initIsLiked) {
       if (status.isLiked) {
-        return post.likes.length;
+        return len;
       } else {
-        return post.likes.length - 1;
+        return len - 1;
       }
     } else {
       if (status.isLiked) {
-        return post.likes.length + 1;
+        return len + 1;
       } else {
-        return post.likes.length;
+        return len;
       }
     }
   }
   function displayScraps() {
+    const len = post.scraps?.length;
+    if (len === undefined) return 0;
     if (status.initIsScraped) {
       if (status.isScraped) {
-        return post.scraps.length;
+        return len;
       } else {
-        return post.scraps.length - 1;
+        return len - 1;
       }
     } else {
       if (status.isScraped) {
-        return post.scraps.length + 1;
+        return len + 1;
       } else {
-        return post.scraps.length;
+        return len;
       }
     }
   }
@@ -190,16 +172,18 @@ export default function PostAction({ post, style }: IPostActionProps) {
       </div>
       <div className="count">
         <div>
-          {`좋아요 ${style === "feed" ? displayLike() : post.likes.length}`}
+          {`좋아요 ${style === "feed" ? displayLike() : post.likes?.length}`}
           &nbsp;&nbsp;
-          {`댓글 ${post.comments.length}`}
+          {`댓글 ${post.comments?.length}`}
         </div>
         <div>{`스크랩 ${
-          style === "feed" ? displayScraps() : post.scraps.length
+          style === "feed" ? displayScraps() : post.scraps?.length
         }`}</div>
       </div>
       {style === "post" &&
-        post.comments.map((id) => <Comment id={id} onClick={handleDelete} />)}
+        post.comments?.map((comment) => (
+          <Comment comment={comment} onClick={handleDelete} />
+        ))}
       {style === "post" && (
         <div className="inputCont">
           <img className="img" src={curUser.photoURL} />

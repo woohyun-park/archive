@@ -31,9 +31,13 @@ export default function Image({ post, style }: IImageProps) {
         </Link>
         <div className={`tagCont tagCont-${style}`}>
           {(style === "feed" || style === "profile") &&
-            [...post.tags].reverse().map((tag, i) => (
-              <Link key={i} href={{ pathname: `/tag/${tag}` }} legacyBehavior>
-                <button className="mainTag g-button1">{`#${tag}`}</button>
+            post.tags?.reverse().map((tag, i) => (
+              <Link
+                key={i}
+                href={{ pathname: `/tag/${tag.id}` }}
+                legacyBehavior
+              >
+                <button className="mainTag g-button1">{`#${tag.name}`}</button>
               </Link>
             ))}
         </div>

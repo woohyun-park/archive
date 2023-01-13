@@ -1,4 +1,4 @@
-import { Timestamp } from "firebase/firestore";
+import { FieldValue, Timestamp } from "firebase/firestore";
 import { Style } from "util";
 
 export const DEFAULT = {
@@ -104,31 +104,53 @@ export interface IUser {
   txt: string;
   followers: string[];
   followings: string[];
+
+  likes?: ILike[];
+  scraps?: IScrap[];
   // posts: string[];
   // tags: string[];
-  // likes: string[];
-  // scraps: string[];
 }
 
 export interface IPost {
-  id: string;
+  id?: string;
   uid: string;
-  createdAt: Date;
+  createdAt: Date | FieldValue;
   title: string;
   txt: string;
   imgs: string[];
   color: string;
-  isDeleted: boolean;
-  // likes: string[];
-  // scraps: string[];
-  // comments: string[];
-  // tags: string[];
+
+  tags?: ITag[];
+  likes?: ILike[];
+  scraps?: IScrap[];
+  comments?: IComment[];
+  // isDeleted: boolean;
 }
 
 export interface IComment {
-  id: string;
+  id?: string;
   uid: string;
   pid: string;
-  createdAt: Date;
+  createdAt: Date | FieldValue;
   txt: string;
+}
+
+export interface ITag {
+  id?: string;
+  pid?: string;
+  uid: string;
+  name: string;
+}
+
+export interface ILike {
+  id?: string;
+  uid: string;
+  pid: string;
+}
+
+export interface IScrap {
+  id?: string;
+  uid: string;
+  pid: string;
+  cont: string;
 }

@@ -1,7 +1,7 @@
 import create from "zustand";
-import { IUser } from "../custom";
+import { ILike, IScrap, IUser } from "../custom";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
-import { db } from "./firebase";
+import { db, getDataByQuery } from "./firebase";
 
 interface IUserState {
   curUser: IUser;
@@ -33,8 +33,17 @@ export const useStore = create<IUserState>((set) => ({
   },
   refreshCurUser: async (uid: string) => {
     const snap = await getDoc(doc(db, "users", uid));
+    const likes = await getDataByQuery("likes", "uid", "==", uid);
+    const scraps = await getDataByQuery("scraps", "uid", "==", uid);
     set((state) => {
-      return { ...state, curUser: snap.data() as IUser };
+      return {
+        ...state,
+        curUser: {
+          ...(snap.data() as IUser),
+          likes: likes as ILike[],
+          scraps: scraps as IScrap[],
+        },
+      };
     });
   },
 }));

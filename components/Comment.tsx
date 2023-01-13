@@ -6,12 +6,12 @@ import { useStore } from "../apis/zustand";
 import { COLOR, IComment, IUser } from "../custom";
 
 type ICommentProps = {
-  id: string;
+  comment: IComment;
   onClick: (e: React.MouseEvent<SVGElement>) => void;
 };
 
-export default function Comment({ id, onClick }: ICommentProps) {
-  const [comment, setComment] = useState<IComment | null>(null);
+export default function Comment({ comment, onClick }: ICommentProps) {
+  // const [comment, setComment] = useState<IComment | null>(null);
   const [user, setUser] = useState<IUser | null>(null);
   const { curUser } = useStore();
 
@@ -20,12 +20,8 @@ export default function Comment({ id, onClick }: ICommentProps) {
   }, []);
 
   async function init() {
-    // 만약 유저를 cache해놓고 cache hit일때는 바로 가져오도록 하면 더 빠르지 않을까
-    const commentRef = doc(db, "comments", id);
-    const commentSnap = await getDoc(commentRef);
-    const tempComment = { ...(commentSnap.data() as IComment) };
-    setComment(tempComment);
-    const userRef = doc(db, "users", tempComment.uid);
+    // 만약 user를 cache해놓고 cache hit일때는 바로 가져오도록 하면 더 빠르지 않을까
+    const userRef = doc(db, "users", comment.uid);
     const userSnap = await getDoc(userRef);
     const tempUser = { ...(userSnap.data() as IUser) };
     setUser(tempUser);
@@ -41,7 +37,11 @@ export default function Comment({ id, onClick }: ICommentProps) {
             <div className="txt">{comment?.txt}</div>
           </div>
         </div>
-        {user?.id === curUser.id ? <HiX onClick={onClick} id={id} /> : <></>}
+        {user?.id === curUser.id ? (
+          <HiX onClick={onClick} id={comment.id} />
+        ) : (
+          <></>
+        )}
       </div>
 
       <style jsx>

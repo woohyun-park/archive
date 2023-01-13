@@ -9,7 +9,7 @@ import {
 } from "firebase/firestore";
 import React, { useRef, useState } from "react";
 import { db } from "../apis/firebase";
-import { COLOR, IDict, IPost, SIZE, FUNC } from "../custom";
+import { COLOR, IDict, IPost, SIZE, FUNC, ITag } from "../custom";
 import { useStore } from "../apis/zustand";
 import { useRouter } from "next/router";
 import { HiArrowLeft, HiX } from "react-icons/hi";
@@ -25,22 +25,22 @@ interface IForm {
   color: string;
 }
 
-interface ITempPost {
-  uid: string;
-  createdAt: FieldValue;
-  title: string;
-  tags: string[];
-  txt: string;
-  imgs: string[];
-  color: string;
-  likes: string[];
-  scraps: string[];
-  comments: string[];
-  isDeleted: boolean;
-}
+// interface ITempPost {
+//   uid: string;
+//   createdAt: FieldValue;
+//   title: string;
+//   tags: string[];
+//   txt: string;
+//   imgs: string[];
+//   color: string;
+//   likes: string[];
+//   scraps: string[];
+//   comments: string[];
+//   isDeleted: boolean;
+// }
 
 export default function Add() {
-  const { curUser, setCurUser, updateCurUser } = useStore();
+  const { curUser, setCurUser, updateCurUser, refreshCurUser } = useStore();
   const router = useRouter();
   let modifyPost = null;
   if (router.query.post) {
@@ -56,7 +56,6 @@ export default function Add() {
     defaultValues: {
       file: undefined,
       title: modifyPost ? modifyPost.title : "",
-      tags: modifyPost ? modifyPost.tags : [],
       txt: modifyPost ? modifyPost.txt : "",
       color: modifyPost ? modifyPost.color : "",
     },
@@ -74,7 +73,6 @@ export default function Add() {
   );
   const [tag, setTag] = useState("");
   const [tags, setTags] = useState<string[]>([]);
-
   console.log(watch());
 
   async function onValid(data: IForm) {
@@ -97,67 +95,49 @@ export default function Add() {
           config
         )
         .then(async (res) => {
-          const tempPost: ITempPost = {
-            uid: curUser.uid,
+          const tempPost: IPost = {
+            uid: curUser.id,
             createdAt: serverTimestamp(),
             title: data.title,
-            tags: data.tags,
             txt: data.txt,
             imgs: [res.data.url],
             color: "",
-            likes: [],
-            scraps: [],
-            comments: [],
-            isDeleted: false,
           };
-          const ref = await addDoc(collection(db, "posts"), tempPost);
-          await updateDoc(ref, { id: ref.id });
-
-          const tags = { ...curUser.tags };
-          data.tags.forEach((tag) => {
-            if (tags[tag]) {
-              tags[tag].push(ref.id);
-            } else {
-              tags[tag] = [ref.id];
-            }
-          });
-          const posts = [...curUser.posts];
-          posts.push(ref.id);
-          setCurUser({ ...curUser, posts, tags });
-          updateCurUser({ ...curUser, posts, tags });
+          const postRef = await addDoc(collection(db, "posts"), tempPost);
+          await updateDoc(postRef, { id: postRef.id });
+          for await (const tag of data.tags) {
+            const tempTag: ITag = {
+              uid: curUser.id,
+              pid: postRef.id,
+              name: tag,
+            };
+            const tagRef = await addDoc(collection(db, "tags"), tempTag);
+            await updateDoc(tagRef, { id: tagRef.id });
+          }
+          refreshCurUser(curUser.id);
         });
     } else {
-      const tempPost: ITempPost = {
-        uid: curUser.uid,
+      const tempPost: IPost = {
+        uid: curUser.id,
         createdAt: serverTimestamp(),
         title: data.title,
-        tags: data.tags,
         txt: data.txt,
         imgs: [],
         color: data.color,
-        likes: [],
-        scraps: [],
-        comments: [],
-        isDeleted: false,
       };
-
-      const ref = await addDoc(collection(db, "posts"), tempPost);
-      await updateDoc(ref, { id: ref.id });
-
-      const tags = { ...curUser.tags };
-      data.tags.forEach((tag) => {
-        if (tags[tag]) {
-          tags[tag].push(ref.id);
-        } else {
-          tags[tag] = [ref.id];
-        }
-      });
-      const posts = [...curUser.posts];
-      posts.push(ref.id);
-      setCurUser({ ...curUser, posts, tags });
-      updateCurUser({ ...curUser, posts, tags });
+      const postRef = await addDoc(collection(db, "posts"), tempPost);
+      await updateDoc(postRef, { id: postRef.id });
+      for await (const tag of data.tags) {
+        const tempTag: ITag = {
+          uid: curUser.id,
+          pid: postRef.id,
+          name: tag,
+        };
+        const tagRef = await addDoc(collection(db, "tags"), tempTag);
+        await updateDoc(tagRef, { id: tagRef.id });
+      }
+      refreshCurUser(curUser.id);
     }
-
     router.push("/");
   }
   function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -186,28 +166,28 @@ export default function Add() {
   }
   function handleTagChange(e: React.ChangeEvent<HTMLInputElement>) {
     e.preventDefault();
-    const tempTag = e.target.value.split(" ")[0];
+    const newTag = e.target.value.split(" ")[0];
     if (e.target.value === " ") {
       setTag("");
     } else if (e.target.value.split(" ").length === 2) {
       let tempTags = [...tags];
-      const tagIndex = tempTags.findIndex((elem) => {
-        return elem == tempTag;
+      const tagIndex = tempTags.findIndex((tempTag) => {
+        return tempTag == newTag;
       });
       if (tagIndex === -1) {
-        tempTags.push(tempTag);
+        tempTags.push(newTag);
       } else {
         tempTags = [
           ...tempTags.slice(0, tagIndex),
           ...tempTags.slice(tagIndex + 1, tempTags.length),
         ];
-        tempTags.unshift(tempTag);
+        tempTags.unshift(newTag);
       }
       setTags(tempTags);
       setValue("tags", tempTags);
       setTag("");
     } else {
-      setTag(tempTag);
+      setTag(newTag);
     }
   }
   function handleTagRemove(e: React.MouseEvent<HTMLSpanElement>) {
@@ -308,7 +288,7 @@ export default function Add() {
         />
         <input {...register("title")} placeholder="제목" />
         <div className="tagCont">
-          {watch("tags").map((each) => (
+          {watch("tags")?.map((each) => (
             <span className="tag">
               <span className="tagTxt">{each}</span>
               <span id={each} onClick={handleTagRemove}>

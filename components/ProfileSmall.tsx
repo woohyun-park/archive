@@ -21,31 +21,31 @@ export default function ProfileSmall({
 }: IProfileSmallProps) {
   const { curUser, setCurUser, updateCurUser } = useStore();
   const [isFollowing, setIsFollowing] = useState(() =>
-    curUser.followings.find((elem) => elem === user.uid) ? true : false
+    curUser.followings.find((elem) => elem === user.id) ? true : false
   );
   const router = useRouter();
 
   async function handleToggleFollow() {
-    const curUserRef = doc(db, "users", curUser.uid);
-    const userRef = doc(db, "users", user.uid);
+    const curUserRef = doc(db, "users", curUser.id);
+    const userRef = doc(db, "users", user.id);
     if (isFollowing) {
-      await updateDoc(curUserRef, { followings: arrayRemove(user.uid) });
+      await updateDoc(curUserRef, { followings: arrayRemove(user.id) });
       await updateDoc(userRef, {
-        followers: arrayRemove(curUser.uid),
+        followers: arrayRemove(curUser.id),
       });
     } else {
       await updateDoc(curUserRef, {
-        followings: arrayUnion(user.uid),
+        followings: arrayUnion(user.id),
       });
       await updateDoc(userRef, {
-        followers: arrayUnion(curUser.uid),
+        followers: arrayUnion(curUser.id),
       });
     }
     const tempFollowings = new Set(curUser.followings);
     if (isFollowing) {
-      tempFollowings.delete(user.uid);
+      tempFollowings.delete(user.id);
     } else {
-      tempFollowings.add(user.uid);
+      tempFollowings.add(user.id);
     }
     const followings = Array.from(tempFollowings) as string[];
     setCurUser({ ...curUser, followings });
@@ -54,7 +54,7 @@ export default function ProfileSmall({
   }
   function displayCreatedAt() {
     const curDate = dayjs(new Date());
-    const postDate = dayjs(post?.createdAt);
+    const postDate = dayjs(post?.createdAt as Date);
     if (curDate.diff(postDate) < 60000) {
       return `${curDate.diff(postDate, "s")}초 전`;
     } else if (curDate.diff(postDate) < 3600000) {
@@ -89,12 +89,12 @@ export default function ProfileSmall({
   return (
     <>
       <div className={`userCont userCont-${style}`}>
-        <div className={user.uid === curUser.uid ? "row row-cur" : "row"}>
-          <Link href={`/profile/${user?.uid}`}>
+        <div className={user.id === curUser.id ? "row row-cur" : "row"}>
+          <Link href={`/profile/${user?.id}`}>
             <img className="g-profileImg" src={user?.photoURL} />
           </Link>
           <div className="col">
-            <Link href={`/profile/${user?.uid}`} legacyBehavior>
+            <Link href={`/profile/${user?.id}`} legacyBehavior>
               <a className="userName">{user?.displayName}</a>
             </Link>
             {style === "feed" ? (
@@ -106,7 +106,7 @@ export default function ProfileSmall({
         </div>
         {(() => {
           if (style === "post" || style === "search") {
-            if (curUser.uid === user.uid) {
+            if (curUser.id === user.id) {
               return <></>;
             } else if (isFollowing) {
               return (
@@ -124,7 +124,7 @@ export default function ProfileSmall({
                 </div>
               );
             }
-          } else if (user.uid === curUser.uid) {
+          } else if (user.id === curUser.id) {
             return (
               <>
                 <div className="actionCont">

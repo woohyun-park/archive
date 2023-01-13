@@ -11,7 +11,7 @@ import {
 } from "firebase/firestore";
 import { getAuth, connectAuthEmulator } from "firebase/auth";
 import { getAnalytics } from "firebase/analytics";
-import { IPost, IUser } from "../custom";
+import { ILike, IPost, IScrap, ITag, IUser } from "../custom";
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -46,7 +46,7 @@ export async function getData(
       createdAt: snap.data()?.createdAt.toDate(),
       id: snap.id,
     };
-    return post.isDeleted ? null : post;
+    return post;
   }
   if (type === "users") {
     const snap = await getDoc(doc(db, "users", id));
@@ -78,7 +78,32 @@ export async function getDataByQuery(
       });
     });
     return posts;
+  } else if (type === "tags") {
+    const tags: ITag[] = [];
+    snap.forEach((doc) => {
+      tags.push({
+        ...(doc.data() as ITag),
+      });
+    });
+    return tags;
+  } else if (type === "likes") {
+    const likes: ILike[] = [];
+    snap.forEach((doc) => {
+      likes.push({
+        ...(doc.data() as ILike),
+      });
+    });
+    return likes;
+  } else if (type === "scraps") {
+    const scraps: IScrap[] = [];
+    snap.forEach((doc) => {
+      scraps.push({
+        ...(doc.data() as IScrap),
+      });
+    });
+    return scraps;
   }
+  return null;
 }
 
 export async function getPath(type: string, param: string) {
