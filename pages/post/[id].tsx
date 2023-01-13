@@ -1,12 +1,12 @@
 import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { db, getData, getPath } from "../../apis/firebase";
+import { db, getData, getDataByQuery, getPath } from "../../apis/firebase";
 import { useStore } from "../../apis/zustand";
 import Back from "../../components/Back";
 import PostAction from "../../components/PostAction";
 import ProfileSmall from "../../components/ProfileSmall";
-import { IPost, IUser } from "../../custom";
+import { IComment, ILike, IPost, IScrap, IUser } from "../../custom";
 
 interface IPostProps {
   initPost: IPost;
@@ -14,50 +14,32 @@ interface IPostProps {
 }
 
 export default function Post({ initPost, initUser }: IPostProps) {
-  const [post, setPost] = useState(initPost);
-  const [user, setUser] = useState(initUser);
-  const { curUser } = useStore();
-
-  useEffect(() => {
-    update();
-  }, [curUser]);
-
-  async function update() {
-    if (post === null || user === null) {
-      return;
-    }
-    const newPost = (await getData("posts", post.id)) as IPost;
-    if (newPost === null) return;
-    setPost(newPost);
-    const newUser = (await getData("users", post.uid)) as IUser;
-    setUser(newUser);
-  }
-
+  console.log(initPost);
   return (
     <>
-      {post === null && user === null ? (
+      {initPost === null && initUser === null ? (
         <div>존재하지 않는 페이지입니다</div>
       ) : (
         <>
           <Back />
-          {post?.imgs.length === 0 ? (
+          {initPost.imgs.length === 0 ? (
             <div className="bg"></div>
           ) : (
             <div className="imgCont">
-              <img className="img" src={post?.imgs[0]} />
+              <img className="img" src={initPost.imgs[0]} />
             </div>
           )}
-          <ProfileSmall post={post} user={user} style="post" />
-          <h1 className="title">{post?.title}</h1>
+          <ProfileSmall post={initPost} user={initUser} style="post" />
+          <h1 className="title">{initPost.title}</h1>
           <div className="tagCont">
-            {post.tags.map((tag, i) => (
+            {initPost.tags.map((tag, i) => (
               <Link key={i} href={{ pathname: `/tag/${tag}` }} legacyBehavior>
                 <div className="mainTag g-button1">{`#${tag}`}</div>
               </Link>
             ))}
           </div>
-          <div className="text">{post?.txt}</div>
-          <PostAction post={post} style="post" />
+          <div className="text">{initPost.txt}</div>
+          <PostAction post={initPost} style="post" />
         </>
       )}
 
@@ -80,7 +62,7 @@ export default function Post({ initPost, initUser }: IPostProps) {
           object-fit: cover;
         }
         .bg {
-          background-color: ${post?.color};
+          background-color: ${initPost && initPost.color};
           width: calc(100% + 32px);
           padding-bottom: calc(50%);
           transform: translate(-16px);
@@ -130,8 +112,57 @@ export async function getServerSidePaths() {
 }
 
 export async function getServerSideProps({ params }: IServerSidePaths) {
-  const initPost = await getData("posts", params.id);
-  if (initPost === null) return { props: { initPost, initUser: null } };
-  const initUser = await getData("users", initPost.uid);
+  // const initPost = await getData("posts", params.id);
+  // if (initPost === null) return { props: { initPost, initUser: null } };
+  // const initUser = await getData("users", initPost.uid);
+  // return { props: { initPost, initUser } };
+
+  const initPost = (await getData("posts", params.id)) as IPost;
+  if (initPost === null)
+    return {
+      props: {
+        initPost,
+        initUser: null,
+        initLikes: null,
+        initComments: null,
+        initScraps: null,
+      },
+    };
+  const initUser = await getData("users", initPost.uid as string);
+
+  const likes = await getDataByQuery(
+    "likes",
+    "pid",
+    "==",
+    initPost.id as string
+  );
+  const scraps = await getDataByQuery(
+    "scraps",
+    "pid",
+    "==",
+    initPost.id as string
+  );
+  const comments = await getDataByQuery(
+    "comments",
+    "pid",
+    "==",
+    initPost.id as string
+  );
+  console.log(likes, scraps, comments);
+  if (likes) {
+    initPost.likes = likes as ILike[];
+  } else {
+    initPost.likes = [];
+  }
+  if (scraps) {
+    initPost.scraps = scraps as IScrap[];
+  } else {
+    initPost.scraps = [];
+  }
+  if (comments) {
+    initPost.comments = comments as IComment[];
+  } else {
+    initPost.comments = [];
+  }
   return { props: { initPost, initUser } };
 }

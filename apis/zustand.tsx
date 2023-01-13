@@ -1,5 +1,5 @@
 import create from "zustand";
-import { IDict, ILike, IScrap, IUser } from "../custom";
+import { IComment, IDict, ILike, IScrap, IUser } from "../custom";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db, getDataByQuery } from "./firebase";
 

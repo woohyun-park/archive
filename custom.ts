@@ -119,8 +119,8 @@ export interface IPost {
   txt: string;
   imgs: string[];
   color: string;
+  tags: string[];
 
-  tags?: ITag[];
   likes?: ILike[];
   scraps?: IScrap[];
   comments?: IComment[];

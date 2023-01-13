@@ -1,5 +1,5 @@
 import { db, getData, getDataByQuery } from "../apis/firebase";
-import { doc, collection, getDoc, getDocs } from "firebase/firestore";
+import { collection, getDocs } from "firebase/firestore";
 import { IComment, ILike, IPost, IScrap, ITag, IUser } from "../custom";
 import Feed from "./feed";
 
@@ -24,7 +24,6 @@ export async function getServerSideProps() {
     uids.push(doc.data().uid);
   });
   for await (const post of posts) {
-    const tags = await getDataByQuery("tags", "pid", "==", post.id || "");
     const likes = await getDataByQuery("likes", "pid", "==", post.id || "");
     const scraps = await getDataByQuery("scraps", "pid", "==", post.id || "");
     const comments = await getDataByQuery(
@@ -33,11 +32,6 @@ export async function getServerSideProps() {
       "==",
       post.id || ""
     );
-    if (tags) {
-      post.tags = tags as ITag[];
-    } else {
-      post.tags = [];
-    }
     if (likes) {
       post.likes = likes as ILike[];
     } else {

@@ -7,11 +7,12 @@ import { COLOR, IComment, IUser } from "../custom";
 
 type ICommentProps = {
   comment: IComment;
-  onClick: (e: React.MouseEvent<SVGElement>) => void;
+  onClick: (e: React.MouseEvent<HTMLDivElement>) => void;
 };
 
 export default function Comment({ comment, onClick }: ICommentProps) {
   // const [comment, setComment] = useState<IComment | null>(null);
+  console.log(comment);
   const [user, setUser] = useState<IUser | null>(null);
   const { curUser } = useStore();
 
@@ -38,7 +39,9 @@ export default function Comment({ comment, onClick }: ICommentProps) {
           </div>
         </div>
         {user?.id === curUser.id ? (
-          <HiX onClick={onClick} id={comment.id} />
+          <div onClick={onClick} id={comment.id}>
+            <HiX />
+          </div>
         ) : (
           <></>
         )}

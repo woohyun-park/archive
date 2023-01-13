@@ -28,10 +28,13 @@ type IPostActionProps = {
 };
 
 export default function PostAction({ post, style }: IPostActionProps) {
+  const [postState, setPostState] = useState(post);
   const { curUser, setCurUser } = useStore();
   const [status, setStatus] = useState({
-    isLiked: curUser.likes?.find((each) => each.pid === post.id) ? true : false,
-    isScraped: curUser.scraps?.find((each) => each.pid === post.id)
+    isLiked: curUser.likes?.find((each) => each.pid === postState.id)
+      ? true
+      : false,
+    isScraped: curUser.scraps?.find((each) => each.pid === postState.id)
       ? true
       : false,
   });
@@ -42,24 +45,24 @@ export default function PostAction({ post, style }: IPostActionProps) {
   useEffect(() => {
     setStatus({
       ...status,
-      isLiked: curUser.likes?.find((each) => each.pid === post.id)
+      isLiked: curUser.likes?.find((each) => each.pid === postState.id)
         ? true
         : false,
-      isScraped: curUser.scraps?.find((each) => each.pid === post.id)
+      isScraped: curUser.scraps?.find((each) => each.pid === postState.id)
         ? true
         : false,
     });
   }, [curUser]);
 
   async function handleToggleLike() {
-    const like = curUser.likes?.find((each) => each.pid === post.id);
+    const like = curUser.likes?.find((each) => each.pid === postState.id);
     if (like) {
       const id = like.id as string;
       await deleteDoc(doc(db, "likes", id));
     } else {
       const newLike: ILike = {
         uid: curUser.id,
-        pid: post.id || "",
+        pid: postState.id || "",
       };
       const ref = await addDoc(collection(db, "likes"), newLike);
       await updateDoc(ref, {
@@ -69,14 +72,14 @@ export default function PostAction({ post, style }: IPostActionProps) {
     setCurUser({ id: curUser.id });
   }
   async function handleToggleScrap() {
-    const scrap = curUser.scraps?.find((each) => each.pid === post.id);
+    const scrap = curUser.scraps?.find((each) => each.pid === postState.id);
     if (scrap) {
       const id = scrap.id as string;
       await deleteDoc(doc(db, "scraps", id));
     } else {
       const newScrap: IScrap = {
         uid: curUser.id,
-        pid: post.id || "",
+        pid: postState.id || "",
         cont: "모든 아카이브",
       };
       const ref = await addDoc(collection(db, "scraps"), newScrap);
@@ -92,17 +95,33 @@ export default function PostAction({ post, style }: IPostActionProps) {
   async function handleSubmit(e: React.MouseEvent<HTMLButtonElement>) {
     const tempComment: IComment = {
       uid: curUser.id,
-      pid: post.id || "",
+      pid: postState.id || "",
       txt: comment,
       createdAt: serverTimestamp(),
     };
     const ref = await addDoc(collection(db, "comments"), tempComment);
+    await updateDoc(ref, {
+      id: ref.id,
+    });
     setCurUser({ id: curUser.id });
+    setPostState({
+      ...postState,
+      comments: [...(postState.comments as IComment[]), tempComment],
+    });
     setComment("");
   }
-  async function handleDelete(e: React.MouseEvent<SVGElement>) {
+  async function handleDelete(e: React.MouseEvent<HTMLDivElement>) {
     const id = e.currentTarget.id;
-    await deleteDoc(doc(db, "comments", id));
+    console.log(id);
+    const res = await deleteDoc(doc(db, "comments", id));
+    console.log(res);
+    setCurUser({ id: curUser.id });
+    setPostState({
+      ...postState,
+      comments: [...(postState.comments as IComment[])].filter(
+        (comment) => comment.id !== id
+      ),
+    });
   }
   function handleCommentClick(e: React.MouseEvent<SVGElement>) {
     if (style === "post") {
@@ -110,17 +129,17 @@ export default function PostAction({ post, style }: IPostActionProps) {
     } else if (style === "feed") {
       router.push(
         {
-          pathname: `/post/${post.id}`,
+          pathname: `/post/${postState.id}`,
           query: { isCommentFocused: true },
         },
-        `/post/${post.id}`
+        `/post/${postState.id}`
       );
     }
   }
   function displayLike() {
-    const len = post.likes?.length;
+    const len = postState.likes?.length;
     if (len === undefined) return 0;
-    if (post.likes?.find((each) => each.uid === curUser.id)) {
+    if (postState.likes?.find((each) => each.uid === curUser.id)) {
       if (status.isLiked) {
         return len;
       } else {
@@ -135,9 +154,9 @@ export default function PostAction({ post, style }: IPostActionProps) {
     }
   }
   function displayScraps() {
-    const len = post.scraps?.length;
+    const len = postState.scraps?.length;
     if (len === undefined) return 0;
-    if (post.scraps?.find((each) => each.uid === curUser.id)) {
+    if (postState.scraps?.find((each) => each.uid === curUser.id)) {
       if (status.isScraped) {
         return len;
       } else {
@@ -182,16 +201,14 @@ export default function PostAction({ post, style }: IPostActionProps) {
       </div>
       <div className="count">
         <div>
-          {`좋아요 ${style === "feed" ? displayLike() : post.likes?.length}`}
+          {`좋아요 ${displayLike()}`}
           &nbsp;&nbsp;
-          {`댓글 ${post.comments?.length}`}
+          {`댓글 ${postState.comments?.length}`}
         </div>
-        <div>{`스크랩 ${
-          style === "feed" ? displayScraps() : post.scraps?.length
-        }`}</div>
+        <div>{`스크랩 ${displayScraps()}`}</div>
       </div>
       {style === "post" &&
-        post.comments?.map((comment) => (
+        postState.comments?.map((comment) => (
           <Comment comment={comment} onClick={handleDelete} />
         ))}
       {style === "post" && (

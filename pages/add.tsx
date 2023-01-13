@@ -102,6 +102,7 @@ export default function Add() {
             txt: data.txt,
             imgs: [res.data.url],
             color: "",
+            tags: tags,
           };
           const postRef = await addDoc(collection(db, "posts"), tempPost);
           await updateDoc(postRef, { id: postRef.id });
@@ -124,6 +125,7 @@ export default function Add() {
         txt: data.txt,
         imgs: [],
         color: data.color,
+        tags: tags,
       };
       const postRef = await addDoc(collection(db, "posts"), tempPost);
       await updateDoc(postRef, { id: postRef.id });

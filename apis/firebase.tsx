@@ -11,7 +11,7 @@ import {
 } from "firebase/firestore";
 import { getAuth, connectAuthEmulator } from "firebase/auth";
 import { getAnalytics } from "firebase/analytics";
-import { ILike, IPost, IScrap, ITag, IUser } from "../custom";
+import { IComment, ILike, IPost, IScrap, ITag, IUser } from "../custom";
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -102,6 +102,15 @@ export async function getDataByQuery(
       });
     });
     return scraps;
+  } else if (type === "comments") {
+    const comments: IComment[] = [];
+    snap.forEach((doc) => {
+      comments.push({
+        ...(doc.data() as IComment),
+        createdAt: doc.data().createdAt.toDate(),
+      });
+    });
+    return comments;
   }
   return null;
 }
