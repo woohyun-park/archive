@@ -19,7 +19,7 @@ interface IDataSearch {
 interface IDataProfile {
   grid: IPost[];
   tag: IDict<IPost[]>;
-  scrap: IPost[];
+  scrap: IDict<IPost[]>;
 }
 
 const TAB: IDict<string[]> = {
@@ -31,6 +31,7 @@ export default function List({ data, style }: IListProps) {
   const [selected, setSelected] = useState({
     tab: 1,
     tag: "",
+    scrap: "",
   });
 
   return (
@@ -140,14 +141,40 @@ export default function List({ data, style }: IListProps) {
                 );
               }
             })()}
-            {selected.tab === 3 &&
-              (data as IDataProfile).scrap.map((e) => (
-                <Image
-                  post={{ ...e, id: e.id }}
-                  style={`${style}`}
-                  key={e.id}
-                ></Image>
-              ))}
+            {(() => {
+              const scraps = (data as IDataProfile).scrap;
+              if (selected.tab !== 3) {
+                return <></>;
+              } else if (selected.scrap === "") {
+                const result = [];
+                for (const scrap in scraps) {
+                  result.push(
+                    <Cont
+                      tag={scrap}
+                      posts={scraps[scrap]}
+                      onClick={() => setSelected({ ...selected, scrap })}
+                    />
+                  );
+                }
+                return result;
+              } else {
+                return (
+                  <>
+                    <div className="tagBack">
+                      <HiArrowLeft
+                        size={SIZE.icon}
+                        onClick={() => setSelected({ ...selected, scrap: "" })}
+                      />
+                    </div>
+                    <div className="tagCont">
+                      {scraps[selected.scrap].map((e) => (
+                        <Image post={e} style="profile" />
+                      ))}
+                    </div>
+                  </>
+                );
+              }
+            })()}
           </>
         ) : (
           <></>

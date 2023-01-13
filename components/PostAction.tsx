@@ -112,9 +112,7 @@ export default function PostAction({ post, style }: IPostActionProps) {
   }
   async function handleDelete(e: React.MouseEvent<HTMLDivElement>) {
     const id = e.currentTarget.id;
-    console.log(id);
     const res = await deleteDoc(doc(db, "comments", id));
-    console.log(res);
     setCurUser({ id: curUser.id });
     setPostState({
       ...postState,

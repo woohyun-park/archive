@@ -19,7 +19,7 @@ import {
   getPath,
 } from "../../apis/firebase";
 import List from "../../components/List";
-import { COLOR, IDict, IPost, ITag, IUser, SIZE } from "../../custom";
+import { COLOR, IDict, IPost, IScrap, ITag, IUser, SIZE } from "../../custom";
 import { HiOutlineCog } from "react-icons/hi";
 import { useStore } from "../../apis/zustand";
 import Link from "next/link";
@@ -251,131 +251,41 @@ export async function getServerSideProps({ params }: IServerSidePaths) {
   const uid = params.uid;
   const initUser = await getData("users", uid);
   const initPosts = await getDataByQuery("posts", "uid", "==", uid);
-  const initScraps = await getDataByQuery("scraps", "uid", "==", uid);
-  const initTags = await getDataByQuery("tags", "uid", "==", uid);
+
+  const resScraps = (await getDataByQuery(
+    "scraps",
+    "uid",
+    "==",
+    uid
+  )) as IScrap[];
+  const initScraps: IDict<IPost[]> = {};
+  for await (const scrap of resScraps) {
+    const res = await getDoc(doc(db, "posts", scrap.pid));
+    const tempPost = {
+      ...(res.data() as IPost),
+      createdAt: res.data()?.createdAt.toDate(),
+    };
+    if (initScraps[scrap.cont]) {
+      initScraps[scrap.cont].push(tempPost);
+    } else {
+      initScraps[scrap.cont] = [tempPost];
+    }
+  }
+
+  const resTags = (await getDataByQuery("tags", "uid", "==", uid)) as ITag[];
+  const initTags: IDict<IPost[]> = {};
+  for await (const tag of resTags) {
+    const res = await getDoc(doc(db, "posts", tag.pid as string));
+    const tempPost = {
+      ...(res.data() as IPost),
+      createdAt: res.data()?.createdAt.toDate(),
+    };
+    if (initTags[tag.name]) {
+      initTags[tag.name].push(tempPost);
+    } else {
+      initTags[tag.name] = [tempPost];
+    }
+  }
 
   return { props: { initUser, initPosts, initScraps, initTags } };
 }
-
-// export async function getServerSideProps({ params }: IServerSidePaths) {
-//   const deletedPosts = new Set();
-
-//   const uid = params.uid;
-
-//   const initUser = (await getData("users", uid)) as IUser;
-//   if (initUser === null) {
-//     return {
-//       props: { initUser, initPosts: null, initScraps: null, initTags: null },
-//     };
-//   }
-
-//   const postRef = collection(db, "posts");
-//   const postSnap = await getDocs(
-//     query(postRef, where("uid", "==", params.uid))
-//   );
-//   const initPosts: IPost[] = [];
-//   postSnap.forEach((doc) => {
-//     if (doc.data().isDeleted) {
-//       deletedPosts.add(doc.data().id);
-//       return;
-//     }
-//     initPosts.push({
-//       ...(doc.data() as IPost),
-//       createdAt: doc.data().createdAt.toDate(),
-//       id: doc.id,
-//     });
-//   });
-
-//   // scraps가 []인 경우에는 where()에서 "in"을 사용할 시 에러가 나므로 아래와 같이 분기해서 처리한다.
-//   let initScraps: IPost[];
-//   if (initUser.scraps.length === 0) {
-//     initScraps = [];
-//   } else {
-//     initScraps = [];
-//     const scrapSnap = await getDocs(
-//       query(postRef, where("id", "in", initUser.scraps))
-//     );
-//     scrapSnap.forEach((doc) => {
-//       if (doc.data().isDeleted) {
-//         deletedPosts.add(doc.data().id);
-//         return;
-//       }
-//       initScraps.push({
-//         ...(doc.data() as IPost),
-//         createdAt: doc.data().createdAt.toDate(),
-//         id: doc.id,
-//       });
-//     });
-//   }
-
-//   let initTags: IDict<IPost[]> = {};
-//   const user: IDict<string[]> = initUser.tags as IDict<string[]>;
-//   for (const tag in user) {
-//     if (user[tag].length !== 0) {
-//       const tagSnap = await getDocs(
-//         query(postRef, where("id", "in", user[tag]))
-//       );
-//       const tagPosts: IPost[] = [];
-//       tagSnap.forEach((doc) => {
-//         if (doc.data().isDeleted) {
-//           deletedPosts.add(doc.data().id);
-//           return;
-//         }
-//         tagPosts.push({
-//           ...(doc.data() as IPost),
-//           createdAt: doc.data().createdAt.toDate(),
-//           id: doc.id,
-//         });
-//       });
-//       initTags[tag] = tagPosts;
-//     }
-//   }
-
-//   console.log(deletedPosts);
-//   const toDelete = Array.from(deletedPosts);
-
-//   if (toDelete.length === 0) {
-//     return { props: { initUser, initPosts, initScraps, initTags } };
-//   }
-
-//   // Delete deleted comments
-//   const commentRef = collection(db, "comments");
-//   const commentSnap = getDocs(
-//     query(commentRef, where("target", "in", toDelete))
-//   );
-//   (await commentSnap).forEach((each) => {
-//     console.log(each.id);
-//     deleteDoc(doc(db, "comments", each.id));
-//   });
-
-//   // Delete deleted posts from likes, posts, scraps, and tags of user
-//   const tempLikes = [...initUser.likes].filter(
-//     (each) => !toDelete.includes(each)
-//   );
-//   const tempPosts = [...initUser.posts].filter(
-//     (each) => !toDelete.includes(each)
-//   );
-//   const tempScraps = [...initUser.scraps].filter(
-//     (each) => !toDelete.includes(each)
-//   );
-//   const tempTags: IDict<string[]> = {};
-//   const tags = initUser.tags as IDict<string[]>;
-//   for (const tag in tags) {
-//     const arr = [...initUser.tags[tag]].filter(
-//       (each) => !toDelete.includes(each)
-//     );
-//     if (arr.length === 0) {
-//     } else {
-//       tempTags[tag] = arr;
-//     }
-//   }
-//   const userRef = doc(db, "users", uid);
-//   await updateDoc(userRef, {
-//     likes: tempLikes,
-//     posts: tempPosts,
-//     scraps: tempScraps,
-//     tags: tempTags,
-//   });
-
-//   return { props: { initUser, initPosts, initScraps, initTags } };
-// }

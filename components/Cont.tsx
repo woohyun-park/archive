@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { COLOR, IPost } from "../custom";
 import ContImage from "./ContImage";
 
@@ -9,7 +8,6 @@ interface IImageProps {
 }
 
 export default function Cont({ tag, posts, onClick }: IImageProps) {
-  console.log(posts);
   return (
     <>
       {posts.length !== 0 && (
@@ -27,15 +25,15 @@ export default function Cont({ tag, posts, onClick }: IImageProps) {
                   })}
                 </div>
               </>
-            ) : posts[0].imgs.length === 0 ? (
+            ) : posts[0].imgs?.length === 0 ? (
               <ContImage post={posts[0]} type="color" />
             ) : (
               <ContImage post={posts[0]} type="img" />
             )}
           </div>
-          {posts[0].imgs.length !== 0 && <div className="overlay"></div>}
+          {posts[0].imgs?.length !== 0 && <div className="overlay"></div>}
           <div className="title" onClick={onClick}>
-            {`#${tag}`}
+            {tag === "모든 아카이브" ? tag : `#${tag}`}
           </div>
         </div>
       )}
