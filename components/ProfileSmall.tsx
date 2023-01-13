@@ -1,9 +1,26 @@
-import { arrayRemove, arrayUnion, doc, updateDoc } from "firebase/firestore";
+import {
+  arrayRemove,
+  arrayUnion,
+  deleteDoc,
+  doc,
+  updateDoc,
+} from "firebase/firestore";
 import Link from "next/link";
 import { HiPencil, HiX } from "react-icons/hi";
-import { db } from "../apis/firebase";
+import { db, getDataByQuery } from "../apis/firebase";
 import { useStore } from "../apis/zustand";
-import { COLOR, DEFAULT, IPost, IStyle, IUser, SIZE } from "../custom";
+import {
+  COLOR,
+  DEFAULT,
+  IComment,
+  ILike,
+  IPost,
+  IScrap,
+  IStyle,
+  ITag,
+  IUser,
+  SIZE,
+} from "../custom";
 import dayjs from "dayjs";
 import { useState } from "react";
 import Router, { useRouter } from "next/router";
@@ -77,11 +94,43 @@ export default function ProfileSmall({
   }
   async function handleDelete() {
     if (confirm("정말 삭제하시겠습니까?")) {
-      await updateDoc(doc(db, "posts", post?.id || ""), {
-        ...DEFAULT.postDeleted,
-        id: post?.id,
-      });
+      const id = post?.id as string;
+      await deleteDoc(doc(db, "posts", id));
+      const likes = (await getDataByQuery("likes", "pid", "==", id)) as ILike[];
+      const scraps = (await getDataByQuery(
+        "scraps",
+        "pid",
+        "==",
+        id
+      )) as IScrap[];
+      const comments = (await getDataByQuery(
+        "comments",
+        "pid",
+        "==",
+        id
+      )) as IComment[];
+      const tags = (await getDataByQuery("tags", "pid", "==", id)) as ITag[];
+      for await (const each of likes) {
+        const id = each.id as string;
+        await deleteDoc(doc(db, "likes", id));
+      }
+      for await (const each of scraps) {
+        const id = each.id as string;
+        await deleteDoc(doc(db, "scraps", id));
+      }
+      for await (const each of comments) {
+        const id = each.id as string;
+        await deleteDoc(doc(db, "comments", id));
+      }
+      for await (const each of tags) {
+        const id = each.id as string;
+        await deleteDoc(doc(db, "tags", id));
+      }
+      alert("삭제되었습니다");
+    } else {
+      console.log(post);
     }
+
     router.push("/");
   }
 
