@@ -130,7 +130,6 @@ export default function ProfileSmall({
     } else {
       console.log(post);
     }
-
     router.push("/");
   }
 
@@ -145,7 +144,7 @@ export default function ProfileSmall({
             <Link href={`/profile/${user?.id}`} legacyBehavior>
               <a className="userName">{user?.displayName}</a>
             </Link>
-            {style === "feed" ? (
+            {style === "feed" || style === "post" ? (
               <div className="createdAt">{displayCreatedAt()}</div>
             ) : (
               <div className="txt">{user.txt}</div>

@@ -42,10 +42,6 @@ export default function Profile({
   console.log(initUser, initPosts, initScraps, initTags);
 
   const { curUser, setCurUser } = useStore();
-  // const [user, setUser] = useState<IUser>(initUser);
-  // const [posts, setPosts] = useState(initPosts);
-  // const [scraps, setScraps] = useState(initScraps);
-  // const [tags, setTags] = useState(initTags);
   const [user, setUser] = useState({
     initIsFollowing: curUser.followings.find((elem) => elem === initUser.id)
       ? true
@@ -55,18 +51,6 @@ export default function Profile({
       : false,
   });
 
-  // useEffect(() => {
-  //   update();
-  // }, [curUser]);
-
-  // async function update() {
-  //   if (curUser.id === user.id) {
-  //     setUser(curUser);
-  //     return;
-  //   }
-  //   const newUser = (await getData("users", user.id)) as IUser;
-  //   setUser(newUser);
-  // }
   async function handleToggleFollow() {
     const curUserRef = doc(db, "users", curUser.id);
     const userRef = doc(db, "users", initUser.id || "");
@@ -83,15 +67,6 @@ export default function Profile({
         followers: arrayUnion(curUser.id),
       });
     }
-    // const tempFollowings = new Set(curUser.followings);
-    // if (isFollowing) {
-    //   tempFollowings.delete(initUser.id);
-    // } else {
-    //   tempFollowings.add(initUser.id);
-    // }
-    // const followings = Array.from(tempFollowings) as string[];
-    // setCurUser({ ...curUser, followings });
-    // updateCurUser({ ...curUser, followings });
     let len = initUser.followers.length;
     if (user.initIsFollowing === user.isFollowing) {
     } else if (user.initIsFollowing) {
@@ -101,6 +76,7 @@ export default function Profile({
     }
     setUser({ ...user, isFollowing: !user.isFollowing });
     setCurUser({ id: curUser.id });
+    console.log(curUser);
   }
 
   return (
@@ -127,6 +103,9 @@ export default function Profile({
                 <div className="profileType">팔로워</div>
                 <div className="profileNum">
                   {(() => {
+                    if (initUser.id === curUser.id) {
+                      return curUser.followers.length;
+                    }
                     const len = initUser.followers.length;
                     if (user.initIsFollowing === user.isFollowing) {
                       return len;
@@ -140,7 +119,11 @@ export default function Profile({
               </div>
               <div>
                 <div className="profileType">팔로잉</div>
-                <div className="profileNum">{initUser.followings.length}</div>
+                <div className="profileNum">
+                  {initUser.id === curUser.id
+                    ? curUser.followings.length
+                    : initUser.followings.length}
+                </div>
               </div>
             </div>
           </div>
