@@ -40,7 +40,7 @@ interface IForm {
 // }
 
 export default function Add() {
-  const { curUser, setCurUser, updateCurUser, refreshCurUser } = useStore();
+  const { curUser, setCurUser } = useStore();
   const router = useRouter();
   let modifyPost = null;
   if (router.query.post) {
@@ -114,7 +114,7 @@ export default function Add() {
             const tagRef = await addDoc(collection(db, "tags"), tempTag);
             await updateDoc(tagRef, { id: tagRef.id });
           }
-          refreshCurUser(curUser.id);
+          setCurUser({ id: curUser.id });
         });
     } else {
       const tempPost: IPost = {
@@ -136,7 +136,7 @@ export default function Add() {
         const tagRef = await addDoc(collection(db, "tags"), tempTag);
         await updateDoc(tagRef, { id: tagRef.id });
       }
-      refreshCurUser(curUser.id);
+      setCurUser({ id: curUser.id });
     }
     router.push("/");
   }

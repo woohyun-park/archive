@@ -9,6 +9,7 @@ interface IImageProps {
 }
 
 export default function Cont({ tag, posts, onClick }: IImageProps) {
+  console.log(posts);
   return (
     <>
       {posts.length !== 0 && (

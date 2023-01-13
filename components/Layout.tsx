@@ -41,10 +41,7 @@ export default function Layout({ children }: ILayoutProps) {
       if (authState) {
         const snap = await getDoc(doc(db, "users", authState.uid));
         setLogin({ ...login, isLoggedIn: true });
-        setCurUser({
-          ...(snap.data() as IUser),
-          id: authState.uid,
-        });
+        setCurUser({ id: authState.uid });
       } else {
         setLogin({ ...login, isLoggedIn: false });
       }

@@ -6,11 +6,14 @@ import {
   deleteDoc,
   doc,
   FieldValue,
+  getDocs,
+  query,
   serverTimestamp,
   updateDoc,
+  where,
 } from "firebase/firestore";
 import { useRouter } from "next/router";
-import React, { RefObject, useRef, useState } from "react";
+import React, { RefObject, useEffect, useRef, useState } from "react";
 import {
   HiBookmark,
   HiOutlineBookmark,
@@ -18,9 +21,10 @@ import {
   HiOutlineHeart,
   HiOutlineChatBubbleOvalLeft,
 } from "react-icons/hi2";
+import { idText } from "typescript";
 import { db } from "../apis/firebase";
 import { useStore } from "../apis/zustand";
-import { COLOR, IComment, IPost, IStyle, SIZE } from "../custom";
+import { COLOR, IComment, ILike, IPost, IStyle, SIZE } from "../custom";
 import Comment from "./Comment";
 
 type IPostActionProps = {
@@ -29,16 +33,10 @@ type IPostActionProps = {
 };
 
 export default function PostAction({ post, style }: IPostActionProps) {
-  const { curUser, setCurUser, updateCurUser, refreshCurUser } = useStore();
+  const { curUser, setCurUser } = useStore();
   const [status, setStatus] = useState({
-    initIsLiked: curUser.likes?.find((elem) => elem.pid === post.id)
-      ? true
-      : false,
-    isLiked: curUser.likes?.find((elem) => elem.pid === post.id) ? true : false,
-    initIsScraped: curUser.scraps?.find((elem) => elem.pid === post.id)
-      ? true
-      : false,
-    isScraped: curUser.scraps?.find((elem) => elem.pid === post.id)
+    isLiked: curUser.likes?.find((each) => each.pid === post.id) ? true : false,
+    isScraped: curUser.scraps?.find((each) => each.pid === post.id)
       ? true
       : false,
   });
@@ -46,21 +44,38 @@ export default function PostAction({ post, style }: IPostActionProps) {
   const commentRef: RefObject<HTMLInputElement> = useRef(null);
   const router = useRouter();
 
+  useEffect(() => {
+    updateStatus();
+  }, [curUser]);
+
+  function updateStatus() {
+    setStatus({
+      ...status,
+      isLiked: curUser.likes?.find((each) => each.pid === post.id)
+        ? true
+        : false,
+      isScraped: curUser.scraps?.find((each) => each.pid === post.id)
+        ? true
+        : false,
+    });
+  }
+
   async function handleToggleLike() {
-    const postRef = doc(db, "posts", post.id || "");
-    if (status.isLiked) {
-      await updateDoc(postRef, {
-        likes: arrayRemove(curUser.id),
-      });
+    const like = curUser.likes?.find((like) => like.pid === post.id);
+    if (like) {
+      const id = like.id as string;
+      await deleteDoc(doc(db, "likes", id));
     } else {
-      await updateDoc(postRef, {
-        likes: arrayUnion(curUser.id),
+      const newLike: ILike = {
+        uid: curUser.id,
+        pid: post.id || "",
+      };
+      const ref = await addDoc(collection(db, "likes"), newLike);
+      await updateDoc(ref, {
+        id: ref.id,
       });
     }
-    const curUserLike = post.likes?.filter((like) => like.uid === curUser.id);
-    console.log(curUserLike);
-    refreshCurUser(curUser.id);
-    setStatus({ ...status, isLiked: !status.isLiked });
+    setCurUser({ id: curUser.id });
   }
   async function handleToggleScrap() {
     const postRef = doc(db, "posts", post.id || "");
@@ -73,7 +88,7 @@ export default function PostAction({ post, style }: IPostActionProps) {
         scraps: arrayUnion(curUser.id),
       });
     }
-    refreshCurUser(curUser.id);
+    setCurUser({ id: curUser.id });
     setStatus({ ...status, isScraped: !status.isScraped });
   }
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -87,7 +102,7 @@ export default function PostAction({ post, style }: IPostActionProps) {
       createdAt: serverTimestamp(),
     };
     const ref = await addDoc(collection(db, "comments"), tempComment);
-    refreshCurUser(curUser.id);
+    setCurUser({ id: curUser.id });
     setComment("");
   }
   async function handleDelete(e: React.MouseEvent<SVGElement>) {
@@ -110,7 +125,7 @@ export default function PostAction({ post, style }: IPostActionProps) {
   function displayLike() {
     const len = post.likes?.length;
     if (len === undefined) return 0;
-    if (status.initIsLiked) {
+    if (post.likes?.find((each) => each.uid === curUser.id)) {
       if (status.isLiked) {
         return len;
       } else {
@@ -127,7 +142,7 @@ export default function PostAction({ post, style }: IPostActionProps) {
   function displayScraps() {
     const len = post.scraps?.length;
     if (len === undefined) return 0;
-    if (status.initIsScraped) {
+    if (post.scraps?.find((each) => each.uid === curUser.id)) {
       if (status.isScraped) {
         return len;
       } else {

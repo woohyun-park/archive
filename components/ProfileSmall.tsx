@@ -19,7 +19,7 @@ export default function ProfileSmall({
   style,
   post,
 }: IProfileSmallProps) {
-  const { curUser, setCurUser, updateCurUser } = useStore();
+  const { curUser, setCurUser } = useStore();
   const [isFollowing, setIsFollowing] = useState(() =>
     curUser.followings.find((elem) => elem === user.id) ? true : false
   );
@@ -48,8 +48,7 @@ export default function ProfileSmall({
       tempFollowings.add(user.id);
     }
     const followings = Array.from(tempFollowings) as string[];
-    setCurUser({ ...curUser, followings });
-    updateCurUser({ ...curUser, followings });
+    setCurUser({ id: curUser.id, followings: followings });
     setIsFollowing(!isFollowing);
   }
   function displayCreatedAt() {

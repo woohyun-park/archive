@@ -13,7 +13,7 @@ interface IForm {
 }
 
 export default function Setting() {
-  const { curUser, setCurUser, updateCurUser } = useStore();
+  const { curUser, setCurUser } = useStore();
   const [preview, setPreview] = useState(curUser.photoURL);
   const router = useRouter();
   const {
@@ -33,13 +33,11 @@ export default function Setting() {
 
   async function onValid(data: IForm) {
     if (curUser.photoURL === preview) {
-      const tempUser = {
-        ...curUser,
+      setCurUser({
+        id: curUser.id,
         displayName: data.displayName,
         txt: data.txt,
-      };
-      setCurUser(tempUser);
-      updateCurUser(tempUser);
+      });
     } else {
       const formData = new FormData();
       const config: AxiosRequestConfig<FormData> = {
@@ -58,17 +56,15 @@ export default function Setting() {
           config
         )
         .then(async (res) => {
-          const tempUser = {
-            ...curUser,
+          setCurUser({
+            id: curUser.id,
             displayName: data.displayName,
             txt: data.txt,
             photoURL: res.data.url,
-          };
-          setCurUser(tempUser);
-          updateCurUser(tempUser);
+          });
         });
     }
-    router.push(`/profile/${curUser.uid}`);
+    router.push(`/profile/${curUser.id}`);
   }
   function handleImageOnChange(e: React.ChangeEvent<HTMLInputElement>) {
     file.onChange(e);

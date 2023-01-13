@@ -1,16 +1,14 @@
 import create from "zustand";
-import { ILike, IScrap, IUser } from "../custom";
+import { IDict, ILike, IScrap, IUser } from "../custom";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db, getDataByQuery } from "./firebase";
 
-interface IUserState {
+interface ICurUserState {
   curUser: IUser;
-  setCurUser: (user: IUser) => void;
-  updateCurUser: (user: IUser) => void;
-  refreshCurUser: (uid: string) => void;
+  setCurUser: (user: IDict<any>) => void;
 }
 
-export const useStore = create<IUserState>((set) => ({
+export const useStore = create<ICurUserState>((set) => ({
   curUser: {
     id: "",
     email: "",
@@ -20,21 +18,28 @@ export const useStore = create<IUserState>((set) => ({
     followers: [],
     followings: [],
   },
-  setCurUser: async (curUser) => {
-    set((state) => {
-      return { ...state, curUser };
+  // refreshCurUser: async (uid: string) => {
+  //   const snap = await getDoc(doc(db, "users", uid));
+  //   const likes = await getDataByQuery("likes", "uid", "==", uid);
+  //   const scraps = await getDataByQuery("scraps", "uid", "==", uid);
+  //   set((state) => {
+  //     return {
+  //       ...state,
+  //       curUser: {
+  //         ...(snap.data() as IUser),
+  //         likes: likes as ILike[],
+  //         scraps: scraps as IScrap[],
+  //       },
+  //     };
+  //   });
+  // },
+  setCurUser: async (user: IDict<any>) => {
+    await updateDoc(doc(db, "users", user.id), {
+      ...user,
     });
-  },
-  updateCurUser: async (newCurUser: IUser) => {
-    const userRef = doc(db, "users", newCurUser.id);
-    await updateDoc(userRef, {
-      ...newCurUser,
-    });
-  },
-  refreshCurUser: async (uid: string) => {
-    const snap = await getDoc(doc(db, "users", uid));
-    const likes = await getDataByQuery("likes", "uid", "==", uid);
-    const scraps = await getDataByQuery("scraps", "uid", "==", uid);
+    const snap = await getDoc(doc(db, "users", user.id));
+    const likes = await getDataByQuery("likes", "uid", "==", user.id);
+    const scraps = await getDataByQuery("scraps", "uid", "==", user.id);
     set((state) => {
       return {
         ...state,

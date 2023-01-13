@@ -19,7 +19,7 @@ import {
   getPath,
 } from "../../apis/firebase";
 import List from "../../components/List";
-import { COLOR, IDict, IPost, IUser, SIZE } from "../../custom";
+import { COLOR, IDict, IPost, ITag, IUser, SIZE } from "../../custom";
 import { HiOutlineCog } from "react-icons/hi";
 import { useStore } from "../../apis/zustand";
 import Link from "next/link";
@@ -39,8 +39,9 @@ export default function Profile({
   initTags,
 }: IProfileProps) {
   if (!initUser) return <div>존재하지 않는 페이지입니다</div>;
+  console.log(initUser, initPosts, initScraps, initTags);
 
-  const { curUser, setCurUser, updateCurUser, refreshCurUser } = useStore();
+  const { curUser, setCurUser } = useStore();
   // const [user, setUser] = useState<IUser>(initUser);
   // const [posts, setPosts] = useState(initPosts);
   // const [scraps, setScraps] = useState(initScraps);
@@ -99,7 +100,7 @@ export default function Profile({
       len++;
     }
     setUser({ ...user, isFollowing: !user.isFollowing });
-    refreshCurUser(curUser.id);
+    setCurUser({ id: curUser.id });
   }
 
   return (
@@ -250,8 +251,8 @@ export async function getServerSideProps({ params }: IServerSidePaths) {
   const uid = params.uid;
   const initUser = await getData("users", uid);
   const initPosts = await getDataByQuery("posts", "uid", "==", uid);
-  const initScraps = await getDataByQuery("posts", "uid", "==", uid);
-  const initTags = await getDataByQuery("posts", "uid", "==", uid);
+  const initScraps = await getDataByQuery("scraps", "uid", "==", uid);
+  const initTags = await getDataByQuery("tags", "uid", "==", uid);
 
   return { props: { initUser, initPosts, initScraps, initTags } };
 }
