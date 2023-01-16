@@ -1,13 +1,14 @@
-import { COLOR, IPost } from "../custom";
+import { COLOR, IPost, IStyle } from "../custom";
 import ContImage from "./ContImage";
 
 interface IImageProps {
   tag: string;
   posts: IPost[];
+  style?: IStyle;
   onClick?: () => void;
 }
 
-export default function Cont({ tag, posts, onClick }: IImageProps) {
+export default function Cont({ tag, posts, style, onClick }: IImageProps) {
   return (
     <>
       {posts.length !== 0 && (
@@ -32,7 +33,7 @@ export default function Cont({ tag, posts, onClick }: IImageProps) {
             )}
           </div>
           {posts[0].imgs?.length !== 0 && <div className="overlay"></div>}
-          <div className="title" onClick={onClick}>
+          <div className={`title title-${style}`} onClick={onClick}>
             {tag === "모든 스크랩" ? tag : `#${tag}`}
           </div>
         </div>
@@ -80,6 +81,9 @@ export default function Cont({ tag, posts, onClick }: IImageProps) {
           background-color: rgba(0, 0, 0, 0.75);
           padding: 4px;
           border-radius: 8px;
+        }
+        .title-tag {
+          word-break: break-all;
         }
         .imgCont {
           width: 100%;

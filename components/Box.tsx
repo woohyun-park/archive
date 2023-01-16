@@ -31,7 +31,8 @@ export default function Box({ post, style }: IBoxProps) {
           <div className={`title title-${style}`}>{post.title}</div>
         </Link>
         <div className={`tagCont tagCont-${style}`}>
-          {(style === "feed" || style === "profile") &&
+          {style === "feed" &&
+            // || style === "profile"
             [...post.tags]?.reverse().map((tag, i) => (
               <Link key={i} href={{ pathname: `/tag/${tag}` }} legacyBehavior>
                 <button
@@ -93,18 +94,27 @@ export default function Box({ post, style }: IBoxProps) {
           font-weight: bold;
           margin: 16px;
           word-break: keep-all;
+          word-wrap: break-word;
         }
         .title-feed {
           font-size: 48px;
+          line-height: 44px;
           margin: 24px;
+          max-width: calc(100% - 48px);
         }
         .title-search {
           font-size: 16px;
+          line-height: 14px;
           margin: 8px;
+          word-break: keep-all;
+          word-wrap: break-word;
+          max-width: calc(100% - 16px);
         }
         .title-profile {
           font-size: 24px;
+          line-height: 22px;
           margin: 12px;
+          max-width: calc(100% - 24px);
         }
         .tagCont {
           position: absolute;
@@ -127,14 +137,14 @@ export default function Box({ post, style }: IBoxProps) {
           text-decoration: none;
         }
         .mainTag {
-          margin: 2px 0;
+          margin: 1px 0;
           margin-left: 4px;
           width: fit-content;
           background-color: ${COLOR.btnOverlay};
           color: ${COLOR.txtDark1};
         }
         .mainTag-feed {
-          font-size: 24px;
+          font-size: 16px;
         }
         .mainTag-profile {
           font-size: 12px;

@@ -48,7 +48,6 @@ export default function Add() {
   if (router.query.post) {
     modifyPost = JSON.parse(router.query.post as string) as IPost;
   }
-  console.log(modifyPost);
   const {
     register,
     handleSubmit,
@@ -77,78 +76,81 @@ export default function Add() {
   );
   const [tag, setTag] = useState("");
   const [tags, setTags] = useState<string[]>(modifyPost ? modifyPost.tags : []);
+  const [errors, setErrors] = useState({
+    tags: "",
+  });
 
   async function onValid(data: IForm) {
+    let resPost = {
+      title: data.title,
+      txt: data.txt,
+      color: "",
+      tags,
+      imgs: [""],
+    };
     if (isImage) {
-      const formData = new FormData();
-      const config: AxiosRequestConfig<FormData> = {
-        headers: { "Content-Type": "multipart/form-data" },
-      };
-      formData.append("api_key", process.env.NEXT_PUBLIC_CD_API_KEY || "");
-      formData.append(
-        "upload_preset",
-        process.env.NEXT_PUBLIC_CD_UPLOADE_PRESET || ""
-      );
-      formData.append(`file`, data.file[0]);
+      if (modifyPost && watch("file").length === 0) {
+        resPost.imgs = [...modifyPost.imgs];
+      } else {
+        const formData = new FormData();
+        const config: AxiosRequestConfig<FormData> = {
+          headers: { "Content-Type": "multipart/form-data" },
+        };
+        formData.append("api_key", process.env.NEXT_PUBLIC_CD_API_KEY || "");
+        formData.append(
+          "upload_preset",
+          process.env.NEXT_PUBLIC_CD_UPLOADE_PRESET || ""
+        );
+        formData.append(`file`, data.file[0]);
 
-      await axios
-        .post(
+        const res = await axios.post(
           `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CD_CLOUD_NAME}/image/upload`,
           formData,
           config
-        )
-        .then(async (res) => {
-          if (modifyPost) {
-            const deleteTags = await getDataByQuery<ITag>(
-              "tags",
-              "pid",
-              "==",
-              modifyPost.id as string
-            );
-            for (const tag of deleteTags) {
-              await deleteDoc(doc(db, "tags", tag.id as string));
-            }
-            await updateDoc(doc(db, "posts", modifyPost.id as string), {
-              title: data.title,
-              txt: data.txt,
-              imgs: [res.data.url],
-              color: "",
-              tags,
-            });
-            for await (const tag of data.tags) {
-              const tempTag: ITag = {
-                uid: curUser.id,
-                pid: modifyPost.id,
-                name: tag,
-              };
-              const tagRef = await addDoc(collection(db, "tags"), tempTag);
-              await updateDoc(tagRef, { id: tagRef.id });
-            }
-            setCurUser({ id: curUser.id });
-          } else {
-            const tempPost: IPost = {
-              uid: curUser.id,
-              createdAt: serverTimestamp(),
-              title: data.title,
-              txt: data.txt,
-              imgs: [res.data.url],
-              color: "",
-              tags,
-            };
-            const postRef = await addDoc(collection(db, "posts"), tempPost);
-            await updateDoc(postRef, { id: postRef.id });
-            for await (const tag of data.tags) {
-              const tempTag: ITag = {
-                uid: curUser.id,
-                pid: postRef.id,
-                name: tag,
-              };
-              const tagRef = await addDoc(collection(db, "tags"), tempTag);
-              await updateDoc(tagRef, { id: tagRef.id });
-            }
-            setCurUser({ id: curUser.id });
-          }
-        });
+        );
+        resPost.imgs = [res.data.url];
+      }
+
+      if (modifyPost) {
+        const deleteTags = await getDataByQuery<ITag>(
+          "tags",
+          "pid",
+          "==",
+          modifyPost.id as string
+        );
+        for (const tag of deleteTags) {
+          await deleteDoc(doc(db, "tags", tag.id as string));
+        }
+        await updateDoc(doc(db, "posts", modifyPost.id as string), resPost);
+        for await (const tag of data.tags) {
+          const tempTag: ITag = {
+            uid: curUser.id,
+            pid: modifyPost.id,
+            name: tag,
+          };
+          const tagRef = await addDoc(collection(db, "tags"), tempTag);
+          await updateDoc(tagRef, { id: tagRef.id });
+        }
+        setCurUser({ id: curUser.id });
+      } else {
+        const tempPost: IPost = {
+          ...resPost,
+          uid: curUser.id,
+          createdAt: serverTimestamp(),
+        };
+        const postRef = await addDoc(collection(db, "posts"), tempPost);
+        await updateDoc(postRef, { id: postRef.id });
+        for await (const tag of data.tags) {
+          const tempTag: ITag = {
+            uid: curUser.id,
+            pid: postRef.id,
+            name: tag,
+          };
+          const tagRef = await addDoc(collection(db, "tags"), tempTag);
+          await updateDoc(tagRef, { id: tagRef.id });
+        }
+        setCurUser({ id: curUser.id });
+      }
     } else {
       if (modifyPost) {
         const deleteTags = await getDataByQuery<ITag>(
@@ -230,9 +232,25 @@ export default function Add() {
   function handleTagChange(e: React.ChangeEvent<HTMLInputElement>) {
     e.preventDefault();
     const newTag = e.target.value.split(" ")[0];
-    if (e.target.value === " ") {
+    setErrors({
+      ...errors,
+      tags: "",
+    });
+    if (newTag.length > 16 && newTag !== " ") {
+      return;
+    } else if (e.target.value === " ") {
       setTag("");
     } else if (e.target.value.split(" ").length === 2) {
+      if (tags.length === 5) {
+        setErrors({
+          ...errors,
+          tags: "태그는 최대 5개까지 추가할 수 있습니다.",
+        });
+        return;
+      }
+      if (tags.length === 5) {
+        return;
+      }
       let tempTags = [...tags];
       const tagIndex = tempTags.findIndex((tempTag) => {
         return tempTag == newTag;
@@ -250,6 +268,10 @@ export default function Add() {
       setValue("tags", tempTags);
       setTag("");
     } else {
+      setErrors({
+        ...errors,
+        tags: "",
+      });
       setTag(newTag);
     }
   }
@@ -274,7 +296,14 @@ export default function Add() {
       >
         <HiArrowLeft size={SIZE.icon} />
       </div>
-      <form onSubmit={handleSubmit((data) => onValid(data))}>
+      <form
+        onSubmit={handleSubmit(
+          (data) => onValid(data),
+          (e) => {
+            console.log(e);
+          }
+        )}
+      >
         <div className="btnCont">
           <div
             className={isImage ? "btn-left g-button1" : "btn-left g-button2"}
@@ -339,7 +368,9 @@ export default function Add() {
           </div>
         )}
         <input
-          {...register("file")}
+          {...register("file", {
+            required: isImage ? (modifyPost ? false : true) : false,
+          })}
           type="file"
           accept="image/*"
           onChange={handleImageChange}
@@ -349,7 +380,35 @@ export default function Add() {
           }}
           hidden
         />
-        <input {...register("title")} placeholder="제목" />
+
+        <div className="g_input_labelCont">
+          <label className="g_input_label">제목</label>
+          <div
+            className={
+              watch("title").length === 0
+                ? "g_input_txtLen g_input_txtLen-invalid "
+                : "g_input_txtLen"
+            }
+          >{`${watch("title").length}/32`}</div>
+        </div>
+        <input
+          {...register("title", { required: true, maxLength: 32 })}
+          type="text"
+          maxLength={32}
+        />
+
+        <div className="g_input_labelCont">
+          <label className="g_input_label">태그</label>
+          <div
+            className={
+              tag.length === 0 || errors.tags !== ""
+                ? "g_input_txtLen g_input_txtLen-invalid "
+                : "g_input_txtLen"
+            }
+          >
+            {errors["tags"] === "" ? `${tag.length}/16` : errors["tags"]}
+          </div>
+        </div>
         <div className="tagCont">
           {watch("tags")?.map((each) => (
             <span className="tag" key={each}>
@@ -360,8 +419,28 @@ export default function Add() {
             </span>
           ))}
         </div>
-        <input onChange={handleTagChange} value={tag} placeholder="태그" />
-        <textarea {...register("txt")} placeholder="내용" />
+        <input
+          onChange={handleTagChange}
+          value={tag}
+          placeholder="태그"
+          maxLength={17}
+        />
+
+        <div className="g_input_labelCont">
+          <label className="g_input_label">내용</label>
+          <div
+            className={
+              watch("txt").length === 0
+                ? "g_input_txtLen g_input_txtLen-invalid "
+                : "g_input_txtLen"
+            }
+          >{`${watch("txt").length}/1000`}</div>
+        </div>
+        <textarea
+          {...register("txt", { required: true, maxLength: 1000 })}
+          maxLength={1000}
+          placeholder="내용"
+        />
         <button className="g-button1" type="submit">
           생성
         </button>

@@ -118,6 +118,7 @@ export default function List({ data, style }: IListProps) {
                     <Cont
                       tag={tag}
                       posts={tags[tag]}
+                      style="tag"
                       onClick={() => setSelected({ ...selected, tag })}
                     />
                   );

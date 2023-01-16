@@ -73,13 +73,13 @@ export default function Post({ initPost, initUser }: IPostProps) {
           transform: translateX(-16px);
         }
         .title {
-          word-break: keep-all;
           margin-bottom: 4px;
           font-size: 48px;
         }
         .tagCont {
           display: flex;
           justify-content: flex-end;
+          flex-wrap: wrap;
           width: 100%;
           margin-bottom: 32px;
         }
