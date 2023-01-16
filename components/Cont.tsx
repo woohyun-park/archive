@@ -18,9 +18,9 @@ export default function Cont({ tag, posts, onClick }: IImageProps) {
                 <div className="imgCont">
                   {[...posts].slice(0, 4).map((e, i) => {
                     if (e.imgs.length === 0) {
-                      return <ContImage post={e} type="color-4" />;
+                      return <ContImage post={e} type="color-4" key={e.id} />;
                     } else {
-                      return <ContImage post={e} type="img-4" />;
+                      return <ContImage post={e} type="img-4" key={e.id} />;
                     }
                   })}
                 </div>

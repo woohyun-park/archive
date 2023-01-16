@@ -14,7 +14,16 @@ import {
   getPath,
 } from "../../apis/firebase";
 import List from "../../components/List";
-import { COLOR, IDict, IPost, IScrap, ITag, IUser, SIZE } from "../../custom";
+import {
+  COLOR,
+  DEFAULT,
+  IDict,
+  IPost,
+  IScrap,
+  ITag,
+  IUser,
+  SIZE,
+} from "../../custom";
 import { HiOutlineCog } from "react-icons/hi";
 import { useStore } from "../../apis/zustand";
 import Link from "next/link";
@@ -23,7 +32,7 @@ import { useState } from "react";
 interface IProfileProps {
   initUser: IUser;
   initPosts: IPost[];
-  initScraps: IPost[];
+  initScraps: IDict<IPost[]>;
   initTags: IDict<IPost[]>;
 }
 
@@ -33,9 +42,6 @@ export default function Profile({
   initScraps,
   initTags,
 }: IProfileProps) {
-  if (!initUser) return <div>존재하지 않는 페이지입니다</div>;
-  console.log(initUser, initPosts, initScraps, initTags);
-
   const { curUser, setCurUser } = useStore();
   const [user, setUser] = useState({
     initIsFollowing: curUser.followings.find((elem) => elem === initUser.id)
@@ -122,7 +128,11 @@ export default function Profile({
               </div>
             </div>
           </div>
-          <img className="profileImage" src={initUser.photoURL} />
+          <img
+            className="profileImage"
+            src={initUser.photoURL}
+            alt={DEFAULT.img.alt}
+          />
         </div>
         {(() => {
           const result = [];
@@ -225,7 +235,7 @@ export async function getServerSidePaths() {
   return { paths, fallback: false };
 }
 
-export async function getServerSideProps({ params, res }: IServerSidePaths) {
+export async function getServerSideProps({ params }: IServerSidePaths) {
   const uid = params.uid;
   const initUser = await getData<IUser>("users", uid);
   const initPosts = await getDataByQuery<IPost>("posts", "uid", "==", uid);

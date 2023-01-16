@@ -3,7 +3,7 @@ import { getData, getDataByQuery, getPath } from "../../apis/firebase";
 import Back from "../../components/Back";
 import PostAction from "../../components/PostAction";
 import ProfileSmall from "../../components/ProfileSmall";
-import { IComment, ILike, IPost, IScrap, IUser } from "../../custom";
+import { DEFAULT, IComment, ILike, IPost, IScrap, IUser } from "../../custom";
 
 interface IPostProps {
   initPost: IPost;
@@ -23,7 +23,11 @@ export default function Post({ initPost, initUser }: IPostProps) {
             <div className="bg"></div>
           ) : (
             <div className="imgCont">
-              <img className="img" src={initPost.imgs[0]} />
+              <img
+                className="img"
+                src={initPost.imgs[0]}
+                alt={DEFAULT.img.alt}
+              />
             </div>
           )}
           <ProfileSmall post={initPost} user={initUser} style="post" />

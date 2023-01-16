@@ -1,12 +1,13 @@
+import Image from "next/image";
 import Link from "next/link";
-import { COLOR, IPost, IStyle } from "../custom";
+import { COLOR, DEFAULT, IPost, IStyle } from "../custom";
 
-interface IImageProps {
+interface IBoxProps {
   post: IPost;
   style: IStyle;
 }
 
-export default function Image({ post, style }: IImageProps) {
+export default function Box({ post, style }: IBoxProps) {
   return (
     <>
       <div className={`cont cont-${style}`}>
@@ -16,7 +17,7 @@ export default function Image({ post, style }: IImageProps) {
           </>
         ) : (
           <>
-            <img className="bg" src={post.imgs[0]} />
+            <img className="bg" src={post.imgs[0]} alt={DEFAULT.img.alt} />
             <div className="overlay"></div>
           </>
         )}
@@ -31,9 +32,11 @@ export default function Image({ post, style }: IImageProps) {
         </Link>
         <div className={`tagCont tagCont-${style}`}>
           {(style === "feed" || style === "profile") &&
-            post.tags?.reverse().map((tag, i) => (
+            [...post.tags]?.reverse().map((tag, i) => (
               <Link key={i} href={{ pathname: `/tag/${tag}` }} legacyBehavior>
-                <button className="mainTag g-button1">{`#${tag}`}</button>
+                <button
+                  className={`mainTag mainTag-${style} g-button1`}
+                >{`#${tag}`}</button>
               </Link>
             ))}
         </div>
@@ -92,14 +95,16 @@ export default function Image({ post, style }: IImageProps) {
           word-break: keep-all;
         }
         .title-feed {
-          font-size: 64px;
+          font-size: 48px;
           margin: 24px;
         }
         .title-search {
-          font-size: 24px;
+          font-size: 16px;
+          margin: 8px;
         }
         .title-profile {
-          font-size: 36px;
+          font-size: 24px;
+          margin: 12px;
         }
         .tagCont {
           position: absolute;
@@ -110,9 +115,13 @@ export default function Image({ post, style }: IImageProps) {
           display: flex;
           flex-wrap: wrap-reverse;
           flex-direction: row-reverse;
+          width: 75%;
         }
         .tagCont-feed {
           margin: 24px;
+        }
+        .tagCont-profile {
+          margin: 12px;
         }
         .mainTagCont {
           text-decoration: none;
@@ -123,6 +132,14 @@ export default function Image({ post, style }: IImageProps) {
           width: fit-content;
           background-color: ${COLOR.btnOverlay};
           color: ${COLOR.txtDark1};
+        }
+        .mainTag-feed {
+          font-size: 24px;
+        }
+        .mainTag-profile {
+          font-size: 12px;
+          padding: 4px;
+          border-radius: 4px;
         }
       `}</style>
     </>

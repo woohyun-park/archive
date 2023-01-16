@@ -1,9 +1,10 @@
 import { doc, getDoc } from "firebase/firestore";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { HiX } from "react-icons/hi";
 import { db } from "../apis/firebase";
 import { useStore } from "../apis/zustand";
-import { COLOR, IComment, IUser } from "../custom";
+import { COLOR, DEFAULT, IComment, IUser } from "../custom";
 
 type ICommentProps = {
   comment: IComment;
@@ -17,22 +18,25 @@ export default function Comment({ comment, onClick }: ICommentProps) {
   const { curUser } = useStore();
 
   useEffect(() => {
+    async function init() {
+      // 만약 user를 cache해놓고 cache hit일때는 바로 가져오도록 하면 더 빠르지 않을까
+      const userRef = doc(db, "users", comment.uid);
+      const userSnap = await getDoc(userRef);
+      const tempUser = { ...(userSnap.data() as IUser) };
+      setUser(tempUser);
+    }
     init();
   }, []);
-
-  async function init() {
-    // 만약 user를 cache해놓고 cache hit일때는 바로 가져오도록 하면 더 빠르지 않을까
-    const userRef = doc(db, "users", comment.uid);
-    const userSnap = await getDoc(userRef);
-    const tempUser = { ...(userSnap.data() as IUser) };
-    setUser(tempUser);
-  }
 
   return (
     <>
       <div className="cont">
         <div className="leftCont">
-          <img className="g-profileImg" src={user?.photoURL} />
+          <img
+            className="g-profileImg"
+            src={user?.photoURL || ""}
+            alt={DEFAULT.img.alt}
+          />
           <div>
             <div className="displayName">{user?.displayName}</div>
             <div className="txt">{comment?.txt}</div>

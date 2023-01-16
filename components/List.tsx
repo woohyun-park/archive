@@ -1,6 +1,6 @@
 import { useState } from "react";
-import Image from "./Image";
-import { COLOR, IPost, IUser, IStyle, IDict, SIZE } from "../custom";
+import Box from "./Box";
+import { COLOR, IPost, IUser, IStyle, IDict, SIZE, DEFAULT } from "../custom";
 import ProfileSmall from "./ProfileSmall";
 import { HiArrowLeft } from "react-icons/hi";
 import Cont from "./Cont";
@@ -48,11 +48,11 @@ export default function List({ data, style }: IListProps) {
           <>
             {selected.tab === 1 &&
               (data as IDataSearch).post.map((e) => (
-                <Image
+                <Box
                   post={{ ...e, id: e.id }}
                   style={`${style}`}
                   key={e.id}
-                ></Image>
+                ></Box>
               ))}
             {(() => {
               const tags = (data as IDataSearch).tag;
@@ -85,7 +85,7 @@ export default function List({ data, style }: IListProps) {
                     </div>
                     <div className="tagCont">
                       {tags[selected.tag].map((e) => (
-                        <Image post={e} style="profile" />
+                        <Box post={e} style="profile" key={e.id} />
                       ))}
                     </div>
                   </>
@@ -101,11 +101,11 @@ export default function List({ data, style }: IListProps) {
           <>
             {selected.tab === 1 &&
               (data as IDataProfile).grid.map((e) => (
-                <Image
+                <Box
                   post={{ ...e, id: e.id }}
                   style={`${style}`}
                   key={e.id}
-                ></Image>
+                ></Box>
               ))}
             {(() => {
               const tags = (data as IDataProfile).tag;
@@ -134,7 +134,7 @@ export default function List({ data, style }: IListProps) {
                     </div>
                     <div className="tagCont">
                       {tags[selected.tag].map((e) => (
-                        <Image post={e} style="profile" />
+                        <Box post={e} style="profile" key={e.id} />
                       ))}
                     </div>
                   </>
@@ -168,7 +168,7 @@ export default function List({ data, style }: IListProps) {
                     </div>
                     <div className="tagCont">
                       {scraps[selected.scrap].map((e) => (
-                        <Image post={e} style="profile" />
+                        <Box post={e} style="profile" key={e.id} />
                       ))}
                     </div>
                   </>

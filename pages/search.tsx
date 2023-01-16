@@ -86,7 +86,7 @@ export async function getServerSideProps() {
   const userSnap = await getDocs(collection(db, "users"));
   const users: IUser[] = [];
   userSnap.forEach((doc) => {
-    users.push({ ...doc.data(), uid: doc.id } as IUser);
+    users.push({ ...(doc.data() as IUser), id: doc.id });
   });
 
   return { props: { posts, users } };

@@ -12,6 +12,19 @@ const nextConfig = withSuperjson()({
       },
     ];
   },
+  // async headers() {
+  //   return [
+  //     {
+  //       source: "/feed",
+  //       headers: [
+  //         {
+  //           key: "Cache-Control",
+  //           value: "public, max-age=31536000, immutable",
+  //         },
+  //       ],
+  //     },
+  //   ];
+  // },
 });
 
 module.exports = nextConfig;

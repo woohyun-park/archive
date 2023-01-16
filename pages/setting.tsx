@@ -2,7 +2,7 @@ import axios, { AxiosRequestConfig } from "axios";
 import { useRouter } from "next/router";
 import React, { useRef, useState } from "react";
 import { useStore } from "../apis/zustand";
-import { COLOR, IDict, IUser, SIZE } from "../custom";
+import { COLOR, DEFAULT, IDict, IUser, SIZE } from "../custom";
 import { useForm } from "react-hook-form";
 import { HiArrowLeft, HiX } from "react-icons/hi";
 import Back from "../components/Back";
@@ -90,6 +90,7 @@ export default function Setting() {
           className="photo"
           src={preview}
           onClick={() => fileRef.current?.click()}
+          alt={DEFAULT.img.alt}
         />
       </div>
       <form onSubmit={handleSubmit((data) => onValid(data))}>

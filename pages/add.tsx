@@ -11,13 +11,12 @@ import {
 } from "firebase/firestore";
 import React, { useRef, useState } from "react";
 import { db, getDataByQuery } from "../apis/firebase";
-import { COLOR, IDict, IPost, SIZE, FUNC, ITag } from "../custom";
+import { COLOR, IDict, IPost, SIZE, FUNC, ITag, DEFAULT } from "../custom";
 import { useStore } from "../apis/zustand";
 import { useRouter } from "next/router";
 import { HiArrowLeft, HiX } from "react-icons/hi";
 import { useForm } from "react-hook-form";
 import Color from "../components/Color";
-import { createImportSpecifier } from "typescript";
 
 interface IForm {
   file: File[];
@@ -297,7 +296,7 @@ export default function Add() {
             </div>
           ) : (
             <div className="imgCont" onClick={handleImageClick}>
-              <img className="img" src={preview} />
+              <img className="img" src={preview} alt={DEFAULT.img.alt} />
             </div>
           )
         ) : (
@@ -353,7 +352,7 @@ export default function Add() {
         <input {...register("title")} placeholder="제목" />
         <div className="tagCont">
           {watch("tags")?.map((each) => (
-            <span className="tag">
+            <span className="tag" key={each}>
               <span className="tagTxt">{each}</span>
               <span id={each} onClick={handleTagRemove}>
                 <HiX />

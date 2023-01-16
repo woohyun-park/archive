@@ -133,7 +133,11 @@ export default function ProfileSmall({
       <div className={`userCont userCont-${style}`}>
         <div className={user.id === curUser.id ? "row row-cur" : "row"}>
           <Link href={`/profile/${user?.id}`}>
-            <img className="g-profileImg" src={user?.photoURL} />
+            <img
+              className="g-profileImg"
+              src={user?.photoURL}
+              alt={DEFAULT.img.alt}
+            />
           </Link>
           <div className="col">
             <Link href={`/profile/${user?.id}`} legacyBehavior>

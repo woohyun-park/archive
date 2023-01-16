@@ -19,7 +19,16 @@ import {
 } from "react-icons/hi2";
 import { db } from "../apis/firebase";
 import { useStore } from "../apis/zustand";
-import { COLOR, IComment, ILike, IPost, IScrap, IStyle, SIZE } from "../custom";
+import {
+  COLOR,
+  DEFAULT,
+  IComment,
+  ILike,
+  IPost,
+  IScrap,
+  IStyle,
+  SIZE,
+} from "../custom";
 import Comment from "./Comment";
 
 type IPostActionProps = {
@@ -207,11 +216,11 @@ export default function PostAction({ post, style }: IPostActionProps) {
       </div>
       {style === "post" &&
         postState.comments?.map((comment) => (
-          <Comment comment={comment} onClick={handleDelete} />
+          <Comment comment={comment} onClick={handleDelete} key={comment.id} />
         ))}
       {style === "post" && (
         <div className="inputCont">
-          <img className="img" src={curUser.photoURL} />
+          <img className="img" src={curUser.photoURL} alt={DEFAULT.img.alt} />
           <input
             className="g-button2 input"
             placeholder={`${curUser.displayName}(으)로 댓글 달기...`}

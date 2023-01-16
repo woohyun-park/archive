@@ -2,6 +2,7 @@ import { db, getData, getDataByQuery } from "../apis/firebase";
 import { collection, getDocs } from "firebase/firestore";
 import { IComment, ILike, IPost, IScrap, ITag, IUser } from "../custom";
 import Feed from "./feed";
+import { GetServerSidePropsContext } from "next";
 
 interface IIndex {
   posts: IPost[];

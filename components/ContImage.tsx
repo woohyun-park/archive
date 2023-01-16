@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { COLOR, IPost } from "../custom";
+import { COLOR, DEFAULT, IPost } from "../custom";
 
 interface IContImageProps {
   post: IPost;
@@ -11,13 +11,13 @@ export default function ContImage({ post, type }: IContImageProps) {
     <>
       <>
         {type === "img" ? (
-          <img className="img-1" src={post.imgs[0]} />
+          <img className="img-1" src={post.imgs[0]} alt={DEFAULT.img.alt} />
         ) : type === "color" ? (
-          <img className="img-1" />
+          <div className="img-1" />
         ) : type === "img-4" ? (
-          <img className="img-4" src={post.imgs[0]}></img>
+          <img className="img-4" src={post.imgs[0]} alt={DEFAULT.img.alt}></img>
         ) : type === "color-4" ? (
-          <img className="img-4"></img>
+          <div className="img-4" />
         ) : (
           <></>
         )}
