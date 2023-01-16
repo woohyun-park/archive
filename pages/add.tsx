@@ -4,14 +4,12 @@ import {
   collection,
   deleteDoc,
   doc,
-  FieldValue,
   serverTimestamp,
-  Timestamp,
   updateDoc,
 } from "firebase/firestore";
 import React, { useRef, useState } from "react";
 import { db, getDataByQuery } from "../apis/firebase";
-import { COLOR, IDict, IPost, SIZE, FUNC, ITag, DEFAULT } from "../custom";
+import { COLOR, IPost, SIZE, ITag, DEFAULT } from "../custom";
 import { useStore } from "../apis/zustand";
 import { useRouter } from "next/router";
 import { HiArrowLeft, HiX } from "react-icons/hi";
@@ -27,27 +25,27 @@ interface IForm {
   color: string;
 }
 
-// interface ITempPost {
-//   uid: string;
-//   createdAt: FieldValue;
-//   title: string;
-//   tags: string[];
-//   txt: string;
-//   imgs: string[];
-//   color: string;
-//   likes: string[];
-//   scraps: string[];
-//   comments: string[];
-//   isDeleted: boolean;
-// }
-
 export default function Add() {
   const { curUser, setCurUser } = useStore();
   const router = useRouter();
-  let modifyPost: IPost | null = null;
-  if (router.query.post) {
-    modifyPost = JSON.parse(router.query.post as string) as IPost;
-  }
+  const [prevPost, setPrevPost] = useState(
+    router.query.post
+      ? (JSON.parse(router.query.post as string) as IPost)
+      : undefined
+  );
+  const [status, setStatus] = useState({
+    selectedTab: prevPost ? (prevPost.imgs.length !== 0 ? true : false) : true,
+    selectedColor:
+      prevPost && prevPost.imgs.length === 0 ? prevPost.color : COLOR.red,
+  });
+  const [preview, setPreview] = useState<string>(
+    prevPost && prevPost.imgs.length !== 0 ? prevPost.imgs[0] : ""
+  );
+  const [tag, setTag] = useState("");
+  const [tags, setTags] = useState<string[]>(prevPost ? prevPost.tags : []);
+  const [errors, setErrors] = useState({
+    tags: "",
+  });
   const {
     register,
     handleSubmit,
@@ -57,28 +55,14 @@ export default function Add() {
   } = useForm<IForm>({
     defaultValues: {
       file: undefined,
-      title: modifyPost ? modifyPost.title : "",
-      txt: modifyPost ? modifyPost.txt : "",
-      color: modifyPost ? modifyPost.color : "",
-      tags: modifyPost ? modifyPost.tags : [],
+      title: prevPost ? prevPost.title : "",
+      txt: prevPost ? prevPost.txt : "",
+      color: prevPost ? prevPost.color : "",
+      tags: prevPost ? prevPost.tags : [],
     },
   });
   const file = register("file");
   const fileRef = useRef<HTMLInputElement | null>(null);
-  const [preview, setPreview] = useState<string>(
-    modifyPost && modifyPost.imgs.length !== 0 ? modifyPost.imgs[0] : ""
-  );
-  const [isImage, setIsImage] = useState(
-    modifyPost ? (modifyPost.imgs.length !== 0 ? true : false) : true
-  );
-  const [selectedColor, setSelectedColor] = useState(
-    modifyPost && modifyPost.imgs.length === 0 ? modifyPost.color : COLOR.red
-  );
-  const [tag, setTag] = useState("");
-  const [tags, setTags] = useState<string[]>(modifyPost ? modifyPost.tags : []);
-  const [errors, setErrors] = useState({
-    tags: "",
-  });
 
   async function onValid(data: IForm) {
     let resPost = {
@@ -88,9 +72,9 @@ export default function Add() {
       tags,
       imgs: [""],
     };
-    if (isImage) {
-      if (modifyPost && watch("file").length === 0) {
-        resPost.imgs = [...modifyPost.imgs];
+    if (status.selectedTab) {
+      if (prevPost && watch("file").length === 0) {
+        resPost.imgs = [...prevPost.imgs];
       } else {
         const formData = new FormData();
         const config: AxiosRequestConfig<FormData> = {
@@ -111,21 +95,21 @@ export default function Add() {
         resPost.imgs = [res.data.url];
       }
 
-      if (modifyPost) {
+      if (prevPost) {
         const deleteTags = await getDataByQuery<ITag>(
           "tags",
           "pid",
           "==",
-          modifyPost.id as string
+          prevPost.id as string
         );
         for (const tag of deleteTags) {
           await deleteDoc(doc(db, "tags", tag.id as string));
         }
-        await updateDoc(doc(db, "posts", modifyPost.id as string), resPost);
+        await updateDoc(doc(db, "posts", prevPost.id as string), resPost);
         for await (const tag of data.tags) {
           const tempTag: ITag = {
             uid: curUser.id,
-            pid: modifyPost.id,
+            pid: prevPost.id,
             name: tag,
           };
           const tagRef = await addDoc(collection(db, "tags"), tempTag);
@@ -152,17 +136,17 @@ export default function Add() {
         setCurUser({ id: curUser.id });
       }
     } else {
-      if (modifyPost) {
+      if (prevPost) {
         const deleteTags = await getDataByQuery<ITag>(
           "tags",
           "pid",
           "==",
-          modifyPost.id as string
+          prevPost.id as string
         );
         for (const tag of deleteTags) {
           await deleteDoc(doc(db, "tags", tag.id as string));
         }
-        await updateDoc(doc(db, "posts", modifyPost.id as string), {
+        await updateDoc(doc(db, "posts", prevPost.id as string), {
           title: data.title,
           txt: data.txt,
           imgs: [],
@@ -172,7 +156,7 @@ export default function Add() {
         for await (const tag of data.tags) {
           const tempTag: ITag = {
             uid: curUser.id,
-            pid: modifyPost.id,
+            pid: prevPost.id,
             name: tag,
           };
           const tagRef = await addDoc(collection(db, "tags"), tempTag);
@@ -223,24 +207,23 @@ export default function Add() {
   }
   function handleToggleClick(e: React.MouseEvent<HTMLDivElement>) {
     e.preventDefault();
-    setIsImage(!isImage);
+    setStatus({ ...status, selectedTab: !status.selectedTab });
   }
   function handleColorClick(color: string) {
     setValue("color", color);
-    setSelectedColor(color);
+    setStatus({ ...status, selectedColor: color });
   }
   function handleTagChange(e: React.ChangeEvent<HTMLInputElement>) {
     e.preventDefault();
     const newTag = e.target.value.split(" ")[0];
-    setErrors({
-      ...errors,
-      tags: "",
-    });
-    if (newTag.length > 16 && newTag !== " ") {
-      return;
-    } else if (e.target.value === " ") {
+    if (newTag === " ") {
       setTag("");
-    } else if (e.target.value.split(" ").length === 2) {
+    } else if (e.target.value.split(" ").length === 1) {
+      if (newTag.length > 16) {
+        return;
+      }
+      setTag(newTag);
+    } else {
       if (tags.length === 5) {
         setErrors({
           ...errors,
@@ -248,12 +231,9 @@ export default function Add() {
         });
         return;
       }
-      if (tags.length === 5) {
-        return;
-      }
       let tempTags = [...tags];
       const tagIndex = tempTags.findIndex((tempTag) => {
-        return tempTag == newTag;
+        return tempTag === newTag;
       });
       if (tagIndex === -1) {
         tempTags.push(newTag);
@@ -267,13 +247,11 @@ export default function Add() {
       setTags(tempTags);
       setValue("tags", tempTags);
       setTag("");
-    } else {
-      setErrors({
-        ...errors,
-        tags: "",
-      });
-      setTag(newTag);
     }
+    setErrors({
+      ...errors,
+      tags: "",
+    });
   }
   function handleTagRemove(e: React.MouseEvent<HTMLSpanElement>) {
     const tag = e.currentTarget.id;
@@ -306,19 +284,23 @@ export default function Add() {
       >
         <div className="btnCont">
           <div
-            className={isImage ? "btn-left g-button1" : "btn-left g-button2"}
+            className={
+              status.selectedTab ? "btn-left g-button1" : "btn-left g-button2"
+            }
             onClick={handleToggleClick}
           >
             이미지 업로드
           </div>
           <div
-            className={isImage ? "btn-right g-button2" : "btn-right g-button1"}
+            className={
+              status.selectedTab ? "btn-right g-button2" : "btn-right g-button1"
+            }
             onClick={handleToggleClick}
           >
             배경색 선택
           </div>
         </div>
-        {isImage ? (
+        {status.selectedTab ? (
           preview === "" ? (
             <div className="imgBg" onClick={handleImageClick}>
               <div className="select">+</div>
@@ -333,43 +315,43 @@ export default function Add() {
             <Color
               color={COLOR.red}
               onClick={() => handleColorClick(COLOR.red)}
-              selected={selectedColor === COLOR.red}
+              selected={status.selectedColor === COLOR.red}
             ></Color>
             <Color
               color={COLOR.orange}
               onClick={() => handleColorClick(COLOR.orange)}
-              selected={selectedColor === COLOR.orange}
+              selected={status.selectedColor === COLOR.orange}
             ></Color>
             <Color
               color={COLOR.yellow}
               onClick={() => handleColorClick(COLOR.yellow)}
-              selected={selectedColor === COLOR.yellow}
+              selected={status.selectedColor === COLOR.yellow}
             ></Color>
             <Color
               color={COLOR.green}
               onClick={() => handleColorClick(COLOR.green)}
-              selected={selectedColor === COLOR.green}
+              selected={status.selectedColor === COLOR.green}
             ></Color>
             <Color
               color={COLOR.blue}
               onClick={() => handleColorClick(COLOR.blue)}
-              selected={selectedColor === COLOR.blue}
+              selected={status.selectedColor === COLOR.blue}
             ></Color>
             <Color
               color={COLOR.navy}
               onClick={() => handleColorClick(COLOR.navy)}
-              selected={selectedColor === COLOR.navy}
+              selected={status.selectedColor === COLOR.navy}
             ></Color>
             <Color
               color={COLOR.purple}
               onClick={() => handleColorClick(COLOR.purple)}
-              selected={selectedColor === COLOR.purple}
+              selected={status.selectedColor === COLOR.purple}
             ></Color>
           </div>
         )}
         <input
           {...register("file", {
-            required: isImage ? (modifyPost ? false : true) : false,
+            required: status.selectedTab ? (prevPost ? false : true) : false,
           })}
           type="file"
           accept="image/*"
