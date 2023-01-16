@@ -39,6 +39,7 @@ export default function Post({ initPost, initUser }: IPostProps) {
               </Link>
             ))}
           </div>
+          {/* <div className="text">{initPost.txt.replaceAll("\n", "<br/>")}</div> */}
           <div className="text">{initPost.txt}</div>
           <PostAction post={initPost} style="post" />
         </>
@@ -90,6 +91,7 @@ export default function Post({ initPost, initUser }: IPostProps) {
         .text {
           margin-top: 8px;
           margin-bottom: 36px;
+          white-space: pre-wrap;
         }
         .mainTag:hover,
         .subTag:hover {

@@ -434,11 +434,11 @@ export default function Add() {
                 ? "g_input_txtLen g_input_txtLen-invalid "
                 : "g_input_txtLen"
             }
-          >{`${watch("txt").length}/1000`}</div>
+          >{`${watch("txt").length}/2000`}</div>
         </div>
         <textarea
-          {...register("txt", { required: true, maxLength: 1000 })}
-          maxLength={1000}
+          {...register("txt", { required: true, maxLength: 2000 })}
+          maxLength={2000}
           placeholder="내용"
         />
         <button className="g-button1" type="submit">
