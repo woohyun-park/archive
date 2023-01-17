@@ -1,6 +1,7 @@
 import { deleteDoc, doc } from "firebase/firestore";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { userAgent } from "next/server";
 import { HiPencil, HiX } from "react-icons/hi";
 import { db, getData, getDataByQuery, getPath } from "../../apis/firebase";
 import Back from "../../components/Back";
@@ -16,6 +17,7 @@ import {
   IUser,
   SIZE,
 } from "../../custom";
+import { useStore } from "../../apis/zustand";
 
 interface IPostProps {
   initPost: IPost;
@@ -23,6 +25,7 @@ interface IPostProps {
 }
 
 export default function Post({ initPost, initUser }: IPostProps) {
+  const { curUser, setCurUser } = useStore();
   const router = useRouter();
   function handleModify() {
     router.push(
@@ -77,14 +80,16 @@ export default function Post({ initPost, initUser }: IPostProps) {
         <>
           <div className="topCont">
             <Back style="post" />
-            <div className="actionCont">
-              <div className="svg" onClick={handleModify}>
-                <HiPencil size={SIZE.icon} />
+            {curUser.id === initUser.id && (
+              <div className="actionCont">
+                <div className="svg" onClick={handleModify}>
+                  <HiPencil size={SIZE.icon} />
+                </div>
+                <div className="svg" onClick={handleDelete}>
+                  <HiX size={SIZE.icon} />
+                </div>
               </div>
-              <div className="svg" onClick={handleDelete}>
-                <HiX size={SIZE.icon} />
-              </div>
-            </div>
+            )}
           </div>
           {initPost.imgs.length === 0 ? (
             <div className="bg"></div>
