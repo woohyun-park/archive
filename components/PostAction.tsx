@@ -6,6 +6,7 @@ import {
   serverTimestamp,
   updateDoc,
 } from "firebase/firestore";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import React, { RefObject, useEffect, useRef, useState } from "react";
 import {
@@ -218,7 +219,9 @@ export default function PostAction({ post, style }: IPostActionProps) {
         ))}
       {style === "post" && (
         <div className="inputCont">
-          <img className="img" src={gCurUser.photoURL} alt={DEFAULT.img.alt} />
+          <div className="g-profileImg">
+            <Image src={gCurUser.photoURL} alt={DEFAULT.img.alt} fill />
+          </div>
           <input
             className="g-button2 input"
             placeholder={`${gCurUser.displayName}(으)로 댓글 달기...`}
@@ -253,12 +256,7 @@ export default function PostAction({ post, style }: IPostActionProps) {
             display: flex;
             align-items: center;
           }
-          .img {
-            width: 32px;
-            height: 32px;
-            border-radius: 32px;
-            margin-right: 8px;
-          }
+
           .input {
             color: ${COLOR.txt1};
             width: 75%;

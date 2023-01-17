@@ -28,6 +28,7 @@ import { HiOutlineCog } from "react-icons/hi";
 import { useStore } from "../../apis/zustand";
 import Link from "next/link";
 import { useState } from "react";
+import Image from "next/image";
 
 interface IProfileProps {
   initUser: IUser;
@@ -128,11 +129,9 @@ export default function Profile({
               </div>
             </div>
           </div>
-          <img
-            className="profileImage"
-            src={initUser.photoURL}
-            alt={DEFAULT.img.alt}
-          />
+          <div className="profileImage">
+            <Image src={initUser.photoURL} alt={DEFAULT.img.alt} fill />
+          </div>
         </div>
         {(() => {
           const result = [];
@@ -205,10 +204,12 @@ export default function Profile({
             width: 70%;
           }
           .profileImage {
+            position: relative;
             border-radius: 72px;
             width: 96px;
             height: 96px;
             object-fit: cover;
+            overflow: hidden;
           }
           .profileType {
             color: ${COLOR.txt3};s

@@ -6,6 +6,7 @@ import { COLOR, DEFAULT, IDict, IUser, SIZE } from "../custom";
 import { useForm } from "react-hook-form";
 import { HiArrowLeft, HiX } from "react-icons/hi";
 import Back from "../components/Back";
+import Image from "next/image";
 
 interface IForm {
   file: File[];
@@ -86,12 +87,14 @@ export default function Setting() {
       {isSubmitting && <div className="submitting"></div>}
       <Back style={"post"} />
       <div className="photoCont">
-        <img
-          className="photo"
-          src={preview}
-          onClick={() => fileRef.current?.click()}
-          alt={DEFAULT.img.alt}
-        />
+        <div className="photo">
+          <Image
+            src={preview}
+            onClick={() => fileRef.current?.click()}
+            alt={DEFAULT.img.alt}
+            fill
+          />
+        </div>
       </div>
       <form onSubmit={handleSubmit((data) => onValid(data))}>
         <input
@@ -168,6 +171,7 @@ export default function Setting() {
             text-align: center;
           }
           .photo {
+            position: relative;
             border-radius: 72px;
             width: 96px;
             height: 96px;

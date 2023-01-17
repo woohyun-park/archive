@@ -206,6 +206,8 @@ export default function Layout({ children }: ILayoutProps) {
             font-size: 16px;
           }
           .g-profileImg {
+            position: relative;
+            overflow: hidden;
             width: 32px;
             height: 32px;
             border-radius: 32px;

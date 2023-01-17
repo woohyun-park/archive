@@ -24,6 +24,7 @@ import {
 import dayjs from "dayjs";
 import { useState } from "react";
 import { useRouter } from "next/router";
+import Image from "next/image";
 
 type IProfileSmallProps = {
   user: IUser;
@@ -133,11 +134,9 @@ export default function ProfileSmall({
       <div className={`userCont userCont-${style}`}>
         <div className={user.id === gCurUser.id ? "row row-cur" : "row"}>
           <Link href={`/profile/${user?.id}`}>
-            <img
-              className="g-profileImg"
-              src={user?.photoURL}
-              alt={DEFAULT.img.alt}
-            />
+            <div className="g-profileImg">
+              <Image src={user?.photoURL} alt={DEFAULT.img.alt} fill />
+            </div>
           </Link>
           <div className="col">
             <Link href={`/profile/${user?.id}`} legacyBehavior>

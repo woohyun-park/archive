@@ -18,6 +18,7 @@ import {
   SIZE,
 } from "../../custom";
 import { useStore } from "../../apis/zustand";
+import Image from "next/image";
 
 interface IPostProps {
   initPost: IPost;
@@ -95,11 +96,9 @@ export default function Post({ initPost, initUser }: IPostProps) {
             <div className="bg"></div>
           ) : (
             <div className="imgCont">
-              <img
-                className="img"
-                src={initPost.imgs[0]}
-                alt={DEFAULT.img.alt}
-              />
+              <div className="img">
+                <Image src={initPost.imgs[0]} alt={DEFAULT.img.alt} fill />
+              </div>
             </div>
           )}
           <ProfileSmall post={initPost} user={initUser} style="post" />

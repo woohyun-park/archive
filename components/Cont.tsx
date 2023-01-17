@@ -86,6 +86,8 @@ export default function Cont({ tag, posts, style, onClick }: IImageProps) {
           word-break: break-all;
         }
         .imgCont {
+          display: flex;
+          flex-wrap: wrap;
           width: 100%;
           height: 100%;
         }

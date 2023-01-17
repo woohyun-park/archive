@@ -32,11 +32,10 @@ export default function Comment({ comment, onClick }: ICommentProps) {
     <>
       <div className="cont">
         <div className="leftCont">
-          <img
-            className="g-profileImg"
-            src={user?.photoURL || ""}
-            alt={DEFAULT.img.alt}
-          />
+          <div className="g-profileImg">
+            <Image src={user?.photoURL || ""} alt={DEFAULT.img.alt} fill />
+          </div>
+
           <div>
             <div className="displayName">{user?.displayName}</div>
             <div className="txt">{comment?.txt}</div>

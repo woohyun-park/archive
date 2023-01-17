@@ -15,6 +15,7 @@ import { useRouter } from "next/router";
 import { HiArrowLeft, HiX } from "react-icons/hi";
 import { useForm } from "react-hook-form";
 import Color from "../components/Color";
+import Image from "next/image";
 
 interface IForm {
   file: File[];
@@ -359,7 +360,7 @@ export default function Add() {
             </div>
           ) : (
             <div className="imgCont" onClick={handleImageClick}>
-              <img className="img" src={preview} alt={DEFAULT.img.alt} />
+              <Image src={preview} alt={DEFAULT.img.alt} fill />
             </div>
           )
         ) : (

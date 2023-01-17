@@ -17,10 +17,11 @@ export default function Box({ post, style }: IBoxProps) {
           </>
         ) : (
           <>
-            <img
+            <Image
               className="bg bg-image"
               src={post.imgs[0]}
               alt={DEFAULT.img.alt}
+              fill
             />
             <div className="overlay"></div>
           </>

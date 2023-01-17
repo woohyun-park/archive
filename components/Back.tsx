@@ -12,7 +12,7 @@ export default function Back({ style }: IBackProps) {
   return (
     <>
       <div className="cont">
-        <div className="g-hover" onClick={() => router.back()}>
+        <div className="btnCont" onClick={() => router.back()}>
           <HiArrowLeft size={SIZE.icon} />
         </div>
       </div>
@@ -27,8 +27,11 @@ export default function Back({ style }: IBackProps) {
           max-width: 480px;
           transform: translateX(-16px);
         }
-        .cont > div {
+        .btnCont {
           margin: 16px;
+        }
+        .btnCont:hover {
+          cursor: pointer;
         }
       `}</style>
     </>

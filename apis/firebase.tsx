@@ -12,6 +12,10 @@ import {
 import { getAuth } from "firebase/auth";
 import { IComment, IDict, ILike, IPost, IScrap, ITag, IUser } from "../custom";
 
+interface IPathParams {
+  params: { [param: string]: string };
+}
+
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FB_API_KEY,
   authDomain: process.env.NEXT_PUBLIC_FB_AUTH_DOMAIN,
@@ -21,23 +25,17 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FB_APP_ID,
   measurementId: process.env.NEXT_PUBLIC_FB_MEASUREMENT_ID,
 };
-
 export const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 export const auth = getAuth(app);
 
-interface IPathParams {
-  params: { [param: string]: string };
-}
-
 export async function getData<T>(type: string, id: string): Promise<T> {
   const snap = await getDoc(doc(db, type, id));
   const data = snap.data() as IDict<any>;
-  if (data.createdAt) {
-    return { ...(data as T), createdAt: data?.createdAt.toDate() };
-  } else {
-    return data as T;
-  }
+
+  if (data.createdAt)
+    return { ...(data as T), createdAt: data.createdAt.toDate() };
+  return data as T;
 }
 
 export async function getDataByQuery<T>(
@@ -49,15 +47,17 @@ export async function getDataByQuery<T>(
   const ref = collection(db, type);
   const snap = await getDocs(query(ref, where(p1, p2 as WhereFilterOp, p3)));
   const datas: T[] = [];
+
   snap.forEach((doc) => {
-    if (doc.data().createdAt) {
+    const data = doc.data();
+    if (data.createdAt) {
       datas.push({
-        ...(doc.data() as T),
-        createdAt: doc.data().createdAt.toDate(),
+        ...(data as T),
+        createdAt: data.createdAt.toDate(),
       });
     } else {
       datas.push({
-        ...(doc.data() as T),
+        ...(data as T),
       });
     }
   });
@@ -67,6 +67,7 @@ export async function getDataByQuery<T>(
 export async function getPath(type: string, param: string) {
   const snap = await getDocs(collection(db, type));
   const paths: IPathParams[] = [];
+
   snap.forEach((post) => {
     paths.push({ params: { [param]: post.id } });
   });

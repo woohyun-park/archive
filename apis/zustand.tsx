@@ -1,15 +1,21 @@
 import create from "zustand";
-import { IComment, IDict, ILike, IPost, IScrap, IUser } from "../custom";
+import {
+  DEFAULT,
+  IComment,
+  IDict,
+  ILike,
+  IPost,
+  IScrap,
+  IUser,
+} from "../custom";
 import {
   collection,
   doc,
-  FieldValue,
   getDoc,
   getDocs,
   limit,
   orderBy,
   query,
-  QuerySnapshot,
   Timestamp,
   updateDoc,
   where,
@@ -18,9 +24,9 @@ import { db, getData, getDataByQuery } from "./firebase";
 
 interface ICurUserState {
   gCurUser: IUser;
-  gSetCurUser: (gCurUser: IDict<any>) => Promise<IUser>;
   gPosts: IPost[];
   gUsers: IUser[];
+  gSetCurUser: (gCurUser: IDict<any>) => Promise<IUser>;
   gSetPostsAndUsers: (
     gCurUser: IUser,
     page: number
@@ -28,15 +34,10 @@ interface ICurUserState {
 }
 
 export const useStore = create<ICurUserState>((set) => ({
-  gCurUser: {
-    id: "",
-    email: "",
-    displayName: "",
-    photoURL: "",
-    txt: "",
-    followers: [],
-    followings: [],
-  },
+  gCurUser: DEFAULT.user,
+  gPosts: [],
+  gUsers: [],
+
   gSetCurUser: async (gCurUser: IDict<any>) => {
     await updateDoc(doc(db, "users", gCurUser.id), {
       ...gCurUser,
@@ -54,26 +55,21 @@ export const useStore = create<ICurUserState>((set) => ({
       "==",
       gCurUser.id
     );
-    set((state) => {
-      return {
-        ...state,
-        gCurUser: {
-          ...(snap.data() as IUser),
-          likes: likes,
-          scraps: scraps,
-        },
-      };
-    });
-    return {
+    const newUser = {
       ...(snap.data() as IUser),
       likes: likes,
       scraps: scraps,
     };
+    set((state) => {
+      return {
+        ...state,
+        gCurUser: newUser,
+      };
+    });
+    return newUser;
   },
-  gPosts: [],
-  gUsers: [],
+
   gSetPostsAndUsers: async (gCurUser: IUser, page: number) => {
-    console.log(gCurUser);
     const q = query(
       collection(db, "posts"),
       where("uid", "in", [...gCurUser.followings, gCurUser.id]),
@@ -110,21 +106,9 @@ export const useStore = create<ICurUserState>((set) => ({
         "==",
         post.id || ""
       );
-      if (likes) {
-        post.likes = likes;
-      } else {
-        post.likes = [];
-      }
-      if (scraps) {
-        post.scraps = scraps;
-      } else {
-        post.scraps = [];
-      }
-      if (comments) {
-        post.comments = comments;
-      } else {
-        post.comments = [];
-      }
+      post.likes = likes ? likes : [];
+      post.scraps = scraps ? scraps : [];
+      post.comments = comments ? comments : [];
     }
     const newUsers: IUser[] = [];
     for await (const uid of uids) {
@@ -134,13 +118,13 @@ export const useStore = create<ICurUserState>((set) => ({
     set((state) => {
       return {
         ...state,
-        gPosts: [...newPosts],
-        gUsers: [...newUsers],
+        gPosts: newPosts,
+        gUsers: newUsers,
       };
     });
     return {
-      posts: [...newPosts],
-      users: [...newUsers],
+      posts: newPosts,
+      users: newUsers,
     };
   },
 }));
