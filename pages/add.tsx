@@ -63,7 +63,6 @@ export default function Add() {
   const file = register("file");
   const fileRef = useRef<HTMLInputElement | null>(null);
   const imgRef = useRef<HTMLDivElement | null>(null);
-  console.log(watch());
 
   async function onValid(data: IForm) {
     if (confirm(`아카이브를 ${prevPost ? "수정" : "생성"}하시겠습니까?`)) {
@@ -182,7 +181,6 @@ export default function Add() {
           for (const tag of deleteTags) {
             await deleteDoc(doc(db, "tags", tag.id as string));
           }
-          console.log("color", data.color);
           await updateDoc(doc(db, "posts", prevPost.id as string), {
             title: data.title,
             txt: data.txt,
@@ -319,7 +317,15 @@ export default function Add() {
         onSubmit={handleSubmit(
           (data) => onValid(data),
           (e) => {
-            console.log(e);
+            for (const each in e) {
+              if (each === "file") {
+                console.log(imgRef);
+                imgRef.current?.focus();
+              } else {
+                e[each].ref.focus();
+              }
+              break;
+            }
           }
         )}
       >
@@ -343,7 +349,12 @@ export default function Add() {
         </div>
         {status.selectedTab ? (
           preview === "" ? (
-            <div className="imgBg" onClick={handleImageClick} ref={imgRef}>
+            <div
+              className="imgBg"
+              onClick={handleImageClick}
+              ref={imgRef}
+              tabIndex={-1}
+            >
               <div className="select">+</div>
             </div>
           ) : (
@@ -405,7 +416,7 @@ export default function Add() {
         />
 
         <div className="g_input_labelCont">
-          <label className="g_input_label">제목</label>
+          <label className="g_input_label">제목 *</label>
           <div
             className={
               watch("title").length === 0
@@ -450,7 +461,7 @@ export default function Add() {
         <input onChange={handleTagChange} value={tag} maxLength={17} />
 
         <div className="g_input_labelCont">
-          <label className="g_input_label">내용</label>
+          <label className="g_input_label">내용 *</label>
           <div
             className={
               watch("txt").length === 0
@@ -518,9 +529,10 @@ export default function Add() {
             padding-bottom: 100%;
             overflow: hidden;
             border-radius: 16px;
+            margin-bottom: 8px;
           }
           .imgBg:focus {
-            border: 2px solid ${COLOR.red};
+            border: 2px solid ${"#005FCC"};
             box-sizing: border-box;
           }
           .colorCont {
