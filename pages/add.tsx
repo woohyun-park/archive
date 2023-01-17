@@ -35,8 +35,7 @@ export default function Add() {
   );
   const [status, setStatus] = useState({
     selectedTab: prevPost ? (prevPost.imgs.length !== 0 ? true : false) : true,
-    selectedColor:
-      prevPost && prevPost.imgs.length === 0 ? prevPost.color : COLOR.red,
+    selectedColor: prevPost ? prevPost.color : COLOR.red,
   });
   const [preview, setPreview] = useState<string>(
     prevPost && prevPost.imgs.length !== 0 ? prevPost.imgs[0] : ""
@@ -57,26 +56,21 @@ export default function Add() {
       file: undefined,
       title: prevPost ? prevPost.title : "",
       txt: prevPost ? prevPost.txt : "",
-      color: prevPost ? prevPost.color : "",
+      color: prevPost ? prevPost.color : COLOR.red,
       tags: prevPost ? prevPost.tags : [],
     },
   });
   const file = register("file");
   const fileRef = useRef<HTMLInputElement | null>(null);
+  const imgRef = useRef<HTMLDivElement | null>(null);
+  console.log(watch());
 
   async function onValid(data: IForm) {
     if (confirm(`아카이브를 ${prevPost ? "수정" : "생성"}하시겠습니까?`)) {
-      let resPost = {
-        title: data.title,
-        txt: data.txt,
-        color: "",
-        tags,
-        imgs: [""],
-      };
+      // 이미지인 경우
       if (status.selectedTab) {
-        if (prevPost && watch("file").length === 0) {
-          resPost.imgs = [...prevPost.imgs];
-        } else {
+        // 이미지를 올린 경우
+        if (watch("file").length !== 0) {
           const formData = new FormData();
           const config: AxiosRequestConfig<FormData> = {
             headers: { "Content-Type": "multipart/form-data" },
@@ -93,24 +87,45 @@ export default function Add() {
             formData,
             config
           );
-          resPost.imgs = [res.data.url];
-        }
-
-        if (prevPost) {
-          const deleteTags = await getDataByQuery<ITag>(
-            "tags",
-            "pid",
-            "==",
-            prevPost.id as string
-          );
-          for (const tag of deleteTags) {
-            await deleteDoc(doc(db, "tags", tag.id as string));
+          let pid;
+          // 이미지를 올렸으며 수정인 경우
+          if (prevPost) {
+            const deleteTags = await getDataByQuery<ITag>(
+              "tags",
+              "pid",
+              "==",
+              prevPost.id as string
+            );
+            for (const tag of deleteTags) {
+              await deleteDoc(doc(db, "tags", tag.id as string));
+            }
+            await updateDoc(doc(db, "posts", prevPost.id as string), {
+              title: data.title,
+              txt: data.txt,
+              imgs: [res.data.url],
+              color: data.color,
+              tags,
+            });
+            pid = prevPost.id;
           }
-          await updateDoc(doc(db, "posts", prevPost.id as string), resPost);
+          // 이미지를 올렸으며 등록인 경우
+          else {
+            const postRef = await addDoc(collection(db, "posts"), {
+              uid: curUser.id,
+              createdAt: serverTimestamp(),
+              title: data.title,
+              txt: data.txt,
+              imgs: [res.data.url],
+              color: data.color,
+              tags,
+            });
+            await updateDoc(postRef, { id: postRef.id });
+            pid = postRef.id;
+          }
           for await (const tag of data.tags) {
             const tempTag: ITag = {
               uid: curUser.id,
-              pid: prevPost.id,
+              pid,
               name: tag,
             };
             const tagRef = await addDoc(collection(db, "tags"), tempTag);
@@ -118,25 +133,45 @@ export default function Add() {
           }
           setCurUser({ id: curUser.id });
         } else {
-          const tempPost: IPost = {
-            ...resPost,
-            uid: curUser.id,
-            createdAt: serverTimestamp(),
-          };
-          const postRef = await addDoc(collection(db, "posts"), tempPost);
-          await updateDoc(postRef, { id: postRef.id });
-          for await (const tag of data.tags) {
-            const tempTag: ITag = {
-              uid: curUser.id,
-              pid: postRef.id,
-              name: tag,
-            };
-            const tagRef = await addDoc(collection(db, "tags"), tempTag);
-            await updateDoc(tagRef, { id: tagRef.id });
+          // 이미지를 올리지 않았으며 수정인 경우
+          if (prevPost) {
+            const deleteTags = await getDataByQuery<ITag>(
+              "tags",
+              "pid",
+              "==",
+              prevPost.id as string
+            );
+            for (const tag of deleteTags) {
+              await deleteDoc(doc(db, "tags", tag.id as string));
+            }
+            await updateDoc(doc(db, "posts", prevPost.id as string), {
+              title: data.title,
+              txt: data.txt,
+              imgs: [...prevPost.imgs],
+              color: data.color,
+              tags,
+            });
+            for await (const tag of data.tags) {
+              const tempTag: ITag = {
+                uid: curUser.id,
+                pid: prevPost.id,
+                name: tag,
+              };
+              const tagRef = await addDoc(collection(db, "tags"), tempTag);
+              await updateDoc(tagRef, { id: tagRef.id });
+            }
+            setCurUser({ id: curUser.id });
           }
-          setCurUser({ id: curUser.id });
+          // 이미지를 올리지 않았으며 등록인 경우
+          else {
+            // validation에서 필터해줌
+          }
         }
-      } else {
+      }
+      // 색깔인 경우
+      else {
+        let pid;
+        // 색깔이며 수정인 경우
         if (prevPost) {
           const deleteTags = await getDataByQuery<ITag>(
             "tags",
@@ -147,6 +182,7 @@ export default function Add() {
           for (const tag of deleteTags) {
             await deleteDoc(doc(db, "tags", tag.id as string));
           }
+          console.log("color", data.color);
           await updateDoc(doc(db, "posts", prevPost.id as string), {
             title: data.title,
             txt: data.txt,
@@ -154,18 +190,11 @@ export default function Add() {
             color: data.color,
             tags,
           });
-          for await (const tag of data.tags) {
-            const tempTag: ITag = {
-              uid: curUser.id,
-              pid: prevPost.id,
-              name: tag,
-            };
-            const tagRef = await addDoc(collection(db, "tags"), tempTag);
-            await updateDoc(tagRef, { id: tagRef.id });
-          }
-          setCurUser({ id: curUser.id });
-        } else {
-          const tempPost: IPost = {
+          pid = prevPost.id;
+        }
+        // 색깔이며 수정이 아닌 경우
+        else {
+          const postRef = await addDoc(collection(db, "posts"), {
             uid: curUser.id,
             createdAt: serverTimestamp(),
             title: data.title,
@@ -173,20 +202,20 @@ export default function Add() {
             imgs: [],
             color: data.color,
             tags,
-          };
-          const postRef = await addDoc(collection(db, "posts"), tempPost);
+          });
           await updateDoc(postRef, { id: postRef.id });
-          for await (const tag of data.tags) {
-            const tempTag: ITag = {
-              uid: curUser.id,
-              pid: postRef.id,
-              name: tag,
-            };
-            const tagRef = await addDoc(collection(db, "tags"), tempTag);
-            await updateDoc(tagRef, { id: tagRef.id });
-          }
-          setCurUser({ id: curUser.id });
+          pid = postRef.id;
         }
+        for await (const tag of data.tags) {
+          const tempTag: ITag = {
+            uid: curUser.id,
+            pid: pid,
+            name: tag,
+          };
+          const tagRef = await addDoc(collection(db, "tags"), tempTag);
+          await updateDoc(tagRef, { id: tagRef.id });
+        }
+        setCurUser({ id: curUser.id });
       }
       router.push("/");
     }
@@ -314,7 +343,7 @@ export default function Add() {
         </div>
         {status.selectedTab ? (
           preview === "" ? (
-            <div className="imgBg" onClick={handleImageClick}>
+            <div className="imgBg" onClick={handleImageClick} ref={imgRef}>
               <div className="select">+</div>
             </div>
           ) : (
@@ -496,6 +525,10 @@ export default function Add() {
             padding-bottom: 100%;
             overflow: hidden;
             border-radius: 16px;
+          }
+          .imgBg:focus {
+            border: 2px solid ${COLOR.red};
+            box-sizing: border-box;
           }
           .colorCont {
             display: flex;

@@ -17,7 +17,11 @@ export default function Box({ post, style }: IBoxProps) {
           </>
         ) : (
           <>
-            <img className="bg" src={post.imgs[0]} alt={DEFAULT.img.alt} />
+            <img
+              className="bg bg-image"
+              src={post.imgs[0]}
+              alt={DEFAULT.img.alt}
+            />
             <div className="overlay"></div>
           </>
         )}
@@ -79,6 +83,9 @@ export default function Box({ post, style }: IBoxProps) {
           height: 100%;
           object-fit: cover;
           background-color: ${post?.color || COLOR.primary};
+        }
+        .bg-image {
+          background-color: transparent;
         }
         .overlay {
           position: absolute;
