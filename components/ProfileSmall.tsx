@@ -43,7 +43,7 @@ export default function ProfileSmall({
   const router = useRouter();
 
   async function handleToggleFollow() {
-    const gCurUserRef = doc(db, "users", curUser.id);
+    const gCurUserRef = doc(db, "users", gCurUser.id);
     const userRef = doc(db, "users", user.id);
     if (isFollowing) {
       await updateDoc(gCurUserRef, { followings: arrayRemove(user.id) });
@@ -218,7 +218,7 @@ export default function ProfileSmall({
             color: ${COLOR.txt2};
             overflow: hidden;
             text-overflow: ellipsis;
-            white-space: nowrap;
+            white-space: pre-wrap;
             width: 100%;
           }
           .row {
