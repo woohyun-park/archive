@@ -263,18 +263,28 @@ export default function Add() {
     setTags(tempTags);
     setValue("tags", tempTags);
   }
+  function checkKeyDown(e: React.KeyboardEvent<HTMLFormElement>) {
+    if (e.key === "Enter" && e.target.name !== "txt") e.preventDefault();
+  }
 
   return (
     <>
+      {isSubmitting && <div className="submitting"></div>}
       <div
         className="back"
         onClick={() => {
-          if (confirm("아카이브 작성을 취소하시겠습니까?")) router.back();
+          if (
+            confirm(
+              `아카이브 ${prevPost ? "수정" : "작성"}을 취소하시겠습니까?`
+            )
+          )
+            router.back();
         }}
       >
         <HiArrowLeft size={SIZE.icon} />
       </div>
       <form
+        onKeyDown={checkKeyDown}
         onSubmit={handleSubmit(
           (data) => onValid(data),
           (e) => {
@@ -380,7 +390,12 @@ export default function Add() {
         />
 
         <div className="g_input_labelCont">
-          <label className="g_input_label">태그</label>
+          <div className="inputCont">
+            <label className="g_input_label">태그</label>
+            <div className="g_input_txtLen">
+              {errors["tags"] === "" ? `${tags.length}/5` : ""}
+            </div>
+          </div>
           <div
             className={
               tag.length === 0 || errors.tags !== ""
@@ -401,12 +416,7 @@ export default function Add() {
             </span>
           ))}
         </div>
-        <input
-          onChange={handleTagChange}
-          value={tag}
-          placeholder="태그"
-          maxLength={17}
-        />
+        <input onChange={handleTagChange} value={tag} maxLength={17} />
 
         <div className="g_input_labelCont">
           <label className="g_input_label">내용</label>
@@ -421,7 +431,6 @@ export default function Add() {
         <textarea
           {...register("txt", { required: true, maxLength: 2000 })}
           maxLength={2000}
-          placeholder="내용"
         />
         <button className="g-button1" type="submit">
           생성
@@ -430,6 +439,15 @@ export default function Add() {
 
       <style jsx>
         {`
+          .submitting {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.2);
+          }
+
           button:hover {
             cursor: pointer;
           }
@@ -490,6 +508,16 @@ export default function Add() {
             width: 100%;
             height: 100%;
             object-fit: cover;
+          }
+          .inputCont {
+            display: flex;
+            align-items: flex-end;
+          }
+          .inputCont > label {
+            margin-right: 4px;
+          }
+          .inputCont > div {
+            margin-bottom: 1px;
           }
           .tag {
             display: inline-block;
