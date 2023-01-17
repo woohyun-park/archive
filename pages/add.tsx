@@ -65,129 +65,131 @@ export default function Add() {
   const fileRef = useRef<HTMLInputElement | null>(null);
 
   async function onValid(data: IForm) {
-    let resPost = {
-      title: data.title,
-      txt: data.txt,
-      color: "",
-      tags,
-      imgs: [""],
-    };
-    if (status.selectedTab) {
-      if (prevPost && watch("file").length === 0) {
-        resPost.imgs = [...prevPost.imgs];
-      } else {
-        const formData = new FormData();
-        const config: AxiosRequestConfig<FormData> = {
-          headers: { "Content-Type": "multipart/form-data" },
-        };
-        formData.append("api_key", process.env.NEXT_PUBLIC_CD_API_KEY || "");
-        formData.append(
-          "upload_preset",
-          process.env.NEXT_PUBLIC_CD_UPLOADE_PRESET || ""
-        );
-        formData.append(`file`, data.file[0]);
+    if (confirm(`아카이브를 ${prevPost ? "수정" : "생성"}하시겠습니까?`)) {
+      let resPost = {
+        title: data.title,
+        txt: data.txt,
+        color: "",
+        tags,
+        imgs: [""],
+      };
+      if (status.selectedTab) {
+        if (prevPost && watch("file").length === 0) {
+          resPost.imgs = [...prevPost.imgs];
+        } else {
+          const formData = new FormData();
+          const config: AxiosRequestConfig<FormData> = {
+            headers: { "Content-Type": "multipart/form-data" },
+          };
+          formData.append("api_key", process.env.NEXT_PUBLIC_CD_API_KEY || "");
+          formData.append(
+            "upload_preset",
+            process.env.NEXT_PUBLIC_CD_UPLOADE_PRESET || ""
+          );
+          formData.append(`file`, data.file[0]);
 
-        const res = await axios.post(
-          `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CD_CLOUD_NAME}/image/upload`,
-          formData,
-          config
-        );
-        resPost.imgs = [res.data.url];
-      }
+          const res = await axios.post(
+            `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CD_CLOUD_NAME}/image/upload`,
+            formData,
+            config
+          );
+          resPost.imgs = [res.data.url];
+        }
 
-      if (prevPost) {
-        const deleteTags = await getDataByQuery<ITag>(
-          "tags",
-          "pid",
-          "==",
-          prevPost.id as string
-        );
-        for (const tag of deleteTags) {
-          await deleteDoc(doc(db, "tags", tag.id as string));
-        }
-        await updateDoc(doc(db, "posts", prevPost.id as string), resPost);
-        for await (const tag of data.tags) {
-          const tempTag: ITag = {
+        if (prevPost) {
+          const deleteTags = await getDataByQuery<ITag>(
+            "tags",
+            "pid",
+            "==",
+            prevPost.id as string
+          );
+          for (const tag of deleteTags) {
+            await deleteDoc(doc(db, "tags", tag.id as string));
+          }
+          await updateDoc(doc(db, "posts", prevPost.id as string), resPost);
+          for await (const tag of data.tags) {
+            const tempTag: ITag = {
+              uid: curUser.id,
+              pid: prevPost.id,
+              name: tag,
+            };
+            const tagRef = await addDoc(collection(db, "tags"), tempTag);
+            await updateDoc(tagRef, { id: tagRef.id });
+          }
+          setCurUser({ id: curUser.id });
+        } else {
+          const tempPost: IPost = {
+            ...resPost,
             uid: curUser.id,
-            pid: prevPost.id,
-            name: tag,
+            createdAt: serverTimestamp(),
           };
-          const tagRef = await addDoc(collection(db, "tags"), tempTag);
-          await updateDoc(tagRef, { id: tagRef.id });
+          const postRef = await addDoc(collection(db, "posts"), tempPost);
+          await updateDoc(postRef, { id: postRef.id });
+          for await (const tag of data.tags) {
+            const tempTag: ITag = {
+              uid: curUser.id,
+              pid: postRef.id,
+              name: tag,
+            };
+            const tagRef = await addDoc(collection(db, "tags"), tempTag);
+            await updateDoc(tagRef, { id: tagRef.id });
+          }
+          setCurUser({ id: curUser.id });
         }
-        setCurUser({ id: curUser.id });
       } else {
-        const tempPost: IPost = {
-          ...resPost,
-          uid: curUser.id,
-          createdAt: serverTimestamp(),
-        };
-        const postRef = await addDoc(collection(db, "posts"), tempPost);
-        await updateDoc(postRef, { id: postRef.id });
-        for await (const tag of data.tags) {
-          const tempTag: ITag = {
+        if (prevPost) {
+          const deleteTags = await getDataByQuery<ITag>(
+            "tags",
+            "pid",
+            "==",
+            prevPost.id as string
+          );
+          for (const tag of deleteTags) {
+            await deleteDoc(doc(db, "tags", tag.id as string));
+          }
+          await updateDoc(doc(db, "posts", prevPost.id as string), {
+            title: data.title,
+            txt: data.txt,
+            imgs: [],
+            color: data.color,
+            tags,
+          });
+          for await (const tag of data.tags) {
+            const tempTag: ITag = {
+              uid: curUser.id,
+              pid: prevPost.id,
+              name: tag,
+            };
+            const tagRef = await addDoc(collection(db, "tags"), tempTag);
+            await updateDoc(tagRef, { id: tagRef.id });
+          }
+          setCurUser({ id: curUser.id });
+        } else {
+          const tempPost: IPost = {
             uid: curUser.id,
-            pid: postRef.id,
-            name: tag,
+            createdAt: serverTimestamp(),
+            title: data.title,
+            txt: data.txt,
+            imgs: [],
+            color: data.color,
+            tags,
           };
-          const tagRef = await addDoc(collection(db, "tags"), tempTag);
-          await updateDoc(tagRef, { id: tagRef.id });
+          const postRef = await addDoc(collection(db, "posts"), tempPost);
+          await updateDoc(postRef, { id: postRef.id });
+          for await (const tag of data.tags) {
+            const tempTag: ITag = {
+              uid: curUser.id,
+              pid: postRef.id,
+              name: tag,
+            };
+            const tagRef = await addDoc(collection(db, "tags"), tempTag);
+            await updateDoc(tagRef, { id: tagRef.id });
+          }
+          setCurUser({ id: curUser.id });
         }
-        setCurUser({ id: curUser.id });
       }
-    } else {
-      if (prevPost) {
-        const deleteTags = await getDataByQuery<ITag>(
-          "tags",
-          "pid",
-          "==",
-          prevPost.id as string
-        );
-        for (const tag of deleteTags) {
-          await deleteDoc(doc(db, "tags", tag.id as string));
-        }
-        await updateDoc(doc(db, "posts", prevPost.id as string), {
-          title: data.title,
-          txt: data.txt,
-          imgs: [],
-          color: data.color,
-          tags,
-        });
-        for await (const tag of data.tags) {
-          const tempTag: ITag = {
-            uid: curUser.id,
-            pid: prevPost.id,
-            name: tag,
-          };
-          const tagRef = await addDoc(collection(db, "tags"), tempTag);
-          await updateDoc(tagRef, { id: tagRef.id });
-        }
-        setCurUser({ id: curUser.id });
-      } else {
-        const tempPost: IPost = {
-          uid: curUser.id,
-          createdAt: serverTimestamp(),
-          title: data.title,
-          txt: data.txt,
-          imgs: [],
-          color: data.color,
-          tags,
-        };
-        const postRef = await addDoc(collection(db, "posts"), tempPost);
-        await updateDoc(postRef, { id: postRef.id });
-        for await (const tag of data.tags) {
-          const tempTag: ITag = {
-            uid: curUser.id,
-            pid: postRef.id,
-            name: tag,
-          };
-          const tagRef = await addDoc(collection(db, "tags"), tempTag);
-          await updateDoc(tagRef, { id: tagRef.id });
-        }
-        setCurUser({ id: curUser.id });
-      }
+      router.push("/");
     }
-    router.push("/");
   }
   function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
     file.onChange(e);
@@ -433,7 +435,7 @@ export default function Add() {
           maxLength={2000}
         />
         <button className="g-button1" type="submit">
-          생성
+          {prevPost ? "완료" : "생성"}
         </button>
       </form>
 
