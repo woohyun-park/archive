@@ -478,10 +478,6 @@ export default function Add() {
             height: 100%;
             background-color: rgba(0, 0, 0, 0.2);
           }
-
-          button:hover {
-            cursor: pointer;
-          }
           form {
             display: flex;
             flex-direction: column;
@@ -506,9 +502,6 @@ export default function Add() {
             padding-bottom: 100%;
             background-color: ${COLOR.bg2};
             border-radius: 8px;
-          }
-          .imgBg:hover {
-            cursor: pointer;
           }
           .select {
             position: absolute;
@@ -579,6 +572,10 @@ export default function Add() {
           form > textarea {
             height: 128px;
             resize: none;
+          }
+          button:hover,
+          .imgBg:hover {
+            cursor: pointer;
           }
         `}
       </style>

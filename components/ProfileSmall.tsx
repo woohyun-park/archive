@@ -23,7 +23,7 @@ import {
 } from "../custom";
 import dayjs from "dayjs";
 import { useState } from "react";
-import Router, { useRouter } from "next/router";
+import { useRouter } from "next/router";
 
 type IProfileSmallProps = {
   user: IUser;

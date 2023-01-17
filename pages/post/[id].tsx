@@ -1,9 +1,21 @@
+import { deleteDoc, doc } from "firebase/firestore";
 import Link from "next/link";
-import { getData, getDataByQuery, getPath } from "../../apis/firebase";
+import { useRouter } from "next/router";
+import { HiPencil, HiX } from "react-icons/hi";
+import { db, getData, getDataByQuery, getPath } from "../../apis/firebase";
 import Back from "../../components/Back";
 import PostAction from "../../components/PostAction";
 import ProfileSmall from "../../components/ProfileSmall";
-import { DEFAULT, IComment, ILike, IPost, IScrap, IUser } from "../../custom";
+import {
+  DEFAULT,
+  IComment,
+  ILike,
+  IPost,
+  IScrap,
+  ITag,
+  IUser,
+  SIZE,
+} from "../../custom";
 
 interface IPostProps {
   initPost: IPost;
@@ -11,14 +23,69 @@ interface IPostProps {
 }
 
 export default function Post({ initPost, initUser }: IPostProps) {
-  console.log(initPost);
+  const router = useRouter();
+  function handleModify() {
+    router.push(
+      {
+        pathname: "/add",
+        query: { post: JSON.stringify(initPost) },
+      },
+      "/modify"
+    );
+  }
+  async function handleDelete() {
+    if (confirm("정말 삭제하시겠습니까?")) {
+      const id = initPost?.id as string;
+      await deleteDoc(doc(db, "posts", id));
+      const likes = await getDataByQuery<ILike>("likes", "pid", "==", id);
+      const scraps = await getDataByQuery<IScrap>("scraps", "pid", "==", id);
+      const comments = await getDataByQuery<IComment>(
+        "comments",
+        "pid",
+        "==",
+        id
+      );
+      const tags = await getDataByQuery<ITag>("tags", "pid", "==", id);
+      for await (const each of likes) {
+        const id = each.id as string;
+        await deleteDoc(doc(db, "likes", id));
+      }
+      for await (const each of scraps) {
+        const id = each.id as string;
+        await deleteDoc(doc(db, "scraps", id));
+      }
+      for await (const each of comments) {
+        const id = each.id as string;
+        await deleteDoc(doc(db, "comments", id));
+      }
+      for await (const each of tags) {
+        const id = each.id as string;
+        await deleteDoc(doc(db, "tags", id));
+      }
+      alert("삭제되었습니다");
+    } else {
+      console.log(initPost);
+    }
+    router.push("/");
+  }
+
   return (
     <>
       {initPost === null && initUser === null ? (
         <div>존재하지 않는 페이지입니다</div>
       ) : (
         <>
-          <Back style="post" />
+          <div className="topCont">
+            <Back style="post" />
+            <div className="actionCont">
+              <div className="svg" onClick={handleModify}>
+                <HiPencil size={SIZE.icon} />
+              </div>
+              <div className="svg" onClick={handleDelete}>
+                <HiX size={SIZE.icon} />
+              </div>
+            </div>
+          </div>
           {initPost.imgs.length === 0 ? (
             <div className="bg"></div>
           ) : (
@@ -39,13 +106,20 @@ export default function Post({ initPost, initUser }: IPostProps) {
               </Link>
             ))}
           </div>
-          {/* <div className="text">{initPost.txt.replaceAll("\n", "<br/>")}</div> */}
           <div className="text">{initPost.txt}</div>
           <PostAction post={initPost} style="post" />
         </>
       )}
 
       <style jsx>{`
+        .topCont {
+          display: flex;
+        }
+        .actionCont {
+          display: flex;
+          align-items: center;
+          padding-top: 48px;
+        }
         .imgCont {
           position: relative;
           width: calc(100% + 32px);
@@ -93,6 +167,7 @@ export default function Post({ initPost, initUser }: IPostProps) {
           margin-bottom: 36px;
           white-space: pre-wrap;
         }
+        .svg:hover,
         .mainTag:hover,
         .subTag:hover {
           cursor: pointer;
