@@ -26,7 +26,7 @@ interface IForm {
 }
 
 export default function Add() {
-  const { curUser, setCurUser } = useStore();
+  const { gCurUser, gSetCurUser } = useStore();
   const router = useRouter();
   const [prevPost, setPrevPost] = useState(
     router.query.post
@@ -111,7 +111,7 @@ export default function Add() {
           // 이미지를 올렸으며 등록인 경우
           else {
             const postRef = await addDoc(collection(db, "posts"), {
-              uid: curUser.id,
+              uid: gCurUser.id,
               createdAt: serverTimestamp(),
               title: data.title,
               txt: data.txt,
@@ -124,14 +124,14 @@ export default function Add() {
           }
           for await (const tag of data.tags) {
             const tempTag: ITag = {
-              uid: curUser.id,
+              uid: gCurUser.id,
               pid,
               name: tag,
             };
             const tagRef = await addDoc(collection(db, "tags"), tempTag);
             await updateDoc(tagRef, { id: tagRef.id });
           }
-          setCurUser({ id: curUser.id });
+          gSetCurUser({ id: gCurUser.id });
         } else {
           // 이미지를 올리지 않았으며 수정인 경우
           if (prevPost) {
@@ -153,14 +153,14 @@ export default function Add() {
             });
             for await (const tag of data.tags) {
               const tempTag: ITag = {
-                uid: curUser.id,
+                uid: gCurUser.id,
                 pid: prevPost.id,
                 name: tag,
               };
               const tagRef = await addDoc(collection(db, "tags"), tempTag);
               await updateDoc(tagRef, { id: tagRef.id });
             }
-            setCurUser({ id: curUser.id });
+            gSetCurUser({ id: gCurUser.id });
           }
           // 이미지를 올리지 않았으며 등록인 경우
           else {
@@ -195,7 +195,7 @@ export default function Add() {
         // 색깔이며 수정이 아닌 경우
         else {
           const postRef = await addDoc(collection(db, "posts"), {
-            uid: curUser.id,
+            uid: gCurUser.id,
             createdAt: serverTimestamp(),
             title: data.title,
             txt: data.txt,
@@ -208,14 +208,14 @@ export default function Add() {
         }
         for await (const tag of data.tags) {
           const tempTag: ITag = {
-            uid: curUser.id,
+            uid: gCurUser.id,
             pid: pid,
             name: tag,
           };
           const tagRef = await addDoc(collection(db, "tags"), tempTag);
           await updateDoc(tagRef, { id: tagRef.id });
         }
-        setCurUser({ id: curUser.id });
+        gSetCurUser({ id: gCurUser.id });
       }
       router.push("/");
     }

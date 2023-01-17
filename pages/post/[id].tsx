@@ -25,7 +25,7 @@ interface IPostProps {
 }
 
 export default function Post({ initPost, initUser }: IPostProps) {
-  const { curUser, setCurUser } = useStore();
+  const { gCurUser, gSetCurUser } = useStore();
   const router = useRouter();
   function handleModify() {
     router.push(
@@ -80,7 +80,7 @@ export default function Post({ initPost, initUser }: IPostProps) {
         <>
           <div className="topCont">
             <Back style="post" />
-            {curUser.id === initUser.id && (
+            {gCurUser.id === initUser.id && (
               <div className="actionCont">
                 <div className="svg" onClick={handleModify}>
                   <HiPencil size={SIZE.icon} />

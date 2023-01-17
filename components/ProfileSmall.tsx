@@ -36,36 +36,36 @@ export default function ProfileSmall({
   style,
   post,
 }: IProfileSmallProps) {
-  const { curUser, setCurUser } = useStore();
+  const { gCurUser, gSetCurUser } = useStore();
   const [isFollowing, setIsFollowing] = useState(() =>
-    curUser.followings.find((elem) => elem === user.id) ? true : false
+    gCurUser.followings.find((elem) => elem === user.id) ? true : false
   );
   const router = useRouter();
 
   async function handleToggleFollow() {
-    const curUserRef = doc(db, "users", curUser.id);
+    const gCurUserRef = doc(db, "users", curUser.id);
     const userRef = doc(db, "users", user.id);
     if (isFollowing) {
-      await updateDoc(curUserRef, { followings: arrayRemove(user.id) });
+      await updateDoc(gCurUserRef, { followings: arrayRemove(user.id) });
       await updateDoc(userRef, {
-        followers: arrayRemove(curUser.id),
+        followers: arrayRemove(gCurUser.id),
       });
     } else {
-      await updateDoc(curUserRef, {
+      await updateDoc(gCurUserRef, {
         followings: arrayUnion(user.id),
       });
       await updateDoc(userRef, {
-        followers: arrayUnion(curUser.id),
+        followers: arrayUnion(gCurUser.id),
       });
     }
-    const tempFollowings = new Set(curUser.followings);
+    const tempFollowings = new Set(gCurUser.followings);
     if (isFollowing) {
       tempFollowings.delete(user.id);
     } else {
       tempFollowings.add(user.id);
     }
     const followings = Array.from(tempFollowings) as string[];
-    setCurUser({ id: curUser.id, followings: followings });
+    gSetCurUser({ id: gCurUser.id, followings: followings });
     setIsFollowing(!isFollowing);
   }
   function displayCreatedAt() {
@@ -131,7 +131,7 @@ export default function ProfileSmall({
   return (
     <>
       <div className={`userCont userCont-${style}`}>
-        <div className={user.id === curUser.id ? "row row-cur" : "row"}>
+        <div className={user.id === gCurUser.id ? "row row-cur" : "row"}>
           <Link href={`/profile/${user?.id}`}>
             <img
               className="g-profileImg"
@@ -152,7 +152,7 @@ export default function ProfileSmall({
         </div>
         {(() => {
           if (style === "post" || style === "search") {
-            if (curUser.id === user.id) {
+            if (gCurUser.id === user.id) {
               return <></>;
             } else if (isFollowing) {
               return (
@@ -170,7 +170,7 @@ export default function ProfileSmall({
                 </div>
               );
             }
-          } else if (user.id === curUser.id) {
+          } else if (user.id === gCurUser.id) {
             return (
               <>
                 <div className="actionCont">

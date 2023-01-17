@@ -15,7 +15,7 @@ export default function Comment({ comment, onClick }: ICommentProps) {
   // const [comment, setComment] = useState<IComment | null>(null);
   console.log(comment);
   const [user, setUser] = useState<IUser | null>(null);
-  const { curUser } = useStore();
+  const { gCurUser } = useStore();
 
   useEffect(() => {
     async function init() {
@@ -42,7 +42,7 @@ export default function Comment({ comment, onClick }: ICommentProps) {
             <div className="txt">{comment?.txt}</div>
           </div>
         </div>
-        {user?.id === curUser.id ? (
+        {user?.id === gCurUser.id ? (
           <div onClick={onClick} id={comment.id}>
             <HiX />
           </div>

@@ -27,7 +27,7 @@ interface ILogin {
 export default function Layout({ children }: ILayoutProps) {
   const provider = new GoogleAuthProvider();
   const router = useRouter();
-  const { setCurUser } = useStore();
+  const { gCurUser, gSetCurUser, gSetPostsAndUsers } = useStore();
   const [login, setLogin] = useState<ILogin>({
     email: "",
     password: "",
@@ -41,7 +41,8 @@ export default function Layout({ children }: ILayoutProps) {
       if (authState) {
         const snap = await getDoc(doc(db, "users", authState.uid));
         setLogin({ ...login, isLoggedIn: true });
-        setCurUser({ id: authState.uid });
+        const tempUser = await gSetCurUser({ id: authState.uid });
+        await gSetPostsAndUsers(tempUser, 5);
       } else {
         setLogin({ ...login, isLoggedIn: false });
       }

@@ -42,30 +42,30 @@ export default function Profile({
   initScraps,
   initTags,
 }: IProfileProps) {
-  const { curUser, setCurUser } = useStore();
+  const { gCurUser, gSetCurUser } = useStore();
   const [user, setUser] = useState({
-    initIsFollowing: curUser.followings.find((elem) => elem === initUser.id)
+    initIsFollowing: gCurUser.followings.find((elem) => elem === initUser.id)
       ? true
       : false,
-    isFollowing: curUser.followings.find((elem) => elem === initUser.id)
+    isFollowing: gCurUser.followings.find((elem) => elem === initUser.id)
       ? true
       : false,
   });
 
   async function handleToggleFollow() {
-    const curUserRef = doc(db, "users", curUser.id);
+    const gCurUserRef = doc(db, "users", curUser.id);
     const userRef = doc(db, "users", initUser.id || "");
     if (user.isFollowing) {
-      await updateDoc(curUserRef, { followings: arrayRemove(initUser.id) });
+      await updateDoc(gCurUserRef, { followings: arrayRemove(initUser.id) });
       await updateDoc(userRef, {
-        followers: arrayRemove(curUser.id),
+        followers: arrayRemove(gCurUser.id),
       });
     } else {
-      await updateDoc(curUserRef, {
+      await updateDoc(gCurUserRef, {
         followings: arrayUnion(initUser.id),
       });
       await updateDoc(userRef, {
-        followers: arrayUnion(curUser.id),
+        followers: arrayUnion(gCurUser.id),
       });
     }
     let len = initUser.followers.length;
@@ -76,14 +76,14 @@ export default function Profile({
       len++;
     }
     setUser({ ...user, isFollowing: !user.isFollowing });
-    setCurUser({ id: curUser.id });
-    console.log(curUser);
+    gSetCurUser({ id: gCurUser.id });
+    console.log(gCurUser);
   }
 
   return (
     <>
       <>
-        {initUser.id === curUser.id && (
+        {initUser.id === gCurUser.id && (
           <div className="settingCont">
             <Link href="/setting" legacyBehavior>
               <div className="setting">
@@ -104,8 +104,8 @@ export default function Profile({
                 <div className="profileType">팔로워</div>
                 <div className="profileNum">
                   {(() => {
-                    if (initUser.id === curUser.id) {
-                      return curUser.followers.length;
+                    if (initUser.id === gCurUser.id) {
+                      return gCurUser.followers.length;
                     }
                     const len = initUser.followers.length;
                     if (user.initIsFollowing === user.isFollowing) {
@@ -121,8 +121,8 @@ export default function Profile({
               <div>
                 <div className="profileType">팔로잉</div>
                 <div className="profileNum">
-                  {initUser.id === curUser.id
-                    ? curUser.followings.length
+                  {initUser.id === gCurUser.id
+                    ? gCurUser.followings.length
                     : initUser.followings.length}
                 </div>
               </div>
@@ -136,8 +136,8 @@ export default function Profile({
         </div>
         {(() => {
           const result = [];
-          if (curUser.id !== initUser.id) {
-            if (curUser.followings.find((elem) => elem === initUser.id)) {
+          if (gCurUser.id !== initUser.id) {
+            if (gCurUser.followings.find((elem) => elem === initUser.id)) {
               result.push(
                 <button onClick={handleToggleFollow} className="g-button2">
                   팔로잉
@@ -154,7 +154,7 @@ export default function Profile({
           return result;
         })()}
         <div className="profileTxtCont">{initUser.txt}</div>
-        {initUser.id === curUser.id ? (
+        {initUser.id === gCurUser.id ? (
           <>
             <button onClick={() => signOut(auth)} className="g-button1">
               로그아웃

@@ -14,8 +14,8 @@ interface IForm {
 }
 
 export default function Setting() {
-  const { curUser, setCurUser } = useStore();
-  const [preview, setPreview] = useState(curUser.photoURL);
+  const { gCurUser, gSetCurUser } = useStore();
+  const [preview, setPreview] = useState(gCurUser.photoURL);
   const router = useRouter();
   const {
     register,
@@ -25,17 +25,17 @@ export default function Setting() {
   } = useForm<IForm>({
     defaultValues: {
       file: undefined,
-      displayName: curUser.displayName,
-      txt: curUser.txt,
+      displayName: gCurUser.displayName,
+      txt: gCurUser.txt,
     },
   });
   const file = register("file");
   const fileRef = useRef<HTMLInputElement | null>(null);
 
   async function onValid(data: IForm) {
-    if (curUser.photoURL === preview) {
-      setCurUser({
-        id: curUser.id,
+    if (gCurUser.photoURL === preview) {
+      gSetCurUser({
+        id: gCurUser.id,
         displayName: data.displayName,
         txt: data.txt,
       });
@@ -57,15 +57,15 @@ export default function Setting() {
           config
         )
         .then(async (res) => {
-          setCurUser({
-            id: curUser.id,
+          gSetCurUser({
+            id: gCurUser.id,
             displayName: data.displayName,
             txt: data.txt,
             photoURL: res.data.url,
           });
         });
     }
-    router.push(`/profile/${curUser.id}`);
+    router.push(`/profile/${gCurUser.id}`);
   }
   function handleImageOnChange(e: React.ChangeEvent<HTMLInputElement>) {
     file.onChange(e);
