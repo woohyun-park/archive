@@ -10,6 +10,7 @@ import {
   orderBy,
   query,
   QuerySnapshot,
+  Timestamp,
   updateDoc,
   where,
 } from "firebase/firestore";
@@ -88,7 +89,7 @@ export const useStore = create<ICurUserState>((set) => ({
       const data: IPost = doc.data() as IPost;
       newPosts.push({
         ...data,
-        createdAt: data.createdAt,
+        createdAt: (data.createdAt as Timestamp).toDate(),
       } as IPost);
       uids.push(data.uid);
     });
