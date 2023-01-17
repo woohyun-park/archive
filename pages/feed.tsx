@@ -1,18 +1,46 @@
+import { useEffect, useState } from "react";
+import { useStore } from "../apis/zustand";
+import Loader from "../components/Loader";
 import PostFeed from "../components/PostFeed";
 import { IPost, IUser } from "../custom";
 
-interface IFeed {
-  posts: IPost[];
-  users: IUser[];
-}
+export default function Feed() {
+  const { gCurUser, gPosts, gUsers, gSetPostsAndUsers } = useStore();
+  const [loading, setLoading] = useState(true);
 
-export default function Feed({ posts, users }: IFeed) {
+  useEffect(() => {
+    if (gPosts.length !== 0) {
+      setLoading(!loading);
+    }
+  }, [gPosts]);
+
   return (
     <>
       <h1>피드</h1>
-      {posts.map((post, i) => {
-        return <PostFeed post={post} user={users[i]} key={post.id} />;
-      })}
+      {loading ? (
+        <div className="loaderCont">
+          <Loader />
+        </div>
+      ) : (
+        gPosts.map((post, i) => {
+          return <PostFeed post={post} user={gUsers[i]} key={post.id} />;
+        })
+      )}
+
+      <style jsx>
+        {`
+          .loaderCont {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 100vw;
+          }
+        `}
+      </style>
     </>
   );
 }

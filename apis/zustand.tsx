@@ -73,9 +73,7 @@ export const useStore = create<ICurUserState>((set) => ({
   gPosts: [],
   gUsers: [],
   gSetPostsAndUsers: async (gCurUser: IUser, page: number) => {
-    if (gCurUser.followings.length === 0) {
-      return null;
-    }
+    console.log(gCurUser);
     const q = query(
       collection(db, "posts"),
       where("uid", "in", [...gCurUser.followings, gCurUser.id]),
