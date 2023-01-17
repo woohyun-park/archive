@@ -89,10 +89,5 @@ export default function Index() {
     setPosts(newPosts);
     setUsers(newUsers);
   }
-  return (
-    <>
-      <div className="bg-green-500">zz</div>
-    </>
-  );
-  // return <Feed posts={posts} users={users} />;
+  return <Feed posts={posts} users={users} />;
 }
