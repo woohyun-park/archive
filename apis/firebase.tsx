@@ -8,6 +8,7 @@ import {
   getDoc,
   getDocs,
   getFirestore,
+  Query,
   query,
   updateDoc,
   where,
@@ -42,16 +43,9 @@ export async function getData<T>(type: string, id: string): Promise<T> {
   return data as T;
 }
 
-export async function getDataByQuery<T>(
-  type: string,
-  p1: string,
-  p2: string,
-  p3: string
-): Promise<T[]> {
-  const ref = collection(db, type);
-  const snap = await getDocs(query(ref, where(p1, p2 as WhereFilterOp, p3)));
+export async function getDataByQuery<T>(q: Query) {
+  const snap = await getDocs(q);
   const datas: T[] = [];
-
   snap.forEach((doc) => {
     const data = doc.data();
     if (data.createdAt) {
@@ -106,27 +100,30 @@ export async function updateFollow(
   }
 }
 
+export async function getEach<T>(type: string, id: string) {
+  return (await getDataByQuery<T>(
+    query(collection(db, type), where("pid", "==", id))
+  )) as T[];
+}
+
 export async function deletePost(id: string) {
+  async function deleteEach(datas: any[], type: string) {
+    for await (const data of datas) {
+      const id = data.id as string;
+      await deleteDoc(doc(db, type, id));
+    }
+  }
+
   await deleteDoc(doc(db, "posts", id));
-  const likes = await getDataByQuery<ILike>("likes", "pid", "==", id);
-  const scraps = await getDataByQuery<IScrap>("scraps", "pid", "==", id);
-  const comments = await getDataByQuery<IComment>("comments", "pid", "==", id);
-  const tags = await getDataByQuery<ITag>("tags", "pid", "==", id);
-  for await (const each of likes) {
-    const id = each.id as string;
-    await deleteDoc(doc(db, "likes", id));
-  }
-  for await (const each of scraps) {
-    const id = each.id as string;
-    await deleteDoc(doc(db, "scraps", id));
-  }
-  for await (const each of comments) {
-    const id = each.id as string;
-    await deleteDoc(doc(db, "comments", id));
-  }
-  for await (const each of tags) {
-    const id = each.id as string;
-    await deleteDoc(doc(db, "tags", id));
-  }
+  const likes = await getEach<ILike>("likes", id);
+  const scraps = await getEach<IScrap>("scraps", id);
+  const tags = await getEach<ITag>("tags", id);
+  const comments = await getEach<IComment>("comments", id);
+
+  deleteEach(likes, "likes");
+  deleteEach(scraps, "scraps");
+  deleteEach(comments, "comments");
+  deleteEach(tags, "tags");
+
   return null;
 }

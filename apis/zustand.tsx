@@ -12,7 +12,7 @@ import {
   Timestamp,
   where,
 } from "firebase/firestore";
-import { db, getData, getDataByQuery } from "./firebase";
+import { db, getData, getDataByQuery, getEach } from "./firebase";
 
 interface ICurUserState {
   gCurUser: IUser;
@@ -44,7 +44,6 @@ export const useStore = create<ICurUserState>((set, get) => ({
   gInit: async (uid: string) => {
     const loadUser = onSnapshot(doc(db, "users", uid), (doc) => {
       set((state) => {
-        console.log(state, get().gCurUser, doc.data());
         return {
           ...state,
           gCurUser: {
@@ -86,59 +85,35 @@ export const useStore = create<ICurUserState>((set, get) => ({
       }
     );
 
-    const snap = await getDoc(doc(db, "users", uid));
-    const likes = await getDataByQuery<ILike>("likes", "uid", "==", snap.id);
-    const scraps = await getDataByQuery<IScrap>("scraps", "uid", "==", snap.id);
+    const user = await getDoc(doc(db, "users", uid));
+    const likes = await getEach<ILike>("likes", user.id);
+    const scraps = await getEach<IScrap>("scraps", user.id);
     const curUser = {
-      ...(snap.data() as IUser),
+      ...(user.data() as IUser),
       likes: likes,
       scraps: scraps,
     };
-    const q = query(
-      collection(db, "posts"),
-      where("uid", "in", [...curUser.followings, curUser.id]),
-      orderBy("createdAt", "desc"),
-      limit(5)
+
+    const posts = await getDataByQuery<IPost>(
+      query(
+        collection(db, "posts"),
+        where("uid", "in", [...curUser.followings, curUser.id]),
+        orderBy("createdAt", "desc"),
+        limit(5)
+      )
     );
-    const postSnap = await getDocs(q);
-    const posts: IPost[] = [];
-    const uids: string[] = [];
-    postSnap.forEach((doc) => {
-      const data: IPost = doc.data() as IPost;
-      posts.push({
-        ...data,
-        createdAt: (data.createdAt as Timestamp).toDate(),
-      } as IPost);
-      uids.push(data.uid);
-    });
+    const users: IUser[] = [];
     for await (const post of posts) {
-      const likes = await getDataByQuery<ILike>(
-        "likes",
-        "pid",
-        "==",
-        post.id || ""
-      );
-      const scraps = await getDataByQuery<IScrap>(
-        "scraps",
-        "pid",
-        "==",
-        post.id || ""
-      );
-      const comments = await getDataByQuery<IComment>(
-        "comments",
-        "pid",
-        "==",
-        post.id || ""
-      );
+      const likes = await getEach<ILike>("likes", post.id || "");
+      const scraps = await getEach<IScrap>("scraps", post.id || "");
+      const comments = await getEach<IComment>("comments", post.id || "");
       post.likes = likes ? likes : [];
       post.scraps = scraps ? scraps : [];
       post.comments = comments ? comments : [];
-    }
-    const users: IUser[] = [];
-    for await (const uid of uids) {
-      const user = await getData<IUser>("users", uid);
+      const user = await getData<IUser>("users", post.uid);
       users.push(user);
     }
+
     set((state) => {
       return {
         ...state,
@@ -168,24 +143,9 @@ export const useStore = create<ICurUserState>((set, get) => ({
       uids.push(data.uid);
     });
     for await (const post of newPosts) {
-      const likes = await getDataByQuery<ILike>(
-        "likes",
-        "pid",
-        "==",
-        post.id || ""
-      );
-      const scraps = await getDataByQuery<IScrap>(
-        "scraps",
-        "pid",
-        "==",
-        post.id || ""
-      );
-      const comments = await getDataByQuery<IComment>(
-        "comments",
-        "pid",
-        "==",
-        post.id || ""
-      );
+      const likes = await getEach<ILike>("likes", post.id || "");
+      const scraps = await getEach<IScrap>("scraps", post.id || "");
+      const comments = await getEach<IComment>("comments", post.id || "");
       post.likes = likes ? likes : [];
       post.scraps = scraps ? scraps : [];
       post.comments = comments ? comments : [];

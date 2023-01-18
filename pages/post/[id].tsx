@@ -22,6 +22,7 @@ import {
 } from "../../custom";
 import { useStore } from "../../apis/zustand";
 import Image from "next/image";
+import { collection, orderBy, query, where } from "firebase/firestore";
 
 interface IPostProps {
   initPost: IPost;
@@ -186,39 +187,23 @@ export async function getServerSideProps({ params }: IServerSidePaths) {
     };
   const initUser = await getData<IUser>("users", initPost.uid as string);
 
+  const id = initPost.id as string;
   const likes = await getDataByQuery(
-    "likes",
-    "pid",
-    "==",
-    initPost.id as string
+    query(collection(db, "likes"), where("pid", "==", id))
   );
   const scraps = await getDataByQuery(
-    "scraps",
-    "pid",
-    "==",
-    initPost.id as string
+    query(collection(db, "scraps"), where("pid", "==", id))
   );
   const comments = await getDataByQuery(
-    "comments",
-    "pid",
-    "==",
-    initPost.id as string
+    query(
+      collection(db, "comments"),
+      where("pid", "==", id),
+      orderBy("createdAt", "desc")
+    )
   );
-  console.log(likes, scraps, comments);
-  if (likes) {
-    initPost.likes = likes as ILike[];
-  } else {
-    initPost.likes = [];
-  }
-  if (scraps) {
-    initPost.scraps = scraps as IScrap[];
-  } else {
-    initPost.scraps = [];
-  }
-  if (comments) {
-    initPost.comments = comments as IComment[];
-  } else {
-    initPost.comments = [];
-  }
+
+  initPost.likes = likes ? (likes as ILike[]) : [];
+  initPost.scraps = scraps ? (scraps as IScrap[]) : [];
+  initPost.comments = comments ? (comments as IComment[]) : [];
   return { props: { initPost, initUser } };
 }
