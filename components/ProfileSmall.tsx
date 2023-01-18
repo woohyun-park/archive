@@ -7,7 +7,7 @@ import {
 } from "firebase/firestore";
 import Link from "next/link";
 import { HiPencil, HiX } from "react-icons/hi";
-import { db, getDataByQuery } from "../apis/firebase";
+import { db, getDataByQuery, updateUser } from "../apis/firebase";
 import { useStore } from "../apis/zustand";
 import {
   COLOR,
@@ -37,7 +37,7 @@ export default function ProfileSmall({
   style,
   post,
 }: IProfileSmallProps) {
-  const { gCurUser, gSetCurUser } = useStore();
+  const { gCurUser } = useStore();
   const [isFollowing, setIsFollowing] = useState(() =>
     gCurUser.followings.find((elem) => elem === user.id) ? true : false
   );
@@ -66,7 +66,7 @@ export default function ProfileSmall({
       tempFollowings.add(user.id);
     }
     const followings = Array.from(tempFollowings) as string[];
-    gSetCurUser({ id: gCurUser.id, followings: followings });
+    updateUser({ id: gCurUser.id, followings: followings });
     setIsFollowing(!isFollowing);
   }
   function displayCreatedAt() {

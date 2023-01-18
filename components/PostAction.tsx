@@ -37,7 +37,7 @@ type IPostActionProps = {
 
 export default function PostAction({ post, style }: IPostActionProps) {
   const [postState, setPostState] = useState(post);
-  const { gCurUser, gSetCurUser } = useStore();
+  const { gCurUser } = useStore();
   const [status, setStatus] = useState({
     isLiked: gCurUser.likes?.find((each) => each.pid === postState.id)
       ? true
@@ -77,7 +77,6 @@ export default function PostAction({ post, style }: IPostActionProps) {
         id: ref.id,
       });
     }
-    gSetCurUser({ id: gCurUser.id });
   }
   async function handleToggleScrap() {
     const scrap = gCurUser.scraps?.find((each) => each.pid === postState.id);
@@ -95,7 +94,6 @@ export default function PostAction({ post, style }: IPostActionProps) {
         id: ref.id,
       });
     }
-    gSetCurUser({ id: gCurUser.id });
   }
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setComment(e.target.value);
@@ -111,7 +109,6 @@ export default function PostAction({ post, style }: IPostActionProps) {
     await updateDoc(ref, {
       id: ref.id,
     });
-    gSetCurUser({ id: gCurUser.id });
     setPostState({
       ...postState,
       comments: [...(postState.comments as IComment[]), tempComment],
@@ -121,7 +118,6 @@ export default function PostAction({ post, style }: IPostActionProps) {
   async function handleDelete(e: React.MouseEvent<HTMLDivElement>) {
     const id = e.currentTarget.id;
     const res = await deleteDoc(doc(db, "comments", id));
-    gSetCurUser({ id: gCurUser.id });
     setPostState({
       ...postState,
       comments: [...(postState.comments as IComment[])].filter(

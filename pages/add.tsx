@@ -28,7 +28,7 @@ interface IForm {
 }
 
 export default function Add() {
-  const { gCurUser, gSetCurUser } = useStore();
+  const { gCurUser } = useStore();
   const router = useRouter();
   const [prevPost, setPrevPost] = useState(
     router.query.post
@@ -132,7 +132,6 @@ export default function Add() {
             const tagRef = await addDoc(collection(db, "tags"), tempTag);
             await updateDoc(tagRef, { id: tagRef.id });
           }
-          gSetCurUser({ id: gCurUser.id });
         } else {
           // 이미지를 올리지 않았으며 수정인 경우
           if (prevPost) {
@@ -161,7 +160,6 @@ export default function Add() {
               const tagRef = await addDoc(collection(db, "tags"), tempTag);
               await updateDoc(tagRef, { id: tagRef.id });
             }
-            gSetCurUser({ id: gCurUser.id });
           }
           // 이미지를 올리지 않았으며 등록인 경우
           else {
@@ -215,7 +213,6 @@ export default function Add() {
           const tagRef = await addDoc(collection(db, "tags"), tempTag);
           await updateDoc(tagRef, { id: tagRef.id });
         }
-        gSetCurUser({ id: gCurUser.id });
       }
       router.push("/");
     }

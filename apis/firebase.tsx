@@ -6,6 +6,7 @@ import {
   getDocs,
   getFirestore,
   query,
+  updateDoc,
   where,
   WhereFilterOp,
 } from "firebase/firestore";
@@ -72,4 +73,10 @@ export async function getPath(type: string, param: string) {
     paths.push({ params: { [param]: post.id } });
   });
   return paths;
+}
+
+export async function updateUser(newUser: IDict<any>) {
+  await updateDoc(doc(db, "users", newUser.id), {
+    ...newUser,
+  });
 }

@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { HiArrowLeft, HiX } from "react-icons/hi";
 import Back from "../components/Back";
 import Image from "next/image";
+import { updateUser } from "../apis/firebase";
 
 interface IForm {
   file: File[];
@@ -15,7 +16,7 @@ interface IForm {
 }
 
 export default function Setting() {
-  const { gCurUser, gSetCurUser } = useStore();
+  const { gCurUser } = useStore();
   const [preview, setPreview] = useState(gCurUser.photoURL);
   const router = useRouter();
   const {
@@ -35,7 +36,7 @@ export default function Setting() {
 
   async function onValid(data: IForm) {
     if (gCurUser.photoURL === preview) {
-      gSetCurUser({
+      updateUser({
         id: gCurUser.id,
         displayName: data.displayName,
         txt: data.txt,
@@ -58,7 +59,7 @@ export default function Setting() {
           config
         )
         .then(async (res) => {
-          gSetCurUser({
+          updateUser({
             id: gCurUser.id,
             displayName: data.displayName,
             txt: data.txt,

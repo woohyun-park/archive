@@ -43,7 +43,7 @@ export default function Profile({
   initScraps,
   initTags,
 }: IProfileProps) {
-  const { gCurUser, gSetCurUser } = useStore();
+  const { gCurUser } = useStore();
   const [user, setUser] = useState({
     initIsFollowing: gCurUser.followings.find((elem) => elem === initUser.id)
       ? true
@@ -77,8 +77,6 @@ export default function Profile({
       len++;
     }
     setUser({ ...user, isFollowing: !user.isFollowing });
-    gSetCurUser({ id: gCurUser.id });
-    console.log(gCurUser);
   }
 
   return (

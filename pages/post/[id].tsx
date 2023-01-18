@@ -26,7 +26,7 @@ interface IPostProps {
 }
 
 export default function Post({ initPost, initUser }: IPostProps) {
-  const { gCurUser, gSetCurUser } = useStore();
+  const { gCurUser } = useStore();
   const router = useRouter();
   function handleModify() {
     router.push(
