@@ -4,7 +4,6 @@ import React, { useRef, useState } from "react";
 import { useStore } from "../apis/zustand";
 import { COLOR, DEFAULT, IDict, IUser, SIZE } from "../custom";
 import { useForm } from "react-hook-form";
-import { HiArrowLeft, HiX } from "react-icons/hi";
 import Back from "../components/Back";
 import Image from "next/image";
 import { updateUser } from "../apis/firebase";

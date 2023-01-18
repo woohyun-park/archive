@@ -1,6 +1,9 @@
 import { initializeApp } from "firebase/app";
 import {
+  arrayRemove,
+  arrayUnion,
   collection,
+  deleteDoc,
   doc,
   getDoc,
   getDocs,
@@ -11,7 +14,7 @@ import {
   WhereFilterOp,
 } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
-import { IComment, IDict, ILike, IPost, IScrap, ITag, IUser } from "../custom";
+import { IComment, IDict, ILike, IScrap, ITag, IUser } from "../custom";
 
 interface IPathParams {
   params: { [param: string]: string };
@@ -79,4 +82,51 @@ export async function updateUser(newUser: IDict<any>) {
   await updateDoc(doc(db, "users", newUser.id), {
     ...newUser,
   });
+}
+
+export async function updateFollow(
+  curUser: IUser,
+  user: IUser,
+  isFollowing: boolean
+) {
+  const curUserRef = doc(db, "users", curUser.id);
+  const userRef = doc(db, "users", user.id);
+  if (isFollowing) {
+    await updateDoc(curUserRef, { followings: arrayRemove(user.id) });
+    await updateDoc(userRef, {
+      followers: arrayRemove(curUser.id),
+    });
+  } else {
+    await updateDoc(curUserRef, {
+      followings: arrayUnion(user.id),
+    });
+    await updateDoc(userRef, {
+      followers: arrayUnion(curUser.id),
+    });
+  }
+}
+
+export async function deletePost(id: string) {
+  await deleteDoc(doc(db, "posts", id));
+  const likes = await getDataByQuery<ILike>("likes", "pid", "==", id);
+  const scraps = await getDataByQuery<IScrap>("scraps", "pid", "==", id);
+  const comments = await getDataByQuery<IComment>("comments", "pid", "==", id);
+  const tags = await getDataByQuery<ITag>("tags", "pid", "==", id);
+  for await (const each of likes) {
+    const id = each.id as string;
+    await deleteDoc(doc(db, "likes", id));
+  }
+  for await (const each of scraps) {
+    const id = each.id as string;
+    await deleteDoc(doc(db, "scraps", id));
+  }
+  for await (const each of comments) {
+    const id = each.id as string;
+    await deleteDoc(doc(db, "comments", id));
+  }
+  for await (const each of tags) {
+    const id = each.id as string;
+    await deleteDoc(doc(db, "tags", id));
+  }
+  return null;
 }

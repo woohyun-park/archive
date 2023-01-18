@@ -1,17 +1,12 @@
 import { signOut } from "firebase/auth";
-import {
-  arrayRemove,
-  arrayUnion,
-  doc,
-  getDoc,
-  updateDoc,
-} from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 import {
   auth,
   db,
   getData,
   getDataByQuery,
   getPath,
+  updateFollow,
 } from "../../apis/firebase";
 import List from "../../components/List";
 import {
@@ -44,6 +39,8 @@ export default function Profile({
   initTags,
 }: IProfileProps) {
   const { gCurUser } = useStore();
+  console.log(initUser, initPosts, initScraps, initTags);
+  console.log(gCurUser);
   const [user, setUser] = useState({
     initIsFollowing: gCurUser.followings.find((elem) => elem === initUser.id)
       ? true
@@ -54,21 +51,7 @@ export default function Profile({
   });
 
   async function handleToggleFollow() {
-    const gCurUserRef = doc(db, "users", curUser.id);
-    const userRef = doc(db, "users", initUser.id || "");
-    if (user.isFollowing) {
-      await updateDoc(gCurUserRef, { followings: arrayRemove(initUser.id) });
-      await updateDoc(userRef, {
-        followers: arrayRemove(gCurUser.id),
-      });
-    } else {
-      await updateDoc(gCurUserRef, {
-        followings: arrayUnion(initUser.id),
-      });
-      await updateDoc(userRef, {
-        followers: arrayUnion(gCurUser.id),
-      });
-    }
+    await updateFollow(gCurUser, initUser, user.isFollowing);
     let len = initUser.followers.length;
     if (user.initIsFollowing === user.isFollowing) {
     } else if (user.initIsFollowing) {

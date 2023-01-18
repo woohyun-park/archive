@@ -1,5 +1,5 @@
 import create from "zustand";
-import { IComment, IDict, ILike, IPost, IScrap, IUser } from "../custom";
+import { IComment, ILike, IPost, IScrap, IUser } from "../custom";
 import {
   collection,
   doc,
@@ -13,6 +13,7 @@ import {
   where,
 } from "firebase/firestore";
 import { db, getData, getDataByQuery } from "./firebase";
+import { Unsubscribe } from "firebase/auth";
 
 interface ICurUserState {
   gCurUser: IUser;
@@ -20,7 +21,6 @@ interface ICurUserState {
   gUsers: IUser[];
 
   gInit: Function;
-  gLoadUser: Function;
 
   gSetPostsAndUsers: (
     gCurUser: IUser,
@@ -44,7 +44,12 @@ export const useStore = create<ICurUserState>((set, get) => ({
   gUsers: [],
   gInit: async (uid: string) => {
     const loadUser = onSnapshot(doc(db, "users", uid), (doc) => {
-      console.log("Current data: ", doc.data());
+      set((state) => {
+        return {
+          ...state,
+          gCurUser: doc.data() as IUser,
+        };
+      });
     });
     const snap = await getDoc(doc(db, "users", uid));
     const likes = await getDataByQuery<ILike>("likes", "uid", "==", snap.id);
@@ -103,23 +108,10 @@ export const useStore = create<ICurUserState>((set, get) => ({
       return {
         ...state,
         gCurUser: curUser,
-        gLoadUser: loadUser,
         gPosts: posts,
         gUsers: users,
       };
     });
-  },
-
-  gLoadUser: () => {
-    get().gCurUser.id !== "" &&
-      onSnapshot(doc(db, "users", get().gCurUser.id), (doc) => {
-        set((state) => {
-          return {
-            ...state,
-            gCurUser: doc.data() as IUser,
-          };
-        });
-      });
   },
 
   gSetPostsAndUsers: async (gCurUser: IUser, page: number) => {

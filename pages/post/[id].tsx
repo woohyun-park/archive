@@ -1,9 +1,13 @@
-import { deleteDoc, doc } from "firebase/firestore";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { userAgent } from "next/server";
 import { HiPencil, HiX } from "react-icons/hi";
-import { db, getData, getDataByQuery, getPath } from "../../apis/firebase";
+import {
+  db,
+  deletePost,
+  getData,
+  getDataByQuery,
+  getPath,
+} from "../../apis/firebase";
 import Back from "../../components/Back";
 import PostAction from "../../components/PostAction";
 import ProfileSmall from "../../components/ProfileSmall";
@@ -13,7 +17,6 @@ import {
   ILike,
   IPost,
   IScrap,
-  ITag,
   IUser,
   SIZE,
 } from "../../custom";
@@ -28,6 +31,7 @@ interface IPostProps {
 export default function Post({ initPost, initUser }: IPostProps) {
   const { gCurUser } = useStore();
   const router = useRouter();
+
   function handleModify() {
     router.push(
       {
@@ -37,35 +41,10 @@ export default function Post({ initPost, initUser }: IPostProps) {
       "/modify"
     );
   }
+
   async function handleDelete() {
     if (confirm("정말 삭제하시겠습니까?")) {
-      const id = initPost?.id as string;
-      await deleteDoc(doc(db, "posts", id));
-      const likes = await getDataByQuery<ILike>("likes", "pid", "==", id);
-      const scraps = await getDataByQuery<IScrap>("scraps", "pid", "==", id);
-      const comments = await getDataByQuery<IComment>(
-        "comments",
-        "pid",
-        "==",
-        id
-      );
-      const tags = await getDataByQuery<ITag>("tags", "pid", "==", id);
-      for await (const each of likes) {
-        const id = each.id as string;
-        await deleteDoc(doc(db, "likes", id));
-      }
-      for await (const each of scraps) {
-        const id = each.id as string;
-        await deleteDoc(doc(db, "scraps", id));
-      }
-      for await (const each of comments) {
-        const id = each.id as string;
-        await deleteDoc(doc(db, "comments", id));
-      }
-      for await (const each of tags) {
-        const id = each.id as string;
-        await deleteDoc(doc(db, "tags", id));
-      }
+      await deletePost(initPost?.id as string);
       alert("삭제되었습니다");
     } else {
       console.log(initPost);

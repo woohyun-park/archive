@@ -22,7 +22,7 @@ import {
   SIZE,
 } from "../custom";
 import dayjs from "dayjs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
 
@@ -42,6 +42,12 @@ export default function ProfileSmall({
     gCurUser.followings.find((elem) => elem === user.id) ? true : false
   );
   const router = useRouter();
+
+  useEffect(() => {
+    setIsFollowing(
+      gCurUser.followings.find((elem) => elem === user.id) ? true : false
+    );
+  }, [gCurUser]);
 
   async function handleToggleFollow() {
     const gCurUserRef = doc(db, "users", gCurUser.id);
@@ -150,7 +156,7 @@ export default function ProfileSmall({
           </div>
         </div>
         {(() => {
-          if (style === "post" || style === "search") {
+          if (style === "post" || style === "search" || style === "feed") {
             if (gCurUser.id === user.id) {
               return <></>;
             } else if (isFollowing) {
