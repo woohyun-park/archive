@@ -7,7 +7,13 @@ import {
 } from "firebase/firestore";
 import Link from "next/link";
 import { HiPencil, HiX } from "react-icons/hi";
-import { db, getDataByQuery, updateUser } from "../apis/firebase";
+import {
+  db,
+  deletePost,
+  getDataByQuery,
+  getEach,
+  updateUser,
+} from "../apis/firebase";
 import { useStore } from "../apis/zustand";
 import {
   COLOR,
@@ -25,6 +31,8 @@ import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
+import Delete from "./Delete";
+import Modify from "./Modify";
 
 type IProfileSmallProps = {
   user: IUser;
@@ -90,50 +98,6 @@ export default function ProfileSmall({
       return postDate.format("MM월 DD, YYYY");
     }
   }
-  function handleModify() {
-    router.push(
-      {
-        pathname: "/add",
-        query: { post: JSON.stringify(post) },
-      },
-      "/modify"
-    );
-  }
-  async function handleDelete() {
-    if (confirm("정말 삭제하시겠습니까?")) {
-      const id = post?.id as string;
-      await deleteDoc(doc(db, "posts", id));
-      const likes = await getDataByQuery<ILike>("likes", "pid", "==", id);
-      const scraps = await getDataByQuery<IScrap>("scraps", "pid", "==", id);
-      const comments = await getDataByQuery<IComment>(
-        "comments",
-        "pid",
-        "==",
-        id
-      );
-      const tags = await getDataByQuery<ITag>("tags", "pid", "==", id);
-      for await (const each of likes) {
-        const id = each.id as string;
-        await deleteDoc(doc(db, "likes", id));
-      }
-      for await (const each of scraps) {
-        const id = each.id as string;
-        await deleteDoc(doc(db, "scraps", id));
-      }
-      for await (const each of comments) {
-        const id = each.id as string;
-        await deleteDoc(doc(db, "comments", id));
-      }
-      for await (const each of tags) {
-        const id = each.id as string;
-        await deleteDoc(doc(db, "tags", id));
-      }
-      alert("삭제되었습니다");
-    } else {
-      console.log(post);
-    }
-    router.push("/");
-  }
 
   return (
     <>
@@ -156,7 +120,8 @@ export default function ProfileSmall({
           </div>
         </div>
         {(() => {
-          if (style === "post" || style === "search" || style === "feed") {
+          // TODO: 분기 확인해서 변경할것
+          if (style === "post" || style === "search") {
             if (gCurUser.id === user.id) {
               return <></>;
             } else if (isFollowing) {
@@ -179,12 +144,8 @@ export default function ProfileSmall({
             return (
               <>
                 <div className="actionCont">
-                  <div className="svg" onClick={handleModify}>
-                    <HiPencil size={SIZE.iconSmall} />
-                  </div>
-                  <div className="svg" onClick={handleDelete}>
-                    <HiX size={SIZE.iconSmall} />
-                  </div>
+                  <Modify post={post} />
+                  <Delete id={post?.id || ""} />
                 </div>
               </>
             );

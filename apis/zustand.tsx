@@ -93,7 +93,6 @@ export const useStore = create<ICurUserState>((set, get) => ({
       likes: likes,
       scraps: scraps,
     };
-
     const posts = await getDataByQuery<IPost>(
       query(
         collection(db, "posts"),

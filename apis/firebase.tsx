@@ -62,6 +62,12 @@ export async function getDataByQuery<T>(q: Query) {
   return datas;
 }
 
+export async function getEach<T>(type: string, id: string) {
+  return (await getDataByQuery<T>(
+    query(collection(db, type), where("pid", "==", id))
+  )) as T[];
+}
+
 export async function getPath(type: string, param: string) {
   const snap = await getDocs(collection(db, type));
   const paths: IPathParams[] = [];
@@ -98,12 +104,6 @@ export async function updateFollow(
       followers: arrayUnion(curUser.id),
     });
   }
-}
-
-export async function getEach<T>(type: string, id: string) {
-  return (await getDataByQuery<T>(
-    query(collection(db, type), where("pid", "==", id))
-  )) as T[];
 }
 
 export async function deletePost(id: string) {
