@@ -44,9 +44,14 @@ export const useStore = create<ICurUserState>((set, get) => ({
   gInit: async (uid: string) => {
     const loadUser = onSnapshot(doc(db, "users", uid), (doc) => {
       set((state) => {
+        console.log(state, get().gCurUser, doc.data());
         return {
           ...state,
-          gCurUser: doc.data() as IUser,
+          gCurUser: {
+            ...(doc.data() as IUser),
+            likes: state.gCurUser.likes,
+            scraps: state.gCurUser.scraps,
+          },
         };
       });
     });
