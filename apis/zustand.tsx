@@ -13,7 +13,6 @@ import {
   where,
 } from "firebase/firestore";
 import { db, getData, getDataByQuery } from "./firebase";
-import { Unsubscribe } from "firebase/auth";
 
 interface ICurUserState {
   gCurUser: IUser;
@@ -39,9 +38,9 @@ export const useStore = create<ICurUserState>((set, get) => ({
     followers: [],
     followings: [],
   },
-
   gPosts: [],
   gUsers: [],
+
   gInit: async (uid: string) => {
     const loadUser = onSnapshot(doc(db, "users", uid), (doc) => {
       set((state) => {
@@ -51,6 +50,37 @@ export const useStore = create<ICurUserState>((set, get) => ({
         };
       });
     });
+    const loadLikes = onSnapshot(
+      query(collection(db, "likes"), where("uid", "==", uid)),
+      (snap) => {
+        const datas: ILike[] = [];
+        snap.forEach((doc) => {
+          datas.push({ ...(doc.data() as ILike) });
+        });
+        set((state) => {
+          return {
+            ...state,
+            gCurUser: { ...get().gCurUser, likes: datas },
+          };
+        });
+      }
+    );
+    const loadScraps = onSnapshot(
+      query(collection(db, "scraps"), where("uid", "==", uid)),
+      (snap) => {
+        const datas: IScrap[] = [];
+        snap.forEach((doc) => {
+          datas.push({ ...(doc.data() as IScrap) });
+        });
+        set((state) => {
+          return {
+            ...state,
+            gCurUser: { ...get().gCurUser, scraps: datas },
+          };
+        });
+      }
+    );
+
     const snap = await getDoc(doc(db, "users", uid));
     const likes = await getDataByQuery<ILike>("likes", "uid", "==", snap.id);
     const scraps = await getDataByQuery<IScrap>("scraps", "uid", "==", snap.id);

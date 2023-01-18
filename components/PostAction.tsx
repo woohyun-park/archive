@@ -42,9 +42,11 @@ export default function PostAction({ post, style }: IPostActionProps) {
     isLiked: gCurUser.likes?.find((each) => each.pid === postState.id)
       ? true
       : false,
+    lid: gCurUser.likes?.find((each) => each.pid === postState.id)?.id,
     isScraped: gCurUser.scraps?.find((each) => each.pid === postState.id)
       ? true
       : false,
+    sid: gCurUser.scraps?.find((each) => each.pid === postState.id)?.id,
   });
   const [comment, setComment] = useState("");
   const commentRef: RefObject<HTMLInputElement> = useRef(null);
@@ -56,17 +58,17 @@ export default function PostAction({ post, style }: IPostActionProps) {
       isLiked: gCurUser.likes?.find((each) => each.pid === postState.id)
         ? true
         : false,
+      lid: gCurUser.likes?.find((each) => each.pid === postState.id)?.id,
       isScraped: gCurUser.scraps?.find((each) => each.pid === postState.id)
         ? true
         : false,
+      sid: gCurUser.scraps?.find((each) => each.pid === postState.id)?.id,
     });
   }, [gCurUser]);
 
   async function handleToggleLike() {
-    const like = gCurUser.likes?.find((each) => each.pid === postState.id);
-    if (like) {
-      const id = like.id as string;
-      await deleteDoc(doc(db, "likes", id));
+    if (status.isLiked) {
+      await deleteDoc(doc(db, "likes", status.lid || ""));
     } else {
       const newLike: ILike = {
         uid: gCurUser.id,
@@ -79,10 +81,8 @@ export default function PostAction({ post, style }: IPostActionProps) {
     }
   }
   async function handleToggleScrap() {
-    const scrap = gCurUser.scraps?.find((each) => each.pid === postState.id);
-    if (scrap) {
-      const id = scrap.id as string;
-      await deleteDoc(doc(db, "scraps", id));
+    if (status.isScraped) {
+      await deleteDoc(doc(db, "scraps", status.sid || ""));
     } else {
       const newScrap: IScrap = {
         uid: gCurUser.id,
@@ -95,6 +95,24 @@ export default function PostAction({ post, style }: IPostActionProps) {
       });
     }
   }
+
+  // async function handleToggleScrap() {
+  //   const scrap = gCurUser.scraps?.find((each) => each.pid === postState.id);
+  //   if (scrap) {
+  //     const id = scrap.id as string;
+  //     await deleteDoc(doc(db, "scraps", id));
+  //   } else {
+  //     const newScrap: IScrap = {
+  //       uid: gCurUser.id,
+  //       pid: postState.id || "",
+  //       cont: "모든 스크랩",
+  //     };
+  //     const ref = await addDoc(collection(db, "scraps"), newScrap);
+  //     await updateDoc(ref, {
+  //       id: ref.id,
+  //     });
+  //   }
+  // }
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setComment(e.target.value);
   }
