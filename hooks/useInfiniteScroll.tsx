@@ -1,4 +1,4 @@
-import { SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useStore } from "../apis/zustand";
 
 export const useInfiniteScroll = () => {

@@ -169,6 +169,8 @@ export default function Setting() {
           }
           .photoCont {
             text-align: center;
+            display: flex;
+            justify-content: center;
           }
           .photo {
             position: relative;
@@ -176,6 +178,7 @@ export default function Setting() {
             width: 96px;
             height: 96px;
             object-fit: cover;
+            overflow: hidden;
           }
         `}
       </style>

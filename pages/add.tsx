@@ -16,6 +16,7 @@ import { HiArrowLeft, HiX } from "react-icons/hi";
 import { useForm } from "react-hook-form";
 import Color from "../components/Color";
 import Image from "next/image";
+import ReactTextareaAutosize from "react-textarea-autosize";
 
 interface IForm {
   file: File[];
@@ -471,9 +472,19 @@ export default function Add() {
             }
           >{`${watch("txt").length}/2000`}</div>
         </div>
-        <textarea
+        <ReactTextareaAutosize
+          style={{
+            margin: "8px 0",
+            "background-color": COLOR.bg2,
+            padding: "8px",
+            border: "none",
+            "border-radius": "8px",
+            "font-family": "inherit",
+            resize: "none",
+          }}
           {...register("txt", { required: true, maxLength: 2000 })}
           maxLength={2000}
+          minRows={10}
         />
         <button className="g-button1" type="submit">
           {prevPost ? "완료" : "생성"}

@@ -2,11 +2,10 @@ import { useEffect, useState } from "react";
 import { useStore } from "../apis/zustand";
 import Loader from "../components/Loader";
 import PostFeed from "../components/PostFeed";
-import { IPost, IUser } from "../custom";
 import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 
 export default function Feed() {
-  const { gCurUser, gPosts, gUsers, gSetPostsAndUsers } = useStore();
+  const { gPosts, gUsers } = useStore();
   const [initLoading, setInitLoading] = useState(true);
   const [loading, setLoading] = useState(false);
 
