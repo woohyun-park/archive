@@ -1,3 +1,4 @@
+import { Ref } from "react";
 import { DEFAULT, IPost, IUser } from "../custom";
 import Box from "./Box";
 import PostAction from "./PostAction";

@@ -74,7 +74,7 @@ export const useStore = create<ICurUserState>((set) => ({
       collection(db, "posts"),
       where("uid", "in", [...gCurUser.followings, gCurUser.id]),
       orderBy("createdAt", "desc"),
-      limit(page * 5)
+      limit(page * 2)
     );
     const postSnap = await getDocs(q);
     const newPosts: IPost[] = [];

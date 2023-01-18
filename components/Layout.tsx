@@ -42,7 +42,7 @@ export default function Layout({ children }: ILayoutProps) {
         const snap = await getDoc(doc(db, "users", authState.uid));
         setLogin({ ...login, isLoggedIn: true });
         const tempUser = await gSetCurUser({ id: authState.uid });
-        await gSetPostsAndUsers(tempUser, 5);
+        await gSetPostsAndUsers(tempUser, 1);
       } else {
         setLogin({ ...login, isLoggedIn: false });
       }
@@ -175,6 +175,7 @@ export default function Layout({ children }: ILayoutProps) {
           body::-webkit-scrollbar {
             display: none;
           }
+
           .g-pageCont {
             padding: 16px;
             padding-top: ${router.pathname.split("/")[1] === "post"
@@ -185,6 +186,7 @@ export default function Layout({ children }: ILayoutProps) {
               ? ""
               : "96px"};
           }
+
           .g-button1 {
             margin: 8px 0;
             background-color: ${COLOR.btn1};
@@ -195,6 +197,7 @@ export default function Layout({ children }: ILayoutProps) {
             width: 100%;
             font-size: 16px;
           }
+
           .g-button2 {
             margin: 8px 0;
             background-color: ${COLOR.btn2};
@@ -205,6 +208,7 @@ export default function Layout({ children }: ILayoutProps) {
             width: 100%;
             font-size: 16px;
           }
+
           .g-profileImg {
             position: relative;
             overflow: hidden;
@@ -212,10 +216,6 @@ export default function Layout({ children }: ILayoutProps) {
             height: 32px;
             border-radius: 32px;
             margin-right: 8px;
-          }
-          .g-button1:hover,
-          .g-button2:hover {
-            cursor: pointer;
           }
 
           .g_input_labelCont {
@@ -227,6 +227,7 @@ export default function Layout({ children }: ILayoutProps) {
             font-size: 16px;
             margin-top: 8px;
           }
+
           .g_input_txtLen {
             font-size: 12px;
           }
@@ -234,6 +235,8 @@ export default function Layout({ children }: ILayoutProps) {
             color: red;
           }
 
+          .g-button1:hover,
+          .g-button2:hover,
           .g-hover:hover {
             cursor: pointer;
           }
