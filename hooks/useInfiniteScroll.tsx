@@ -10,10 +10,12 @@ export const useInfiniteScroll = (type: IInfintieScrollType) => {
   );
 
   const onIntersect: IntersectionObserverCallback = (entries, observer) => {
+    console.log("intersect!", gPage);
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
         if (type === "feed") gSetPage("feed", gPage.feed + 1);
-        if (type === "searchPost") gSetPage("searchPost", gPage.searchPost + 1);
+        else if (type === "searchPost")
+          gSetPage("searchPost", gPage.searchPost + 1);
         observer.unobserve(entry.target);
       }
     });
@@ -21,7 +23,7 @@ export const useInfiniteScroll = (type: IInfintieScrollType) => {
 
   useEffect(() => {
     if (type === "feed") gSetFeed(gCurUser.id, gPage.feed);
-    if (type === "searchPost") gSetSearch("posts", gPage.searchPost);
+    else if (type === "searchPost") gSetSearch("posts", gPage.searchPost);
   }, [gPage]);
 
   useEffect(() => {

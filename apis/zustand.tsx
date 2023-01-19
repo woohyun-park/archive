@@ -144,28 +144,31 @@ export const useStore = create<ICurUserState>((set, get) => ({
       post.author = user;
     }
 
+    const searchPosts = await getDatasByQuery<IPost>(
+      query(
+        collection(db, "posts"),
+        orderBy("createdAt", "desc"),
+        limit(get().gPage.searchPost * 12)
+      )
+    );
+    const searchTags = await getDatasByQuery<ITag>(
+      query(
+        collection(db, "tags"),
+        // orderBy("createdAt", "desc"),
+        limit(get().gPage.searchTag * 9)
+      )
+    );
+    const searchUsers = await getDatasByQuery<IUser>(
+      query(
+        collection(db, "users"),
+        // orderBy("createdAt", "desc"),
+        limit(get().gPage.searchUser * 9)
+      )
+    );
     const search = {
-      posts: await getDatasByQuery<IPost>(
-        query(
-          collection(db, "posts"),
-          // orderBy("createdAt", "desc"),
-          limit(get().gPage.searchPost * 9)
-        )
-      ),
-      tags: await getDatasByQuery<ITag>(
-        query(
-          collection(db, "tags"),
-          // orderBy("createdAt", "desc"),
-          limit(get().gPage.searchTag * 9)
-        )
-      ),
-      users: await getDatasByQuery<IUser>(
-        query(
-          collection(db, "users"),
-          // orderBy("createdAt", "desc"),
-          limit(get().gPage.searchUser * 9)
-        )
-      ),
+      posts: searchPosts,
+      tags: searchTags,
+      users: searchUsers,
     };
 
     set((state) => {
@@ -236,7 +239,7 @@ export const useStore = create<ICurUserState>((set, get) => ({
         query(
           collection(db, "posts"),
           orderBy("createdAt", "desc"),
-          limit(page * 9)
+          limit(page * 12)
         )
       );
       set((state) => {
