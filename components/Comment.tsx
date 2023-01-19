@@ -14,7 +14,6 @@ type ICommentProps = {
 
 export default function Comment({ comment, onClick }: ICommentProps) {
   // const [comment, setComment] = useState<IComment | null>(null);
-  console.log(comment);
   const [user, setUser] = useState<IUser | null>(null);
   const { gCurUser } = useStore();
 

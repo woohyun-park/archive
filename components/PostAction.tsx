@@ -3,7 +3,9 @@ import {
   collection,
   deleteDoc,
   doc,
+  getDoc,
   serverTimestamp,
+  setDoc,
   updateDoc,
 } from "firebase/firestore";
 import Image from "next/image";
@@ -80,6 +82,7 @@ export default function PostAction({ post, style }: IPostActionProps) {
       });
     }
   }
+
   async function handleToggleScrap() {
     if (status.isScraped) {
       await deleteDoc(doc(db, "scraps", status.sid || ""));
@@ -96,26 +99,10 @@ export default function PostAction({ post, style }: IPostActionProps) {
     }
   }
 
-  // async function handleToggleScrap() {
-  //   const scrap = gCurUser.scraps?.find((each) => each.pid === postState.id);
-  //   if (scrap) {
-  //     const id = scrap.id as string;
-  //     await deleteDoc(doc(db, "scraps", id));
-  //   } else {
-  //     const newScrap: IScrap = {
-  //       uid: gCurUser.id,
-  //       pid: postState.id || "",
-  //       cont: "모든 스크랩",
-  //     };
-  //     const ref = await addDoc(collection(db, "scraps"), newScrap);
-  //     await updateDoc(ref, {
-  //       id: ref.id,
-  //     });
-  //   }
-  // }
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setComment(e.target.value);
   }
+
   async function handleSubmit(e: React.MouseEvent<HTMLButtonElement>) {
     const tempComment: IComment = {
       uid: gCurUser.id,
@@ -127,12 +114,18 @@ export default function PostAction({ post, style }: IPostActionProps) {
     await updateDoc(ref, {
       id: ref.id,
     });
+    const commentRef = await getDoc(ref);
+    const newComment = commentRef.data() as IComment;
     setPostState({
       ...postState,
-      comments: [...(postState.comments as IComment[]), tempComment],
+      comments: [
+        ...(postState.comments as IComment[]),
+        { ...newComment, createdAt: commentRef.data()?.createdAt.toDate() },
+      ],
     });
     setComment("");
   }
+
   async function handleDelete(e: React.MouseEvent<HTMLDivElement>) {
     const id = e.currentTarget.id;
     const res = await deleteDoc(doc(db, "comments", id));
@@ -143,6 +136,7 @@ export default function PostAction({ post, style }: IPostActionProps) {
       ),
     });
   }
+
   function handleCommentClick(e: React.MouseEvent<SVGElement>) {
     if (style === "post") {
       commentRef.current?.focus();
