@@ -18,7 +18,7 @@ import {
   HiOutlineHeart,
   HiOutlineChatBubbleOvalLeft,
 } from "react-icons/hi2";
-import { db } from "../apis/firebase";
+import { db, getDataByRef } from "../apis/firebase";
 import { useStore } from "../apis/zustand";
 import {
   COLOR,
@@ -114,14 +114,10 @@ export default function PostAction({ post, style }: IPostActionProps) {
     await updateDoc(ref, {
       id: ref.id,
     });
-    const commentRef = await getDoc(ref);
-    const newComment = commentRef.data() as IComment;
+    const newComment = await getDataByRef<IComment>(ref);
     setPostState({
       ...postState,
-      comments: [
-        ...(postState.comments as IComment[]),
-        { ...newComment, createdAt: commentRef.data()?.createdAt.toDate() },
-      ],
+      comments: [newComment, ...(postState.comments as IComment[])],
     });
     setComment("");
   }

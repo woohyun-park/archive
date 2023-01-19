@@ -12,7 +12,7 @@ import {
   Timestamp,
   where,
 } from "firebase/firestore";
-import { db, getData, getDataByQuery, getEach } from "./firebase";
+import { db, getData, getDatasByQuery, getEach } from "./firebase";
 
 interface ICurUserState {
   gCurUser: IUser;
@@ -93,7 +93,7 @@ export const useStore = create<ICurUserState>((set, get) => ({
       likes: likes,
       scraps: scraps,
     };
-    const posts = await getDataByQuery<IPost>(
+    const posts = await getDatasByQuery<IPost>(
       query(
         collection(db, "posts"),
         where("uid", "in", [...curUser.followings, curUser.id]),

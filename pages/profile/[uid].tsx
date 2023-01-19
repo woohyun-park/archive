@@ -4,21 +4,12 @@ import {
   auth,
   db,
   getData,
-  getDataByQuery,
+  getDatasByQuery,
   getPath,
   updateFollow,
 } from "../../apis/firebase";
 import List from "../../components/List";
-import {
-  COLOR,
-  DEFAULT,
-  IDict,
-  IPost,
-  IScrap,
-  ITag,
-  IUser,
-  SIZE,
-} from "../../custom";
+import { COLOR, IDict, IPost, IScrap, ITag, IUser, SIZE } from "../../custom";
 import { HiOutlineCog } from "react-icons/hi";
 import { useStore } from "../../apis/zustand";
 import Link from "next/link";
@@ -220,10 +211,10 @@ export async function getServerSidePaths() {
 export async function getServerSideProps({ params }: IServerSidePaths) {
   const uid = params.uid;
   const initUser = await getData<IUser>("users", uid);
-  const initPosts = await getDataByQuery<IPost>(
+  const initPosts = await getDatasByQuery<IPost>(
     query(collection(db, "posts"), where("uid", "==", uid))
   );
-  const resScraps = await getDataByQuery<IScrap>(
+  const resScraps = await getDatasByQuery<IScrap>(
     query(collection(db, "scraps"), where("uid", "==", uid))
   );
   const initScraps: IDict<IPost[]> = {};
@@ -240,7 +231,7 @@ export async function getServerSideProps({ params }: IServerSidePaths) {
     }
   }
 
-  const resTags = await getDataByQuery<ITag>(
+  const resTags = await getDatasByQuery<ITag>(
     query(collection(db, "tags"), where("uid", "==", uid))
   );
 

@@ -5,6 +5,7 @@ import {
   collection,
   deleteDoc,
   doc,
+  DocumentReference,
   getDoc,
   getDocs,
   getFirestore,
@@ -43,7 +44,19 @@ export async function getData<T>(type: string, id: string): Promise<T> {
   return data as T;
 }
 
-export async function getDataByQuery<T>(q: Query) {
+export async function getDataByRef<T>(ref: DocumentReference) {
+  const snap = await getDoc(ref);
+  const data = snap.data();
+  if (data?.createdAt) {
+    return {
+      ...(data as T),
+      createdAt: data.createdAt.toDate(),
+    };
+  }
+  return data as T;
+}
+
+export async function getDatasByQuery<T>(q: Query) {
   const snap = await getDocs(q);
   const datas: T[] = [];
   snap.forEach((doc) => {
@@ -63,7 +76,7 @@ export async function getDataByQuery<T>(q: Query) {
 }
 
 export async function getEach<T>(type: string, id: string) {
-  return (await getDataByQuery<T>(
+  return (await getDatasByQuery<T>(
     query(collection(db, type), where("pid", "==", id))
   )) as T[];
 }

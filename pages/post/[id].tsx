@@ -5,7 +5,7 @@ import {
   db,
   deletePost,
   getData,
-  getDataByQuery,
+  getDatasByQuery,
   getPath,
 } from "../../apis/firebase";
 import Back from "../../components/Back";
@@ -188,13 +188,13 @@ export async function getServerSideProps({ params }: IServerSidePaths) {
   const initUser = await getData<IUser>("users", initPost.uid as string);
 
   const id = initPost.id as string;
-  const likes = await getDataByQuery(
+  const likes = await getDatasByQuery(
     query(collection(db, "likes"), where("pid", "==", id))
   );
-  const scraps = await getDataByQuery(
+  const scraps = await getDatasByQuery(
     query(collection(db, "scraps"), where("pid", "==", id))
   );
-  const comments = await getDataByQuery(
+  const comments = await getDatasByQuery(
     query(
       collection(db, "comments"),
       where("pid", "==", id),

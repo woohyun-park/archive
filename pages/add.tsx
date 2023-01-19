@@ -8,7 +8,7 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import React, { useRef, useState } from "react";
-import { db, getData, getDataByQuery, getEach } from "../apis/firebase";
+import { db, getEach } from "../apis/firebase";
 import { COLOR, IPost, SIZE, ITag, DEFAULT, IDict } from "../custom";
 import { useStore } from "../apis/zustand";
 import { useRouter } from "next/router";

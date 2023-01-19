@@ -66,7 +66,7 @@ export default function ProfileSmall({
         <div className={user.id === gCurUser.id ? "row row-cur" : "row"}>
           <Link href={`/profile/${user?.id}`}>
             <div className="g-profileImg">
-              <Image src={user?.photoURL} alt="" fill />
+              <Image src={user.photoURL} alt="" fill />
             </div>
           </Link>
           <div className="col">
