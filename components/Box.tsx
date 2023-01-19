@@ -62,9 +62,8 @@ export default function Box({ post, style }: IBoxProps) {
           padding-bottom: 100%;
         }
         .cont-search {
-          width: calc(33.33% - 8px);
-          padding-bottom: calc(33.33% - 8px);
-          margin: 4px;
+          width: 100%;
+          padding-bottom: 100%;
         }
         .cont-profile {
           width: calc(50% - 8px);

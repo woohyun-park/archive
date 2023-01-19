@@ -94,8 +94,11 @@ export default function Search() {
           background-color: ${COLOR.bg2};
         }
         .postCont {
-          display: flex;
-          flex-wrap: wrap;
+          display: grid;
+          grid-template-columns: 1fr 1fr 1fr;
+          row-gap: 4px;
+          column-gap: 4px;
+          margin-top: 8px;
         }
       `}</style>
     </>
