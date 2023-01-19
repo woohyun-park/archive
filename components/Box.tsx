@@ -17,12 +17,7 @@ export default function Box({ post, style }: IBoxProps) {
           </>
         ) : (
           <>
-            <Image
-              className="bg bg-image"
-              src={post.imgs[0]}
-              alt={DEFAULT.img.alt}
-              fill
-            />
+            <Image className="bg bg-image" src={post.imgs[0]} alt="" fill />
             <div className="overlay"></div>
           </>
         )}

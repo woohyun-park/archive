@@ -234,7 +234,7 @@ export default function PostAction({ post, style }: IPostActionProps) {
       {style === "post" && (
         <div className="inputCont">
           <div className="g-profileImg">
-            <Image src={gCurUser.photoURL} alt={DEFAULT.img.alt} fill />
+            <Image src={gCurUser.photoURL} alt="" fill />
           </div>
           <input
             className="g-button2 input"

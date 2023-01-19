@@ -30,10 +30,6 @@ export const DEFAULT = {
     // comments: [],
     // tags: [],
   },
-  img: {
-    alt: "",
-    // alt: "https://res.cloudinary.com/dl5qaj6le/image/upload/v1673663298/archive/static/default_alt.png",
-  },
 };
 
 export const SIZE = {

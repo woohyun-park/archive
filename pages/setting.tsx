@@ -91,7 +91,7 @@ export default function Setting() {
           <Image
             src={preview}
             onClick={() => fileRef.current?.click()}
-            alt={DEFAULT.img.alt}
+            alt=""
             fill
           />
         </div>

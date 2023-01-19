@@ -13,13 +13,13 @@ export default function ContImage({ post, type }: IContImageProps) {
       <>
         {type === "img" ? (
           <div className="img-1">
-            <Image src={post.imgs[0]} alt={DEFAULT.img.alt} fill />
+            <Image src={post.imgs[0]} alt="" fill />
           </div>
         ) : type === "color" ? (
           <div className="img-1" />
         ) : type === "img-4" ? (
           <div className="img-4">
-            <Image src={post.imgs[0]} alt={DEFAULT.img.alt} fill />
+            <Image src={post.imgs[0]} alt="" fill />
           </div>
         ) : type === "color-4" ? (
           <div className="img-4" />

@@ -111,7 +111,7 @@ export default function Profile({
             </div>
           </div>
           <div className="profileImage">
-            <Image src={initUser.photoURL} alt={DEFAULT.img.alt} fill />
+            <Image src={initUser.photoURL} alt="" fill />
           </div>
         </div>
         {(() => {

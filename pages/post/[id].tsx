@@ -77,7 +77,7 @@ export default function Post({ initPost, initUser }: IPostProps) {
           ) : (
             <div className="imgCont">
               <div className="img">
-                <Image src={initPost.imgs[0]} alt={DEFAULT.img.alt} fill />
+                <Image src={initPost.imgs[0]} alt="" fill />
               </div>
             </div>
           )}

@@ -350,7 +350,7 @@ export default function Add() {
             </div>
           ) : (
             <div className="imgCont" onClick={handleImageClick}>
-              <Image src={preview} alt={DEFAULT.img.alt} fill />
+              <Image src={preview} alt="" fill />
             </div>
           )
         ) : (
