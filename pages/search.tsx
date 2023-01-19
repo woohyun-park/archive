@@ -1,16 +1,11 @@
-import { collection, getDocs } from "firebase/firestore";
-import { db } from "../apis/firebase";
 import List from "../components/List";
 import { COLOR, IPost, IUser, SIZE } from "../custom";
 import { HiSearch } from "react-icons/hi";
 import { useState } from "react";
+import { useStore } from "../apis/zustand";
 
-interface ISearchProps {
-  posts: IPost[];
-  users: IUser[];
-}
-
-export default function Search({ posts, users }: ISearchProps) {
+export default function Search() {
+  const { gSearch } = useStore();
   const [search, setSearch] = useState("");
 
   function handleSearchClick() {}
@@ -32,9 +27,9 @@ export default function Search({ posts, users }: ISearchProps) {
       </div>
       <List
         data={{
-          post: posts,
+          post: gSearch.posts,
           tag: {},
-          people: users,
+          people: gSearch.users,
         }}
         style="search"
       />
@@ -68,26 +63,4 @@ export default function Search({ posts, users }: ISearchProps) {
       `}</style>
     </>
   );
-}
-
-export async function getServerSideProps() {
-  const postSnap = await getDocs(collection(db, "posts"));
-  const posts: IPost[] = [];
-  postSnap.forEach((doc) => {
-    if (doc.data().isDeleted) {
-      return;
-    }
-    posts.push({
-      ...doc.data(),
-      createdAt: doc.data().createdAt.toDate(),
-      id: doc.id,
-    } as IPost);
-  });
-  const userSnap = await getDocs(collection(db, "users"));
-  const users: IUser[] = [];
-  userSnap.forEach((doc) => {
-    users.push({ ...(doc.data() as IUser), id: doc.id });
-  });
-
-  return { props: { posts, users } };
 }

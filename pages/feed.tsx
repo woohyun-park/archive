@@ -5,26 +5,22 @@ import PostFeed from "../components/PostFeed";
 import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 
 export default function Feed() {
-  const { gFeed } = useStore();
+  const { gFeed, gPage } = useStore();
   const [initLoading, setInitLoading] = useState(true);
   const [loading, setLoading] = useState(false);
 
   // TODO: 뒤로가기 시 이전 스크롤 유지
-  const { page, setLastIntersecting } = useInfiniteScroll();
+  const { setLastIntersecting } = useInfiniteScroll("feed");
 
   useEffect(() => {
     if (initLoading) return;
     setLoading(true);
-  }, [page]);
+  }, [gPage]);
 
   useEffect(() => {
-    console.log(gFeed);
-    console.log("1", initLoading, loading);
     if (initLoading && gFeed.posts.length !== 0) {
-      console.log("2", initLoading, loading);
       setInitLoading(false);
     } else if (loading && gFeed.posts.length !== 0) {
-      console.log("2", initLoading, loading);
       setLoading(false);
     }
   }, [gFeed]);

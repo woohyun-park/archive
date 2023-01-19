@@ -1,5 +1,5 @@
 import create from "zustand";
-import { IComment, ILike, IPost, IScrap, IUser } from "../custom";
+import { IComment, IDict, ILike, IPost, IScrap, ITag, IUser } from "../custom";
 import {
   collection,
   doc,
@@ -24,13 +24,22 @@ interface ICurUserState {
   gCurUser: IUser;
   gFeed: {
     posts: IPost[];
+  };
+  gSearch: {
+    posts: IPost[];
+    tags: ITag[];
     users: IUser[];
   };
+  gPage: IDict<number>;
 
   gInit: (id: string) => Promise<void>;
+  gSetPage: (type: IPageType, page: number) => void;
   gSetFeed: (id: string, page: number) => Promise<void>;
-  gSetSearch: (type: string, page: number) => Promise<void>;
+  gSetSearch: (type: ISearchType, page: number) => Promise<void>;
 }
+
+type ISearchType = "posts" | "tags" | "users";
+type IPageType = "feed" | "searchPost" | "searchTag" | "searchUser";
 
 export const useStore = create<ICurUserState>((set, get) => ({
   gCurUser: {
@@ -45,6 +54,16 @@ export const useStore = create<ICurUserState>((set, get) => ({
   },
   gFeed: {
     posts: [],
+  },
+  gPage: {
+    feed: 1,
+    searchPost: 1,
+    searchTag: 1,
+    searchUser: 1,
+  },
+  gSearch: {
+    posts: [],
+    tags: [],
     users: [],
   },
 
@@ -108,7 +127,6 @@ export const useStore = create<ICurUserState>((set, get) => ({
         limit(5)
       )
     );
-    const users: IUser[] = [];
 
     for await (const post of posts) {
       const pid = post.id;
@@ -126,6 +144,30 @@ export const useStore = create<ICurUserState>((set, get) => ({
       post.author = user;
     }
 
+    const search = {
+      posts: await getDatasByQuery<IPost>(
+        query(
+          collection(db, "posts"),
+          // orderBy("createdAt", "desc"),
+          limit(get().gPage.searchPost * 9)
+        )
+      ),
+      tags: await getDatasByQuery<ITag>(
+        query(
+          collection(db, "tags"),
+          // orderBy("createdAt", "desc"),
+          limit(get().gPage.searchTag * 9)
+        )
+      ),
+      users: await getDatasByQuery<IUser>(
+        query(
+          collection(db, "users"),
+          // orderBy("createdAt", "desc"),
+          limit(get().gPage.searchUser * 9)
+        )
+      ),
+    };
+
     set((state) => {
       return {
         ...state,
@@ -133,10 +175,22 @@ export const useStore = create<ICurUserState>((set, get) => ({
         gFeed: {
           posts,
         },
+        gSearch: search,
       };
     });
   },
 
+  gSetPage: (type: IPageType, page: number) => {
+    set((state) => {
+      return {
+        ...state,
+        gPage: {
+          ...state.gPage,
+          [type]: page,
+        },
+      };
+    });
+  },
   gSetFeed: async (id: string, page: number) => {
     const curUser = await getDataByRef<IUser>(doc(db, "users", id));
     const postSnap = await getDocs(
@@ -176,10 +230,26 @@ export const useStore = create<ICurUserState>((set, get) => ({
     });
   },
 
-  gSetSearch: async (type: string, page: number) => {
-    if (type === "post") {
-    } else if (type === "tag") {
-    } else if (type === "people") {
+  gSetSearch: async (type: ISearchType, page: number) => {
+    if (type === "posts") {
+      const posts = await getDatasByQuery<IPost>(
+        query(
+          collection(db, "posts"),
+          orderBy("createdAt", "desc"),
+          limit(page * 9)
+        )
+      );
+      set((state) => {
+        return {
+          ...state,
+          gSearch: {
+            ...state.gSearch,
+            posts,
+          },
+        };
+      });
+    } else if (type === "tags") {
+    } else if (type === "users") {
     }
   },
 }));
