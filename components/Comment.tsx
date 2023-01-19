@@ -3,6 +3,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { HiX } from "react-icons/hi";
 import { db } from "../apis/firebase";
+import TIME from "../apis/time";
 import { useStore } from "../apis/zustand";
 import { COLOR, DEFAULT, IComment, IUser } from "../custom";
 
@@ -37,7 +38,12 @@ export default function Comment({ comment, onClick }: ICommentProps) {
           </div>
 
           <div>
-            <div className="displayName">{user?.displayName}</div>
+            <div className="topCont">
+              <div className="displayName">{user?.displayName}</div>
+              <div className="createdAt">
+                {TIME.displayCreatedAt(comment.createdAt)}
+              </div>
+            </div>
             <div className="txt">{comment?.txt}</div>
           </div>
         </div>
@@ -63,10 +69,19 @@ export default function Comment({ comment, onClick }: ICommentProps) {
             margin-top: 8px;
             margin-bottom: 4px;
           }
+          .topCont {
+            display: flex;
+            align-items: center;
+          }
+          .createdAt {
+            font-size: 10px;
+            color: ${COLOR.txt2};
+          }
           .displayName {
             font-size: 12px;
             font-weight: bold;
-            color: ${COLOR.txt3};
+            color: ${COLOR.txt1};
+            margin-right: 4px;
           }
           .txt {
             font-size: 16px;

@@ -9,19 +9,21 @@ export default function Feed() {
   const [initLoading, setInitLoading] = useState(true);
   const [loading, setLoading] = useState(false);
 
+  // TODO: 뒤로가기 시 이전 스크롤 유지
   const { page, setLastIntersecting } = useInfiniteScroll();
 
-  useEffect(() => {
-    if (initLoading && gPosts.length !== 0) {
-      setInitLoading(false);
-    } else if (gPosts.length !== 0 && loading) {
-      setLoading(false);
-    }
-  }, [gPosts]);
   useEffect(() => {
     if (initLoading) return;
     setLoading(true);
   }, [page]);
+
+  useEffect(() => {
+    if (initLoading && gPosts.length !== 0) {
+      setInitLoading(false);
+    } else if (loading && gPosts.length !== 0) {
+      setLoading(false);
+    }
+  }, [gPosts]);
 
   return (
     <>

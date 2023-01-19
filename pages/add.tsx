@@ -8,8 +8,8 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import React, { useRef, useState } from "react";
-import { db, getDataByQuery } from "../apis/firebase";
-import { COLOR, IPost, SIZE, ITag, DEFAULT } from "../custom";
+import { db, getData, getDataByQuery, getEach } from "../apis/firebase";
+import { COLOR, IPost, SIZE, ITag, DEFAULT, IDict } from "../custom";
 import { useStore } from "../apis/zustand";
 import { useRouter } from "next/router";
 import { HiArrowLeft, HiX } from "react-icons/hi";
@@ -91,10 +91,8 @@ export default function Add() {
           let pid;
           // 이미지를 올렸으며 수정인 경우
           if (prevPost) {
-            const deleteTags = await getDataByQuery<ITag>(
+            const deleteTags = await getEach<ITag>(
               "tags",
-              "pid",
-              "==",
               prevPost.id as string
             );
             for (const tag of deleteTags) {
@@ -135,10 +133,8 @@ export default function Add() {
         } else {
           // 이미지를 올리지 않았으며 수정인 경우
           if (prevPost) {
-            const deleteTags = await getDataByQuery<ITag>(
+            const deleteTags = await getEach<ITag>(
               "tags",
-              "pid",
-              "==",
               prevPost.id as string
             );
             for (const tag of deleteTags) {
@@ -172,12 +168,7 @@ export default function Add() {
         let pid;
         // 색깔이며 수정인 경우
         if (prevPost) {
-          const deleteTags = await getDataByQuery<ITag>(
-            "tags",
-            "pid",
-            "==",
-            prevPost.id as string
-          );
+          const deleteTags = await getEach<ITag>("tags", prevPost.id as string);
           for (const tag of deleteTags) {
             await deleteDoc(doc(db, "tags", tag.id as string));
           }
@@ -292,7 +283,8 @@ export default function Add() {
     setValue("tags", tempTags);
   }
   function checkKeyDown(e: React.KeyboardEvent<HTMLFormElement>) {
-    if (e.key === "Enter" && e.target.name !== "txt") e.preventDefault();
+    if (e.key === "Enter" && (e.target as HTMLElement).id !== "txt")
+      e.preventDefault();
   }
 
   return (
@@ -315,7 +307,7 @@ export default function Add() {
         onKeyDown={checkKeyDown}
         onSubmit={handleSubmit(
           (data) => onValid(data),
-          (e) => {
+          (e: IDict<any>) => {
             for (const each in e) {
               if (each === "file") {
                 console.log(imgRef);
@@ -411,6 +403,7 @@ export default function Add() {
             file.ref(e);
             fileRef.current = e;
           }}
+          id="file"
           hidden
         />
 
@@ -428,6 +421,7 @@ export default function Add() {
           {...register("title", { required: true, maxLength: 32 })}
           type="text"
           maxLength={32}
+          id="title"
         />
 
         <div className="g_input_labelCont">
@@ -457,7 +451,7 @@ export default function Add() {
             </span>
           ))}
         </div>
-        <input onChange={handleTagChange} value={tag} maxLength={17} />
+        <input onChange={handleTagChange} value={tag} maxLength={17} id="tag" />
 
         <div className="g_input_labelCont">
           <label className="g_input_label">내용 *</label>
@@ -469,19 +463,21 @@ export default function Add() {
             }
           >{`${watch("txt").length}/2000`}</div>
         </div>
+
         <ReactTextareaAutosize
           style={{
             margin: "8px 0",
-            "background-color": COLOR.bg2,
+            backgroundColor: COLOR.bg2,
             padding: "8px",
             border: "none",
-            "border-radius": "8px",
-            "font-family": "inherit",
+            borderRadius: "8px",
+            fontFamily: "inherit",
             resize: "none",
           }}
           {...register("txt", { required: true, maxLength: 2000 })}
           maxLength={2000}
           minRows={10}
+          id="txt"
         />
         <button className="g-button1" type="submit">
           {prevPost ? "완료" : "생성"}

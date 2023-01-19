@@ -1,38 +1,14 @@
-import {
-  arrayRemove,
-  arrayUnion,
-  deleteDoc,
-  doc,
-  updateDoc,
-} from "firebase/firestore";
+import { arrayRemove, arrayUnion, doc, updateDoc } from "firebase/firestore";
 import Link from "next/link";
-import { HiPencil, HiX } from "react-icons/hi";
-import {
-  db,
-  deletePost,
-  getDataByQuery,
-  getEach,
-  updateUser,
-} from "../apis/firebase";
+import { db, updateUser } from "../apis/firebase";
 import { useStore } from "../apis/zustand";
-import {
-  COLOR,
-  DEFAULT,
-  IComment,
-  ILike,
-  IPost,
-  IScrap,
-  IStyle,
-  ITag,
-  IUser,
-  SIZE,
-} from "../custom";
-import dayjs from "dayjs";
+import { COLOR, DEFAULT, IPost, IStyle, IUser } from "../custom";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import Delete from "./Delete";
 import Modify from "./Modify";
+import TIME from "../apis/time";
 
 type IProfileSmallProps = {
   user: IUser;
@@ -83,21 +59,6 @@ export default function ProfileSmall({
     updateUser({ id: gCurUser.id, followings: followings });
     setIsFollowing(!isFollowing);
   }
-  function displayCreatedAt() {
-    const curDate = dayjs(new Date());
-    const postDate = dayjs(post?.createdAt as Date);
-    if (curDate.diff(postDate) < 60000) {
-      return `${curDate.diff(postDate, "s")}초 전`;
-    } else if (curDate.diff(postDate) < 3600000) {
-      return `${curDate.diff(postDate, "m")}분 전`;
-    } else if (curDate.diff(postDate) < 86400000) {
-      return `${curDate.diff(postDate, "h")}시간 전`;
-    } else if (curDate.diff(postDate) < 86400000 * 3) {
-      return `${curDate.diff(postDate, "d")}일 전`;
-    } else {
-      return postDate.format("MM월 DD, YYYY");
-    }
-  }
 
   return (
     <>
@@ -113,7 +74,9 @@ export default function ProfileSmall({
               <a className="userName">{user?.displayName}</a>
             </Link>
             {style === "feed" || style === "post" ? (
-              <div className="createdAt">{displayCreatedAt()}</div>
+              <div className="createdAt">
+                {TIME.displayCreatedAt(post?.createdAt)}
+              </div>
             ) : (
               <div className="txt">{user.txt}</div>
             )}
@@ -144,7 +107,7 @@ export default function ProfileSmall({
             return (
               <>
                 <div className="actionCont">
-                  <Modify post={post} />
+                  <Modify post={post as IPost} />
                   <Delete id={post?.id || ""} />
                 </div>
               </>
