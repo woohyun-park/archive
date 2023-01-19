@@ -124,6 +124,7 @@ export interface IPost {
   likes?: ILike[];
   scraps?: IScrap[];
   comments?: IComment[];
+  author?: IUser;
   // isDeleted: boolean;
 }
 

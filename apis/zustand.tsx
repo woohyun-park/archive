@@ -12,19 +12,24 @@ import {
   Timestamp,
   where,
 } from "firebase/firestore";
-import { db, getData, getDatasByQuery, getEach } from "./firebase";
+import {
+  db,
+  getData,
+  getDataByRef,
+  getDatasByQuery,
+  getEach,
+} from "./firebase";
 
 interface ICurUserState {
   gCurUser: IUser;
-  gPosts: IPost[];
-  gUsers: IUser[];
+  gFeed: {
+    posts: IPost[];
+    users: IUser[];
+  };
 
-  gInit: Function;
-
-  gSetPostsAndUsers: (
-    gCurUser: IUser,
-    page: number
-  ) => Promise<{ posts: IPost[]; users: IUser[] } | null>;
+  gInit: (id: string) => Promise<void>;
+  gSetFeed: (id: string, page: number) => Promise<void>;
+  gSetSearch: (type: string, page: number) => Promise<void>;
 }
 
 export const useStore = create<ICurUserState>((set, get) => ({
@@ -38,11 +43,13 @@ export const useStore = create<ICurUserState>((set, get) => ({
     followers: [],
     followings: [],
   },
-  gPosts: [],
-  gUsers: [],
+  gFeed: {
+    posts: [],
+    users: [],
+  },
 
-  gInit: async (uid: string) => {
-    const loadUser = onSnapshot(doc(db, "users", uid), (doc) => {
+  gInit: async (id: string) => {
+    const loadUser = onSnapshot(doc(db, "users", id), (doc) => {
       set((state) => {
         return {
           ...state,
@@ -55,7 +62,7 @@ export const useStore = create<ICurUserState>((set, get) => ({
       });
     });
     const loadLikes = onSnapshot(
-      query(collection(db, "likes"), where("uid", "==", uid)),
+      query(collection(db, "likes"), where("uid", "==", id)),
       (snap) => {
         const datas: ILike[] = [];
         snap.forEach((doc) => {
@@ -70,7 +77,7 @@ export const useStore = create<ICurUserState>((set, get) => ({
       }
     );
     const loadScraps = onSnapshot(
-      query(collection(db, "scraps"), where("uid", "==", uid)),
+      query(collection(db, "scraps"), where("uid", "==", id)),
       (snap) => {
         const datas: IScrap[] = [];
         snap.forEach((doc) => {
@@ -85,9 +92,9 @@ export const useStore = create<ICurUserState>((set, get) => ({
       }
     );
 
-    const user = await getDoc(doc(db, "users", uid));
-    const likes = await getEach<ILike>("likes", user.id);
-    const scraps = await getEach<IScrap>("scraps", user.id);
+    const user = await getDoc(doc(db, "users", id));
+    const likes = await getEach<ILike>("likes", id);
+    const scraps = await getEach<IScrap>("scraps", id);
     const curUser = {
       ...(user.data() as IUser),
       likes: likes,
@@ -96,74 +103,83 @@ export const useStore = create<ICurUserState>((set, get) => ({
     const posts = await getDatasByQuery<IPost>(
       query(
         collection(db, "posts"),
-        where("uid", "in", [...curUser.followings, curUser.id]),
+        where("uid", "in", [...curUser.followings, id]),
         orderBy("createdAt", "desc"),
         limit(5)
       )
     );
     const users: IUser[] = [];
+
     for await (const post of posts) {
-      const likes = await getEach<ILike>("likes", post.id || "");
-      const scraps = await getEach<IScrap>("scraps", post.id || "");
-      const comments = await getEach<IComment>("comments", post.id || "");
+      const pid = post.id;
+      const uid = post.uid;
+      if (!pid) return;
+
+      const likes = await getEach<ILike>("likes", pid);
+      const scraps = await getEach<IScrap>("scraps", pid);
+      const comments = await getEach<IComment>("comments", pid);
+      const user = await getData<IUser>("users", uid);
+
       post.likes = likes ? likes : [];
       post.scraps = scraps ? scraps : [];
       post.comments = comments ? comments : [];
-      const user = await getData<IUser>("users", post.uid);
-      users.push(user);
+      post.author = user;
     }
 
     set((state) => {
       return {
         ...state,
         gCurUser: curUser,
-        gPosts: posts,
-        gUsers: users,
+        gFeed: {
+          posts,
+        },
       };
     });
   },
 
-  gSetPostsAndUsers: async (gCurUser: IUser, page: number) => {
-    const q = query(
-      collection(db, "posts"),
-      where("uid", "in", [...gCurUser.followings, gCurUser.id]),
-      orderBy("createdAt", "desc"),
-      limit(page * 5)
+  gSetFeed: async (id: string, page: number) => {
+    const curUser = await getDataByRef<IUser>(doc(db, "users", id));
+    const postSnap = await getDocs(
+      query(
+        collection(db, "posts"),
+        where("uid", "in", [...curUser.followings, curUser.id]),
+        orderBy("createdAt", "desc"),
+        limit(page * 5)
+      )
     );
-    const postSnap = await getDocs(q);
+
     const newPosts: IPost[] = [];
-    const uids: string[] = [];
-    postSnap.forEach((doc) => {
-      const data: IPost = doc.data() as IPost;
-      newPosts.push({
-        ...data,
-        createdAt: (data.createdAt as Timestamp).toDate(),
-      } as IPost);
-      uids.push(data.uid);
-    });
-    for await (const post of newPosts) {
-      const likes = await getEach<ILike>("likes", post.id || "");
-      const scraps = await getEach<IScrap>("scraps", post.id || "");
-      const comments = await getEach<IComment>("comments", post.id || "");
+    for (const doc of postSnap.docs) {
+      const post: IPost = doc.data() as IPost;
+      const uid = post.uid;
+      const pid = post.id || "";
+      const author: IUser = await getData<IUser>("users", uid);
+      const likes = await getEach<ILike>("likes", pid);
+      const scraps = await getEach<IScrap>("scraps", pid);
+      const comments = await getEach<IComment>("comments", pid);
       post.likes = likes ? likes : [];
       post.scraps = scraps ? scraps : [];
       post.comments = comments ? comments : [];
-    }
-    const newUsers: IUser[] = [];
-    for await (const uid of uids) {
-      const user = await getData<IUser>("users", uid);
-      newUsers.push(user);
+      newPosts.push({
+        ...post,
+        author,
+        createdAt: (post.createdAt as Timestamp).toDate(),
+      });
     }
     set((state) => {
       return {
         ...state,
-        gPosts: newPosts,
-        gUsers: newUsers,
+        gFeed: {
+          posts: newPosts,
+        },
       };
     });
-    return {
-      posts: newPosts,
-      users: newUsers,
-    };
+  },
+
+  gSetSearch: async (type: string, page: number) => {
+    if (type === "post") {
+    } else if (type === "tag") {
+    } else if (type === "people") {
+    }
   },
 }));

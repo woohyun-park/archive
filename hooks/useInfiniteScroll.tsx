@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useStore } from "../apis/zustand";
 
 export const useInfiniteScroll = () => {
-  const { gCurUser, gPosts, gUsers, gSetPostsAndUsers } = useStore();
+  const { gCurUser, gSetFeed } = useStore();
   const [page, setPage] = useState(1);
   const [lastIntersecting, setLastIntersecting] = useState<HTMLElement | null>(
     null
@@ -18,7 +18,7 @@ export const useInfiniteScroll = () => {
   };
 
   useEffect(() => {
-    gSetPostsAndUsers(gCurUser, page);
+    gSetFeed(gCurUser.id, page);
   }, [page]);
 
   useEffect(() => {

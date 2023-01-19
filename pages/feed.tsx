@@ -5,7 +5,7 @@ import PostFeed from "../components/PostFeed";
 import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 
 export default function Feed() {
-  const { gPosts, gUsers } = useStore();
+  const { gFeed } = useStore();
   const [initLoading, setInitLoading] = useState(true);
   const [loading, setLoading] = useState(false);
 
@@ -18,12 +18,16 @@ export default function Feed() {
   }, [page]);
 
   useEffect(() => {
-    if (initLoading && gPosts.length !== 0) {
+    console.log(gFeed);
+    console.log("1", initLoading, loading);
+    if (initLoading && gFeed.posts.length !== 0) {
+      console.log("2", initLoading, loading);
       setInitLoading(false);
-    } else if (loading && gPosts.length !== 0) {
+    } else if (loading && gFeed.posts.length !== 0) {
+      console.log("2", initLoading, loading);
       setLoading(false);
     }
-  }, [gPosts]);
+  }, [gFeed]);
 
   return (
     <>
@@ -34,12 +38,16 @@ export default function Feed() {
             <Loader />
           </div>
         )}
-        {gPosts.length !== 0 && (
+        {gFeed.posts.length !== 0 && (
           <>
-            {gPosts.map((post, i) => {
+            {gFeed.posts.map((post, i) => {
               return (
                 <>
-                  <PostFeed post={post} user={gUsers[i]} key={post.id} />
+                  <PostFeed
+                    post={post}
+                    user={post.author || null}
+                    key={post.id}
+                  />
                   <div ref={setLastIntersecting}></div>
                 </>
               );
