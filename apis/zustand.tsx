@@ -70,7 +70,6 @@ async function loadFeed(id: string, page: number): Promise<IPost[]> {
     const post: IPost = doc.data() as IPost;
     const uid = post.uid;
     const pid = post.id || "";
-
     const author: IUser = await getData<IUser>("users", uid);
     const likes = await getEach<ILike>("likes", pid);
     const scraps = await getEach<IScrap>("scraps", pid);

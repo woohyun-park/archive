@@ -11,27 +11,19 @@ export default function Back({ style }: IBackProps) {
 
   return (
     <>
-      <div className="cont">
-        <div className="btnCont" onClick={() => router.back()}>
+      <div className={`d1 flex justify-between`}>
+        <div
+          className="my-4 hover:cursor-pointer"
+          onClick={() => router.back()}
+        >
           <HiArrowLeft size={SIZE.icon} />
         </div>
       </div>
 
       <style jsx>{`
-        .cont {
-          display: flex;
-          justify-content: space-between;
+        .d1 {
           padding-top: ${style === "post" ? "48px" : ""};
           background-color: ${COLOR.bg1};
-          width: calc(100% + 32px);
-          max-width: 480px;
-          transform: translateX(-16px);
-        }
-        .btnCont {
-          margin: 16px;
-        }
-        .btnCont:hover {
-          cursor: pointer;
         }
       `}</style>
     </>

@@ -59,7 +59,7 @@ export default function Post({ initPost, initUser }: IPostProps) {
         <div>존재하지 않는 페이지입니다</div>
       ) : (
         <>
-          <div className="topCont">
+          <div className="topCont justify-between">
             <Back style="post" />
             {gCurUser.id === initUser.id && (
               <div className="actionCont">
