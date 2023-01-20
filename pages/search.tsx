@@ -19,7 +19,7 @@ export default function Search() {
 
   useEffect(() => {
     setLoading(true);
-  }, [gPage.searchPost]);
+  }, [gPage.sPost]);
 
   function handleSearchClick() {}
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -41,18 +41,22 @@ export default function Search() {
       {search === "" ? (
         <>
           <div className="postCont">
-            {gSearch.posts.map((e) => (
+            {gSearch.posts.map((e, i) => (
               <>
-                <Box
-                  post={{ ...e, id: e.id }}
-                  style={"search"}
-                  key={e.id}
-                ></Box>
+                <div>
+                  <Box
+                    post={{ ...e, id: e.id }}
+                    style={"search"}
+                    key={e.id}
+                  ></Box>
+                </div>
+                {i === gSearch.posts.length - 1 && (
+                  <div ref={setLastIntersecting}></div>
+                )}
               </>
             ))}
           </div>
-          {loading && <Loader />}
-          <div className="ref" ref={setLastIntersecting}></div>
+          <div className="loaderCont"> {loading && <Loader />}</div>
         </>
       ) : (
         <>
@@ -95,10 +99,17 @@ export default function Search() {
         }
         .postCont {
           display: grid;
-          grid-template-columns: 1fr 1fr 1fr;
+          grid-template-columns: 1fr;
+           {
+            /* grid-template-columns: 1fr 1fr 1fr; */
+          }
           row-gap: 4px;
           column-gap: 4px;
           margin-top: 8px;
+        }
+        .loaderCont {
+          display: flex;
+          justify-content: center;
         }
       `}</style>
     </>

@@ -20,6 +20,18 @@ import {
   getEach,
 } from "./firebase";
 
+export type POST = "posts";
+export type TAG = "tags";
+export type USER = "users";
+
+export type FEED = "feed";
+export type SPOST = "sPost";
+export type STAG = "sTag";
+export type SUSER = "sUser";
+
+type ISearchType = "posts" | "tags" | "users";
+type IPageType = "feed" | "sPost" | "sTag" | "sUser";
+
 interface ICurUserState {
   gCurUser: IUser;
   gFeed: {
@@ -30,7 +42,7 @@ interface ICurUserState {
     tags: ITag[];
     users: IUser[];
   };
-  gPage: IDict<number>;
+  gPage: IPage;
 
   gInit: (id: string) => Promise<void>;
   gSetPage: (type: IPageType, page: number) => void;
@@ -38,8 +50,19 @@ interface ICurUserState {
   gSetSearch: (type: ISearchType, page: number) => Promise<void>;
 }
 
-type ISearchType = "posts" | "tags" | "users";
-type IPageType = "feed" | "searchPost" | "searchTag" | "searchUser";
+interface IPage {
+  feed: number;
+  sPost: number;
+  sTag: number;
+  sUser: number;
+}
+
+const POST_PER_PAGE = {
+  feed: 5,
+  sPost: 2,
+  sTag: 15,
+  sUser: 15,
+};
 
 export const useStore = create<ICurUserState>((set, get) => ({
   gCurUser: {
@@ -57,9 +80,9 @@ export const useStore = create<ICurUserState>((set, get) => ({
   },
   gPage: {
     feed: 1,
-    searchPost: 1,
-    searchTag: 1,
-    searchUser: 1,
+    sPost: 1,
+    sTag: 1,
+    sUser: 1,
   },
   gSearch: {
     posts: [],
@@ -148,21 +171,21 @@ export const useStore = create<ICurUserState>((set, get) => ({
       query(
         collection(db, "posts"),
         orderBy("createdAt", "desc"),
-        limit(get().gPage.searchPost * 12)
+        limit(get().gPage.sPost * POST_PER_PAGE.sPost)
       )
     );
     const searchTags = await getDatasByQuery<ITag>(
       query(
         collection(db, "tags"),
         // orderBy("createdAt", "desc"),
-        limit(get().gPage.searchTag * 9)
+        limit(get().gPage.sTag * POST_PER_PAGE.sTag)
       )
     );
     const searchUsers = await getDatasByQuery<IUser>(
       query(
         collection(db, "users"),
         // orderBy("createdAt", "desc"),
-        limit(get().gPage.searchUser * 9)
+        limit(get().gPage.sUser * POST_PER_PAGE.sUser)
       )
     );
     const search = {
@@ -239,7 +262,7 @@ export const useStore = create<ICurUserState>((set, get) => ({
         query(
           collection(db, "posts"),
           orderBy("createdAt", "desc"),
-          limit(page * 12)
+          limit(page * POST_PER_PAGE.sPost)
         )
       );
       set((state) => {

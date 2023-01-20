@@ -13,7 +13,6 @@ import {
   query,
   updateDoc,
   where,
-  WhereFilterOp,
 } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { IComment, IDict, ILike, IScrap, ITag, IUser } from "../custom";
@@ -57,6 +56,7 @@ export async function getDataByRef<T>(ref: DocumentReference) {
 }
 
 export async function getDatasByQuery<T>(q: Query) {
+  console.log(q);
   const snap = await getDocs(q);
   const datas: T[] = [];
   snap.forEach((doc) => {
