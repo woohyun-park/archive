@@ -56,7 +56,6 @@ export async function getDataByRef<T>(ref: DocumentReference) {
 }
 
 export async function getDatasByQuery<T>(q: Query) {
-  console.log(q);
   const snap = await getDocs(q);
   const datas: T[] = [];
   snap.forEach((doc) => {
@@ -132,7 +131,6 @@ export async function deletePost(id: string) {
   const scraps = await getEach<IScrap>("scraps", id);
   const tags = await getEach<ITag>("tags", id);
   const comments = await getEach<IComment>("comments", id);
-
   deleteEach(likes, "likes");
   deleteEach(scraps, "scraps");
   deleteEach(comments, "comments");

@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useStore } from "../apis/zustand";
-import { SPOST } from "../apis/zustand";
 
 type IInfintieScrollType = "feed" | "searchPost" | "searchTag" | "searchUser";
 

@@ -99,10 +99,7 @@ export default function Search() {
         }
         .postCont {
           display: grid;
-          grid-template-columns: 1fr;
-           {
-            /* grid-template-columns: 1fr 1fr 1fr; */
-          }
+          grid-template-columns: 1fr 1fr 1fr;
           row-gap: 4px;
           column-gap: 4px;
           margin-top: 8px;
