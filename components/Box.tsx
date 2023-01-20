@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { COLOR, DEFAULT, IPost, IStyle } from "../custom";
+import { COLOR, IPost, IStyle } from "../custom";
 
 interface IBoxProps {
   post: IPost;
@@ -10,15 +10,13 @@ interface IBoxProps {
 export default function Box({ post, style }: IBoxProps) {
   return (
     <>
-      <div className={`cont cont-${style}`}>
+      <div className="relative overflow-hidden rounded-lg w-full pb-[100%]">
         {post.imgs.length === 0 ? (
-          <>
-            <div className="bg" />
-          </>
+          <div className="d1 absolute w-full h-full object-cover" />
         ) : (
           <>
-            <Image className="bg bg-image" src={post.imgs[0]} alt="" fill />
-            <div className="overlay"></div>
+            <Image className="bg-transparent" src={post.imgs[0]} alt="" fill />
+            <div className="absolute w-full h-full bg-black/10"></div>
           </>
         )}
         <Link
@@ -28,16 +26,19 @@ export default function Box({ post, style }: IBoxProps) {
           }}
           as={`/post/${post.id}`}
         >
-          <div className={`title title-${style}`}>{post.title}</div>
+          <div
+            className={`d2-${style} absolute text-5xl font-bold m-4 break-words hover:cursor-pointer`}
+          >
+            {post.title}
+          </div>
         </Link>
-        <div className={`tagCont tagCont-${style}`}>
+        <div
+          className={`absolute bottom-0 right-0 text-right flex flex-wrap-reverse flex-row-reverse w-2/3 tagCont-${style}`}
+        >
           {style === "feed" &&
-            // || style === "profile"
             [...post.tags]?.reverse().map((tag, i) => (
               <Link key={i} href={{ pathname: `/tag/${tag}` }} legacyBehavior>
-                <button
-                  className={`mainTag mainTag-${style} g-button1`}
-                >{`#${tag}`}</button>
+                <button className="g-b1 hover:cursor-pointer">{`#${tag}`}</button>
               </Link>
             ))}
         </div>
@@ -47,111 +48,17 @@ export default function Box({ post, style }: IBoxProps) {
         * {
           color: ${COLOR.txtDark1};
         }
-        .mainTag:hover,
-        .subTag:hover,
-        .title:hover {
-          cursor: pointer;
-        }
-        .cont {
-          position: relative;
-          overflow: hidden;
-          border-radius: 8px;
-        }
-        .cont-feed {
-          width: 100%;
-          padding-bottom: 100%;
-        }
-        .cont-search {
-          width: 100%;
-          padding-bottom: 100%;
-        }
-        .cont-profile {
-          width: calc(50% - 8px);
-          padding-bottom: calc(50% - 8px);
-          margin: 4px;
-        }
-        .bg {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
+        .d1 {
           background-color: ${post?.color || COLOR.primary};
         }
-        .bg-image {
-          background-color: transparent;
-        }
-        .overlay {
-          position: absolute;
-          width: 100%;
-          height: 100%;
-          background-color: rgba(0, 0, 0, 0.1);
-        }
-        .title {
-          position: absolute;
-          top: 0;
-          left: 0;
-          font-size: 48px;
-          font-weight: bold;
-          margin: 16px;
-          word-break: keep-all;
-          word-wrap: break-word;
-        }
-        .title-feed {
-          font-size: 48px;
-          line-height: 44px;
-          margin: 24px;
-          max-width: calc(100% - 48px);
-        }
-        .title-search {
+        .d2-search {
           font-size: 16px;
-          line-height: 14px;
           margin: 8px;
-          word-break: keep-all;
-          word-wrap: break-word;
-          max-width: calc(100% - 16px);
         }
-        .title-profile {
+        .d2-profile {
           font-size: 24px;
-          line-height: 22px;
-          margin: 12px;
-          max-width: calc(100% - 24px);
-        }
-        .tagCont {
-          position: absolute;
-          text-align: right;
-          bottom: 0;
-          right: 0;
-          margin: 16px;
-          display: flex;
-          flex-wrap: wrap-reverse;
-          flex-direction: row-reverse;
-          width: 75%;
-        }
-        .tagCont-feed {
-          margin: 24px;
-        }
-        .tagCont-profile {
-          margin: 12px;
-        }
-        .mainTagCont {
-          text-decoration: none;
-        }
-        .mainTag {
-          margin: 1px 0;
-          margin-left: 4px;
-          width: fit-content;
-          background-color: ${COLOR.btnOverlay};
-          color: ${COLOR.txtDark1};
-        }
-        .mainTag-feed {
-          font-size: 16px;
-        }
-        .mainTag-profile {
-          font-size: 12px;
-          padding: 4px;
-          border-radius: 4px;
+          line-height: 20px;
+          margin: 8px;
         }
       `}</style>
     </>

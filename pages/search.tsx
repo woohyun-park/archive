@@ -81,8 +81,7 @@ export default function Search() {
         {focus && <div>취소</div>}
       </div>
 
-      {/* {!focus ? ( */}
-      {false ? (
+      {!focus ? (
         <>
           <div className="postCont">
             {gSearch.posts.map((e, i) => (
@@ -102,8 +101,7 @@ export default function Search() {
           </div>
           <div className="loaderCont"> {loading && <Loader />}</div>
         </>
-      ) : // ) : search === "" ? (
-      true ? (
+      ) : search === "" ? (
         <>
           <div className="recentCont">
             <div>최근 검색어</div>
@@ -163,8 +161,8 @@ export default function Search() {
         .postCont {
           display: grid;
           grid-template-columns: 1fr 1fr 1fr;
-          row-gap: 4px;
-          column-gap: 4px;
+          row-gap: 8px;
+          column-gap: 8px;
           margin-top: 16px;
         }
         .loaderCont {

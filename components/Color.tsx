@@ -10,26 +10,18 @@ interface IColorProps {
 export default function Color({ color, selected, onClick }: IColorProps) {
   return (
     <>
-      <div className="color" color={color} onClick={onClick}>
-        {selected ? (
-          <>
-            <HiCheck size={SIZE.icon} color={COLOR.txtDark1} />
-          </>
-        ) : (
-          <></>
-        )}
+      <div
+        className="d1 w-12 h-12 rounded-lg flex justify-center items-center"
+        color={color}
+        onClick={onClick}
+      >
+        {selected ? <HiCheck size={SIZE.icon} color={COLOR.txtDark1} /> : <></>}
       </div>
 
       <style jsx>
         {`
-          .color {
-            width: 48px;
-            height: 48px;
-            border-radius: 8px;
+          .d1 {
             background-color: ${color};
-            display: flex;
-            justify-content: center;
-            align-items: center;
           }
         `}
       </style>

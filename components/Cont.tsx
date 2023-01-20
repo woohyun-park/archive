@@ -12,8 +12,8 @@ export default function Cont({ tag, posts, style, onClick }: IImageProps) {
   return (
     <>
       {posts.length !== 0 && (
-        <div className="cont">
-          <div className="bg">
+        <div className="relative overflow-hidden rounded-lg w-full pb-[100%]">
+          <div className="d1 absolute w-full h-full obejct-cover">
             {posts.length >= 4 ? (
               <>
                 <div className="imgCont">
@@ -33,7 +33,10 @@ export default function Cont({ tag, posts, style, onClick }: IImageProps) {
             )}
           </div>
           {posts[0].imgs?.length !== 0 && <div className="overlay"></div>}
-          <div className={`title title-${style}`} onClick={onClick}>
+          <div
+            className={`title title-${style} hover:cursor-pointer`}
+            onClick={onClick}
+          >
             {tag === "모든 스크랩" ? tag : `#${tag}`}
           </div>
         </div>
@@ -43,24 +46,7 @@ export default function Cont({ tag, posts, style, onClick }: IImageProps) {
         * {
           color: ${COLOR.txtDark1};
         }
-        .title:hover {
-          cursor: pointer;
-        }
-        .cont {
-          position: relative;
-          overflow: hidden;
-          border-radius: 8px;
-          width: calc(33.3% - 8px);
-          padding-bottom: calc(33.3% - 8px);
-          margin: 4px;
-        }
-        .bg {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
+        .d1 {
           background-color: ${COLOR.btn1};
         }
         .overlay {
@@ -71,8 +57,6 @@ export default function Cont({ tag, posts, style, onClick }: IImageProps) {
         }
         .title {
           position: absolute;
-          top: 0;
-          left: 0;
           font-size: 48px;
           font-weight: bold;
           margin: 8px;

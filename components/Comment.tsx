@@ -13,13 +13,11 @@ type ICommentProps = {
 };
 
 export default function Comment({ comment, onClick }: ICommentProps) {
-  // const [comment, setComment] = useState<IComment | null>(null);
   const [user, setUser] = useState<IUser | null>(null);
   const { gCurUser } = useStore();
 
   useEffect(() => {
     async function init() {
-      // 만약 user를 cache해놓고 cache hit일때는 바로 가져오도록 하면 더 빠르지 않을까
       const userRef = doc(db, "users", comment.uid);
       const userSnap = await getDoc(userRef);
       const tempUser = { ...(userSnap.data() as IUser) };
@@ -30,7 +28,7 @@ export default function Comment({ comment, onClick }: ICommentProps) {
 
   return (
     <>
-      <div className="cont">
+      <div className="flex justify-between items-center">
         <div className="leftCont">
           <div className="g-profileImg">
             <Image src={user?.photoURL || ""} alt="" fill />
@@ -57,11 +55,6 @@ export default function Comment({ comment, onClick }: ICommentProps) {
 
       <style jsx>
         {`
-          .cont {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-          }
           .leftCont {
             display: flex;
             align-items: center;

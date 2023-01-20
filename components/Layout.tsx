@@ -185,14 +185,12 @@ export default function Layout({ children }: ILayoutProps) {
               : "96px"};
           }
 
-          .g-button1 {
-            margin: 8px 0;
+          .g-b1 {
             background-color: ${COLOR.btn1};
             border: none;
             border-radius: 8px;
             padding: 8px;
             color: ${COLOR.txtDark1};
-            width: 100%;
             font-size: 16px;
           }
 

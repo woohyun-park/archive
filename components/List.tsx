@@ -184,11 +184,10 @@ export default function List({ data, style }: IListProps) {
 
       <style jsx>{`
         .postCont {
-          display: flex;
-          flex-wrap: wrap;
-          flex-direction: ${style === "search" && selected.tab === 3
-            ? "column"
-            : ""};
+          display: grid;
+          grid-template-columns: 1fr 1fr 1fr;
+          row-gap: 8px;
+          column-gap: 8px;
         }
         .postTypes {
           display: flex;
