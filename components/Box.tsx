@@ -63,7 +63,7 @@ export default function Box({ post, style = "default" }: IBoxProps) {
         }
         #d2-profile {
           font-size: 24px;
-          margin: 8px;
+          margin: 8px 4px;
           line-height: 20px;
         }
       `}</style>

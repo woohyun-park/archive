@@ -128,9 +128,11 @@ export default function ProfileSmall({
 
       <style jsx>
         {`
-          #d1-post,
-          #d1-feed {
+          #d1-post {
             margin: 32px 0 8px 0;
+          }
+          #d1-feed {
+            margin: 48px 0 8px 0;
           }
         `}
       </style>

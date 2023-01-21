@@ -216,14 +216,14 @@ export default function PostAction({ post, style }: IPostActionProps) {
             <Image src={gCurUser.photoURL} alt="" fill />
           </div>
           <input
-            className="w-full m-1 button-gray"
+            className="w-full m-2 button-gray text-start"
             placeholder={`${gCurUser.displayName}(으)로 댓글 달기...`}
             value={comment}
             onChange={handleChange}
             ref={commentRef}
             autoFocus={router.query.isCommentFocused ? true : false}
           />
-          <button className="button-black" onClick={handleSubmit}>
+          <button className="button-black min-w-[64px]" onClick={handleSubmit}>
             게시
           </button>
         </div>
