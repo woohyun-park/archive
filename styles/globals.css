@@ -17,6 +17,9 @@
   .button-gray {
     @apply p-2 text-center text-black rounded-lg bg-gray-3;
   }
+  .button-round {
+    @apply p-1 text-center text-black rounded-full bg-gray-3;
+  }
 
   .inputForm {
     @apply flex items-end justify-between;

@@ -1,6 +1,7 @@
 import type { AppProps } from "next/app";
 import { useStore } from "../apis/zustand";
 import Layout from "../components/Layout";
+import Modal from "../components/Modal";
 import "../styles/globals.css";
 
 export default function App({ Component, pageProps }: AppProps) {

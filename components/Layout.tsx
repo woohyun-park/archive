@@ -10,7 +10,14 @@ import { useStore } from "../apis/zustand";
 import { auth, db } from "../apis/firebase";
 import Nav from "./Nav";
 import { doc, getDoc, setDoc } from "firebase/firestore";
-import { COLOR, DEFAULT, IUser } from "../custom";
+import { COLOR, DEFAULT, IUser, SIZE } from "../custom";
+import {
+  RiAppleFill,
+  RiFacebookFill,
+  RiGoogleFill,
+  RiKakaoTalkFill,
+} from "react-icons/ri";
+import { IconBase } from "react-icons";
 
 interface ILayoutProps {
   children: React.ReactNode;
@@ -110,38 +117,65 @@ export default function Layout({ children }: ILayoutProps) {
           )}
         </>
       ) : (
-        <div>
-          <form onSubmit={handleEmailLogin}>
+        <div className="flex flex-col items-center">
+          <form onSubmit={handleEmailLogin} className="flex flex-col w-80">
             <input
               type="text"
               name="email"
-              placeholder="email"
+              placeholder="Email"
               required
               value={login.email}
               onChange={handleChange}
+              className="my-1 button-gray"
             />
             <input
               type="password"
               name="password"
-              placeholder="password"
+              placeholder="Password"
               required
               value={login.password}
               onChange={handleChange}
+              className="my-1 button-gray"
             />
             <input
               type="submit"
-              value={login.isNewAccount ? "create account" : "login"}
+              value={login.isNewAccount ? "Create Account" : "Login"}
               required
+              className="mt-2 button-black"
             />
           </form>
           <button
             onClick={() =>
               setLogin({ ...login, isNewAccount: !login.isNewAccount })
             }
+            className="block w-full my-1 text-right text-gray-2"
           >
             {login.isNewAccount ? "Log In" : "Create Account"}
           </button>
-          <button onClick={handleSocialLogin}>login with google</button>
+          {!login.isNewAccount && (
+            <div>
+              <button
+                className="p-1 m-2 text-white bg-black rounded-full"
+                onClick={handleSocialLogin}
+              >
+                <RiGoogleFill size={SIZE.icon} />
+              </button>
+              <button
+                className="p-1 m-2 text-white rounded-full bg-gray-2"
+                onClick={handleSocialLogin}
+                disabled
+              >
+                <RiAppleFill size={SIZE.icon} />
+              </button>
+              <button
+                className="p-1 m-2 text-white rounded-full bg-gray-2"
+                onClick={handleSocialLogin}
+                disabled
+              >
+                <RiFacebookFill size={SIZE.icon} />
+              </button>
+            </div>
+          )}
           {login.error}
         </div>
       )}
