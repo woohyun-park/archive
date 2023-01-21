@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 import { COLOR, DEFAULT, IPost } from "../custom";
 
 interface IContImageProps {
@@ -12,38 +11,31 @@ export default function ContImage({ post, type }: IContImageProps) {
     <>
       <>
         {type === "img" ? (
-          <div className="img-1">
+          <div className="relative object-cover w-full h-full align-top">
             <Image src={post.imgs[0]} alt="" fill />
           </div>
         ) : type === "color" ? (
-          <div className="img-1" />
+          <div
+            className="relative object-cover w-full h-full align-top"
+            id="d1"
+          />
         ) : type === "img-4" ? (
-          <div className="img-4">
+          <div className="relative object-cover w-1/2 align-top h-1/2">
             <Image src={post.imgs[0]} alt="" fill />
           </div>
         ) : type === "color-4" ? (
-          <div className="img-4" />
+          <div
+            className="relative object-cover w-1/2 align-top h-1/2"
+            id="d1"
+          />
         ) : (
           <></>
         )}
       </>
 
       <style jsx>{`
-        .img-1 {
-          position: relative;
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-          vertical-align: top;
-          background-color: ${post.color || COLOR.btn1};
-        }
-        .img-4 {
-          position: relative;
-          width: 50%;
-          height: 50%;
-          object-fit: cover;
-          vertical-align: top;
-          background-color: ${post.color || COLOR.btn1};
+        #d1 {
+          background-color: ${post.color};
         }
       `}</style>
     </>

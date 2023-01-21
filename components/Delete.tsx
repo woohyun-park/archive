@@ -20,15 +20,9 @@ export default function Delete({ id }: IDeleteProps) {
   }
   return (
     <>
-      <div className="svg" onClick={handleDelete}>
+      <div className="hover:cursor-pointer" onClick={handleDelete}>
         <HiX size={SIZE.iconSmall} />
       </div>
-
-      <style jsx>{`
-        .svg:hover {
-          cursor: pointer;
-        }
-      `}</style>
     </>
   );
 }

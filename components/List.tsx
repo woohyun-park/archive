@@ -29,24 +29,29 @@ const TAB: IDict<string[]> = {
 
 export default function List({ data, style }: IListProps) {
   const [selected, setSelected] = useState({
-    tab: 1,
+    tab: 0,
     tag: "",
     scrap: "",
   });
 
   return (
     <>
-      <div className="postTypes">
+      <div className="flex justify-around mb-4">
         {TAB[style].map((e, i) => (
-          <div onClick={() => setSelected({ ...selected, tab: i + 1 })} key={i}>
+          <div
+            className="w-full py-2 text-center border-b-2 text-gray-2 hover:cursor-pointer"
+            id={selected.tab === i ? "d1" : ""}
+            onClick={() => setSelected({ ...selected, tab: i })}
+            key={i}
+          >
             {e}
           </div>
         ))}
       </div>
-      <div className="postCont">
+      <div className="grid grid-cols-3 gap-x-2 gap-y-2">
         {style === "search" ? (
           <>
-            {selected.tab === 1 &&
+            {selected.tab === 0 &&
               (data as IDataSearch).post.map((e) => (
                 <Box
                   post={{ ...e, id: e.id }}
@@ -56,7 +61,7 @@ export default function List({ data, style }: IListProps) {
               ))}
             {(() => {
               const tags = (data as IDataSearch).tag;
-              if (selected.tab !== 2) {
+              if (selected.tab !== 1) {
                 return <></>;
               }
               // 현재 선택된 tag가 없으면 모든 tag를 표시한다
@@ -77,13 +82,13 @@ export default function List({ data, style }: IListProps) {
               else {
                 return (
                   <>
-                    <div className="tagBack">
+                    <div className="mb-2 hover:cursor-pointer">
                       <HiArrowLeft
                         size={SIZE.icon}
                         onClick={() => setSelected({ ...selected, tag: "" })}
                       />
                     </div>
-                    <div className="tagCont">
+                    <div className="flex flex-wrap w-full">
                       {tags[selected.tag].map((e) => (
                         <Box post={e} style="profile" key={e.id} />
                       ))}
@@ -92,14 +97,14 @@ export default function List({ data, style }: IListProps) {
                 );
               }
             })()}
-            {selected.tab === 3 &&
+            {selected.tab === 2 &&
               (data as IDataSearch).people.map((e) => (
                 <ProfileSmall user={e} style={`${style}`} key={e.id} />
               ))}
           </>
         ) : style === "profile" ? (
           <>
-            {selected.tab === 1 &&
+            {selected.tab === 0 &&
               (data as IDataProfile).grid.map((e) => (
                 <Box
                   post={{ ...e, id: e.id }}
@@ -109,7 +114,7 @@ export default function List({ data, style }: IListProps) {
               ))}
             {(() => {
               const tags = (data as IDataProfile).tag;
-              if (selected.tab !== 2) {
+              if (selected.tab !== 1) {
                 return <></>;
               } else if (selected.tag === "") {
                 const result = [];
@@ -127,13 +132,13 @@ export default function List({ data, style }: IListProps) {
               } else {
                 return (
                   <>
-                    <div className="tagBack">
+                    <div className="mb-2 hover:cursor-pointer">
                       <HiArrowLeft
                         size={SIZE.icon}
                         onClick={() => setSelected({ ...selected, tag: "" })}
                       />
                     </div>
-                    <div className="tagCont">
+                    <div className="flex flex-wrap w-full">
                       {tags[selected.tag].map((e) => (
                         <Box post={e} style="profile" key={e.id} />
                       ))}
@@ -144,7 +149,7 @@ export default function List({ data, style }: IListProps) {
             })()}
             {(() => {
               const scraps = (data as IDataProfile).scrap;
-              if (selected.tab !== 3) {
+              if (selected.tab !== 2) {
                 return <></>;
               } else if (selected.scrap === "") {
                 const result = [];
@@ -161,13 +166,13 @@ export default function List({ data, style }: IListProps) {
               } else {
                 return (
                   <>
-                    <div className="tagBack">
+                    <div className="mb-2 hover:cursor-pointer">
                       <HiArrowLeft
                         size={SIZE.icon}
                         onClick={() => setSelected({ ...selected, scrap: "" })}
                       />
                     </div>
-                    <div className="tagCont">
+                    <div className="flex flex-wrap w-full">
                       {scraps[selected.scrap].map((e) => (
                         <Box post={e} style="profile" key={e.id} />
                       ))}
@@ -183,40 +188,9 @@ export default function List({ data, style }: IListProps) {
       </div>
 
       <style jsx>{`
-        .postCont {
-          display: grid;
-          grid-template-columns: 1fr 1fr 1fr;
-          row-gap: 8px;
-          column-gap: 8px;
-        }
-        .postTypes {
-          display: flex;
-          justify-content: space-around;
-          margin-bottom: 16px;
-        }
-        .postTypes > div {
-          width: 100%;
-          text-align: center;
-          border-bottom: 1px solid ${COLOR.txt3};
-          padding: 8px 0;
-        }
-        .postTypes > div:hover {
-          cursor: pointer;
-        }
-        .postTypes > div:nth-of-type(${selected.tab}) {
-          font-weight: 800;
-          border-bottom: 2px solid ${COLOR.txt1};
-        }
-        .tagCont {
-          width: 100%;
-          display: flex;
-          flex-wrap: wrap;
-        }
-        .tagBack {
-          margin-bottom: 8px;
-        }
-        .tagBack:hover {
-          cursor: pointer;
+        #d1 {
+          font-weight: bold;
+          color: black;
         }
       `}</style>
     </>
