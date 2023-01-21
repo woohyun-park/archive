@@ -57,24 +57,26 @@ export default function Profile({
     <>
       <>
         {initUser.id === gCurUser.id && (
-          <div className="settingCont">
+          <div className="flex justify-end">
             <Link href="/setting" legacyBehavior>
-              <div className="setting">
+              <div className="flex justify-end text-black">
                 <HiOutlineCog size={SIZE.icon} />
               </div>
             </Link>
           </div>
         )}
-        <div className="profileTopCont">
-          <div className="profileLeftCont">
-            <h1>{initUser.displayName}</h1>
-            <div className="profileInfoCont">
+        <div className="flex items-start justify-between mt-8">
+          <div className="w-2/3">
+            <h1 className="text-xl font-bold break-all">
+              {initUser.displayName}
+            </h1>
+            <div className="flex justify-between w-2/3">
               <div>
-                <div className="profileType">아카이브</div>
+                <div className="text-gray-2">아카이브</div>
                 <div className="profileNum">{initPosts.length}</div>
               </div>
               <div>
-                <div className="profileType">팔로워</div>
+                <div className="text-gray-2">팔로워</div>
                 <div className="profileNum">
                   {(() => {
                     if (initUser.id === gCurUser.id) {
@@ -92,7 +94,7 @@ export default function Profile({
                 </div>
               </div>
               <div>
-                <div className="profileType">팔로잉</div>
+                <div className="text-gray-2">팔로잉</div>
                 <div className="profileNum">
                   {initUser.id === gCurUser.id
                     ? gCurUser.followings.length
@@ -101,7 +103,7 @@ export default function Profile({
               </div>
             </div>
           </div>
-          <div className="profileImage">
+          <div className="relative object-cover w-24 h-24 overflow-hidden rounded-full">
             <Image src={initUser.photoURL} alt="" fill />
           </div>
         </div>
@@ -124,10 +126,13 @@ export default function Profile({
           }
           return result;
         })()}
-        <div className="profileTxtCont">{initUser.txt}</div>
+        <div className="h-full py-4 break-all min-h-[96px]">{initUser.txt}</div>
         {initUser.id === gCurUser.id ? (
           <>
-            <button onClick={() => signOut(auth)} className="g-button1">
+            <button
+              onClick={() => signOut(auth)}
+              className="w-full my-4 button-black"
+            >
               로그아웃
             </button>
           </>
@@ -139,58 +144,6 @@ export default function Profile({
           style="profile"
         />
       </>
-
-      <style jsx>
-        {`
-          h1 {
-            margin-top: 0;
-            word-break: break-all;
-          }
-          .settingCont{
-            display:flex;
-            justify-content: flex-end;
-          }
-          .setting{
-            display: flex;
-            justify-content: flex-end;
-            color:${COLOR.txt1};
-          }
-          .profileTopCont {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-top: 64px;
-          }
-          .profileTxtCont {
-            max-height: 128px;
-            height: 100%;
-            padding: 32px 0;
-            word-break: break-all;
-          }
-          .profileLeftCont {
-            width: 70%;
-          }
-          .profileInfoCont {
-            display: flex;
-            justify-content: space-between;
-            width: 70%;
-          }
-          .profileImage {
-            position: relative;
-            border-radius: 72px;
-            width: 96px;
-            height: 96px;
-            object-fit: cover;
-            overflow: hidden;
-          }
-          .profileType {
-            color: ${COLOR.txt3};s
-          }
-          .setting:hover{
-            cursor:pointer;
-          }
-        `}
-      </style>
     </>
   );
 }

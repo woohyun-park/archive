@@ -184,29 +184,6 @@ export default function Layout({ children }: ILayoutProps) {
               ? ""
               : "96px"};
           }
-
-          .g_input_labelCont {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-          }
-          .g_input_label {
-            font-size: 16px;
-            margin-top: 8px;
-          }
-
-          .g_input_txtLen {
-            font-size: 12px;
-          }
-          .g_input_txtLen-invalid {
-            color: red;
-          }
-
-          .g-button1:hover,
-          .g-button2:hover,
-          .g-hover:hover {
-            cursor: pointer;
-          }
         `}
       </style>
     </>

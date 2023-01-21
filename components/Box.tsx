@@ -15,7 +15,12 @@ export default function Box({ post, style = "default" }: IBoxProps) {
           <div className="absolute object-cover w-full h-full" id="d1" />
         ) : (
           <>
-            <Image className="bg-transparent" src={post.imgs[0]} alt="" fill />
+            <Image
+              className="object-cover bg-transparent"
+              src={post.imgs[0]}
+              alt=""
+              fill
+            />
             <div className="absolute w-full h-full bg-black/10"></div>
           </>
         )}
@@ -33,11 +38,11 @@ export default function Box({ post, style = "default" }: IBoxProps) {
             {post.title}
           </div>
         </Link>
-        <div className="absolute bottom-0 right-0 flex flex-row-reverse flex-wrap-reverse w-2/3 text-right ">
+        <div className="absolute bottom-0 right-0 flex flex-row-reverse flex-wrap-reverse w-2/3 m-4 text-right">
           {style === "feed" &&
             [...post.tags]?.reverse().map((tag, i) => (
               <Link key={i} href={{ pathname: `/tag/${tag}` }} legacyBehavior>
-                <button className="g-b1 hover:cursor-pointer">{`#${tag}`}</button>
+                <button className="m-1 mb-0 button-black hover:cursor-pointer">{`#${tag}`}</button>
               </Link>
             ))}
         </div>
@@ -48,6 +53,9 @@ export default function Box({ post, style = "default" }: IBoxProps) {
         }
         #d1 {
           background-color: ${post.color};
+        }
+        #d2-feed {
+          margin: 16px;
         }
         #d2-search {
           font-size: 16px;

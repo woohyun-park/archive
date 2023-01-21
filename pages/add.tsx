@@ -17,6 +17,7 @@ import { useForm } from "react-hook-form";
 import Color from "../components/Color";
 import Image from "next/image";
 import ReactTextareaAutosize from "react-textarea-autosize";
+import Back from "../components/Back";
 
 interface IForm {
   file: File[];
@@ -289,21 +290,14 @@ export default function Add() {
 
   return (
     <>
-      {isSubmitting && <div className="submitting"></div>}
-      <div
-        className="back"
-        onClick={() => {
-          if (
-            confirm(
-              `아카이브 ${prevPost ? "수정" : "작성"}을 취소하시겠습니까?`
-            )
-          )
-            router.back();
-        }}
-      >
-        <HiArrowLeft size={SIZE.icon} />
-      </div>
+      {isSubmitting && (
+        <div className="absolute top-0 left-0 w-full h-full bg-black/20"></div>
+      )}
+      <Back
+        message={`아카이브 ${prevPost ? "수정" : "작성"}을 취소하시겠습니까?`}
+      />
       <form
+        className="flex flex-col mt-4"
         onKeyDown={checkKeyDown}
         onSubmit={handleSubmit(
           (data) => onValid(data),
@@ -320,19 +314,19 @@ export default function Add() {
           }
         )}
       >
-        <div className="btnCont">
+        <div className="flex justify-evenly">
           <div
-            className={
-              status.selectedTab ? "btn-left g-button1" : "btn-left g-button2"
-            }
+            className={`w-full my-2 mr-1 hover:cursor-pointer button-${
+              status.selectedTab ? "black" : "gray"
+            }`}
             onClick={handleToggleClick}
           >
             이미지 업로드
           </div>
           <div
-            className={
-              status.selectedTab ? "btn-right g-button2" : "btn-right g-button1"
-            }
+            className={`w-full my-2 ml-1 hover:cursor-pointer button-${
+              !status.selectedTab ? "black" : "gray"
+            }`}
             onClick={handleToggleClick}
           >
             배경색 선택
@@ -341,20 +335,25 @@ export default function Add() {
         {status.selectedTab ? (
           preview === "" ? (
             <div
-              className="imgBg"
+              className="relative w-full pb-[100%] bg-gray-3 rounded-lg hover:cursor-pointer"
               onClick={handleImageClick}
               ref={imgRef}
               tabIndex={-1}
             >
-              <div className="select">+</div>
+              <div className="absolute top-[50%] left-[50%] text-6xl text-gray-2 font-thin -translate-x-[50%] -translate-y-[50%]">
+                +
+              </div>
             </div>
           ) : (
-            <div className="imgCont" onClick={handleImageClick}>
-              <Image src={preview} alt="" fill />
+            <div
+              className="relative w-full pb-[100%] overflow-hidden rounded-xl mb-2 hover:cursor-pointer"
+              onClick={handleImageClick}
+            >
+              <Image src={preview} alt="" fill className="object-cover" />
             </div>
           )
         ) : (
-          <div className="colorCont">
+          <div className="flex justify-between my-2">
             <Color
               color={COLOR.red}
               onClick={() => handleColorClick(COLOR.red)}
@@ -407,13 +406,13 @@ export default function Add() {
           hidden
         />
 
-        <div className="g_input_labelCont">
-          <label className="g_input_label">제목 *</label>
+        <div className="inputForm">
+          <label className="inputForm_label">제목 *</label>
           <div
             className={
               watch("title").length === 0
-                ? "g_input_txtLen g_input_txtLen-invalid "
-                : "g_input_txtLen"
+                ? "inputForm_txt inputForm_txt-invalid "
+                : "inputForm_txt"
             }
           >{`${watch("title").length}/32`}</div>
         </div>
@@ -422,180 +421,69 @@ export default function Add() {
           type="text"
           maxLength={32}
           id="title"
+          className="inputForm_input"
         />
 
-        <div className="g_input_labelCont">
-          <div className="inputCont">
-            <label className="g_input_label">태그</label>
-            <div className="g_input_txtLen">
+        <div className="inputForm">
+          <div className="inputForm_left">
+            <label className="mr-1 inputForm_label">태그</label>
+            <div className="inputForm_txt">
               {errors["tags"] === "" ? `${tags.length}/5` : ""}
             </div>
           </div>
           <div
             className={
               tag.length === 0 || errors.tags !== ""
-                ? "g_input_txtLen g_input_txtLen-invalid "
-                : "g_input_txtLen"
+                ? "inputForm_txt inputForm_txt-invalid "
+                : "inputForm_txt"
             }
           >
             {errors["tags"] === "" ? `${tag.length}/16` : errors["tags"]}
           </div>
         </div>
-        <div className="tagCont">
+        <div className="flex flex-wrap">
           {watch("tags")?.map((each) => (
-            <span className="tag" key={each}>
-              <span className="tagTxt">{each}</span>
-              <span id={each} onClick={handleTagRemove}>
+            <span
+              className="flex my-1 mr-1 button-black w-fit hover:cursor-pointer"
+              key={each}
+            >
+              <span className="mr-1">{each}</span>
+              <span className="text-white" id={each} onClick={handleTagRemove}>
                 <HiX />
               </span>
             </span>
           ))}
         </div>
-        <input onChange={handleTagChange} value={tag} maxLength={17} id="tag" />
+        <input
+          onChange={handleTagChange}
+          value={tag}
+          maxLength={17}
+          id="tag"
+          className="inputForm_input"
+        />
 
-        <div className="g_input_labelCont">
-          <label className="g_input_label">내용 *</label>
+        <div className="inputForm">
+          <label className="inputForm_label">내용 *</label>
           <div
             className={
               watch("txt").length === 0
-                ? "g_input_txtLen g_input_txtLen-invalid "
-                : "g_input_txtLen"
+                ? "inputForm_txt inputForm_txt-invalid "
+                : "inputForm_txt"
             }
           >{`${watch("txt").length}/2000`}</div>
         </div>
 
         <ReactTextareaAutosize
-          style={{
-            margin: "8px 0",
-            backgroundColor: COLOR.bg2,
-            padding: "8px",
-            border: "none",
-            borderRadius: "8px",
-            fontFamily: "inherit",
-            resize: "none",
-          }}
           {...register("txt", { required: true, maxLength: 2000 })}
           maxLength={2000}
           minRows={10}
           id="txt"
+          className="h-32 resize-none inputForm_input"
         />
-        <button className="g-button1" type="submit">
+        <button className="button-black" type="submit">
           {prevPost ? "완료" : "생성"}
         </button>
       </form>
-
-      <style jsx>
-        {`
-          .submitting {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.2);
-          }
-          form {
-            display: flex;
-            flex-direction: column;
-            margin-top: 36px;
-          }
-          .btnCont {
-            display: flex;
-            justify-content: space-evenly;
-          }
-          .btn-left,
-          .btn-right {
-            font-size: 16px;
-            text-align: center;
-          }
-          .btn-left {
-            margin-right: 8px;
-          }
-
-          .imgBg {
-            position: relative;
-            width: 100%;
-            padding-bottom: 100%;
-            background-color: ${COLOR.bg2};
-            border-radius: 8px;
-          }
-          .select {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            font-size: 64px;
-            transform: translate(-50%, -50%);
-            color: ${COLOR.txt2};
-            font-weight: 100;
-          }
-          .imgCont {
-            position: relative;
-            width: 100%;
-            padding-bottom: 100%;
-            overflow: hidden;
-            border-radius: 16px;
-            margin-bottom: 8px;
-          }
-          .imgBg:focus {
-            border: 2px solid ${"#005FCC"};
-            box-sizing: border-box;
-          }
-          .colorCont {
-            display: flex;
-            justify-content: space-between;
-            margin: 16px 0;
-          }
-          .img {
-            position: absolute;
-            top: 0;
-            left: 0;
-            transform: translate(50, 50);
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-          }
-          .inputCont {
-            display: flex;
-            align-items: flex-end;
-          }
-          .inputCont > label {
-            margin-right: 4px;
-          }
-          .inputCont > div {
-            margin-bottom: 1px;
-          }
-          .tag {
-            display: inline-block;
-            padding: 4px 8px;
-            border-radius: 8px;
-            width: fit-content;
-            margin: 4px 0;
-            margin-right: 4px;
-            background-color: ${COLOR.btn1};
-            color: ${COLOR.txtDark1};
-          }
-          .tagTxt {
-            margin-right: 4px;
-          }
-          form > input,
-          form > textarea {
-            margin: 8px 0;
-            background-color: ${COLOR.bg2};
-            padding: 8px;
-            border: none;
-            border-radius: 8px;
-            font-family: inherit;
-          }
-          form > textarea {
-            height: 128px;
-            resize: none;
-          }
-          button:hover,
-          .imgBg:hover {
-            cursor: pointer;
-          }
-        `}
-      </style>
     </>
   );
 }

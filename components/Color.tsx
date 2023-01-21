@@ -11,7 +11,7 @@ export default function Color({ color, selected, onClick }: IColorProps) {
   return (
     <>
       <div
-        className="flex items-center justify-center w-12 h-12 rounded-lg"
+        className="flex items-center justify-center w-12 h-12 rounded-lg hover:cursor-pointer"
         id="d1"
         color={color}
         onClick={onClick}

@@ -30,10 +30,9 @@ export default function Comment({ comment, onClick }: ICommentProps) {
     <>
       <div className="flex items-center justify-between">
         <div className="flex items-center mt-2 mb-1">
-          <div className="profileImg-small">
+          <div className="mr-2 profileImg-small">
             <Image src={user?.photoURL || ""} alt="" fill />
           </div>
-
           <div>
             <div className="flex items-center">
               <div className="mr-1 text-sm font-bold text-black hover:cursor-pointer">

@@ -3,28 +3,28 @@ import { HiArrowLeft } from "react-icons/hi";
 import { SIZE, COLOR, IStyle } from "../custom";
 
 interface IBackProps {
-  style: IStyle;
+  message?: string;
 }
 
-export default function Back({ style }: IBackProps) {
+export default function Back({ message }: IBackProps) {
   const router = useRouter();
 
   return (
     <>
-      <div className="flex justify-between bg-bg1" id={`d1-${style}`}>
+      <div className="flex justify-between bg-bg1">
         <div
           className="my-4 hover:cursor-pointer"
-          onClick={() => router.back()}
+          onClick={() => {
+            if (message) {
+              if (confirm(message)) router.back();
+              return;
+            }
+            router.back();
+          }}
         >
           <HiArrowLeft size={SIZE.icon} />
         </div>
       </div>
-
-      <style jsx>{`
-        #d1-post {
-          padding-top: 48px;
-        }
-      `}</style>
     </>
   );
 }

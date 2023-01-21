@@ -48,6 +48,23 @@ export default function List({ data, style }: IListProps) {
           </div>
         ))}
       </div>
+      {console.log(selected)}
+      {selected.tab === 1 && selected.tag !== "" && (
+        <div className="mb-2 hover:cursor-pointer">
+          <HiArrowLeft
+            size={SIZE.icon}
+            onClick={() => setSelected({ ...selected, tag: "" })}
+          />
+        </div>
+      )}
+      {selected.tab === 2 && selected.scrap !== "" && (
+        <div className="mb-2 hover:cursor-pointer">
+          <HiArrowLeft
+            size={SIZE.icon}
+            onClick={() => setSelected({ ...selected, scrap: "" })}
+          />
+        </div>
+      )}
       <div className="grid grid-cols-3 gap-x-2 gap-y-2">
         {style === "search" ? (
           <>
@@ -132,17 +149,9 @@ export default function List({ data, style }: IListProps) {
               } else {
                 return (
                   <>
-                    <div className="mb-2 hover:cursor-pointer">
-                      <HiArrowLeft
-                        size={SIZE.icon}
-                        onClick={() => setSelected({ ...selected, tag: "" })}
-                      />
-                    </div>
-                    <div className="flex flex-wrap w-full">
-                      {tags[selected.tag].map((e) => (
-                        <Box post={e} style="profile" key={e.id} />
-                      ))}
-                    </div>
+                    {tags[selected.tag].map((e) => (
+                      <Box post={e} style="profile" key={e.id} />
+                    ))}
                   </>
                 );
               }
@@ -166,17 +175,9 @@ export default function List({ data, style }: IListProps) {
               } else {
                 return (
                   <>
-                    <div className="mb-2 hover:cursor-pointer">
-                      <HiArrowLeft
-                        size={SIZE.icon}
-                        onClick={() => setSelected({ ...selected, scrap: "" })}
-                      />
-                    </div>
-                    <div className="flex flex-wrap w-full">
-                      {scraps[selected.scrap].map((e) => (
-                        <Box post={e} style="profile" key={e.id} />
-                      ))}
-                    </div>
+                    {scraps[selected.scrap].map((e) => (
+                      <Box post={e} style="profile" key={e.id} />
+                    ))}
                   </>
                 );
               }

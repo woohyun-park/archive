@@ -64,12 +64,12 @@ export default function Search() {
 
   return (
     <>
-      <h1>검색</h1>
+      <h1 className="mb-9">검색</h1>
       <div className="flex">
-        <div className="search">
+        <div className="flex items-center w-full p-1 mb-1 rounded-md bg-gray-3 hover:cursor-pointer">
           <HiSearch size={SIZE.iconSmall} onClick={handleSearchClick} />
           <input
-            className="searchInput"
+            className="w-full m-1 bg-gray-3"
             type="text"
             value={search}
             onChange={handleChange}
@@ -78,12 +78,16 @@ export default function Search() {
             onKeyDown={handleSearch}
           />
         </div>
-        {focus && <div>취소</div>}
+        {focus && (
+          <div className="flex items-center justify-end ml-3 mr-1 min-w-fit">
+            취소
+          </div>
+        )}
       </div>
 
       {!focus ? (
         <>
-          <div className="postCont">
+          <div className="grid grid-cols-3 mt-4 gap-y-2 gap-x-2">
             {gSearch.posts.map((e, i) => (
               <>
                 <div>
@@ -99,20 +103,27 @@ export default function Search() {
               </>
             ))}
           </div>
-          <div className="loaderCont"> {loading && <Loader />}</div>
+          <div className="flex justify-center"> {loading && <Loader />}</div>
         </>
       ) : search === "" ? (
         <>
-          <div className="recentCont">
+          <div className="flex justify-between my-4 text-xs text-gray-1">
             <div>최근 검색어</div>
-            <div className="deleteAll" onClick={handleDeleteAll}>
+            <div className="hover:cursor-pointer" onClick={handleDeleteAll}>
               모두 삭제
             </div>
           </div>
           {gCurUser.history?.map((e, i) => (
-            <div key={i} className="recentCont">
-              <div className="recent">{e}</div>
-              <div className="delete" id={String(i)} onClick={handleDelete}>
+            <div
+              key={i}
+              className="flex justify-between my-4 text-sm text-gray-1"
+            >
+              <div className="hover:cursor-pointer">{e}</div>
+              <div
+                className="hover:cursor-pointer"
+                id={String(i)}
+                onClick={handleDelete}
+              >
                 <HiX />
               </div>
             </div>
@@ -132,42 +143,13 @@ export default function Search() {
       )}
 
       <style jsx>{`
-        h1 {
-          margin-bottom: 36px;
-        }
         .titleCont {
           display: flex;
           justify-content: space-between;
           align-items: baseline;
         }
-        .search {
-          display: flex;
-          padding: 4px;
-          background-color: ${COLOR.btn2};
-          border-radius: 4px;
-          margin-bottom: 4px;
-          align-items: center;
-        }
         .search:hover {
           cursor: pointer;
-        }
-        .searchInput {
-          outline: none;
-          width: 100%;
-          margin: 2px;
-          border: none;
-          background-color: ${COLOR.bg2};
-        }
-        .postCont {
-          display: grid;
-          grid-template-columns: 1fr 1fr 1fr;
-          row-gap: 8px;
-          column-gap: 8px;
-          margin-top: 16px;
-        }
-        .loaderCont {
-          display: flex;
-          justify-content: center;
         }
         .recentCont {
           display: flex;
@@ -182,11 +164,6 @@ export default function Search() {
           font-size: 12px;
           color: ${COLOR.txt1};
           margin: 16px 0;
-        }
-        .deleteAll:hover,
-        .recent:hover,
-        .delete:hover {
-          cursor: pointer;
         }
       `}</style>
     </>

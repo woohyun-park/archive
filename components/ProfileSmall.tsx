@@ -66,18 +66,18 @@ export default function ProfileSmall({
         className="flex items-center justify-between w-full"
         id={`d1-${style}`}
       >
-        <div className="flex flex-row w-full">
-          <Link href={`/profile/${user?.id}`}>
-            <div className="profileImg-small">
+        <div className="flex items-center">
+          <div className="mr-1 profileImg-small">
+            <Link href={`/profile/${user?.id}`}>
               <Image src={user.photoURL} alt="" fill />
-            </div>
-          </Link>
-          <div className="flex flex-col">
+            </Link>
+          </div>
+          <div>
             <Link href={`/profile/${user?.id}`} legacyBehavior>
               <a className="text-sm text-black">{user?.displayName}</a>
             </Link>
             {style === "feed" || style === "post" ? (
-              <div className="text-xs text-gray-1">
+              <div className="text-xs text-gray-1 -mt-[1px]">
                 {TIME.displayCreatedAt(post?.createdAt)}
               </div>
             ) : (

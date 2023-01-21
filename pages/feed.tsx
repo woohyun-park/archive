@@ -30,7 +30,7 @@ export default function Feed() {
       <>
         <h1>피드</h1>
         {initLoading && (
-          <div className="loaderCont">
+          <div className="absolute top-0 left-0 flex items-center justify-center w-screen h-screen">
             <Loader />
           </div>
         )}
@@ -51,31 +51,11 @@ export default function Feed() {
           </>
         )}
         {loading && (
-          <div className="loaderContBottom">
+          <div className="flex items-center justify-center">
             <Loader />
           </div>
         )}
       </>
-
-      <style jsx>
-        {`
-          .loaderCont {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: absolute;
-            top: 0;
-            left: 0;
-            height: 100vh;
-            width: 100vw;
-          }
-          .loaderContBottom {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-          }
-        `}
-      </style>
     </>
   );
 }

@@ -84,19 +84,25 @@ export default function Setting() {
 
   return (
     <>
-      {isSubmitting && <div className="submitting"></div>}
-      <Back style={"post"} />
-      <div className="photoCont">
-        <div className="photo">
+      {isSubmitting && (
+        <div className="absolute top-0 left-0 z-10 w-full h-full bg-black/20"></div>
+      )}
+      <Back />
+      <div className="flex justify-center">
+        <div className="relative object-cover w-24 h-24 overflow-hidden rounded-full">
           <Image
             src={preview}
             onClick={() => fileRef.current?.click()}
             alt=""
             fill
+            className="object-cover"
           />
         </div>
       </div>
-      <form onSubmit={handleSubmit((data) => onValid(data))}>
+      <form
+        className="flex flex-col mt-9"
+        onSubmit={handleSubmit((data) => onValid(data))}
+      >
         <input
           type="file"
           accept="image/*"
@@ -108,80 +114,35 @@ export default function Setting() {
           }}
           hidden
         />
-
-        <div className="g_input_labelCont">
-          <label className="g_input_label">사용자 이름</label>
+        <div className="inputForm">
+          <label className="inputForm_label">사용자 이름</label>
           <div
             className={
               watch("displayName").length === 0
-                ? "g_input_txtLen g_input_txtLen-invalid "
-                : "g_input_txtLen"
+                ? "inputForm_txt inputForm_txt-invalid "
+                : "inputForm_txt"
             }
           >{`${watch("displayName").length}/16`}</div>
         </div>
         <input
           {...register("displayName", { required: true, maxLength: 16 })}
           type="text"
+          className="inputForm_input"
           maxLength={16}
         />
-
-        <div className="g_input_labelCont">
-          <label className="g_input_label">소개</label>
-          <div className="g_input_txtLen">{`${watch("txt").length}/150`}</div>
+        <div className="inputForm">
+          <label className="inputForm_label">소개</label>
+          <div className="inputForm_txt">{`${watch("txt").length}/150`}</div>
         </div>
-        <textarea {...register("txt", { maxLength: 150 })} maxLength={150} />
-
-        <button type="submit" className="g-button1">
+        <textarea
+          {...register("txt", { maxLength: 150 })}
+          maxLength={150}
+          className="h-16 resize-none inputForm_input"
+        />
+        <button type="submit" className="button-black">
           변경
         </button>
       </form>
-
-      <style jsx>
-        {`
-          button:hover {
-            cursor: pointer;
-          }
-          form {
-            display: flex;
-            flex-direction: column;
-            margin-top: 36px;
-          }
-          form > input,
-          form > textarea {
-            margin: 8px 0;
-            background-color: ${COLOR.bg2};
-            padding: 8px;
-            border: none;
-            border-radius: 8px;
-            font-family: inherit;
-          }
-          form > textarea {
-            height: 64px;
-            resize: none;
-          }
-          .submitting {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.2);
-          }
-          .photoCont {
-            text-align: center;
-            display: flex;
-            justify-content: center;
-          }
-          .photo {
-            position: relative;
-            border-radius: 72px;
-            width: 96px;
-            height: 96px;
-            object-fit: cover;
-            overflow: hidden;
-          }
-        `}
-      </style>
     </>
   );
 }

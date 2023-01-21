@@ -173,15 +173,15 @@ export default function PostAction({ post, style }: IPostActionProps) {
   return (
     <>
       <div className="flex justify-between mt-1 mb-2">
-        <div>
-          <span className="mr-2">
+        <div className="flex">
+          <span className="mr-2 hover:cursor-pointer">
             {status.isLiked ? (
               <HiHeart size={SIZE.icon} onClick={handleToggleLike} />
             ) : (
               <HiOutlineHeart size={SIZE.icon} onClick={handleToggleLike} />
             )}
           </span>
-          <span>
+          <span className="hover:cursor-pointer">
             <HiOutlineChatBubbleOvalLeft
               size={SIZE.icon}
               onClick={handleCommentClick}
@@ -189,7 +189,7 @@ export default function PostAction({ post, style }: IPostActionProps) {
           </span>
         </div>
         <div>
-          <span>
+          <span className="hover:cursor-pointer">
             {status.isScraped ? (
               <HiBookmark onClick={handleToggleScrap} size={SIZE.icon} />
             ) : (
