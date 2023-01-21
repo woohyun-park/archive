@@ -3,15 +3,21 @@
 @tailwind utilities;
 
 @layer components {
-  .g-profileImg {
+  /* .g-profileImg {
     position: relative;
     overflow: hidden;
     width: 32px;
     height: 32px;
     border-radius: 32px;
     margin-right: 8px;
-  }
+  } */
   .profileImg-small {
-    @apply relative w-8 h-8 mr-2 overflow-hidden rounded-2xl hover:cursor-pointer;
+    @apply relative w-8 h-8 overflow-hidden min-w-[2rem] rounded-2xl hover:cursor-pointer;
+  }
+  .button-black {
+    @apply w-16 p-2 text-base text-white bg-black rounded-lg;
+  }
+  .button-gray {
+    @apply p-2 text-black rounded-lg bg-gray-3;
   }
 }

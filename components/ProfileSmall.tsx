@@ -62,23 +62,28 @@ export default function ProfileSmall({
 
   return (
     <>
-      <div className={`userCont userCont-${style}`}>
-        <div className={user.id === gCurUser.id ? "row row-cur" : "row"}>
+      <div
+        className="flex items-center justify-between w-full"
+        id={`d1-${style}`}
+      >
+        <div className="flex flex-row w-full">
           <Link href={`/profile/${user?.id}`}>
-            <div className="g-profileImg">
+            <div className="profileImg-small">
               <Image src={user.photoURL} alt="" fill />
             </div>
           </Link>
-          <div className="col">
+          <div className="flex flex-col">
             <Link href={`/profile/${user?.id}`} legacyBehavior>
-              <a className="userName">{user?.displayName}</a>
+              <a className="text-sm text-black">{user?.displayName}</a>
             </Link>
             {style === "feed" || style === "post" ? (
-              <div className="createdAt">
+              <div className="text-xs text-gray-1">
                 {TIME.displayCreatedAt(post?.createdAt)}
               </div>
             ) : (
-              <div className="txt">{user.txt}</div>
+              <div className="w-full overflow-hidden text-xs whitespace-pre-wrap text-gray-1 text-ellipsis">
+                {user.txt}
+              </div>
             )}
           </div>
         </div>
@@ -89,14 +94,17 @@ export default function ProfileSmall({
               return <></>;
             } else if (isFollowing) {
               return (
-                <div className="followBtn" onClick={handleToggleFollow}>
+                <div
+                  className="flex justify-center w-8 align-center"
+                  onClick={handleToggleFollow}
+                >
                   팔로잉
                 </div>
               );
             } else {
               return (
                 <div
-                  className="followBtn followBtn-follow"
+                  className="flex justify-center w-8 text-white align-center bg-gray2"
                   onClick={handleToggleFollow}
                 >
                   팔로우
@@ -106,7 +114,7 @@ export default function ProfileSmall({
           } else if (user.id === gCurUser.id) {
             return (
               <>
-                <div className="actionCont">
+                <div className="flex">
                   <Modify post={post as IPost} />
                   <Delete id={post?.id || ""} />
                 </div>
@@ -120,76 +128,9 @@ export default function ProfileSmall({
 
       <style jsx>
         {`
-          .userCont {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-          }
-          .userCont-post,
-          .userCont-feed {
+          #d1-post,
+          #d1-feed {
             margin: 32px 0 8px 0;
-          }
-          .userCont-search {
-            margin: 4px 0 12px 0;
-          }
-          .userName {
-            font-size: 16px;
-            text-decoration: none;
-            color: ${COLOR.txt1};
-          }
-          .createdAt {
-            font-size: 12px;
-            color: ${COLOR.txt2};
-          }
-          .txt {
-            font-size: 12px;
-            color: ${COLOR.txt2};
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: pre-wrap;
-            width: 100%;
-          }
-          .row {
-            display: flex;
-            flex-direction: row;
-            width: calc(100% - 48px);
-          }
-          .row-cur {
-            width: calc(100% - 18px);
-          }
-          .col {
-            display: flex;
-            flex-direction: column;
-            width: inherit;
-          }
-          .followBtn {
-            padding: 8px 12px;
-            background-color: ${COLOR.bg2};
-            color: ${COLOR.txt2};
-            font-size: 12px;
-            border-radius: 4px;
-          }
-          .followBtn-follow {
-            background-color: ${COLOR.bgDark1};
-            color: ${COLOR.txtDark1};
-          }
-          .moreBtn,
-          .followBtn {
-            width: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-          }
-          .actionCont {
-            display: flex;
-          }
-          .userImg:hover,
-          .userName:hover,
-          .followBtn:hover,
-          .moreBtn:hover,
-          .svg:hover {
-            cursor: pointer;
           }
         `}
       </style>

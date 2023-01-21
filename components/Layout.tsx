@@ -185,26 +185,6 @@ export default function Layout({ children }: ILayoutProps) {
               : "96px"};
           }
 
-          .g-b1 {
-            background-color: ${COLOR.btn1};
-            border: none;
-            border-radius: 8px;
-            padding: 8px;
-            color: ${COLOR.txtDark1};
-            font-size: 16px;
-          }
-
-          .g-button2 {
-            margin: 8px 0;
-            background-color: ${COLOR.btn2};
-            border: none;
-            border-radius: 8px;
-            padding: 8px;
-            color: ${COLOR.txtDark2};
-            width: 100%;
-            font-size: 16px;
-          }
-
           .g_input_labelCont {
             display: flex;
             justify-content: space-between;

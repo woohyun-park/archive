@@ -21,7 +21,7 @@ export default function Nav() {
 
   return (
     <>
-      <div className="cont">
+      <div className="box-border fixed bottom-0 flex justify-around w-full pt-6 pb-9 bg-white max-w-[480px]">
         <Link href="/" legacyBehavior>
           <a>
             {router.pathname === "/" ? (
@@ -40,7 +40,6 @@ export default function Nav() {
             )}
           </a>
         </Link>
-
         <Link href="/add" legacyBehavior>
           <a>
             {router.pathname === "/add" ? (
@@ -69,23 +68,6 @@ export default function Nav() {
           </a>
         </Link>
       </div>
-
-      <style jsx>{`
-        a {
-          color: ${COLOR.txt1};
-        }
-        .cont {
-          display: flex;
-          justify-content: space-around;
-          position: fixed;
-          bottom: 0;
-          background-color: white;
-          padding: 12px 24px 36px 24px;
-          width: 100%;
-          max-width: 480px;
-          box-sizing: border-box;
-        }
-      `}</style>
     </>
   );
 }

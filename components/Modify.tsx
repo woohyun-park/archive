@@ -20,15 +20,9 @@ export default function Modify({ post }: IModifyProps) {
 
   return (
     <>
-      <div className="svg" onClick={handleModify}>
+      <div className="hover:cursor-pointer" onClick={handleModify}>
         <HiPencil size={SIZE.iconSmall} />
       </div>
-
-      <style jsx>{`
-        .svg:hover {
-          cursor: pointer;
-        }
-      `}</style>
     </>
   );
 }

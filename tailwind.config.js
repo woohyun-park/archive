@@ -11,6 +11,7 @@ module.exports = {
       black: colors.black,
       "gray-1": colors.gray[700],
       "gray-2": colors.gray[400],
+      "gray-3": colors.gray[100],
       white: colors.white,
     },
     extend: {

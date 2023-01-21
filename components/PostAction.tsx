@@ -3,9 +3,7 @@ import {
   collection,
   deleteDoc,
   doc,
-  getDoc,
   serverTimestamp,
-  setDoc,
   updateDoc,
 } from "firebase/firestore";
 import Image from "next/image";
@@ -20,16 +18,7 @@ import {
 } from "react-icons/hi2";
 import { db, getDataByRef } from "../apis/firebase";
 import { useStore } from "../apis/zustand";
-import {
-  COLOR,
-  DEFAULT,
-  IComment,
-  ILike,
-  IPost,
-  IScrap,
-  IStyle,
-  SIZE,
-} from "../custom";
+import { COLOR, IComment, ILike, IPost, IScrap, IStyle, SIZE } from "../custom";
 import Comment from "./Comment";
 
 type IPostActionProps = {
@@ -183,9 +172,9 @@ export default function PostAction({ post, style }: IPostActionProps) {
 
   return (
     <>
-      <div className="cont">
+      <div className="flex justify-between mt-1 mb-2">
         <div>
-          <span className="heart">
+          <span className="mr-2">
             {status.isLiked ? (
               <HiHeart size={SIZE.icon} onClick={handleToggleLike} />
             ) : (
@@ -209,7 +198,7 @@ export default function PostAction({ post, style }: IPostActionProps) {
           </span>
         </div>
       </div>
-      <div className="count">
+      <div className="flex justify-between mb-2 text-xs">
         <div>
           {`좋아요 ${displayLike()}`}
           &nbsp;&nbsp;
@@ -222,59 +211,23 @@ export default function PostAction({ post, style }: IPostActionProps) {
           <Comment comment={comment} onClick={handleDelete} key={comment.id} />
         ))}
       {style === "post" && (
-        <div className="inputCont">
-          <div className="g-profileImg">
+        <div className="flex items-center justify-between">
+          <div className="profileImg-small">
             <Image src={gCurUser.photoURL} alt="" fill />
           </div>
           <input
-            className="g-button2 input"
+            className="w-full m-1 button-gray"
             placeholder={`${gCurUser.displayName}(으)로 댓글 달기...`}
             value={comment}
             onChange={handleChange}
             ref={commentRef}
             autoFocus={router.query.isCommentFocused ? true : false}
           />
-          <button className="g-button1 button" onClick={handleSubmit}>
+          <button className="button-black" onClick={handleSubmit}>
             게시
           </button>
         </div>
       )}
-
-      <style jsx>
-        {`
-          .cont {
-            display: flex;
-            justify-content: space-between;
-            margin: 8px 0 2px 0;
-          }
-          .heart {
-            margin-right: 8px;
-          }
-          .count {
-            font-size: 12px;
-            margin-bottom: 8px;
-            display: flex;
-            justify-content: space-between;
-          }
-          .inputCont {
-            display: flex;
-            align-items: center;
-          }
-
-          .input {
-            color: ${COLOR.txt1};
-            width: 75%;
-          }
-          .button {
-            width: 48px;
-            margin: 4px 0 4px 4px;
-          }
-          .button:hover,
-          span:hover {
-            cursor: pointer;
-          }
-        `}
-      </style>
     </>
   );
 }
