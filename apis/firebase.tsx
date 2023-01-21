@@ -16,7 +16,6 @@ import {
 } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { IComment, IDict, ILike, IScrap, ITag, IUser } from "../custom";
-import { CACHE } from "./zustand";
 
 interface IPathParams {
   params: { [param: string]: string };
