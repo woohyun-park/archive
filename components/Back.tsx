@@ -11,7 +11,7 @@ export default function Back({ style }: IBackProps) {
 
   return (
     <>
-      <div className={`d1 flex justify-between`}>
+      <div className="flex justify-between bg-bg1" id={`d1-${style}`}>
         <div
           className="my-4 hover:cursor-pointer"
           onClick={() => router.back()}
@@ -21,9 +21,8 @@ export default function Back({ style }: IBackProps) {
       </div>
 
       <style jsx>{`
-        .d1 {
-          padding-top: ${style === "post" ? "48px" : ""};
-          background-color: ${COLOR.bg1};
+        #d1-post {
+          padding-top: 48px;
         }
       `}</style>
     </>

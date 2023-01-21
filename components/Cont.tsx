@@ -12,11 +12,11 @@ export default function Cont({ tag, posts, style, onClick }: IImageProps) {
   return (
     <>
       {posts.length !== 0 && (
-        <div className="relative overflow-hidden rounded-lg w-full pb-[100%]">
-          <div className="d1 absolute w-full h-full obejct-cover">
+        <div className="text-white relative overflow-hidden rounded-lg w-full pb-[100%]">
+          <div className="absolute w-full h-full obejct-cover">
             {posts.length >= 4 ? (
               <>
-                <div className="imgCont">
+                <div className="flex flex-wrap w-full h-full">
                   {[...posts].slice(0, 4).map((e, i) => {
                     if (e.imgs.length === 0) {
                       return <ContImage post={e} type="color-4" key={e.id} />;
@@ -32,9 +32,12 @@ export default function Cont({ tag, posts, style, onClick }: IImageProps) {
               <ContImage post={posts[0]} type="img" />
             )}
           </div>
-          {posts[0].imgs?.length !== 0 && <div className="overlay"></div>}
+          {posts[0].imgs?.length !== 0 && (
+            <div className="absolute w-full h-full bg-black/10"></div>
+          )}
           <div
-            className={`title title-${style} hover:cursor-pointer`}
+            className="absolute p-1 m-2 text-base font-bold rounded-lg break-keep bg-black/75 hover:cursor-pointer"
+            id={`d1-${style}`}
             onClick={onClick}
           >
             {tag === "모든 스크랩" ? tag : `#${tag}`}
@@ -43,49 +46,8 @@ export default function Cont({ tag, posts, style, onClick }: IImageProps) {
       )}
 
       <style jsx>{`
-        * {
-          color: ${COLOR.txtDark1};
-        }
-        .d1 {
-          background-color: ${COLOR.btn1};
-        }
-        .overlay {
-          position: absolute;
-          width: 100%;
-          height: 100%;
-          background-color: rgba(0, 0, 0, 0.1);
-        }
-        .title {
-          position: absolute;
-          font-size: 48px;
-          font-weight: bold;
-          margin: 8px;
-          word-break: keep-all;
-          font-size: 16px;
-          background-color: rgba(0, 0, 0, 0.75);
-          padding: 4px;
-          border-radius: 8px;
-        }
-        .title-tag {
+        #d1-tag {
           word-break: break-all;
-        }
-        .imgCont {
-          display: flex;
-          flex-wrap: wrap;
-          width: 100%;
-          height: 100%;
-        }
-        .img-1 {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-          vertical-align: top;
-        }
-        .img-4 {
-          width: 50%;
-          height: 50%;
-          object-fit: cover;
-          vertical-align: top;
         }
       `}</style>
     </>

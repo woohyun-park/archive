@@ -28,58 +28,36 @@ export default function Comment({ comment, onClick }: ICommentProps) {
 
   return (
     <>
-      <div className="flex justify-between items-center">
-        <div className="leftCont">
-          <div className="g-profileImg">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center mt-2 mb-1">
+          <div className="profileImg-small">
             <Image src={user?.photoURL || ""} alt="" fill />
           </div>
 
           <div>
-            <div className="topCont">
-              <div className="displayName">{user?.displayName}</div>
-              <div className="createdAt">
+            <div className="flex items-center">
+              <div className="mr-1 text-sm font-bold text-black hover:cursor-pointer">
+                {user?.displayName}
+              </div>
+              <div className="text-xs text-gray-1">
                 {TIME.displayCreatedAt(comment.createdAt)}
               </div>
             </div>
-            <div className="txt">{comment?.txt}</div>
+            <div className="-mt-1 text-base text-black">{comment?.txt}</div>
           </div>
         </div>
         {user?.id === gCurUser.id ? (
-          <div onClick={onClick} id={comment.id}>
+          <div
+            className="hover:cursor-pointer"
+            onClick={onClick}
+            id={comment.id}
+          >
             <HiX />
           </div>
         ) : (
           <></>
         )}
       </div>
-
-      <style jsx>
-        {`
-          .leftCont {
-            display: flex;
-            align-items: center;
-            margin-top: 8px;
-            margin-bottom: 4px;
-          }
-          .topCont {
-            display: flex;
-            align-items: center;
-          }
-          .createdAt {
-            font-size: 10px;
-            color: ${COLOR.txt2};
-          }
-          .displayName {
-            font-size: 12px;
-            font-weight: bold;
-            color: ${COLOR.txt1};
-            margin-right: 4px;
-          }
-          .txt {
-            font-size: 16px;
-          }
-        `}
-      </style>
     </>
   );
 }

@@ -7,12 +7,12 @@ interface IBoxProps {
   style: IStyle;
 }
 
-export default function Box({ post, style }: IBoxProps) {
+export default function Box({ post, style = "default" }: IBoxProps) {
   return (
     <>
       <div className="relative overflow-hidden rounded-lg w-full pb-[100%]">
         {post.imgs.length === 0 ? (
-          <div className="d1 absolute w-full h-full object-cover" />
+          <div className="absolute object-cover w-full h-full" id="d1" />
         ) : (
           <>
             <Image className="bg-transparent" src={post.imgs[0]} alt="" fill />
@@ -27,14 +27,13 @@ export default function Box({ post, style }: IBoxProps) {
           as={`/post/${post.id}`}
         >
           <div
-            className={`d2-${style} absolute text-5xl font-bold m-4 break-words hover:cursor-pointer`}
+            className="absolute m-2 text-5xl font-bold break-words hover:cursor-pointer"
+            id={`d2-${style}`}
           >
             {post.title}
           </div>
         </Link>
-        <div
-          className={`absolute bottom-0 right-0 text-right flex flex-wrap-reverse flex-row-reverse w-2/3 tagCont-${style}`}
-        >
+        <div className="absolute bottom-0 right-0 flex flex-row-reverse flex-wrap-reverse w-2/3 text-right ">
           {style === "feed" &&
             [...post.tags]?.reverse().map((tag, i) => (
               <Link key={i} href={{ pathname: `/tag/${tag}` }} legacyBehavior>
@@ -43,22 +42,21 @@ export default function Box({ post, style }: IBoxProps) {
             ))}
         </div>
       </div>
-
       <style jsx>{`
         * {
           color: ${COLOR.txtDark1};
         }
-        .d1 {
-          background-color: ${post?.color || COLOR.primary};
+        #d1 {
+          background-color: ${post.color};
         }
-        .d2-search {
+        #d2-search {
           font-size: 16px;
-          margin: 8px;
+          margin: 16px;
         }
-        .d2-profile {
+        #d2-profile {
           font-size: 24px;
-          line-height: 20px;
           margin: 8px;
+          line-height: 20px;
         }
       `}</style>
     </>

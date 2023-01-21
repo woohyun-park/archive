@@ -11,7 +11,8 @@ export default function Color({ color, selected, onClick }: IColorProps) {
   return (
     <>
       <div
-        className="d1 w-12 h-12 rounded-lg flex justify-center items-center"
+        className="flex items-center justify-center w-12 h-12 rounded-lg"
+        id="d1"
         color={color}
         onClick={onClick}
       >
@@ -20,7 +21,7 @@ export default function Color({ color, selected, onClick }: IColorProps) {
 
       <style jsx>
         {`
-          .d1 {
+          #d1 {
             background-color: ${color};
           }
         `}

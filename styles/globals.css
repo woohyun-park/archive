@@ -1,3 +1,17 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  .g-profileImg {
+    position: relative;
+    overflow: hidden;
+    width: 32px;
+    height: 32px;
+    border-radius: 32px;
+    margin-right: 8px;
+  }
+  .profileImg-small {
+    @apply relative w-8 h-8 mr-2 overflow-hidden rounded-2xl hover:cursor-pointer;
+  }
+}

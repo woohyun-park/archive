@@ -84,6 +84,7 @@ export const FUNC = {
 };
 
 export type IStyle =
+  | "default"
   | "post"
   | "feed"
   | "search"
