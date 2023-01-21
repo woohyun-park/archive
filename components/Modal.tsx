@@ -1,7 +1,4 @@
-// export default function Modal() {
-//   return <div className="w-[100vw] h-[100vh] absolute bg-black/50"></div>;
-// }
-import React, { ReactNode, useEffect, useRef, useState } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 
 interface IModal {
