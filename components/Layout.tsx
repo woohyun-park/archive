@@ -118,6 +118,8 @@ export default function Layout({ children }: ILayoutProps) {
         </>
       ) : (
         <div className="flex flex-col items-center">
+          <h1 className="-mb-2 text-5xl font-bold font-logo">archive</h1>
+          <div className="text-sm mb-36">archive your inspiration</div>
           <form onSubmit={handleEmailLogin} className="flex flex-col w-80">
             <input
               type="text"
@@ -148,7 +150,7 @@ export default function Layout({ children }: ILayoutProps) {
             onClick={() =>
               setLogin({ ...login, isNewAccount: !login.isNewAccount })
             }
-            className="block w-full my-1 text-right text-gray-2"
+            className="block w-full my-1 text-right text-black"
           >
             {login.isNewAccount ? "Log In" : "Create Account"}
           </button>

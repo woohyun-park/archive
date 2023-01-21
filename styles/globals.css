@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+body {
+  font-family: "NanumSquare", sans-serif;
+}
+
 @layer components {
   .title-page {
     @apply mt-8 mb-12 text-5xl font-bold;
