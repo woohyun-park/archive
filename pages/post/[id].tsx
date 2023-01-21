@@ -15,6 +15,7 @@ import { IComment, ILike, IPost, IScrap, IUser, SIZE } from "../../custom";
 import { useStore } from "../../apis/zustand";
 import Image from "next/image";
 import { collection, orderBy, query, where } from "firebase/firestore";
+import MotionFade from "../../motions/motionFade";
 
 interface IPostProps {
   initPost: IPost;
@@ -47,57 +48,59 @@ export default function Post({ initPost, initUser }: IPostProps) {
 
   return (
     <>
-      {initPost === null && initUser === null ? (
-        <div>존재하지 않는 페이지입니다</div>
-      ) : (
-        <>
-          <div className="flex items-baseline justify-between">
-            <Back />
-            {gCurUser.id === initUser.id && (
-              <div className="flex items-center pt-6 mt-12">
-                <div className="hover:cursor-pointer" onClick={handleModify}>
-                  <HiPencil size={SIZE.icon} />
+      <MotionFade>
+        {initPost === null && initUser === null ? (
+          <div>존재하지 않는 페이지입니다</div>
+        ) : (
+          <>
+            <div className="flex items-baseline justify-between">
+              <Back />
+              {gCurUser.id === initUser.id && (
+                <div className="flex items-center pt-6 mt-12">
+                  <div className="hover:cursor-pointer" onClick={handleModify}>
+                    <HiPencil size={SIZE.icon} />
+                  </div>
+                  <div className="hover:cursor-pointer" onClick={handleDelete}>
+                    <HiX size={SIZE.icon} />
+                  </div>
                 </div>
-                <div className="hover:cursor-pointer" onClick={handleDelete}>
-                  <HiX size={SIZE.icon} />
-                </div>
+              )}
+            </div>
+            {initPost.imgs.length === 0 ? (
+              <div
+                className="w-[calc(100%+32px)] -translate-x-4 pb-[50%]"
+                id="d1"
+              ></div>
+            ) : (
+              <div className="relative pb-[100%] w-[calc(100%+32px)] -translate-x-4">
+                <Image
+                  src={initPost.imgs[0]}
+                  alt=""
+                  className="object-cover"
+                  fill
+                />
               </div>
             )}
-          </div>
-          {initPost.imgs.length === 0 ? (
-            <div
-              className="w-[calc(100%+32px)] -translate-x-4 pb-[50%]"
-              id="d1"
-            ></div>
-          ) : (
-            <div className="relative pb-[100%] w-[calc(100%+32px)] -translate-x-4">
-              <Image
-                src={initPost.imgs[0]}
-                alt=""
-                className="object-cover"
-                fill
-              />
+            <ProfileSmall post={initPost} user={initUser} style="post" />
+            <h1 className="mb-1 text-5xl">{initPost.title}</h1>
+            <div className="flex flex-wrap justify-end w-full mb-8">
+              {initPost.tags.map((tag, i) => (
+                <Link key={i} href={{ pathname: `/tag/${tag}` }} legacyBehavior>
+                  <div className="mr-1 w-fit g-button1">{`#${tag}`}</div>
+                </Link>
+              ))}
             </div>
-          )}
-          <ProfileSmall post={initPost} user={initUser} style="post" />
-          <h1 className="mb-1 text-5xl">{initPost.title}</h1>
-          <div className="flex flex-wrap justify-end w-full mb-8">
-            {initPost.tags.map((tag, i) => (
-              <Link key={i} href={{ pathname: `/tag/${tag}` }} legacyBehavior>
-                <div className="mr-1 w-fit g-button1">{`#${tag}`}</div>
-              </Link>
-            ))}
-          </div>
-          <div className="mt-1 mb-4 whitespace-pre-wrap">{initPost.txt}</div>
-          <PostAction post={initPost} style="post" />
-        </>
-      )}
+            <div className="mt-1 mb-4 whitespace-pre-wrap">{initPost.txt}</div>
+            <PostAction post={initPost} style="post" />
+          </>
+        )}
 
-      <style jsx>{`
-        #d1 {
-          background-color: ${initPost.color};
-        }
-      `}</style>
+        <style jsx>{`
+          #d1 {
+            background-color: ${initPost.color};
+          }
+        `}</style>
+      </MotionFade>
     </>
   );
 }

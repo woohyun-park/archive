@@ -1,5 +1,10 @@
+import MotionFade from "../motions/motionFade";
 import Feed from "./feed";
 
 export default function Index() {
-  return <Feed />;
+  return (
+    <MotionFade>
+      <Feed />
+    </MotionFade>
+  );
 }

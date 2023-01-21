@@ -19,6 +19,7 @@ import Image from "next/image";
 import ReactTextareaAutosize from "react-textarea-autosize";
 import Back from "../components/Back";
 import Modal from "../components/Modal";
+import MotionFade from "../motions/motionFade";
 
 interface IForm {
   file: File[];
@@ -290,7 +291,7 @@ export default function Add() {
   }
 
   return (
-    <>
+    <MotionFade>
       <Modal show={isSubmitting} content={<></>} />
       <Back
         message={`아카이브 ${prevPost ? "수정" : "작성"}을 취소하시겠습니까?`}
@@ -483,6 +484,6 @@ export default function Add() {
           {prevPost ? "완료" : "생성"}
         </button>
       </form>
-    </>
+    </MotionFade>
   );
 }

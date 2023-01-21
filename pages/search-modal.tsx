@@ -9,6 +9,7 @@ import Loader from "../components/Loader";
 import { updateUser } from "../apis/firebase";
 import { useRouter } from "next/router";
 import { AnimatePresence, motion, Transition } from "framer-motion";
+import MotionFade from "../motions/motionFade";
 
 export default function Search() {
   const { gSearch, gPage, gCurUser } = useStore();
@@ -67,71 +68,64 @@ export default function Search() {
 
   return (
     <>
-      <AnimatePresence>
-        <motion.div
-          key={router.route}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-        >
-          <div className="flex">
-            <div className="flex items-center w-full p-1 mb-1 rounded-md bg-gray-3 hover:cursor-pointer">
-              <HiSearch size={SIZE.iconSmall} onClick={handleSearchClick} />
-              <input
-                className="w-full m-1 bg-gray-3"
-                type="text"
-                value={search}
-                onChange={handleChange}
-                onFocus={() => setFocus(true)}
-                onBlur={() => setFocus(false)}
-                onKeyDown={handleSearch}
-              />
-            </div>
-            <div
-              className="flex items-center justify-end ml-3 mr-1 min-w-fit"
-              onClick={() => router.back()}
-            >
-              취소
-            </div>
+      <MotionFade>
+        <div className="flex">
+          <div className="flex items-center w-full p-1 mb-1 rounded-md bg-gray-3 hover:cursor-pointer">
+            <HiSearch size={SIZE.iconSmall} onClick={handleSearchClick} />
+            <input
+              className="w-full m-1 bg-gray-3"
+              type="text"
+              value={search}
+              onChange={handleChange}
+              onFocus={() => setFocus(true)}
+              onBlur={() => setFocus(false)}
+              onKeyDown={handleSearch}
+            />
           </div>
-          {search === "" ? (
-            <>
-              <div className="flex justify-between my-4 text-xs text-gray-1">
-                <div>최근 검색어</div>
-                <div className="hover:cursor-pointer" onClick={handleDeleteAll}>
-                  모두 삭제
+          <div
+            className="flex items-center justify-end ml-3 mr-1 min-w-fit"
+            onClick={() => router.push("/search")}
+          >
+            취소
+          </div>
+        </div>
+        {search === "" ? (
+          <>
+            <div className="flex justify-between my-4 text-xs text-gray-1">
+              <div>최근 검색어</div>
+              <div className="hover:cursor-pointer" onClick={handleDeleteAll}>
+                모두 삭제
+              </div>
+            </div>
+            {gCurUser.history?.map((e, i) => (
+              <div
+                key={i}
+                className="flex justify-between my-4 text-sm text-gray-1"
+              >
+                <div className="hover:cursor-pointer">{e}</div>
+                <div
+                  className="hover:cursor-pointer"
+                  id={String(i)}
+                  onClick={handleDelete}
+                >
+                  <HiX />
                 </div>
               </div>
-              {gCurUser.history?.map((e, i) => (
-                <div
-                  key={i}
-                  className="flex justify-between my-4 text-sm text-gray-1"
-                >
-                  <div className="hover:cursor-pointer">{e}</div>
-                  <div
-                    className="hover:cursor-pointer"
-                    id={String(i)}
-                    onClick={handleDelete}
-                  >
-                    <HiX />
-                  </div>
-                </div>
-              ))}
-            </>
-          ) : (
-            <>
-              <List
-                data={{
-                  post: gSearch.posts,
-                  tag: {},
-                  people: gSearch.users,
-                }}
-                style="search"
-              />
-            </>
-          )}
-        </motion.div>
-      </AnimatePresence>
+            ))}
+          </>
+        ) : (
+          <>
+            <List
+              data={{
+                post: gSearch.posts,
+                tag: {},
+                people: gSearch.users,
+              }}
+              style="search"
+            />
+          </>
+        )}
+      </MotionFade>
 
       <style jsx>{`
         .titleCont {

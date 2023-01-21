@@ -15,6 +15,7 @@ import { useStore } from "../../apis/zustand";
 import Link from "next/link";
 import { useState } from "react";
 import Image from "next/image";
+import MotionFade from "../../motions/motionFade";
 
 interface IProfileProps {
   initUser: IUser;
@@ -55,7 +56,7 @@ export default function Profile({
 
   return (
     <>
-      <>
+      <MotionFade>
         {initUser.id === gCurUser.id && (
           <div className="flex justify-end">
             <Link href="/setting" legacyBehavior>
@@ -143,7 +144,7 @@ export default function Profile({
           data={{ grid: initPosts, tag: initTags, scrap: initScraps }}
           style="profile"
         />
-      </>
+      </MotionFade>
     </>
   );
 }
