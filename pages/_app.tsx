@@ -1,4 +1,5 @@
 import type { AppProps } from "next/app";
+import { useStore } from "../apis/zustand";
 import Layout from "../components/Layout";
 import "../styles/globals.css";
 

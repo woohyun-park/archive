@@ -27,7 +27,7 @@ interface ILogin {
 export default function Layout({ children }: ILayoutProps) {
   const provider = new GoogleAuthProvider();
   const router = useRouter();
-  const { gCurUser, gInit } = useStore();
+  const { gInit } = useStore();
   const [login, setLogin] = useState<ILogin>({
     email: "",
     password: "",

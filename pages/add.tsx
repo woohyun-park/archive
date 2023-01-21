@@ -18,6 +18,7 @@ import Color from "../components/Color";
 import Image from "next/image";
 import ReactTextareaAutosize from "react-textarea-autosize";
 import Back from "../components/Back";
+import Modal from "../components/Modal";
 
 interface IForm {
   file: File[];
@@ -290,9 +291,7 @@ export default function Add() {
 
   return (
     <>
-      {isSubmitting && (
-        <div className="absolute top-0 left-0 w-full h-full bg-black/20"></div>
-      )}
+      <Modal show={isSubmitting} content={<></>} />
       <Back
         message={`아카이브 ${prevPost ? "수정" : "작성"}을 취소하시겠습니까?`}
       />

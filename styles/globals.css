@@ -3,6 +3,10 @@
 @tailwind utilities;
 
 @layer components {
+  .title-page {
+    @apply mt-8 mb-12 text-5xl font-bold;
+  }
+
   .profileImg-small {
     @apply relative w-8 h-8 overflow-hidden min-w-[2rem] rounded-2xl hover:cursor-pointer;
   }

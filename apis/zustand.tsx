@@ -27,6 +27,9 @@ interface ICurUserState {
   };
   gSearch: ISearch;
   gPage: IPage;
+  gModal: {
+    isOpen: boolean;
+  };
 
   gInit: (id: string) => Promise<void>;
   gSetPage: (type: IPageType, page: number) => void;
@@ -229,6 +232,9 @@ export const useStore = create<ICurUserState>((set, get) => ({
     posts: [],
     tags: [],
     users: [],
+  },
+  gModal: {
+    isOpen: false,
   },
 
   gInit: async (id: string) => {

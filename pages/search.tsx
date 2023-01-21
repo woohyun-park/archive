@@ -64,7 +64,7 @@ export default function Search() {
 
   return (
     <>
-      <h1 className="mb-9">검색</h1>
+      <h1 className="title-page">검색</h1>
       <div className="flex">
         <div className="flex items-center w-full p-1 mb-1 rounded-md bg-gray-3 hover:cursor-pointer">
           <HiSearch size={SIZE.iconSmall} onClick={handleSearchClick} />
