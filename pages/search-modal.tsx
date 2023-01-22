@@ -10,6 +10,7 @@ import { updateUser } from "../apis/firebase";
 import { useRouter } from "next/router";
 import { AnimatePresence, motion, Transition } from "framer-motion";
 import MotionFade from "../motions/motionFade";
+import MotionFloat from "../motions/motionFloat";
 
 export default function Search() {
   const { gSearch, gPage, gCurUser } = useStore();
@@ -26,7 +27,6 @@ export default function Search() {
     setLoading(true);
   }, [gPage.sPost]);
 
-  function handleSearchClick() {}
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setSearch(e.currentTarget.value);
   }
@@ -65,13 +65,16 @@ export default function Search() {
     }
   }
   const router = useRouter();
+  useEffect(() => {
+    console.log(gCurUser.history);
+  }, [gCurUser]);
 
   return (
     <>
       <MotionFade>
         <div className="flex">
           <div className="flex items-center w-full p-1 mb-1 rounded-md bg-gray-3 hover:cursor-pointer">
-            <HiSearch size={SIZE.iconSmall} onClick={handleSearchClick} />
+            <HiSearch size={SIZE.iconSmall} />
             <input
               className="w-full m-1 bg-gray-3"
               type="text"
@@ -81,6 +84,11 @@ export default function Search() {
               onBlur={() => setFocus(false)}
               onKeyDown={handleSearch}
             />
+            <HiX
+              className="mx-1"
+              size={SIZE.iconSmall}
+              onClick={() => setSearch("")}
+            />
           </div>
           <div
             className="flex items-center justify-end ml-3 mr-1 min-w-fit"
@@ -89,15 +97,16 @@ export default function Search() {
             취소
           </div>
         </div>
-        {search === "" ? (
-          <>
-            <div className="flex justify-between my-4 text-xs text-gray-1">
-              <div>최근 검색어</div>
-              <div className="hover:cursor-pointer" onClick={handleDeleteAll}>
-                모두 삭제
-              </div>
-            </div>
-            {gCurUser.history?.map((e, i) => (
+        <div className="flex justify-between my-4 text-xs text-gray-1">
+          <div>최근 검색어</div>
+          <div className="hover:cursor-pointer" onClick={handleDeleteAll}>
+            모두 삭제
+          </div>
+        </div>
+        {[...(gCurUser.history || [])]
+          ?.filter((each) => search === "" || each.indexOf(search) === 0)
+          .map((e, i) => (
+            <MotionFloat key={i}>
               <div
                 key={i}
                 className="flex justify-between my-4 text-sm text-gray-1"
@@ -111,20 +120,8 @@ export default function Search() {
                   <HiX />
                 </div>
               </div>
-            ))}
-          </>
-        ) : (
-          <>
-            <List
-              data={{
-                post: gSearch.posts,
-                tag: {},
-                people: gSearch.users,
-              }}
-              style="search"
-            />
-          </>
-        )}
+            </MotionFloat>
+          ))}
       </MotionFade>
 
       <style jsx>{`
