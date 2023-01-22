@@ -47,7 +47,8 @@ export default function Search() {
     setResult(true);
     setResultTitle(keyword);
     setFocus(false);
-    const index = gCurUser.history?.indexOf(keyword) || -1;
+    if (!gCurUser.history) return;
+    const index = gCurUser.history.indexOf(keyword);
     if (gCurUser.history) {
       index === -1
         ? updateUser({
@@ -85,7 +86,8 @@ export default function Search() {
       setResultTitle(search);
       setFocus(false);
       e.currentTarget.blur();
-      const index = gCurUser.history?.indexOf(search) || -1;
+      if (!gCurUser.history) return;
+      const index = gCurUser.history.indexOf(search);
       if (gCurUser.history) {
         index === -1
           ? updateUser({
@@ -196,9 +198,13 @@ export default function Search() {
                         <div
                           key={i}
                           className="flex justify-between my-4 text-sm text-gray-1"
-                          onClick={() => handleClick(e)}
                         >
-                          <div className="hover:cursor-pointer">{e}</div>
+                          <div
+                            className="hover:cursor-pointer"
+                            onClick={() => handleClick(e)}
+                          >
+                            {e}
+                          </div>
                           <div
                             className="hover:cursor-pointer"
                             id={String(i)}
