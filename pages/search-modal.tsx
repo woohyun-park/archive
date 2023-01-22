@@ -30,15 +30,21 @@ export default function Search() {
     searchedKeyword: "",
   });
   const [focus, setFocus] = useState(false);
-  const { setLastIntersecting } = useInfiniteScroll("searchPost");
+  const router = useRouter();
+  const recentRef = useRef<HTMLDivElement>(null);
+  const searchRef = useRef<HTMLInputElement>(null);
+  useOutsideClick({
+    ref: recentRef,
+    onClick: () => setFocus(false),
+  });
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setState({ ...state, keyword: e.currentTarget.value });
   }
-  async function handleClick(keyword: string) {
-    if (!gCurUser.history) return;
-    const index = gCurUser.history.indexOf(keyword);
+
+  function updateHistory(keyword: string) {
     if (gCurUser.history) {
+      const index = gCurUser.history.indexOf(keyword);
       index === -1
         ? updateUser({
             ...gCurUser,
@@ -58,6 +64,10 @@ export default function Search() {
         history: [keyword],
       });
     }
+  }
+
+  async function handleClick(keyword: string) {
+    updateHistory(keyword);
     const data = await getDatasByQuery<IUser>(
       query(
         collection(db, "users"),
@@ -75,31 +85,13 @@ export default function Search() {
     });
     setFocus(false);
   }
+
+  // TODO: 한글을 치고 엔터를 누르면 블루갈롤 -> 블루갈롤롤과 같이 검색되는 현상이 있다.
+  // 콘솔창에서 확인해보니 dev 환경에서 2번 실행되어 그런 것 같은데, 2번 실행되어도 변하면 안되는거 아닌가?
   async function handleSearch(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === "Enter") {
       e.currentTarget.blur();
-      if (!gCurUser.history) return;
-      const index = gCurUser.history.indexOf(state.keyword);
-      if (gCurUser.history) {
-        index === -1
-          ? updateUser({
-              ...gCurUser,
-              history: [state.keyword, ...gCurUser.history],
-            })
-          : updateUser({
-              ...gCurUser,
-              history: [
-                state.keyword,
-                ...gCurUser.history.slice(0, index),
-                ...gCurUser.history.slice(index + 1, gCurUser.history.length),
-              ],
-            });
-      } else {
-        updateUser({
-          ...gCurUser,
-          history: [state.keyword],
-        });
-      }
+      updateHistory(state.keyword);
       const data = await getDatasByQuery<IUser>(
         query(
           collection(db, "users"),
@@ -117,12 +109,14 @@ export default function Search() {
       setFocus(false);
     }
   }
+
   function handleDeleteAll(e: React.MouseEvent<HTMLElement>) {
     updateUser({
       ...gCurUser,
       history: [],
     });
   }
+
   function handleDelete(e: React.MouseEvent<HTMLElement>) {
     const history = gCurUser.history;
     const id = e.currentTarget.id;
@@ -136,17 +130,6 @@ export default function Search() {
       });
     }
   }
-  const router = useRouter();
-  const recentRef = useRef<HTMLDivElement>(null);
-  const click = useOutsideClick({
-    ref: recentRef,
-    onClick: () => setFocus(false),
-  });
-  const searchRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    console.log(state);
-  }, [state]);
 
   return (
     <>
@@ -179,7 +162,7 @@ export default function Search() {
                 size={SIZE.iconSmall}
                 onClick={() => {
                   setState({ ...state, keyword: "" });
-                  // searchRef.current?.focus();
+                  searchRef.current?.focus();
                 }}
               />
             </div>

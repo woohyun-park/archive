@@ -108,26 +108,9 @@ export default function Profile({
             <Image src={initUser.photoURL} alt="" fill />
           </div>
         </div>
-        {(() => {
-          const result = [];
-          if (gCurUser.id !== initUser.id) {
-            if (gCurUser.followings.find((elem) => elem === initUser.id)) {
-              result.push(
-                <button onClick={handleToggleFollow} className="g-button2">
-                  팔로잉
-                </button>
-              );
-            } else {
-              result.push(
-                <button onClick={handleToggleFollow} className="g-button1">
-                  팔로우
-                </button>
-              );
-            }
-          }
-          return result;
-        })()}
+
         <div className="h-full py-4 break-all min-h-[96px]">{initUser.txt}</div>
+
         {initUser.id === gCurUser.id ? (
           <>
             <button
@@ -138,7 +121,33 @@ export default function Profile({
             </button>
           </>
         ) : (
-          <></>
+          <>
+            {(() => {
+              const result = [];
+              if (gCurUser.id !== initUser.id) {
+                if (gCurUser.followings.find((elem) => elem === initUser.id)) {
+                  result.push(
+                    <button
+                      onClick={handleToggleFollow}
+                      className="w-full my-4 button-gray"
+                    >
+                      팔로잉
+                    </button>
+                  );
+                } else {
+                  result.push(
+                    <button
+                      onClick={handleToggleFollow}
+                      className="w-full my-4 button-black"
+                    >
+                      팔로우
+                    </button>
+                  );
+                }
+              }
+              return result;
+            })()}
+          </>
         )}
         <List
           data={{ grid: initPosts, tag: initTags, scrap: initScraps }}
