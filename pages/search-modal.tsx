@@ -25,6 +25,7 @@ import { useOutsideAlerter } from "../hooks/useOutsideClick";
 export default function Search() {
   const { gSearch, gPage, gCurUser } = useStore();
   const [search, setSearch] = useState("");
+  const [prevSearch, setPrevSearch] = useState("");
   const [focus, setFocus] = useState(false);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(false);
@@ -79,6 +80,7 @@ export default function Search() {
     );
     setResultPosts(data);
     setSearch(keyword);
+    setPrevSearch(search);
   }
   async function handleSearch(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === "Enter") {
@@ -117,6 +119,7 @@ export default function Search() {
         )
       );
       setResultPosts(data);
+      setPrevSearch(search);
     }
   }
   function handleDeleteAll(e: React.MouseEvent<HTMLElement>) {
@@ -147,7 +150,16 @@ export default function Search() {
 
   return (
     <>
-      {result && <div>{resultTitle}에 대한 검색 결과</div>}
+      {resultTitle && (
+        // key에 변수를 넣어서 강제로 리렌더링!
+        // 왜냐하면 그냥 {resultTitle}에 대한 검색결과에만 변수를 넣으면
+        // 해당부분만 리렌더링되므로 애니메이션이 트리거되지 않기때문
+        <MotionFloat key={resultTitle}>
+          <h1 className="mt-8 mb-2 text-lg font-bold">
+            {resultTitle}에 대한 검색결과
+          </h1>
+        </MotionFloat>
+      )}
       <MotionFade>
         <div ref={recentRef}>
           <div className="flex">
@@ -176,7 +188,6 @@ export default function Search() {
           </div>
 
           {(!result || focus) && (
-            // {true && (
             <>
               <div className="relative">
                 <div className="absolute z-10 w-full bg-white">
@@ -224,7 +235,9 @@ export default function Search() {
         {result && (
           <>
             {resultPosts.map((user) => (
-              <ProfileSmall user={user} style="search" key={user.id} />
+              <MotionFloat key={user.id}>
+                <ProfileSmall user={user} style="search" key={user.id} />
+              </MotionFloat>
             ))}
           </>
         )}
