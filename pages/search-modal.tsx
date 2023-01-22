@@ -70,7 +70,7 @@ export default function Search() {
 
   async function handleClick(keyword: string) {
     updateHistory(keyword);
-    const data = await getDatasByQuery<IUser>(
+    const searchedPosts = await getDatasByQuery<IUser>(
       query(
         collection(db, "users"),
         orderBy("displayName"),
@@ -78,12 +78,27 @@ export default function Search() {
         endAt(keyword + "\uf8ff")
       )
     );
+    const dataTags = await getDatasByQuery<ITag>(
+      query(
+        collection(db, "tags"),
+        orderBy("name"),
+        startAt(keyword),
+        endAt(keyword + "\uf8ff")
+      )
+    );
+    const searchedTags: IDict<ITag[]> = {};
+    dataTags.forEach((each) =>
+      searchedTags[each.name]
+        ? searchedTags[each.name].push(each)
+        : (searchedTags[each.name] = [each])
+    );
     setState({
       ...state,
       isInitial: false,
-      searchedKeyword: keyword,
       keyword,
-      searchedPosts: data,
+      searchedKeyword: keyword,
+      searchedPosts,
+      searchedTags,
     });
     setFocus(false);
   }
@@ -91,6 +106,7 @@ export default function Search() {
   // TODO: 한글을 치고 엔터를 누르면 블루갈롤 -> 블루갈롤롤과 같이 검색되는 현상이 있다.
   // 콘솔창에서 확인해보니 dev 환경에서 2번 실행되어 그런 것 같은데, 2번 실행되어도 변하면 안되는거 아닌가?
   async function handleSearch(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (state.keyword === "") return;
     if (e.key === "Enter") {
       e.currentTarget.blur();
       updateHistory(state.keyword);
@@ -150,7 +166,7 @@ export default function Search() {
 
   return (
     <>
-      {state.searchedKeyword && (
+      {!focus && state.searchedKeyword && (
         // key에 변수를 넣어서 강제로 리렌더링!
         // 왜냐하면 그냥 {resultTitle}에 대한 검색결과에만 변수를 넣으면
         // 해당부분만 리렌더링되므로 애니메이션이 트리거되지 않기때문
@@ -185,7 +201,7 @@ export default function Search() {
             </div>
             <div
               className="flex items-center justify-end ml-3 mr-1 min-w-fit hover:cursor-pointer"
-              onClick={() => router.push("/search")}
+              onClick={() => (focus ? setFocus(false) : router.push("/search"))}
             >
               취소
             </div>
@@ -234,16 +250,16 @@ export default function Search() {
             </div>
           )}
         </div>
-        {!state.isInitial && (
+        {!state.isInitial && !focus && (
           <List
             data={{
-              people: [...state.searchedPosts],
-              tags: { ...state.searchedTags },
+              person: [...state.searchedPosts],
+              tag: { ...state.searchedTags },
             }}
             style="search"
             tab={[
-              ["people", "user"],
-              ["tags", "list"],
+              ["person", "user"],
+              ["tag", "list"],
             ]}
           />
         )}

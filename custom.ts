@@ -147,6 +147,8 @@ export interface ITag {
   pid?: string;
   uid: string;
   name: string;
+
+  post?: IPost;
 }
 
 export interface ILike {
