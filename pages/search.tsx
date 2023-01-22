@@ -1,14 +1,12 @@
 import List from "../components/List";
-import { COLOR, IPost, IUser, SIZE } from "../custom";
+import { SIZE } from "../custom";
 import { HiSearch, HiX } from "react-icons/hi";
 import React, { useEffect, useState } from "react";
 import { useStore } from "../apis/zustand";
 import Box from "../components/Box";
 import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 import Loader from "../components/Loader";
-import { updateUser } from "../apis/firebase";
 import Link from "next/link";
-import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/router";
 import MotionFade from "../motions/motionFade";
 
@@ -56,31 +54,6 @@ export default function Search() {
         </div>
         <div className="flex justify-center"> {loading && <Loader />}</div>
       </MotionFade>
-
-      <style jsx>{`
-        .titleCont {
-          display: flex;
-          justify-content: space-between;
-          align-items: baseline;
-        }
-        .search:hover {
-          cursor: pointer;
-        }
-        .recentCont {
-          display: flex;
-          justify-content: space-between;
-          font-size: 12px;
-          color: ${COLOR.txt2};
-          margin: 16px 0;
-        }
-        .historyCont {
-          display: flex;
-          justify-content: space-between;
-          font-size: 12px;
-          color: ${COLOR.txt1};
-          margin: 16px 0;
-        }
-      `}</style>
     </>
   );
 }

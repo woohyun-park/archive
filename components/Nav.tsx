@@ -18,13 +18,14 @@ import { COLOR, SIZE } from "../custom";
 export default function Nav() {
   const { gCurUser } = useStore();
   const router = useRouter();
+  const path = router.pathname;
 
   return (
     <>
       <div className="box-border fixed bottom-0 flex justify-around w-full pt-6 pb-9 bg-white max-w-[480px]">
         <Link href="/" legacyBehavior>
           <a>
-            {router.pathname === "/" ? (
+            {path === "/" ? (
               <HiHome size={SIZE.icon} />
             ) : (
               <HiOutlineHome size={SIZE.icon} />
@@ -33,7 +34,7 @@ export default function Nav() {
         </Link>
         <Link href="/search" legacyBehavior>
           <a>
-            {router.pathname === "/search" ? (
+            {path === "/search" || path === "/search-modal" ? (
               <HiSearch size={SIZE.icon} />
             ) : (
               <HiOutlineSearch size={SIZE.icon} />
@@ -42,7 +43,7 @@ export default function Nav() {
         </Link>
         <Link href="/add" legacyBehavior>
           <a>
-            {router.pathname === "/add" ? (
+            {path === "/add" ? (
               <HiPlus size={SIZE.icon} />
             ) : (
               <HiOutlinePlus size={SIZE.icon} />
@@ -51,7 +52,7 @@ export default function Nav() {
         </Link>
         <Link href="/alarm" legacyBehavior>
           <a>
-            {router.pathname === "/alarm" ? (
+            {path === "/alarm" ? (
               <HiBell size={SIZE.icon} />
             ) : (
               <HiOutlineBell size={SIZE.icon} />
