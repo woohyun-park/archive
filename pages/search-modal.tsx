@@ -43,6 +43,42 @@ export default function Search() {
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setSearch(e.currentTarget.value);
   }
+  async function handleClick(keyword: string) {
+    setResult(true);
+    setResultTitle(keyword);
+    setFocus(false);
+    const index = gCurUser.history?.indexOf(keyword) || -1;
+    if (gCurUser.history) {
+      index === -1
+        ? updateUser({
+            ...gCurUser,
+            history: [keyword, ...gCurUser.history],
+          })
+        : updateUser({
+            ...gCurUser,
+            history: [
+              keyword,
+              ...gCurUser.history.slice(0, index),
+              ...gCurUser.history.slice(index + 1, gCurUser.history.length),
+            ],
+          });
+    } else {
+      updateUser({
+        ...gCurUser,
+        history: [keyword],
+      });
+    }
+    const data = await getDatasByQuery<IUser>(
+      query(
+        collection(db, "users"),
+        orderBy("displayName"),
+        startAt(keyword),
+        endAt(keyword + "\uf8ff")
+      )
+    );
+    setResultPosts(data);
+    setSearch(keyword);
+  }
   async function handleSearch(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === "Enter") {
       setResult(true);
@@ -109,6 +145,7 @@ export default function Search() {
 
   return (
     <>
+      {result && <div>{resultTitle}에 대한 검색 결과</div>}
       <MotionFade>
         <div ref={recentRef}>
           <div className="flex">
@@ -159,6 +196,7 @@ export default function Search() {
                         <div
                           key={i}
                           className="flex justify-between my-4 text-sm text-gray-1"
+                          onClick={() => handleClick(e)}
                         >
                           <div className="hover:cursor-pointer">{e}</div>
                           <div
@@ -179,7 +217,6 @@ export default function Search() {
 
         {result && (
           <>
-            <div>{resultTitle}에 대한 검색 결과</div>
             {resultPosts.map((user) => (
               <ProfileSmall user={user} style="search" key={user.id} />
             ))}
