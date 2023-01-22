@@ -152,6 +152,12 @@ export default function Profile({
         <List
           data={{ grid: initPosts, tag: initTags, scrap: initScraps }}
           style="profile"
+          tab={[
+            ["grid", "post"],
+            // ["tag", "list"],
+            ["tag", "cont"],
+            ["scrap", "cont"],
+          ]}
         />
       </MotionFade>
     </>
