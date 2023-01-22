@@ -1,5 +1,5 @@
 import List from "../components/List";
-import { IPost, IUser, SIZE } from "../custom";
+import { IDict, IPost, ITag, IUser, SIZE } from "../custom";
 import { HiSearch, HiX } from "react-icons/hi";
 import React, { useEffect, useRef, useState } from "react";
 import { useStore } from "../apis/zustand";
@@ -17,6 +17,7 @@ interface ISearchState {
   prevKeyword: string;
   isInitial: boolean;
   searchedPosts: IUser[];
+  searchedTags: IDict<ITag[]>;
   searchedKeyword: string;
 }
 
@@ -27,6 +28,7 @@ export default function Search() {
     prevKeyword: "",
     isInitial: true,
     searchedPosts: [],
+    searchedTags: {},
     searchedKeyword: "",
   });
   const [focus, setFocus] = useState(false);
@@ -92,7 +94,7 @@ export default function Search() {
     if (e.key === "Enter") {
       e.currentTarget.blur();
       updateHistory(state.keyword);
-      const data = await getDatasByQuery<IUser>(
+      const searchedPosts = await getDatasByQuery<IUser>(
         query(
           collection(db, "users"),
           orderBy("displayName"),
@@ -100,11 +102,26 @@ export default function Search() {
           endAt(state.keyword + "\uf8ff")
         )
       );
+      const dataTags = await getDatasByQuery<ITag>(
+        query(
+          collection(db, "tags"),
+          orderBy("name"),
+          startAt(state.keyword),
+          endAt(state.keyword + "\uf8ff")
+        )
+      );
+      const searchedTags: IDict<ITag[]> = {};
+      dataTags.forEach((each) =>
+        searchedTags[each.name]
+          ? searchedTags[each.name].push(each)
+          : (searchedTags[each.name] = [each])
+      );
       setState({
         ...state,
         isInitial: false,
         searchedKeyword: state.keyword,
-        searchedPosts: data,
+        searchedPosts,
+        searchedTags,
       });
       setFocus(false);
     }
@@ -175,60 +192,60 @@ export default function Search() {
           </div>
 
           {(state.isInitial || focus) && (
-            <>
-              <div className="relative">
-                <div className="absolute z-10 w-full bg-white">
-                  <div className="flex justify-between my-4 text-xs text-gray-1">
-                    <div>최근 검색어</div>
-                    <div
-                      className="hover:cursor-pointer"
-                      onClick={handleDeleteAll}
-                    >
-                      모두 삭제
-                    </div>
+            <div className="relative">
+              <div className="absolute z-10 w-full bg-white">
+                <div className="flex justify-between my-4 text-xs text-gray-1">
+                  <div>최근 검색어</div>
+                  <div
+                    className="hover:cursor-pointer"
+                    onClick={handleDeleteAll}
+                  >
+                    모두 삭제
                   </div>
-                  {[...(gCurUser.history || [])]
-                    ?.filter(
-                      (each) =>
-                        state.keyword === "" ||
-                        each.indexOf(state.keyword) === 0
-                    )
-                    .map((e, i) => (
-                      <MotionFloat key={i}>
-                        <div
-                          key={i}
-                          className="flex justify-between my-4 text-sm text-gray-1"
-                        >
-                          <div
-                            className="hover:cursor-pointer"
-                            onClick={() => handleClick(e)}
-                          >
-                            {e}
-                          </div>
-                          <div
-                            className="hover:cursor-pointer"
-                            id={String(i)}
-                            onClick={handleDelete}
-                          >
-                            <HiX />
-                          </div>
-                        </div>
-                      </MotionFloat>
-                    ))}
                 </div>
+                {[...(gCurUser.history || [])]
+                  ?.filter(
+                    (each) =>
+                      state.keyword === "" || each.indexOf(state.keyword) === 0
+                  )
+                  .map((e, i) => (
+                    <MotionFloat key={i}>
+                      <div
+                        key={i}
+                        className="flex justify-between my-4 text-sm text-gray-1"
+                      >
+                        <div
+                          className="hover:cursor-pointer"
+                          onClick={() => handleClick(e)}
+                        >
+                          {e}
+                        </div>
+                        <div
+                          className="hover:cursor-pointer"
+                          id={String(i)}
+                          onClick={handleDelete}
+                        >
+                          <HiX />
+                        </div>
+                      </div>
+                    </MotionFloat>
+                  ))}
               </div>
-            </>
+            </div>
           )}
         </div>
-
         {!state.isInitial && (
-          <>
-            {state.searchedPosts.map((user) => (
-              <MotionFloat key={user.id}>
-                <ProfileSmall user={user} style="search" key={user.id} />
-              </MotionFloat>
-            ))}
-          </>
+          <List
+            data={{
+              people: [...state.searchedPosts],
+              tags: { ...state.searchedTags },
+            }}
+            style="search"
+            tab={[
+              ["people", "user"],
+              ["tags", "list"],
+            ]}
+          />
         )}
       </MotionFade>
     </>
