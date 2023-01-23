@@ -111,10 +111,8 @@ export default function Layout({ children }: ILayoutProps) {
         <>loading...</>
       ) : login.isLoggedIn ? (
         <>
-          <div className="g-pageCont">{children}</div>
-          {router.pathname === "/setting" || router.pathname === "/add" ? (
-            <></>
-          ) : (
+          <div className="m-4 mb-16">{children}</div>
+          {!(router.pathname === "/setting" || router.pathname === "/add") && (
             <Nav />
           )}
         </>
@@ -210,17 +208,6 @@ export default function Layout({ children }: ILayoutProps) {
           }
           body::-webkit-scrollbar {
             display: none;
-          }
-
-          .g-pageCont {
-            padding: 16px;
-            padding-top: ${router.pathname.split("/")[1] === "post"
-              ? "0"
-              : "48px"};
-            padding-bottom: ${router.pathname === "/setting" ||
-            router.pathname === "/add"
-              ? ""
-              : "96px"};
           }
         `}
       </style>

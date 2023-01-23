@@ -7,7 +7,6 @@ import MotionFloat from "../motions/motionFloat";
 import Box from "./Box";
 import Loader from "./Loader";
 import PostFeed from "./PostFeed";
-import { motion } from "framer-motion";
 import Link from "next/link";
 
 interface IListProps {
@@ -43,7 +42,7 @@ export default function List({ data, route, type, loadingRef }: IListProps) {
         : () => {},
     changeListener:
       route === "feed"
-        ? gPage.feed
+        ? gPage.feed.post
         : route === "search" && type === "post"
         ? gPage.search.post
         : route === "search" && type === "tag"
@@ -74,7 +73,7 @@ export default function List({ data, route, type, loadingRef }: IListProps) {
       )}
       {route === "search" && type === "post" && (
         <>
-          <div className="grid grid-cols-3 mt-4 gap-y-2 gap-x-2">
+          <div className="grid grid-cols-3 mt-4 mb-16 gap-y-2 gap-x-2">
             {(data as IPost[]).map((e, i) => (
               <>
                 <div>
@@ -89,7 +88,7 @@ export default function List({ data, route, type, loadingRef }: IListProps) {
       )}
       {route === "search" && type === "tag" && (
         <>
-          <div className="grid">
+          <div className="grid mb-8">
             {(data as ITag[]).map((e, i) => (
               <>
                 <MotionFloat>

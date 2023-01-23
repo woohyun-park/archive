@@ -25,6 +25,7 @@ export const useInfiniteScroll = ({
   };
 
   useEffect(() => {
+    console.log("Change!", changeListener);
     handleChange();
   }, [changeListener]);
 

@@ -33,6 +33,7 @@ import {
   getEach,
 } from "./firebase";
 import { Unsubscribe } from "firebase/auth";
+import { idText } from "typescript";
 
 interface IState {
   gCurUser: IUser;

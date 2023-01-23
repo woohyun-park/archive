@@ -11,8 +11,9 @@ export default function Feed() {
         data={gFeed.posts}
         route="feed"
         type="post"
-        loadingRef={[gPage.feed, gFeed]}
+        loadingRef={[gPage.feed.post, gFeed]}
       />
+      <div className="mb-24"></div>
     </>
   );
 }
