@@ -8,7 +8,7 @@ body {
 
 @layer components {
   .title-page {
-    @apply mt-8 mb-12 text-5xl font-bold;
+    @apply mt-16 mb-12 text-5xl font-bold;
   }
 
   .profileImg-small {
