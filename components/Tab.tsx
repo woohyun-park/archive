@@ -1,20 +1,28 @@
 import { useEffect, useState } from "react";
 import Box from "./Box";
-import { IPost, IUser, IStyle, IDict, SIZE, ITag } from "../custom";
+import { IPost, IUser, IDict, SIZE, ITag, IType, IRoute } from "../custom";
 import { HiArrowLeft } from "react-icons/hi";
 import Cont from "./Cont";
 import MotionFloat from "../motions/motionFloat";
 import ProfileSmall from "./ProfileSmall";
 import { getData } from "../apis/firebase";
 import { RiHashtag } from "react-icons/ri";
+import List from "./List";
+import { useStore } from "../apis/zustand";
 
 interface ITabProps {
   data: IDict<any[] | IDict<any>>;
-  style: IStyle;
+  route: IRoute;
   tab: string[][];
+  infiniteScrollRef: any;
 }
 
-export default function Tab({ data, style, tab }: ITabProps) {
+export default function Tab({
+  data,
+  route,
+  tab,
+  infiniteScrollRef,
+}: ITabProps) {
   const [selected, setSelected] = useState<IDict<any>>({
     tab: 0,
     ...(() => {
@@ -49,6 +57,7 @@ export default function Tab({ data, style, tab }: ITabProps) {
   useEffect(() => {
     if (tab.find((each) => each[0] === "tag")) loadTags();
   }, []);
+  const { gSearch, gPage } = useStore();
 
   return (
     <>
@@ -75,7 +84,7 @@ export default function Tab({ data, style, tab }: ITabProps) {
                     <>
                       <Box
                         post={{ ...e, id: e.id }}
-                        style={`${style}`}
+                        style={`${route}`}
                         key={e.id}
                       ></Box>
                     </>
@@ -98,44 +107,19 @@ export default function Tab({ data, style, tab }: ITabProps) {
                 )}
                 {selected[key] === "" ? (
                   <>
-                    {(() => {
-                      const result = [];
-                      for (const each in data[key]) {
-                        result.push(
-                          <>
-                            <MotionFloat>
-                              <div
-                                className="flex items-center my-2 hover:cursor-pointer"
-                                onClick={() =>
-                                  setSelected({ ...selected, [key]: each })
-                                }
-                              >
-                                <div className="p-2 mr-2 rounded-full bg-gray-3 w-fit">
-                                  <RiHashtag size={SIZE.iconSmall} />
-                                </div>
-                                <div className="my-1 text-base text-left">
-                                  {`#${each}`}
-                                </div>
-                              </div>
-                            </MotionFloat>
-                          </>
-                        );
-                      }
-                      return result;
-                    })()}
+                    <List
+                      data={gSearch.tags}
+                      route="search"
+                      type="tag"
+                      loadingRef={[gPage.sTag, gSearch.tags]}
+                    />
                   </>
                 ) : (
                   <div className="grid grid-cols-3 gap-x-2 gap-y-2">
                     {tags[selected[key]].map(
                       (each: ITag) =>
                         each.post && (
-                          <>
-                            <Box
-                              post={each.post}
-                              style="search"
-                              key={each.id}
-                            />
-                          </>
+                          <Box post={each.post} style="search" key={each.id} />
                         )
                     )}
                   </div>

@@ -83,17 +83,7 @@ export const FUNC = {
   },
 };
 
-export type IStyle =
-  | "default"
-  | "post"
-  | "feed"
-  | "search"
-  | "add"
-  | "alarm"
-  | "profile"
-  | "tag";
-
-export type IPage = "post" | "feed" | "search" | "add" | "alarm" | "profile";
+export type IRoute = "post" | "feed" | "search" | "add" | "alarm" | "profile";
 export type IType = "user" | "post" | "comment" | "tag" | "like" | "scrap";
 
 export interface IDict<T> {

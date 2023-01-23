@@ -28,15 +28,7 @@ interface ISearchState {
 }
 
 export default function Search() {
-  const { gCurUser } = useStore();
-  const setLastIntersectingUser = useInfiniteScroll({
-    type: "default",
-    handleIntersect: () => setUserPage(userPage + 1),
-  }).setLastIntersecting;
-  const setLastIntersectingTag = useInfiniteScroll({
-    type: "default",
-    handleIntersect: () => setTagPage(tagPage + 1),
-  }).setLastIntersecting;
+  const { gCurUser, gSetSearch, gSearch } = useStore();
   const [state, setState] = useState<ISearchState>({
     keyword: "",
     prevKeyword: "",
@@ -45,8 +37,20 @@ export default function Search() {
     searchedTags: {},
     searchedKeyword: "",
   });
-  const [userPage, setUserPage] = useState(1);
-  const [tagPage, setTagPage] = useState(1);
+  const [page, setPage] = useState({
+    user: 1,
+    tag: 1,
+  });
+  const setLastIntersectingUser = useInfiniteScroll({
+    changeListener: page.user,
+    handleIntersect: () => setPage({ ...page, user: page.user + 1 }),
+    handleChange: () => setSearchedUsers(state.keyword, page.user + 1),
+  });
+  const setLastIntersectingTag = useInfiniteScroll({
+    changeListener: page.tag,
+    handleIntersect: () => setPage({ ...page, tag: page.tag + 1 }),
+    handleChange: () => setSearchedTags(state.keyword, page.tag + 1),
+  });
 
   const [focus, setFocus] = useState(false);
   const router = useRouter();
@@ -84,14 +88,14 @@ export default function Search() {
       });
     }
   }
-  async function setSearchedUsers(keyword: string) {
+  async function setSearchedUsers(keyword: string, page: number) {
     const searchedUsers = await getDatasByQuery<IUser>(
       query(
         collection(db, "users"),
         orderBy("displayName"),
         startAt(keyword),
         endAt(keyword + "\uf8ff"),
-        limit(userPage * 5)
+        limit(page * 5)
       )
     );
     setState({
@@ -99,14 +103,14 @@ export default function Search() {
       searchedUsers,
     });
   }
-  async function setSearchedTags(keyword: string) {
+  async function setSearchedTags(keyword: string, page: number) {
     const dataTags = await getDatasByQuery<ITag>(
       query(
         collection(db, "tags"),
         orderBy("name"),
         startAt(keyword),
         endAt(keyword + "\uf8ff"),
-        limit(tagPage * 5)
+        limit(page * 5)
       )
     );
     const searchedTags: IDict<ITag[]> = {};
@@ -120,14 +124,6 @@ export default function Search() {
       searchedTags,
     });
   }
-  useEffect(() => {
-    setSearchedUsers(state.keyword);
-    console.log("userPage", userPage);
-  }, [userPage]);
-  useEffect(() => {
-    setSearchedTags(state.keyword);
-    console.log("tagPage", tagPage);
-  }, [tagPage]);
 
   async function handleClick(keyword: string) {
     updateHistory(keyword);
@@ -137,7 +133,7 @@ export default function Search() {
         orderBy("displayName"),
         startAt(keyword),
         endAt(keyword + "\uf8ff"),
-        limit(userPage * 5)
+        limit(page.user * 5)
       )
     );
     const dataTags = await getDatasByQuery<ITag>(
@@ -146,9 +142,11 @@ export default function Search() {
         orderBy("name"),
         startAt(keyword),
         endAt(keyword + "\uf8ff"),
-        limit(tagPage * 5)
+        limit(page.tag * 5)
       )
     );
+    const res = await gSetSearch("tags", page.tag, keyword);
+    console.log("res!", res);
     const searchedTags: IDict<ITag[]> = {};
     dataTags.forEach((each) =>
       searchedTags[each.name]
@@ -179,7 +177,7 @@ export default function Search() {
           orderBy("displayName"),
           startAt(state.keyword),
           endAt(state.keyword + "\uf8ff"),
-          limit(userPage * 5)
+          limit(page.user * 5)
         )
       );
       const dataTags = await getDatasByQuery<ITag>(
@@ -188,9 +186,11 @@ export default function Search() {
           orderBy("name"),
           startAt(state.keyword),
           endAt(state.keyword + "\uf8ff"),
-          limit(tagPage * 5)
+          limit(page.tag * 5)
         )
       );
+      const res = await gSetSearch("tags", page.tag, state.keyword);
+      console.log("res!", res, gSearch);
       const searchedTags: IDict<ITag[]> = {};
       dataTags.forEach((each) =>
         searchedTags[each.name]
@@ -321,11 +321,15 @@ export default function Search() {
               person: [...state.searchedUsers],
               tag: { ...state.searchedTags },
             }}
-            style="search"
+            route="search"
             tab={[
               ["person", "user"],
               ["tag", "list"],
             ]}
+            infiniteScrollRef={{
+              person: setLastIntersectingUser,
+              tag: setLastIntersectingTag,
+            }}
           />
         )}
       </MotionFade>

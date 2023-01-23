@@ -3,12 +3,14 @@ import { IComment, IDict, ILike, IPost, IScrap, ITag, IUser } from "../custom";
 import {
   collection,
   doc,
+  endAt,
   getDoc,
   getDocs,
   limit,
   onSnapshot,
   orderBy,
   query,
+  startAt,
   Timestamp,
   where,
 } from "firebase/firestore";
@@ -44,7 +46,11 @@ interface ICurUserState {
   gInit: (id: string) => Promise<void>;
   gSetPage: (type: IPageType, page: number) => void;
   gSetFeed: (id: string, page: number) => Promise<void>;
-  gSetSearch: (type: ISearchType, page: number) => Promise<void>;
+  gSetSearch: (
+    type: ISearchType,
+    page: number,
+    keyword?: string
+  ) => Promise<void>;
 
   gUnsubscribeUser: Unsubscribe | null;
   gUnsubscribeLikes: Unsubscribe | null;
@@ -91,7 +97,8 @@ async function loadFeed(id: string, page: number): Promise<IPost[]> {
 }
 async function loadSearch<T>(
   type: ISearchPageType,
-  page: number
+  page: number,
+  keyword?: string
 ): Promise<T[]> {
   if (type === "sPost") {
     return await getDatasByQuery<T>(
@@ -105,7 +112,9 @@ async function loadSearch<T>(
     return await getDatasByQuery<T>(
       query(
         collection(db, "tags"),
-        // orderBy("createdAt", "desc"),
+        orderBy("name"),
+        startAt(keyword === undefined ? "" : keyword),
+        endAt((keyword === undefined ? "" : keyword) + "\uf8ff"),
         limit(page * POST_PER_PAGE.sTag)
       )
     );
@@ -113,7 +122,9 @@ async function loadSearch<T>(
     return await getDatasByQuery<T>(
       query(
         collection(db, "users"),
-        // orderBy("createdAt", "desc"),
+        orderBy("displayName"),
+        startAt(keyword),
+        endAt(keyword + "\uf8ff"),
         limit(page * POST_PER_PAGE.sUser)
       )
     );
@@ -190,8 +201,10 @@ async function loadState(get: () => ICurUserState, id: string) {
   const posts = await loadFeed(id, get().gPage.feed);
   const search = {
     posts: await loadSearch<IPost>("sPost", get().gPage.sPost),
-    tags: await loadSearch<ITag>("sTag", get().gPage.sTag),
-    users: await loadSearch<IUser>("sUser", get().gPage.sUser),
+    // tags: await loadSearch<ITag>("sTag", get().gPage.sTag),
+    // users: await loadSearch<IUser>("sUser", get().gPage.sUser),
+    tags: [],
+    users: [],
   };
 
   return {
@@ -239,7 +252,6 @@ export const useStore = create<ICurUserState>((set, get) => ({
     const { unsubscribeUser, unsubscribeLikes, unsubscribeScraps } =
       await loadListener(set, get, id);
     const loadedState = await loadState(get, id);
-    console.log(loadedState.gCurUser);
     set((state) => {
       return {
         ...state,
@@ -274,8 +286,9 @@ export const useStore = create<ICurUserState>((set, get) => ({
       };
     });
   },
-  gSetSearch: async (type: ISearchType, page: number) => {
-    if (page === 1) return;
+  gSetSearch: async (type: ISearchType, page: number, keyword?: string) => {
+    console.log("gSetSearch", type, page, keyword);
+    if (type === "posts" && page === 1) return;
     if (type === "posts") {
       const posts = await loadSearch<IPost>("sPost", page);
       set((state) => {
@@ -288,7 +301,8 @@ export const useStore = create<ICurUserState>((set, get) => ({
         };
       });
     } else if (type === "tags") {
-      const tags = await loadSearch<ITag>("sTag", page);
+      const tags = await loadSearch<ITag>("sTag", page, keyword);
+      console.log("tags", tags!);
       set((state) => {
         return {
           ...state,

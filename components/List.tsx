@@ -1,38 +1,49 @@
 import { useEffect, useState } from "react";
+import { RiHashtag } from "react-icons/ri";
 import { useStore } from "../apis/zustand";
-import { IPage, IPost, IType } from "../custom";
+import { IRoute, IPost, IType, IDict, ITag, SIZE } from "../custom";
 import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
+import MotionFloat from "../motions/motionFloat";
 import Box from "./Box";
 import Loader from "./Loader";
 import PostFeed from "./PostFeed";
 
 interface IListProps {
-  data: IPost[];
-  page: IPage;
+  data: IPost[] | ITag[];
+  route: IRoute;
   type: IType;
+  handleIntersect?: Function;
+  handleChange?: Function;
+  changeListener?: any;
   loadingRef: [any, any];
 }
 
-export default function List({ data, page, type, loadingRef }: IListProps) {
+export default function List({ data, route, type, loadingRef }: IListProps) {
   const [loading, setLoading] = useState(false);
   const { gSetPage, gPage, gSetSearch, gSetFeed, gCurUser } = useStore();
   const { setLastIntersecting } = useInfiniteScroll({
     handleIntersect:
-      page === "feed"
+      route === "feed"
         ? () => gSetPage("feed", gPage.feed + 1)
-        : page === "search" && type === "post"
+        : route === "search" && type === "post"
         ? () => gSetPage("sPost", gPage.sPost + 1)
+        : route === "search" && type === "tag"
+        ? () => gSetPage("sTag", gPage.sTag + 1)
         : () => {},
     handleChange:
-      page === "feed"
+      route === "feed"
         ? () => gSetFeed(gCurUser.id, gPage.feed)
-        : page === "search" && type === "post"
+        : route === "search" && type === "post"
         ? () => gSetSearch("posts", gPage.sPost)
+        : route === "search" && type === "tag"
+        ? () => gSetSearch("tags", gPage.sTag)
         : () => {},
     changeListener:
-      page === "feed"
+      route === "feed"
         ? gPage
-        : page === "search" && type === "post"
+        : route === "search" && type === "post"
+        ? gPage
+        : route === "search" && type === "tag"
         ? gPage
         : null,
   });
@@ -47,7 +58,7 @@ export default function List({ data, page, type, loadingRef }: IListProps) {
 
   return (
     <>
-      {page === "feed" && (
+      {route === "feed" && (
         <>
           {(data as IPost[]).map((e, i) => (
             <>
@@ -58,14 +69,34 @@ export default function List({ data, page, type, loadingRef }: IListProps) {
           <div className="flex justify-center"> {loading && <Loader />}</div>
         </>
       )}
-      {page === "search" && type === "post" && (
+      {route === "search" && type === "post" && (
         <>
           <div className="grid grid-cols-3 mt-4 gap-y-2 gap-x-2">
             {(data as IPost[]).map((e, i) => (
               <>
                 <div>
-                  <Box post={{ ...e, id: e.id }} style={page} key={e.id}></Box>
+                  <Box post={{ ...e, id: e.id }} style={route} key={e.id}></Box>
                 </div>
+                {i === data.length - 1 && <div ref={setLastIntersecting}></div>}
+              </>
+            ))}
+          </div>
+          <div className="flex justify-center"> {loading && <Loader />}</div>
+        </>
+      )}
+      {route === "search" && type === "tag" && (
+        <>
+          <div className="grid">
+            {(data as ITag[]).map((e, i) => (
+              <>
+                <MotionFloat>
+                  <div className="flex items-center my-2 hover:cursor-pointer">
+                    <div className="p-2 mr-2 rounded-full bg-gray-3 w-fit">
+                      <RiHashtag size={SIZE.iconSmall} />
+                    </div>
+                    <div className="my-1 text-base text-left">{`#${e.name}`}</div>
+                  </div>
+                </MotionFloat>
                 {i === data.length - 1 && <div ref={setLastIntersecting}></div>}
               </>
             ))}

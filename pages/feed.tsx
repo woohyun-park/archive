@@ -9,7 +9,7 @@ export default function Feed() {
       <h1 className="title-page">피드</h1>
       <List
         data={gFeed.posts}
-        page="feed"
+        route="feed"
         type="post"
         loadingRef={[gPage.feed, gFeed]}
       />
