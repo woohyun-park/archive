@@ -20,7 +20,8 @@ interface IListProps {
 
 export default function List({ data, route, type, loadingRef }: IListProps) {
   const [loading, setLoading] = useState(false);
-  const { gSetPage, gPage, gSetSearch, gSetFeed, gCurUser } = useStore();
+  const { gSetPage, gPage, gSetSearch, gSetFeed, gCurUser, gKeyword } =
+    useStore();
   const { setLastIntersecting } = useInfiniteScroll({
     handleIntersect:
       route === "feed"
@@ -36,7 +37,7 @@ export default function List({ data, route, type, loadingRef }: IListProps) {
         : route === "search" && type === "post"
         ? () => gSetSearch("posts", gPage.sPost)
         : route === "search" && type === "tag"
-        ? () => gSetSearch("tags", gPage.sTag)
+        ? () => gSetSearch("tags", gPage.sTag, gKeyword)
         : () => {},
     changeListener:
       route === "feed"

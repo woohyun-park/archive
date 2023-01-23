@@ -19,7 +19,6 @@ import { useOutsideClick } from "../hooks/useOutsideClick";
 import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 
 interface ISearchState {
-  keyword: string;
   prevKeyword: string;
   isInitial: boolean;
   searchedUsers: IUser[];
@@ -28,9 +27,8 @@ interface ISearchState {
 }
 
 export default function Search() {
-  const { gCurUser, gSetSearch, gSearch } = useStore();
+  const { gCurUser, gSetSearch, gSearch, gKeyword, gSetKeyword } = useStore();
   const [state, setState] = useState<ISearchState>({
-    keyword: "",
     prevKeyword: "",
     isInitial: true,
     searchedUsers: [],
@@ -44,12 +42,12 @@ export default function Search() {
   const setLastIntersectingUser = useInfiniteScroll({
     changeListener: page.user,
     handleIntersect: () => setPage({ ...page, user: page.user + 1 }),
-    handleChange: () => setSearchedUsers(state.keyword, page.user + 1),
+    handleChange: () => setSearchedUsers(gKeyword, page.user + 1),
   });
   const setLastIntersectingTag = useInfiniteScroll({
     changeListener: page.tag,
     handleIntersect: () => setPage({ ...page, tag: page.tag + 1 }),
-    handleChange: () => setSearchedTags(state.keyword, page.tag + 1),
+    handleChange: () => setSearchedTags(gKeyword, page.tag + 1),
   });
 
   const [focus, setFocus] = useState(false);
@@ -62,7 +60,8 @@ export default function Search() {
   });
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setState({ ...state, keyword: e.currentTarget.value });
+    gSetKeyword(e.currentTarget.value);
+    // setState({ ...state, keyword: e.currentTarget.value });
   }
 
   function updateHistory(keyword: string) {
@@ -156,7 +155,6 @@ export default function Search() {
     setState({
       ...state,
       isInitial: false,
-      keyword,
       searchedKeyword: keyword,
       searchedUsers,
       searchedTags,
@@ -170,13 +168,13 @@ export default function Search() {
     // if (state.keyword === "") return;
     if (e.key === "Enter") {
       e.currentTarget.blur();
-      updateHistory(state.keyword);
+      updateHistory(gKeyword);
       const searchedUsers = await getDatasByQuery<IUser>(
         query(
           collection(db, "users"),
           orderBy("displayName"),
-          startAt(state.keyword),
-          endAt(state.keyword + "\uf8ff"),
+          startAt(gKeyword),
+          endAt(gKeyword + "\uf8ff"),
           limit(page.user * 5)
         )
       );
@@ -184,12 +182,12 @@ export default function Search() {
         query(
           collection(db, "tags"),
           orderBy("name"),
-          startAt(state.keyword),
-          endAt(state.keyword + "\uf8ff"),
+          startAt(gKeyword),
+          endAt(gKeyword + "\uf8ff"),
           limit(page.tag * 5)
         )
       );
-      const res = await gSetSearch("tags", page.tag, state.keyword);
+      const res = await gSetSearch("tags", page.tag, gKeyword);
       console.log("res!", res, gSearch);
       const searchedTags: IDict<ITag[]> = {};
       dataTags.forEach((each) =>
@@ -200,7 +198,7 @@ export default function Search() {
       setState({
         ...state,
         isInitial: false,
-        searchedKeyword: state.keyword,
+        searchedKeyword: gKeyword,
         searchedUsers,
         searchedTags,
       });
@@ -249,7 +247,6 @@ export default function Search() {
               <input
                 className="w-full m-1 bg-gray-3"
                 type="text"
-                value={state.keyword}
                 onChange={handleChange}
                 onFocus={() => setFocus(true)}
                 onKeyDown={handleSearch}
@@ -259,7 +256,8 @@ export default function Search() {
                 className="mx-1"
                 size={SIZE.iconSmall}
                 onClick={() => {
-                  setState({ ...state, keyword: "" });
+                  gSetKeyword("");
+                  // setState({ ...state, keyword: "" });
                   searchRef.current?.focus();
                 }}
               />
@@ -286,8 +284,7 @@ export default function Search() {
                 </div>
                 {[...(gCurUser.history || [])]
                   ?.filter(
-                    (each) =>
-                      state.keyword === "" || each.indexOf(state.keyword) === 0
+                    (each) => gKeyword === "" || each.indexOf(gKeyword) === 0
                   )
                   .map((e, i) => (
                     <MotionFloat key={i}>

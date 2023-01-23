@@ -1,4 +1,5 @@
 import create from "zustand";
+import { devtools } from "zustand/middleware";
 import { IComment, IDict, ILike, IPost, IScrap, ITag, IUser } from "../custom";
 import {
   collection,
@@ -42,8 +43,10 @@ interface ICurUserState {
   gModal: {
     isOpen: boolean;
   };
+  gKeyword: string;
 
   gInit: (id: string) => Promise<void>;
+  gSetKeyword: (keyword: string) => void;
   gSetPage: (type: IPageType, page: number) => void;
   gSetFeed: (id: string, page: number) => Promise<void>;
   gSetSearch: (
@@ -206,6 +209,7 @@ async function loadState(get: () => ICurUserState, id: string) {
     tags: [],
     users: [],
   };
+  const keyword = "";
 
   return {
     gCurUser: curUser,
@@ -213,116 +217,129 @@ async function loadState(get: () => ICurUserState, id: string) {
       posts,
     },
     gSearch: search,
+    gKeyword: keyword,
   };
 }
 
-export const useStore = create<ICurUserState>((set, get) => ({
-  gCurUser: {
-    id: "",
-    email: "",
-    displayName: "",
-    photoURL:
-      "https://res.cloudinary.com/dl5qaj6le/image/upload/v1672976914/archive/static/default_user_photoURL.png",
-    txt: "",
-    followers: [],
-    followings: [],
-  },
-  gFeed: {
-    posts: [],
-  },
-  gPage: {
-    feed: 1,
-    sPost: 1,
-    sTag: 1,
-    sUser: 1,
-  },
-  gSearch: {
-    posts: [],
-    tags: [],
-    users: [],
-  },
-  gModal: {
-    isOpen: false,
-  },
-  gUnsubscribeUser: null,
-  gUnsubscribeLikes: null,
-  gUnsubscribeScraps: null,
+export const useStore = create(
+  devtools((set, get) => ({
+    gCurUser: {
+      id: "",
+      email: "",
+      displayName: "",
+      photoURL:
+        "https://res.cloudinary.com/dl5qaj6le/image/upload/v1672976914/archive/static/default_user_photoURL.png",
+      txt: "",
+      followers: [],
+      followings: [],
+    },
+    gFeed: {
+      posts: [],
+    },
+    gPage: {
+      feed: 1,
+      sPost: 1,
+      sTag: 1,
+      sUser: 1,
+    },
+    gSearch: {
+      posts: [],
+      tags: [],
+      users: [],
+    },
+    gModal: {
+      isOpen: false,
+    },
+    gKeyword: "",
+    gUnsubscribeUser: null,
+    gUnsubscribeLikes: null,
+    gUnsubscribeScraps: null,
 
-  gInit: async (id: string) => {
-    const { unsubscribeUser, unsubscribeLikes, unsubscribeScraps } =
-      await loadListener(set, get, id);
-    const loadedState = await loadState(get, id);
-    set((state) => {
-      return {
-        ...state,
-        ...loadedState,
-        gUnsubscribeUser: unsubscribeUser,
-        gUnsubscribeLikes: unsubscribeLikes,
-        gUnsubscribeScraps: unsubscribeScraps,
-      };
-    });
-  },
-
-  gSetPage: (type: IPageType, page: number) => {
-    set((state) => {
-      return {
-        ...state,
-        gPage: {
-          ...state.gPage,
-          [type]: page,
-        },
-      };
-    });
-  },
-  gSetFeed: async (id: string, page: number) => {
-    if (page === 1) return;
-    const posts = await loadFeed(id, get().gPage.feed);
-    set((state) => {
-      return {
-        ...state,
-        gFeed: {
-          posts,
-        },
-      };
-    });
-  },
-  gSetSearch: async (type: ISearchType, page: number, keyword?: string) => {
-    console.log("gSetSearch", type, page, keyword);
-    if (type === "posts" && page === 1) return;
-    if (type === "posts") {
-      const posts = await loadSearch<IPost>("sPost", page);
+    gInit: async (id: string) => {
+      const { unsubscribeUser, unsubscribeLikes, unsubscribeScraps } =
+        await loadListener(set, get, id);
+      const loadedState = await loadState(get, id);
       set((state) => {
         return {
           ...state,
-          gSearch: {
-            ...state.gSearch,
+          ...loadedState,
+          gUnsubscribeUser: unsubscribeUser,
+          gUnsubscribeLikes: unsubscribeLikes,
+          gUnsubscribeScraps: unsubscribeScraps,
+        };
+      });
+    },
+    gSetKeyword: (keyword: string) => {
+      console.log("gSetKeyword", keyword);
+      set((state) => {
+        return {
+          ...state,
+          gKeyword: keyword,
+        };
+      });
+    },
+
+    gSetPage: (type: IPageType, page: number) => {
+      set((state) => {
+        return {
+          ...state,
+          gPage: {
+            ...state.gPage,
+            [type]: page,
+          },
+        };
+      });
+    },
+    gSetFeed: async (id: string, page: number) => {
+      if (page === 1) return;
+      const posts = await loadFeed(id, get().gPage.feed);
+      set((state) => {
+        return {
+          ...state,
+          gFeed: {
             posts,
           },
         };
       });
-    } else if (type === "tags") {
-      const tags = await loadSearch<ITag>("sTag", page, keyword);
-      console.log("tags", tags!);
-      set((state) => {
-        return {
-          ...state,
-          gSearch: {
-            ...state.gSearch,
-            tags,
-          },
-        };
-      });
-    } else if (type === "users") {
-      const users = await loadSearch<IUser>("sUser", page);
-      set((state) => {
-        return {
-          ...state,
-          gSearch: {
-            ...state.gSearch,
-            users,
-          },
-        };
-      });
-    }
-  },
-}));
+    },
+    gSetSearch: async (type: ISearchType, page: number, keyword?: string) => {
+      console.log("gSetSearch", type, page, keyword);
+      if (type === "posts" && page === 1) return;
+      if (type === "posts") {
+        const posts = await loadSearch<IPost>("sPost", page);
+        set((state) => {
+          return {
+            ...state,
+            gSearch: {
+              ...state.gSearch,
+              posts,
+            },
+          };
+        });
+      } else if (type === "tags") {
+        const tags = await loadSearch<ITag>("sTag", page, keyword);
+        console.log("tags", tags!);
+        set((state) => {
+          return {
+            ...state,
+            gSearch: {
+              ...state.gSearch,
+              tags,
+            },
+          };
+        });
+      } else if (type === "users") {
+        const users = await loadSearch<IUser>("sUser", page);
+        set((state) => {
+          return {
+            ...state,
+            gSearch: {
+              ...state.gSearch,
+              users,
+            },
+          };
+        });
+      }
+    },
+  }))
+);
