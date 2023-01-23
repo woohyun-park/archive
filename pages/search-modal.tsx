@@ -228,20 +228,20 @@ export default function Search() {
                     <MotionFloat key={i}>
                       <div
                         key={i}
-                        className="flex justify-between my-4 text-sm text-gray-1"
+                        className="flex items-center justify-between my-4 text-sm text-gray-1"
                       >
                         <div
-                          className="hover:cursor-pointer"
+                          className="w-full hover:cursor-pointer"
                           onClick={() => handleClick(e)}
                         >
                           {e}
                         </div>
                         <div
-                          className="hover:cursor-pointer"
+                          className="flex items-center hover:cursor-pointer"
                           id={String(i)}
                           onClick={handleDelete}
                         >
-                          <HiX />
+                          <HiX size={SIZE.iconSmall} />
                         </div>
                       </div>
                     </MotionFloat>

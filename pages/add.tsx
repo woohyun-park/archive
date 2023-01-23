@@ -304,7 +304,6 @@ export default function Add() {
           (e: IDict<any>) => {
             for (const each in e) {
               if (each === "file") {
-                console.log(imgRef);
                 imgRef.current?.focus();
               } else {
                 e[each].ref.focus();

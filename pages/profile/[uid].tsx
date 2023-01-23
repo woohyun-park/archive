@@ -31,8 +31,6 @@ export default function Profile({
   initTags,
 }: IProfileProps) {
   const { gCurUser } = useStore();
-  console.log(initUser, initPosts, initScraps, initTags);
-  console.log(gCurUser);
   const [user, setUser] = useState({
     initIsFollowing: gCurUser.followings.find((elem) => elem === initUser.id)
       ? true

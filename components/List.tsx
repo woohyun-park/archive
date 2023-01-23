@@ -89,19 +89,21 @@ export default function List({ data, style, tab }: IListProps) {
                       const result = [];
                       for (const each in data[key]) {
                         result.push(
-                          <div className="flex items-center my-2 hover:cursor-pointer">
-                            <div className="p-2 mr-2 rounded-full bg-gray-3 w-fit">
-                              <RiHashtag size={SIZE.iconSmall} />
-                            </div>
+                          <MotionFloat>
                             <div
+                              className="flex items-center my-2 hover:cursor-pointer"
                               onClick={() =>
                                 setSelected({ ...selected, [key]: each })
                               }
-                              className="my-1 text-base text-left"
                             >
-                              {`#${each}`}
+                              <div className="p-2 mr-2 rounded-full bg-gray-3 w-fit">
+                                <RiHashtag size={SIZE.iconSmall} />
+                              </div>
+                              <div className="my-1 text-base text-left">
+                                {`#${each}`}
+                              </div>
                             </div>
-                          </div>
+                          </MotionFloat>
                         );
                       }
                       return result;

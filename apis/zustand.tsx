@@ -19,6 +19,7 @@ import {
   getDatasByQuery,
   getEach,
 } from "./firebase";
+import { Unsubscribe } from "firebase/auth";
 
 interface ICurUserState {
   gCurUser: IUser;
@@ -35,6 +36,10 @@ interface ICurUserState {
   gSetPage: (type: IPageType, page: number) => void;
   gSetFeed: (id: string, page: number) => Promise<void>;
   gSetSearch: (type: ISearchType, page: number) => Promise<void>;
+
+  gUnsubscribeUser: Unsubscribe;
+  gUnsubscribeLikes: Unsubscribe;
+  gUnsubscribeScraps: Unsubscribe;
 }
 interface IPage {
   feed: number;
@@ -126,9 +131,14 @@ async function loadListener(
   ) => void,
   get: () => ICurUserState,
   id: string
-) {
-  const loadUser = onSnapshot(doc(db, "users", id), (doc) => {
+): Promise<{
+  unsubscribeUser: Unsubscribe;
+  unsubscribeLikes: Unsubscribe;
+  unsubscribeScraps: Unsubscribe;
+}> {
+  const unsubscribeUser = onSnapshot(doc(db, "users", id), (doc) => {
     set((state) => {
+      console.log("unsub user", doc.data());
       return {
         ...state,
         gCurUser: {
@@ -139,13 +149,14 @@ async function loadListener(
       };
     });
   });
-  const loadLikes = onSnapshot(
+  const unsubscribeLikes = onSnapshot(
     query(collection(db, "likes"), where("uid", "==", id)),
     (snap) => {
       const datas: ILike[] = [];
       snap.forEach((doc) => {
         datas.push({ ...(doc.data() as ILike) });
       });
+      console.log("unsub likes", get().gCurUser);
       set((state) => {
         return {
           ...state,
@@ -154,7 +165,7 @@ async function loadListener(
       });
     }
   );
-  const loadScraps = onSnapshot(
+  const unsubscribeScraps = onSnapshot(
     query(collection(db, "scraps"), where("uid", "==", id)),
     (snap) => {
       const datas: IScrap[] = [];
@@ -162,6 +173,7 @@ async function loadListener(
         datas.push({ ...(doc.data() as IScrap) });
       });
       set((state) => {
+        console.log("unsub scraps", get().gCurUser);
         return {
           ...state,
           gCurUser: { ...get().gCurUser, scraps: datas },
@@ -169,18 +181,9 @@ async function loadListener(
       });
     }
   );
+  return { unsubscribeUser, unsubscribeLikes, unsubscribeScraps };
 }
-async function loadState(
-  set: (
-    partial:
-      | ICurUserState
-      | Partial<ICurUserState>
-      | ((state: ICurUserState) => ICurUserState | Partial<ICurUserState>),
-    replace?: boolean | undefined
-  ) => void,
-  get: () => ICurUserState,
-  id: string
-) {
+async function loadState(get: () => ICurUserState, id: string) {
   const user = await getDoc(doc(db, "users", id));
   const likes = await getEach<ILike>("likes", id);
   const scraps = await getEach<IScrap>("scraps", id);
@@ -196,16 +199,13 @@ async function loadState(
     users: await loadSearch<IUser>("sUser", get().gPage.sUser),
   };
 
-  set((state) => {
-    return {
-      ...state,
-      gCurUser: curUser,
-      gFeed: {
-        posts,
-      },
-      gSearch: search,
-    };
-  });
+  return {
+    gCurUser: curUser,
+    gFeed: {
+      posts,
+    },
+    gSearch: search,
+  };
 }
 
 export const useStore = create<ICurUserState>((set, get) => ({
@@ -236,10 +236,24 @@ export const useStore = create<ICurUserState>((set, get) => ({
   gModal: {
     isOpen: false,
   },
+  gUnsubscribeUser: null,
+  gUnsubscribeLikes: null,
+  gUnsubscribeScraps: null,
 
   gInit: async (id: string) => {
-    loadListener(set, get, id);
-    loadState(set, get, id);
+    const { unsubscribeUser, unsubscribeLikes, unsubscribeScraps } =
+      await loadListener(set, get, id);
+    const loadedState = await loadState(get, id);
+    console.log(loadedState.gCurUser);
+    set((state) => {
+      return {
+        ...state,
+        ...loadedState,
+        gUnsubscribeUser: unsubscribeUser,
+        gUnsubscribeLikes: unsubscribeLikes,
+        gUnsubscribeScraps: unsubscribeScraps,
+      };
+    });
   },
 
   gSetPage: (type: IPageType, page: number) => {

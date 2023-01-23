@@ -11,12 +11,7 @@ import { auth, db } from "../apis/firebase";
 import Nav from "./Nav";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { COLOR, DEFAULT, IUser, SIZE } from "../custom";
-import {
-  RiAppleFill,
-  RiFacebookFill,
-  RiGoogleFill,
-  RiKakaoTalkFill,
-} from "react-icons/ri";
+import { RiAppleFill, RiFacebookFill, RiGoogleFill } from "react-icons/ri";
 import { IconBase } from "react-icons";
 
 interface ILayoutProps {
@@ -34,7 +29,8 @@ interface ILogin {
 export default function Layout({ children }: ILayoutProps) {
   const provider = new GoogleAuthProvider();
   const router = useRouter();
-  const { gInit } = useStore();
+  const { gInit, gUnsubscribeLikes, gUnsubscribeScraps, gUnsubscribeUser } =
+    useStore();
   const [login, setLogin] = useState<ILogin>({
     email: "",
     password: "",
@@ -49,6 +45,9 @@ export default function Layout({ children }: ILayoutProps) {
         await gInit(authState.uid);
         setLogin({ ...login, isLoggedIn: true });
       } else {
+        // gUnsubscribeLikes();
+        // gUnsubscribeScraps();
+        // gUnsubscribeUser();
         setLogin({ ...login, isLoggedIn: false });
       }
     });
@@ -62,13 +61,16 @@ export default function Layout({ children }: ILayoutProps) {
     signInWithPopup(auth, provider)
       .then(async (res) => {
         const user = res.user;
-        const tempUser: IUser = {
-          ...DEFAULT.user,
-          id: user.uid,
-          email: String(user.email),
-          displayName: `아카이버-${user.uid.slice(0, 11)}`,
-        };
-        await setDoc(doc(db, "users", user.uid), tempUser);
+        const snap = await getDoc(doc(db, "users", user.uid));
+        if (!snap.data()) {
+          const tempUser: IUser = {
+            ...DEFAULT.user,
+            id: user.uid,
+            email: String(user.email),
+            displayName: `아카이버-${user.uid.slice(0, 11)}`,
+          };
+          await setDoc(doc(db, "users", user.uid), tempUser);
+        }
         router.push("/");
       })
       .catch((e) => {

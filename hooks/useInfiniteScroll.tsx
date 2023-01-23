@@ -21,7 +21,6 @@ export const useInfiniteScroll = (type: IInfintieScrollType) => {
   };
 
   useEffect(() => {
-    console.log(gPage.sPost);
     if (type === "feed") gSetFeed(gCurUser.id, gPage.feed);
     else if (type === "searchPost") gSetSearch("posts", gPage.sPost);
   }, [gPage]);
