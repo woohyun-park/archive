@@ -1,6 +1,16 @@
 import create from "zustand";
 import { devtools } from "zustand/middleware";
-import { IComment, IDict, ILike, IPost, IScrap, ITag, IUser } from "../custom";
+import {
+  IComment,
+  IDict,
+  ILike,
+  IPost,
+  IRoute,
+  IScrap,
+  ITag,
+  IType,
+  IUser,
+} from "../custom";
 import {
   collection,
   doc,
@@ -24,11 +34,6 @@ import {
 } from "./firebase";
 import { Unsubscribe } from "firebase/auth";
 
-interface IStatus {
-  isModalOpen: boolean;
-  keyword: string;
-}
-
 interface IState {
   gCurUser: IUser;
   gFeed: {
@@ -40,16 +45,7 @@ interface IState {
     users: IUser[];
   };
   gStatus: IStatus;
-  gPage: {
-    feed: {
-      post: number;
-    };
-    search: {
-      post: number;
-      tag: number;
-      user: number;
-    };
-  };
+  gPage: IDict<IDict<number>>;
   gUnsubscribeUser: Unsubscribe | null;
   gUnsubscribeLikes: Unsubscribe | null;
   gUnsubscribeScraps: Unsubscribe | null;
@@ -61,8 +57,13 @@ interface IState {
     keyword?: string
   ) => Promise<void>;
   gSetStatus: (status: IStatus) => void;
-  gSetPage: (type: IPageType, page: number) => void;
+  gSetPage: (route: IRoute, type: IType, page: number) => void;
 }
+interface IStatus {
+  isModalOpen: boolean;
+  keyword: string;
+}
+
 type ISearchType = "posts" | "tags" | "users";
 type IPageType = "feed" | ISearchPageType;
 type ISearchPageType = "sPost" | "sTag" | "sUser";
@@ -277,15 +278,11 @@ export const useStore = create<IState>()(
         };
       });
     },
-
-    gSetPage: (type: IPageType, page: number) => {
+    gSetPage: (route: IRoute, type: IType, page: number) => {
       set((state: IState) => {
+        state.gPage[route][type] = page;
         return {
           ...state,
-          gPage: {
-            ...state.gPage,
-            [type]: page,
-          },
         };
       });
     },
@@ -310,7 +307,6 @@ export const useStore = create<IState>()(
       });
     },
     gSetSearch: async (type: ISearchType, page: number, keyword?: string) => {
-      console.log("gSetSearch", type, page, keyword);
       if (type === "posts" && page === 1) return;
       if (type === "posts") {
         const posts = await loadSearch<IPost>("sPost", page);

@@ -15,6 +15,7 @@ export const useInfiniteScroll = ({
   );
 
   const onIntersect: IntersectionObserverCallback = (entries, observer) => {
+    console.log("Intersect!", handleIntersect);
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
         handleIntersect();

@@ -60,6 +60,7 @@ export default function Search() {
   });
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    console.log(e.currentTarget.value);
     gSetStatus({ ...gStatus, keyword: e.currentTarget.value });
   }
 

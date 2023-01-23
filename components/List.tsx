@@ -27,11 +27,11 @@ export default function List({ data, route, type, loadingRef }: IListProps) {
   const { setLastIntersecting } = useInfiniteScroll({
     handleIntersect:
       route === "feed"
-        ? () => gSetPage("feed", gPage.feed.post + 1)
+        ? () => gSetPage("feed", "post", gPage.feed.post + 1)
         : route === "search" && type === "post"
-        ? () => gSetPage("sPost", gPage.search.post + 1)
+        ? () => gSetPage("search", "post", gPage.search.post + 1)
         : route === "search" && type === "tag"
-        ? () => gSetPage("sTag", gPage.search.tag + 1)
+        ? () => gSetPage("search", "tag", gPage.search.tag + 1)
         : () => {},
     handleChange:
       route === "feed"
@@ -43,11 +43,11 @@ export default function List({ data, route, type, loadingRef }: IListProps) {
         : () => {},
     changeListener:
       route === "feed"
-        ? gPage
+        ? gPage.feed
         : route === "search" && type === "post"
-        ? gPage
+        ? gPage.search.post
         : route === "search" && type === "tag"
-        ? gPage
+        ? gPage.search.tag
         : null,
   });
 
@@ -100,11 +100,9 @@ export default function List({ data, route, type, loadingRef }: IListProps) {
                       </div>
                       <div className="my-1 text-base text-left">{`#${e.name}`}</div>
                     </div>
-                    {i === data.length - 1 && (
-                      <div ref={setLastIntersecting}></div>
-                    )}
                   </Link>
                 </MotionFloat>
+                {i === data.length - 1 && <div ref={setLastIntersecting}></div>}
               </>
             ))}
           </div>
