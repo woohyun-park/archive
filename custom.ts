@@ -93,6 +93,9 @@ export type IStyle =
   | "profile"
   | "tag";
 
+export type IPage = "post" | "feed" | "search" | "add" | "alarm" | "profile";
+export type IType = "user" | "post" | "comment" | "tag" | "like" | "scrap";
+
 export interface IDict<T> {
   [key: string]: T;
 }

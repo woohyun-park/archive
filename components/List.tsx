@@ -1,18 +1,25 @@
 import { useEffect, useState } from "react";
-import { IPost } from "../custom";
+import { useStore } from "../apis/zustand";
+import { IPage, IPost, IType } from "../custom";
 import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 import Box from "./Box";
 import Loader from "./Loader";
 
 interface IListProps {
   data: IPost[];
-  type: string;
+  page: IPage;
+  type: IType;
   loadingRef: [any, any];
 }
 
 export default function List({ data, type, loadingRef }: IListProps) {
   const [loading, setLoading] = useState(false);
-  const { setLastIntersecting } = useInfiniteScroll("searchPost");
+  const { gSetPage, gPage, gSetSearch } = useStore();
+  const { setLastIntersecting } = useInfiniteScroll({
+    handleIntersect: () => gSetPage("sPost", gPage.sPost + 1),
+    handleChange: () => gSetSearch("posts", gPage.sPost),
+    changeRef: gPage,
+  });
 
   useEffect(() => {
     setLoading(false);

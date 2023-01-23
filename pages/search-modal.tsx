@@ -29,12 +29,14 @@ interface ISearchState {
 
 export default function Search() {
   const { gCurUser } = useStore();
-  const setLastIntersectingUser = useInfiniteScroll("default", () =>
-    setUserPage(userPage + 1)
-  ).setLastIntersecting;
-  const setLastIntersectingTag = useInfiniteScroll("default", () =>
-    setTagPage(tagPage + 1)
-  ).setLastIntersecting;
+  const setLastIntersectingUser = useInfiniteScroll({
+    type: "default",
+    handleIntersect: () => setUserPage(userPage + 1),
+  }).setLastIntersecting;
+  const setLastIntersectingTag = useInfiniteScroll({
+    type: "default",
+    handleIntersect: () => setTagPage(tagPage + 1),
+  }).setLastIntersecting;
   const [state, setState] = useState<ISearchState>({
     keyword: "",
     prevKeyword: "",
