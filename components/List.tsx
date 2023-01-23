@@ -79,7 +79,7 @@ export default function List({ data, type, loadingRef }: IListProps) {
             {(data as IPost[]).map((e, i) => (
               <>
                 <div>
-                  <Box post={{ ...e, id: e.id }} style={route} key={e.id}></Box>
+                  <Box post={{ ...e, id: e.id }} key={e.id}></Box>
                 </div>
                 {i === data.length - 1 && <div ref={setLastIntersecting}></div>}
               </>

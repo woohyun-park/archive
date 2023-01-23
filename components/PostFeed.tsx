@@ -14,9 +14,9 @@ export default function PostFeed({ post, user }: IPostFeedProps) {
     <>
       {post && user && (
         <>
-          <ProfileSmall post={post} user={user} style="feed" />
-          <Box post={post} style="feed" />
-          <PostAction post={post} style="feed" />
+          <ProfileSmall post={post} user={user} type="post" />
+          <Box post={post} />
+          <PostAction post={post} />
         </>
       )}
     </>

@@ -81,7 +81,7 @@ export default function Post({ initPost, initUser }: IPostProps) {
                 />
               </div>
             )}
-            <ProfileSmall post={initPost} user={initUser} style="post" />
+            <ProfileSmall post={initPost} user={initUser} type="post" />
             <h1 className="mb-1 text-5xl">{initPost.title}</h1>
             <div className="flex flex-wrap justify-end w-full mb-8">
               {initPost.tags.map((tag, i) => (
@@ -91,7 +91,7 @@ export default function Post({ initPost, initUser }: IPostProps) {
               ))}
             </div>
             <div className="mt-1 mb-4 whitespace-pre-wrap">{initPost.txt}</div>
-            <PostAction post={initPost} style="post" />
+            <PostAction post={initPost} />
           </>
         )}
 

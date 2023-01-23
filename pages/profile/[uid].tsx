@@ -149,7 +149,6 @@ export default function Profile({
         )}
         <Tab
           data={{ grid: initPosts, tag: initTags, scrap: initScraps }}
-          route="profile"
           tab={[
             ["grid", "post"],
             ["tag", "cont"],

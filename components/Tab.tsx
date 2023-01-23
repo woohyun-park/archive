@@ -55,11 +55,7 @@ export default function Tab({ data, tab }: ITabProps) {
                   {data &&
                     data[key].map((e: IPost) => (
                       <>
-                        <Box
-                          post={{ ...e, id: e.id }}
-                          style={`${route}`}
-                          key={e.id}
-                        ></Box>
+                        <Box post={{ ...e, id: e.id }} key={e.id}></Box>
                       </>
                     ))}
                 </div>
