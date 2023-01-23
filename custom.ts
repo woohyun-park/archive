@@ -1,5 +1,6 @@
 import { FieldValue, Timestamp } from "firebase/firestore";
 import { NextRouter } from "next/router";
+import { collapseTextChangeRangesAcrossMultipleVersions } from "typescript";
 import { Style } from "util";
 
 export const DEFAULT = {
@@ -167,5 +168,5 @@ export function getRoute(router: NextRouter): IRoute {
     ? "feed"
     : router.pathname === "/search-modal"
     ? "search"
-    : (router.pathname.slice(1) as IRoute);
+    : (router.pathname.split("/")[1] as IRoute);
 }

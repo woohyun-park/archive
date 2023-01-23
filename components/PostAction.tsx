@@ -18,15 +18,22 @@ import {
 } from "react-icons/hi2";
 import { db, getDataByRef } from "../apis/firebase";
 import { useStore } from "../apis/zustand";
-import { COLOR, IComment, ILike, IPost, IScrap, IStyle, SIZE } from "../custom";
+import {
+  COLOR,
+  getRoute,
+  IComment,
+  ILike,
+  IPost,
+  IScrap,
+  SIZE,
+} from "../custom";
 import Comment from "./Comment";
 
 type IPostActionProps = {
   post: IPost;
-  style: IStyle;
 };
 
-export default function PostAction({ post, style }: IPostActionProps) {
+export default function PostAction({ post }: IPostActionProps) {
   const [postState, setPostState] = useState(post);
   const { gCurUser } = useStore();
   const [status, setStatus] = useState({
@@ -42,6 +49,7 @@ export default function PostAction({ post, style }: IPostActionProps) {
   const [comment, setComment] = useState("");
   const commentRef: RefObject<HTMLInputElement> = useRef(null);
   const router = useRouter();
+  const route = getRoute(router);
 
   useEffect(() => {
     setStatus({
@@ -123,9 +131,9 @@ export default function PostAction({ post, style }: IPostActionProps) {
   }
 
   function handleCommentClick(e: React.MouseEvent<SVGElement>) {
-    if (style === "post") {
+    if (route === "post") {
       commentRef.current?.focus();
-    } else if (style === "feed") {
+    } else if (route === "feed") {
       router.push(
         {
           pathname: `/post/${postState.id}`,
@@ -206,12 +214,12 @@ export default function PostAction({ post, style }: IPostActionProps) {
         </div>
         <div>{`스크랩 ${displayScraps()}`}</div>
       </div>
-      {style === "post" &&
+      {route === "post" &&
         postState.comments?.map((comment) => (
           <Comment comment={comment} onClick={handleDelete} key={comment.id} />
         ))}
-      {style === "post" && (
-        <div className="flex items-center justify-between">
+      {route === "post" && (
+        <div className="flex items-center justify-between mb-24">
           <div className="profileImg-small">
             <Image src={gCurUser.photoURL} alt="" fill />
           </div>

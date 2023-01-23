@@ -1,13 +1,15 @@
 import Image from "next/image";
 import Link from "next/link";
-import { COLOR, IPost, IStyle } from "../custom";
+import { useRouter } from "next/router";
+import { COLOR, getRoute, IPost } from "../custom";
 
 interface IBoxProps {
   post: IPost;
-  style: IStyle;
 }
 
-export default function Box({ post, style = "default" }: IBoxProps) {
+export default function Box({ post }: IBoxProps) {
+  const router = useRouter();
+  const route = getRoute(router);
   return (
     <>
       <div className="relative overflow-hidden rounded-lg w-full pb-[100%]">
@@ -33,13 +35,13 @@ export default function Box({ post, style = "default" }: IBoxProps) {
         >
           <div
             className="absolute m-2 text-5xl font-bold break-words hover:cursor-pointer"
-            id={`d2-${style}`}
+            id={`d2-${route}`}
           >
             {post.title}
           </div>
         </Link>
         <div className="absolute bottom-0 right-0 flex flex-row-reverse flex-wrap-reverse w-2/3 m-4 text-right">
-          {style === "feed" &&
+          {route === "feed" &&
             [...post.tags]?.reverse().map((tag, i) => (
               <Link key={i} href={{ pathname: `/tag/${tag}` }} legacyBehavior>
                 <button className="m-1 mb-0 button-black hover:cursor-pointer">{`#${tag}`}</button>
