@@ -8,10 +8,7 @@ type IInfintieScrollType =
   | "searchTag"
   | "searchUser";
 
-export const useInfiniteScroll = (
-  type: IInfintieScrollType = "default",
-  handleIntersect?: Function
-) => {
+export const useInfiniteScroll = (type: IInfintieScrollType) => {
   const { gCurUser, gPage, gSetFeed, gSetPage, gSetSearch, gSearch } =
     useStore();
   const [lastIntersecting, setLastIntersecting] = useState<HTMLElement | null>(
@@ -24,7 +21,6 @@ export const useInfiniteScroll = (
       if (entry.isIntersecting) {
         if (type === "feed") gSetPage("feed", gPage.feed + 1);
         else if (type === "searchPost") gSetPage("sPost", gPage.sPost + 1);
-        if (handleIntersect) handleIntersect();
         observer.unobserve(entry.target);
       }
     });
@@ -33,7 +29,6 @@ export const useInfiniteScroll = (
   useEffect(() => {
     if (type === "feed") gSetFeed(gCurUser.id, gPage.feed);
     else if (type === "searchPost") gSetSearch("posts", gPage.sPost);
-    if (handleIntersect) handleIntersect();
   }, [gPage]);
 
   useEffect(() => {

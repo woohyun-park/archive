@@ -8,7 +8,7 @@ import {
   getPath,
   updateFollow,
 } from "../../apis/firebase";
-import List from "../../components/List";
+import Tab from "../../components/Tab";
 import { COLOR, IDict, IPost, IScrap, ITag, IUser, SIZE } from "../../custom";
 import { HiOutlineCog } from "react-icons/hi";
 import { useStore } from "../../apis/zustand";
@@ -147,7 +147,7 @@ export default function Profile({
             })()}
           </>
         )}
-        <List
+        <Tab
           data={{ grid: initPosts, tag: initTags, scrap: initScraps }}
           style="profile"
           tab={[

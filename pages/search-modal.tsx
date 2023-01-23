@@ -1,4 +1,4 @@
-import List from "../components/List";
+import Tab from "../components/Tab";
 import { IDict, ITag, IUser, SIZE } from "../custom";
 import { HiSearch, HiX } from "react-icons/hi";
 import React, { useEffect, useRef, useState } from "react";
@@ -314,7 +314,7 @@ export default function Search() {
           )}
         </div>
         {!state.isInitial && !focus && (
-          <List
+          <Tab
             data={{
               person: [...state.searchedUsers],
               tag: { ...state.searchedTags },

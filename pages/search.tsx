@@ -11,17 +11,7 @@ import { useRouter } from "next/router";
 import MotionFade from "../motions/motionFade";
 
 export default function Search() {
-  const { gSearch, gPage, gCurUser } = useStore();
-  const [loading, setLoading] = useState(false);
-  const { setLastIntersecting } = useInfiniteScroll("searchPost");
-
-  useEffect(() => {
-    setLoading(false);
-  }, [gSearch]);
-
-  useEffect(() => {
-    setLoading(true);
-  }, [gPage.sPost]);
+  const { gSearch, gPage } = useStore();
 
   const router = useRouter();
 
@@ -36,23 +26,11 @@ export default function Search() {
             </div>
           </div>
         </Link>
-        <div className="grid grid-cols-3 mt-4 gap-y-2 gap-x-2">
-          {gSearch.posts.map((e, i) => (
-            <>
-              <div>
-                <Box
-                  post={{ ...e, id: e.id }}
-                  style={"search"}
-                  key={e.id}
-                ></Box>
-              </div>
-              {i === gSearch.posts.length - 1 && (
-                <div ref={setLastIntersecting}></div>
-              )}
-            </>
-          ))}
-        </div>
-        <div className="flex justify-center"> {loading && <Loader />}</div>
+        <List
+          data={gSearch.posts}
+          type="searchPost"
+          loadingRef={[gSearch, gPage.sPost]}
+        />
       </MotionFade>
     </>
   );
