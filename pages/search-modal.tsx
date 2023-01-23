@@ -1,34 +1,51 @@
 import List from "../components/List";
 import { IDict, ITag, IUser, SIZE } from "../custom";
 import { HiSearch, HiX } from "react-icons/hi";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useStore } from "../apis/zustand";
 import { db, getDatasByQuery, updateUser } from "../apis/firebase";
 import { useRouter } from "next/router";
 import MotionFade from "../motions/motionFade";
 import MotionFloat from "../motions/motionFloat";
-import { collection, endAt, orderBy, query, startAt } from "firebase/firestore";
+import {
+  collection,
+  endAt,
+  limit,
+  orderBy,
+  query,
+  startAt,
+} from "firebase/firestore";
 import { useOutsideClick } from "../hooks/useOutsideClick";
+import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 
 interface ISearchState {
   keyword: string;
   prevKeyword: string;
   isInitial: boolean;
-  searchedPosts: IUser[];
+  searchedUsers: IUser[];
   searchedTags: IDict<ITag[]>;
   searchedKeyword: string;
 }
 
 export default function Search() {
   const { gCurUser } = useStore();
+  const setLastIntersectingUser = useInfiniteScroll("default", () =>
+    setUserPage(userPage + 1)
+  ).setLastIntersecting;
+  const setLastIntersectingTag = useInfiniteScroll("default", () =>
+    setTagPage(tagPage + 1)
+  ).setLastIntersecting;
   const [state, setState] = useState<ISearchState>({
     keyword: "",
     prevKeyword: "",
     isInitial: true,
-    searchedPosts: [],
+    searchedUsers: [],
     searchedTags: {},
     searchedKeyword: "",
   });
+  const [userPage, setUserPage] = useState(1);
+  const [tagPage, setTagPage] = useState(1);
+
   const [focus, setFocus] = useState(false);
   const router = useRouter();
   const recentRef = useRef<HTMLDivElement>(null);
@@ -65,15 +82,60 @@ export default function Search() {
       });
     }
   }
-
-  async function handleClick(keyword: string) {
-    updateHistory(keyword);
-    const searchedPosts = await getDatasByQuery<IUser>(
+  async function setSearchedUsers(keyword: string) {
+    const searchedUsers = await getDatasByQuery<IUser>(
       query(
         collection(db, "users"),
         orderBy("displayName"),
         startAt(keyword),
-        endAt(keyword + "\uf8ff")
+        endAt(keyword + "\uf8ff"),
+        limit(userPage * 5)
+      )
+    );
+    setState({
+      ...state,
+      searchedUsers,
+    });
+  }
+  async function setSearchedTags(keyword: string) {
+    const dataTags = await getDatasByQuery<ITag>(
+      query(
+        collection(db, "tags"),
+        orderBy("name"),
+        startAt(keyword),
+        endAt(keyword + "\uf8ff"),
+        limit(tagPage * 5)
+      )
+    );
+    const searchedTags: IDict<ITag[]> = {};
+    dataTags.forEach((each) =>
+      searchedTags[each.name]
+        ? searchedTags[each.name].push(each)
+        : (searchedTags[each.name] = [each])
+    );
+    setState({
+      ...state,
+      searchedTags,
+    });
+  }
+  useEffect(() => {
+    setSearchedUsers(state.keyword);
+    console.log("userPage", userPage);
+  }, [userPage]);
+  useEffect(() => {
+    setSearchedTags(state.keyword);
+    console.log("tagPage", tagPage);
+  }, [tagPage]);
+
+  async function handleClick(keyword: string) {
+    updateHistory(keyword);
+    const searchedUsers = await getDatasByQuery<IUser>(
+      query(
+        collection(db, "users"),
+        orderBy("displayName"),
+        startAt(keyword),
+        endAt(keyword + "\uf8ff"),
+        limit(userPage * 5)
       )
     );
     const dataTags = await getDatasByQuery<ITag>(
@@ -81,7 +143,8 @@ export default function Search() {
         collection(db, "tags"),
         orderBy("name"),
         startAt(keyword),
-        endAt(keyword + "\uf8ff")
+        endAt(keyword + "\uf8ff"),
+        limit(tagPage * 5)
       )
     );
     const searchedTags: IDict<ITag[]> = {};
@@ -95,7 +158,7 @@ export default function Search() {
       isInitial: false,
       keyword,
       searchedKeyword: keyword,
-      searchedPosts,
+      searchedUsers,
       searchedTags,
     });
     setFocus(false);
@@ -108,12 +171,13 @@ export default function Search() {
     if (e.key === "Enter") {
       e.currentTarget.blur();
       updateHistory(state.keyword);
-      const searchedPosts = await getDatasByQuery<IUser>(
+      const searchedUsers = await getDatasByQuery<IUser>(
         query(
           collection(db, "users"),
           orderBy("displayName"),
           startAt(state.keyword),
-          endAt(state.keyword + "\uf8ff")
+          endAt(state.keyword + "\uf8ff"),
+          limit(userPage * 5)
         )
       );
       const dataTags = await getDatasByQuery<ITag>(
@@ -121,7 +185,8 @@ export default function Search() {
           collection(db, "tags"),
           orderBy("name"),
           startAt(state.keyword),
-          endAt(state.keyword + "\uf8ff")
+          endAt(state.keyword + "\uf8ff"),
+          limit(tagPage * 5)
         )
       );
       const searchedTags: IDict<ITag[]> = {};
@@ -134,7 +199,7 @@ export default function Search() {
         ...state,
         isInitial: false,
         searchedKeyword: state.keyword,
-        searchedPosts,
+        searchedUsers,
         searchedTags,
       });
       setFocus(false);
@@ -251,7 +316,7 @@ export default function Search() {
         {!state.isInitial && !focus && (
           <List
             data={{
-              person: [...state.searchedPosts],
+              person: [...state.searchedUsers],
               tag: { ...state.searchedTags },
             }}
             style="search"

@@ -5,8 +5,7 @@ import { HiArrowLeft } from "react-icons/hi";
 import Cont from "./Cont";
 import MotionFloat from "../motions/motionFloat";
 import ProfileSmall from "./ProfileSmall";
-import { getData, getEach } from "../apis/firebase";
-import { connectFirestoreEmulator } from "firebase/firestore";
+import { getData } from "../apis/firebase";
 import { RiHashtag } from "react-icons/ri";
 
 interface IListProps {
@@ -73,11 +72,13 @@ export default function List({ data, style, tab }: IListProps) {
               <>
                 <div className="grid grid-cols-3 gap-x-2 gap-y-2">
                   {data[key].map((e: IPost) => (
-                    <Box
-                      post={{ ...e, id: e.id }}
-                      style={`${style}`}
-                      key={e.id}
-                    ></Box>
+                    <>
+                      <Box
+                        post={{ ...e, id: e.id }}
+                        style={`${style}`}
+                        key={e.id}
+                      ></Box>
+                    </>
                   ))}
                 </div>
               </>
@@ -86,12 +87,14 @@ export default function List({ data, style, tab }: IListProps) {
             return (
               <>
                 {selected[key] !== "" && (
-                  <div className="mb-2 hover:cursor-pointer">
-                    <HiArrowLeft
-                      size={SIZE.icon}
-                      onClick={() => setSelected({ ...selected, [key]: "" })}
-                    />
-                  </div>
+                  <>
+                    <div className="mb-2 hover:cursor-pointer">
+                      <HiArrowLeft
+                        size={SIZE.icon}
+                        onClick={() => setSelected({ ...selected, [key]: "" })}
+                      />
+                    </div>
+                  </>
                 )}
                 {selected[key] === "" ? (
                   <>
@@ -99,21 +102,23 @@ export default function List({ data, style, tab }: IListProps) {
                       const result = [];
                       for (const each in data[key]) {
                         result.push(
-                          <MotionFloat>
-                            <div
-                              className="flex items-center my-2 hover:cursor-pointer"
-                              onClick={() =>
-                                setSelected({ ...selected, [key]: each })
-                              }
-                            >
-                              <div className="p-2 mr-2 rounded-full bg-gray-3 w-fit">
-                                <RiHashtag size={SIZE.iconSmall} />
+                          <>
+                            <MotionFloat>
+                              <div
+                                className="flex items-center my-2 hover:cursor-pointer"
+                                onClick={() =>
+                                  setSelected({ ...selected, [key]: each })
+                                }
+                              >
+                                <div className="p-2 mr-2 rounded-full bg-gray-3 w-fit">
+                                  <RiHashtag size={SIZE.iconSmall} />
+                                </div>
+                                <div className="my-1 text-base text-left">
+                                  {`#${each}`}
+                                </div>
                               </div>
-                              <div className="my-1 text-base text-left">
-                                {`#${each}`}
-                              </div>
-                            </div>
-                          </MotionFloat>
+                            </MotionFloat>
+                          </>
                         );
                       }
                       return result;
@@ -124,7 +129,13 @@ export default function List({ data, style, tab }: IListProps) {
                     {tags[selected[key]].map(
                       (each: ITag) =>
                         each.post && (
-                          <Box post={each.post} style="search" key={each.id} />
+                          <>
+                            <Box
+                              post={each.post}
+                              style="search"
+                              key={each.id}
+                            />
+                          </>
                         )
                     )}
                   </div>

@@ -1,9 +1,17 @@
 import { useEffect, useState } from "react";
 import { useStore } from "../apis/zustand";
 
-type IInfintieScrollType = "feed" | "searchPost" | "searchTag" | "searchUser";
+type IInfintieScrollType =
+  | "default"
+  | "feed"
+  | "searchPost"
+  | "searchTag"
+  | "searchUser";
 
-export const useInfiniteScroll = (type: IInfintieScrollType) => {
+export const useInfiniteScroll = (
+  type: IInfintieScrollType = "default",
+  handleIntersect?: Function
+) => {
   const { gCurUser, gPage, gSetFeed, gSetPage, gSetSearch, gSearch } =
     useStore();
   const [lastIntersecting, setLastIntersecting] = useState<HTMLElement | null>(
@@ -11,10 +19,12 @@ export const useInfiniteScroll = (type: IInfintieScrollType) => {
   );
 
   const onIntersect: IntersectionObserverCallback = (entries, observer) => {
+    console.log("intersect!");
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
         if (type === "feed") gSetPage("feed", gPage.feed + 1);
         else if (type === "searchPost") gSetPage("sPost", gPage.sPost + 1);
+        if (handleIntersect) handleIntersect();
         observer.unobserve(entry.target);
       }
     });
@@ -23,6 +33,7 @@ export const useInfiniteScroll = (type: IInfintieScrollType) => {
   useEffect(() => {
     if (type === "feed") gSetFeed(gCurUser.id, gPage.feed);
     else if (type === "searchPost") gSetSearch("posts", gPage.sPost);
+    if (handleIntersect) handleIntersect();
   }, [gPage]);
 
   useEffect(() => {
