@@ -165,5 +165,7 @@ export interface IScrap {
 export function getRoute(router: NextRouter): IRoute {
   return router.pathname === "/"
     ? "feed"
+    : router.pathname === "/search-modal"
+    ? "search"
     : (router.pathname.slice(1) as IRoute);
 }

@@ -13,7 +13,7 @@ import {
   HiOutlineUser,
 } from "react-icons/hi";
 import { useStore } from "../apis/zustand";
-import { COLOR, SIZE } from "../custom";
+import { SIZE } from "../custom";
 
 export default function Nav() {
   const { gCurUser } = useStore();

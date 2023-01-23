@@ -1,18 +1,13 @@
 import List from "../components/List";
 import { SIZE } from "../custom";
-import { HiSearch, HiX } from "react-icons/hi";
-import React, { useEffect, useState } from "react";
+import { HiSearch } from "react-icons/hi";
 import { useStore } from "../apis/zustand";
-import Box from "../components/Box";
-import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
-import Loader from "../components/Loader";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import MotionFade from "../motions/motionFade";
 
 export default function Search() {
   const { gSearch, gPage } = useStore();
-
   const router = useRouter();
 
   return (
@@ -28,7 +23,6 @@ export default function Search() {
         </Link>
         <List
           data={gSearch.posts}
-          route="search"
           type="post"
           loadingRef={[gPage.sPost, gSearch.posts]}
         />
