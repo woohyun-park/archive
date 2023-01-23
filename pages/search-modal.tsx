@@ -35,6 +35,10 @@ export default function Search() {
     searchedTags: {},
     searchedKeyword: "",
   });
+  const [keyword, setKeyword] = useState(gStatus.keyword);
+  useEffect(() => {
+    gSetStatus({ ...gStatus, keyword });
+  }, [keyword]);
   const [page, setPage] = useState({
     user: 1,
     tag: 1,
@@ -60,8 +64,7 @@ export default function Search() {
   });
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    console.log(e.currentTarget.value);
-    gSetStatus({ ...gStatus, keyword: e.currentTarget.value });
+    setKeyword(e.currentTarget.value);
   }
 
   function updateHistory(keyword: string) {
@@ -248,6 +251,7 @@ export default function Search() {
                 className="w-full m-1 bg-gray-3"
                 type="text"
                 onChange={handleChange}
+                value={keyword}
                 onFocus={() => setFocus(true)}
                 onKeyDown={handleSearch}
                 ref={searchRef}
@@ -257,7 +261,6 @@ export default function Search() {
                 size={SIZE.iconSmall}
                 onClick={() => {
                   gSetStatus({ ...gStatus, keyword: "" });
-                  // setState({ ...state, keyword: "" });
                   searchRef.current?.focus();
                 }}
               />

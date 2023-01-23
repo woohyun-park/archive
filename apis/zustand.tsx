@@ -321,7 +321,6 @@ export const useStore = create<IState>()(
         });
       } else if (type === "tags") {
         const tags = await loadSearch<ITag>("sTag", page, keyword);
-        console.log("tags", tags!);
         set((state: IState) => {
           return {
             ...state,
