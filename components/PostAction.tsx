@@ -18,15 +18,7 @@ import {
 } from "react-icons/hi2";
 import { db, getDataByRef } from "../apis/firebase";
 import { useStore } from "../apis/zustand";
-import {
-  COLOR,
-  getRoute,
-  IComment,
-  ILike,
-  IPost,
-  IScrap,
-  SIZE,
-} from "../custom";
+import { getRoute, IComment, ILike, IPost, IScrap, SIZE } from "../custom";
 import Comment from "./Comment";
 
 type IPostActionProps = {

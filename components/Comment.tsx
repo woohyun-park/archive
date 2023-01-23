@@ -5,7 +5,7 @@ import { HiX } from "react-icons/hi";
 import { db } from "../apis/firebase";
 import TIME from "../apis/time";
 import { useStore } from "../apis/zustand";
-import { COLOR, DEFAULT, IComment, IUser } from "../custom";
+import { IComment, IUser } from "../custom";
 
 type ICommentProps = {
   comment: IComment;

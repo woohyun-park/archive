@@ -353,41 +353,16 @@ export default function Add() {
           )
         ) : (
           <div className="flex justify-between my-2">
-            <Color
-              color={COLOR.red}
-              onClick={() => handleColorClick(COLOR.red)}
-              selected={status.selectedColor === COLOR.red}
-            ></Color>
-            <Color
-              color={COLOR.orange}
-              onClick={() => handleColorClick(COLOR.orange)}
-              selected={status.selectedColor === COLOR.orange}
-            ></Color>
-            <Color
-              color={COLOR.yellow}
-              onClick={() => handleColorClick(COLOR.yellow)}
-              selected={status.selectedColor === COLOR.yellow}
-            ></Color>
-            <Color
-              color={COLOR.green}
-              onClick={() => handleColorClick(COLOR.green)}
-              selected={status.selectedColor === COLOR.green}
-            ></Color>
-            <Color
-              color={COLOR.blue}
-              onClick={() => handleColorClick(COLOR.blue)}
-              selected={status.selectedColor === COLOR.blue}
-            ></Color>
-            <Color
-              color={COLOR.navy}
-              onClick={() => handleColorClick(COLOR.navy)}
-              selected={status.selectedColor === COLOR.navy}
-            ></Color>
-            <Color
-              color={COLOR.purple}
-              onClick={() => handleColorClick(COLOR.purple)}
-              selected={status.selectedColor === COLOR.purple}
-            ></Color>
+            {["red", "orange", "yellow", "green", "blue", "navy", "purple"].map(
+              (e) => (
+                <Color
+                  color={COLOR[e]}
+                  onClick={() => handleColorClick(COLOR[e])}
+                  selected={status.selectedColor === COLOR[e]}
+                  key={e}
+                />
+              )
+            )}
           </div>
         )}
         <input

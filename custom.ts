@@ -1,9 +1,11 @@
 import { FieldValue, Timestamp } from "firebase/firestore";
 import { NextRouter } from "next/router";
-import { collapseTextChangeRangesAcrossMultipleVersions } from "typescript";
-import { Style } from "util";
 
-export const DEFAULT = {
+interface IDefault {
+  user: IUser;
+}
+
+export const DEFAULT: IDefault = {
   user: {
     id: "",
     email: "",
@@ -13,24 +15,6 @@ export const DEFAULT = {
     txt: "",
     followers: [],
     followings: [],
-    // posts: [],
-    // tags: [],
-    // likes: [],
-    // scraps: [],
-  },
-  postDeleted: {
-    id: "",
-    uid: "",
-    createdAt: 0,
-    title: "",
-    txt: "",
-    imgs: [],
-    color: "",
-    // isDeleted: true,
-    // likes: [],
-    // scraps: [],
-    // comments: [],
-    // tags: [],
   },
 };
 
@@ -39,28 +23,15 @@ export const SIZE = {
   iconSmall: "24px",
 };
 
-export const COLOR = {
-  txt1: "#000000",
-  txt2: "#4A4A4A",
-  txt3: "#818181",
-  txtDark1: "#FFFFFF",
-  txtDark2: "#818181",
-  txtDark3: "#4A4A4A",
-  txtBtn: "#FFFFFF",
-  txtBtnDark: "#000000",
-  bg1: "#FFFFFF",
-  bgDark1: "#2C2C2C",
-  bg2: "#D9D9D9",
-  bgDark2: "#D9D9D9",
-  btn1: "#000000",
-  btnDark1: "#FFFFFF",
-  btn2: "#D9D9D9",
-  btnDark2: "#D9D9D9",
-  btnOverlay: "rgba(0, 0, 0, 0.75)",
-  btnOverlayDark: "rgba(255, 255, 255, 0.75)",
-  primary: "#3B4998",
+export const COLOR: IDict<string> = {
+  black: "#000",
+  white: "#fff",
+  "gray-1": "#374151",
+  "gray-2": "#9ca3af",
+  "gray-3": "#e5e7eb",
+  "gray-4": "#f3f4f6",
 
-  red: "#EF4552",
+  red: "#ef4444",
   orange: "#F7892B",
   yellow: "#F7D733",
   green: "#2EB87C",
@@ -72,18 +43,6 @@ export const COLOR = {
 Object.freeze(DEFAULT);
 Object.freeze(SIZE);
 Object.freeze(COLOR);
-
-export const FUNC = {
-  filterFalse: function (dict: IDict<boolean>) {
-    const newDict: IDict<boolean> = {};
-    for (const each in dict) {
-      if (dict[each]) {
-        newDict[each] = true;
-      }
-    }
-    return newDict;
-  },
-};
 
 export type IRoute = "feed" | "search" | "add" | "alarm" | "profile" | "post";
 export type IType = "user" | "post" | "comment" | "tag" | "like" | "scrap";

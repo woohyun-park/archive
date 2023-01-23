@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { COLOR, DEFAULT, IPost } from "../custom";
+import { IPost } from "../custom";
 
 interface IContImageProps {
   post: IPost;

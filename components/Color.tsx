@@ -16,7 +16,7 @@ export default function Color({ color, selected, onClick }: IColorProps) {
         color={color}
         onClick={onClick}
       >
-        {selected ? <HiCheck size={SIZE.icon} color={COLOR.txtDark1} /> : <></>}
+        {selected ? <HiCheck size={SIZE.icon} color={COLOR.white} /> : <></>}
       </div>
 
       <style jsx>

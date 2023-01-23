@@ -188,7 +188,7 @@ export default function Layout({ children }: ILayoutProps) {
             display: flex;
             justify-content: center;
             width: 100%;
-            background-color: ${COLOR.bg2};
+            background-color: ${COLOR["gray-4"]};
           }
           body {
             margin: 0;

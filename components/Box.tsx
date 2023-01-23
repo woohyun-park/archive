@@ -51,7 +51,7 @@ export default function Box({ post }: IBoxProps) {
       </div>
       <style jsx>{`
         * {
-          color: ${COLOR.txtDark1};
+          color: ${COLOR.white};
         }
         #d1 {
           background-color: ${post.color};

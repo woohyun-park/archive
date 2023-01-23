@@ -9,7 +9,7 @@ import {
   updateFollow,
 } from "../../apis/firebase";
 import Tab from "../../components/Tab";
-import { COLOR, IDict, IPost, IScrap, ITag, IUser, SIZE } from "../../custom";
+import { IDict, IPost, IScrap, ITag, IUser, SIZE } from "../../custom";
 import { HiOutlineCog } from "react-icons/hi";
 import { useStore } from "../../apis/zustand";
 import Link from "next/link";
