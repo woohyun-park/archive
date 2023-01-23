@@ -5,6 +5,8 @@ type IMotion = {
   children: React.ReactNode;
 };
 
+// TODO: 라우터 이동간이 아니라 그냥 exit, 즉 AnimatePresence가 안먹는다
+// 이유가 뭔지 알아보고 수정할 수 있다면 수정할 것
 export default function MotionFloat({ children }: IMotion) {
   const router = useRouter();
   return (

@@ -28,6 +28,16 @@ export default function List({ data, style, tab }: IListProps) {
     })(),
   });
   const [tags, setTags] = useState<IDict<ITag[]>>({});
+  const [page, setPage] = useState({
+    ...(() => {
+      const result: IDict<number> = {};
+      tab.map((each, i) => {
+        const [key, value] = each;
+        result[key] = 1;
+      });
+      return result;
+    })(),
+  });
   async function loadTags() {
     const result = { ...(data.tag as IDict<ITag[]>) };
     for (const tag in result) {

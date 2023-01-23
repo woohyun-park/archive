@@ -45,9 +45,9 @@ export default function Layout({ children }: ILayoutProps) {
         await gInit(authState.uid);
         setLogin({ ...login, isLoggedIn: true });
       } else {
-        // gUnsubscribeLikes();
-        // gUnsubscribeScraps();
-        // gUnsubscribeUser();
+        if (gUnsubscribeLikes) gUnsubscribeLikes();
+        if (gUnsubscribeScraps) gUnsubscribeScraps();
+        if (gUnsubscribeUser) gUnsubscribeUser();
         setLogin({ ...login, isLoggedIn: false });
       }
     });

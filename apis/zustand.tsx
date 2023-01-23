@@ -26,8 +26,17 @@ interface ICurUserState {
   gFeed: {
     posts: IPost[];
   };
-  gSearch: ISearch;
-  gPage: IPage;
+  gSearch: {
+    posts: IPost[];
+    tags: ITag[];
+    users: IUser[];
+  };
+  gPage: {
+    feed: number;
+    sPost: number;
+    sTag: number;
+    sUser: number;
+  };
   gModal: {
     isOpen: boolean;
   };
@@ -37,20 +46,9 @@ interface ICurUserState {
   gSetFeed: (id: string, page: number) => Promise<void>;
   gSetSearch: (type: ISearchType, page: number) => Promise<void>;
 
-  gUnsubscribeUser: Unsubscribe;
-  gUnsubscribeLikes: Unsubscribe;
-  gUnsubscribeScraps: Unsubscribe;
-}
-interface IPage {
-  feed: number;
-  sPost: number;
-  sTag: number;
-  sUser: number;
-}
-interface ISearch {
-  posts: IPost[];
-  tags: ITag[];
-  users: IUser[];
+  gUnsubscribeUser: Unsubscribe | null;
+  gUnsubscribeLikes: Unsubscribe | null;
+  gUnsubscribeScraps: Unsubscribe | null;
 }
 type ISearchType = "posts" | "tags" | "users";
 type IPageType = "feed" | ISearchPageType;
@@ -138,7 +136,6 @@ async function loadListener(
 }> {
   const unsubscribeUser = onSnapshot(doc(db, "users", id), (doc) => {
     set((state) => {
-      console.log("unsub user", doc.data());
       return {
         ...state,
         gCurUser: {
@@ -156,7 +153,6 @@ async function loadListener(
       snap.forEach((doc) => {
         datas.push({ ...(doc.data() as ILike) });
       });
-      console.log("unsub likes", get().gCurUser);
       set((state) => {
         return {
           ...state,
@@ -173,7 +169,6 @@ async function loadListener(
         datas.push({ ...(doc.data() as IScrap) });
       });
       set((state) => {
-        console.log("unsub scraps", get().gCurUser);
         return {
           ...state,
           gCurUser: { ...get().gCurUser, scraps: datas },

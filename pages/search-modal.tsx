@@ -1,15 +1,13 @@
 import List from "../components/List";
-import { IDict, IPost, ITag, IUser, SIZE } from "../custom";
+import { IDict, ITag, IUser, SIZE } from "../custom";
 import { HiSearch, HiX } from "react-icons/hi";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { useStore } from "../apis/zustand";
-import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 import { db, getDatasByQuery, updateUser } from "../apis/firebase";
 import { useRouter } from "next/router";
 import MotionFade from "../motions/motionFade";
 import MotionFloat from "../motions/motionFloat";
 import { collection, endAt, orderBy, query, startAt } from "firebase/firestore";
-import ProfileSmall from "../components/ProfileSmall";
 import { useOutsideClick } from "../hooks/useOutsideClick";
 
 interface ISearchState {
@@ -106,7 +104,7 @@ export default function Search() {
   // TODO: 한글을 치고 엔터를 누르면 블루갈롤 -> 블루갈롤롤과 같이 검색되는 현상이 있다.
   // 콘솔창에서 확인해보니 dev 환경에서 2번 실행되어 그런 것 같은데, 2번 실행되어도 변하면 안되는거 아닌가?
   async function handleSearch(e: React.KeyboardEvent<HTMLInputElement>) {
-    if (state.keyword === "") return;
+    // if (state.keyword === "") return;
     if (e.key === "Enter") {
       e.currentTarget.blur();
       updateHistory(state.keyword);

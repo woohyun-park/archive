@@ -1,9 +1,5 @@
 import { RefObject, useEffect } from "react";
-import { IUser } from "../custom";
 
-/**
- * Hook that alerts clicks outside of the passed ref
- */
 interface IOutsideClick {
   ref: RefObject<any>;
   onClick: Function;
