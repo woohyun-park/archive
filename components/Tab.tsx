@@ -1,6 +1,15 @@
 import { useEffect, useState } from "react";
 import Box from "./Box";
-import { IPost, IUser, IDict, SIZE, ITag, IType, IRoute } from "../custom";
+import {
+  IPost,
+  IUser,
+  IDict,
+  SIZE,
+  ITag,
+  IType,
+  IRoute,
+  getRoute,
+} from "../custom";
 import { HiArrowLeft } from "react-icons/hi";
 import Cont from "./Cont";
 import MotionFloat from "../motions/motionFloat";
@@ -9,16 +18,18 @@ import { getData } from "../apis/firebase";
 import { RiHashtag } from "react-icons/ri";
 import List from "./List";
 import { useStore } from "../apis/zustand";
+import { useRouter } from "next/router";
 
 interface ITabProps {
   data?: IDict<any[] | IDict<any>>;
-  route: IRoute;
   tab: string[][];
 }
 
-export default function Tab({ data, route, tab }: ITabProps) {
+export default function Tab({ data, tab }: ITabProps) {
   const [selectedTab, setSelectedTab] = useState(0);
   const { gSearch, gPage } = useStore();
+  const router = useRouter();
+  const route = getRoute(router);
 
   return (
     <>
@@ -58,7 +69,6 @@ export default function Tab({ data, route, tab }: ITabProps) {
             return (
               <List
                 data={gSearch.tags}
-                route="search"
                 type="tag"
                 loadingRef={[gPage.search.tag, gSearch.tags]}
                 key={i}
@@ -113,7 +123,7 @@ export default function Tab({ data, route, tab }: ITabProps) {
                 {data &&
                   data[key].map((user: IUser) => (
                     <MotionFloat key={user.id}>
-                      <ProfileSmall user={user} style="search" key={user.id} />
+                      <ProfileSmall user={user} type="post" key={user.id} />
                     </MotionFloat>
                   ))}
               </>

@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { HiArrowLeft } from "react-icons/hi";
-import { SIZE, COLOR, IStyle } from "../custom";
+import { SIZE } from "../custom";
 
 interface IBackProps {
   message?: string;

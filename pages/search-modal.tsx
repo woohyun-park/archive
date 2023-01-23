@@ -1,25 +1,15 @@
 import Tab from "../components/Tab";
-import { IDict, ITag, IUser, SIZE } from "../custom";
+import { SIZE } from "../custom";
 import { HiSearch, HiX } from "react-icons/hi";
 import React, { useEffect, useRef, useState } from "react";
 import { useStore } from "../apis/zustand";
-import { db, getDatasByQuery, updateUser } from "../apis/firebase";
+import { updateUser } from "../apis/firebase";
 import { useRouter } from "next/router";
 import MotionFade from "../motions/motionFade";
 import MotionFloat from "../motions/motionFloat";
-import {
-  collection,
-  endAt,
-  limit,
-  orderBy,
-  query,
-  startAt,
-} from "firebase/firestore";
 import { useOutsideClick } from "../hooks/useOutsideClick";
-import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 
 interface ISearchState {
-  prevKeyword: string;
   isInitial: boolean;
   searchedKeyword: string;
 }
@@ -28,19 +18,18 @@ export default function Search() {
   const { gCurUser, gSetSearch, gSearch, gStatus, gSetStatus, gPage } =
     useStore();
   const [state, setState] = useState<ISearchState>({
-    prevKeyword: "",
     isInitial: true,
     searchedKeyword: "",
   });
   const [keyword, setKeyword] = useState(gStatus.keyword);
-  useEffect(() => {
-    gSetStatus({ ...gStatus, keyword });
-  }, [keyword]);
-
   const [focus, setFocus] = useState(false);
   const router = useRouter();
   const recentRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    gSetStatus({ ...gStatus, keyword });
+  }, [keyword]);
   useOutsideClick({
     ref: recentRef,
     onClick: () => setFocus(false),
@@ -81,6 +70,7 @@ export default function Search() {
     setState({
       ...state,
       isInitial: false,
+      searchedKeyword: keyword,
     });
     setFocus(false);
     setKeyword(keyword);
@@ -92,15 +82,7 @@ export default function Search() {
     // if (state.keyword === "") return;
     if (e.key === "Enter") {
       e.currentTarget.blur();
-      updateHistory(gStatus.keyword);
-      await gSetSearch("tags", gPage.search.tag, gStatus.keyword);
-      await gSetSearch("users", gPage.search.user, gStatus.keyword);
-      setState({
-        ...state,
-        isInitial: false,
-        searchedKeyword: gStatus.keyword,
-      });
-      setFocus(false);
+      handleClick(gStatus.keyword);
     }
   }
 
@@ -218,7 +200,6 @@ export default function Search() {
               person: [...gSearch.users],
               tag: { ...gSearch.tags },
             }}
-            route="search"
             tab={[
               ["person", "user"],
               ["tag", "list"],

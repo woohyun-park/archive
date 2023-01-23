@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
 import { RiHashtag } from "react-icons/ri";
 import { useStore } from "../apis/zustand";
-import { IRoute, IPost, IType, IDict, ITag, SIZE } from "../custom";
+import { IRoute, IPost, IType, IDict, ITag, SIZE, getRoute } from "../custom";
 import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 import MotionFloat from "../motions/motionFloat";
 import Box from "./Box";
 import Loader from "./Loader";
 import PostFeed from "./PostFeed";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 interface IListProps {
   data: IPost[] | ITag[];
-  route: IRoute;
   type: IType;
   handleIntersect?: Function;
   handleChange?: Function;
@@ -19,10 +19,12 @@ interface IListProps {
   loadingRef: [any, any];
 }
 
-export default function List({ data, route, type, loadingRef }: IListProps) {
+export default function List({ data, type, loadingRef }: IListProps) {
   const [loading, setLoading] = useState(false);
   const { gSetPage, gPage, gSetSearch, gSetFeed, gCurUser, gStatus } =
     useStore();
+  const router = useRouter();
+  const route = getRoute(router);
   const { setLastIntersecting } = useInfiniteScroll({
     handleIntersect:
       route === "feed"

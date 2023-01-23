@@ -1,14 +1,17 @@
-import { COLOR, IPost, IStyle } from "../custom";
+import { useRouter } from "next/router";
+import { getRoute, IPost, IType } from "../custom";
 import ContImage from "./ContImage";
 
 interface IImageProps {
   tag: string;
   posts: IPost[];
-  style?: IStyle;
+  type: IType;
   onClick?: () => void;
 }
 
-export default function Cont({ tag, posts, style, onClick }: IImageProps) {
+export default function Cont({ tag, posts, type, onClick }: IImageProps) {
+  const router = useRouter();
+  const route = getRoute(router);
   return (
     <>
       {posts.length !== 0 && (
@@ -37,7 +40,7 @@ export default function Cont({ tag, posts, style, onClick }: IImageProps) {
           )}
           <div
             className="absolute p-1 m-2 text-base font-bold rounded-lg break-keep bg-black/75 hover:cursor-pointer"
-            id={`d1-${style}`}
+            id={`d1-${type}`}
             onClick={onClick}
           >
             {tag === "모든 스크랩" ? tag : `#${tag}`}

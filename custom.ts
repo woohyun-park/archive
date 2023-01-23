@@ -1,4 +1,5 @@
 import { FieldValue, Timestamp } from "firebase/firestore";
+import { NextRouter } from "next/router";
 import { Style } from "util";
 
 export const DEFAULT = {
@@ -83,7 +84,7 @@ export const FUNC = {
   },
 };
 
-export type IRoute = "post" | "feed" | "search" | "add" | "alarm" | "profile";
+export type IRoute = "feed" | "search" | "add" | "alarm" | "profile" | "post";
 export type IType = "user" | "post" | "comment" | "tag" | "like" | "scrap";
 
 export interface IDict<T> {
@@ -159,4 +160,10 @@ export interface IScrap {
   cont: string;
 
   isLoadedAt?: Date;
+}
+
+export function getRoute(router: NextRouter): IRoute {
+  return router.pathname === "/"
+    ? "feed"
+    : (router.pathname.slice(1) as IRoute);
 }
