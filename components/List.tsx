@@ -4,6 +4,7 @@ import { IPage, IPost, IType } from "../custom";
 import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 import Box from "./Box";
 import Loader from "./Loader";
+import PostFeed from "./PostFeed";
 
 interface IListProps {
   data: IPost[];
@@ -12,36 +13,58 @@ interface IListProps {
   loadingRef: [any, any];
 }
 
-export default function List({ data, type, loadingRef }: IListProps) {
+export default function List({ data, page, type, loadingRef }: IListProps) {
   const [loading, setLoading] = useState(false);
-  const { gSetPage, gPage, gSetSearch } = useStore();
+  const { gSetPage, gPage, gSetSearch, gSetFeed, gCurUser } = useStore();
   const { setLastIntersecting } = useInfiniteScroll({
-    handleIntersect: () => gSetPage("sPost", gPage.sPost + 1),
-    handleChange: () => gSetSearch("posts", gPage.sPost),
-    changeRef: gPage,
+    handleIntersect:
+      page === "feed"
+        ? () => gSetPage("feed", gPage.feed + 1)
+        : page === "search" && type === "post"
+        ? () => gSetPage("sPost", gPage.sPost + 1)
+        : () => {},
+    handleChange:
+      page === "feed"
+        ? () => gSetFeed(gCurUser.id, gPage.feed)
+        : page === "search" && type === "post"
+        ? () => gSetSearch("posts", gPage.sPost)
+        : () => {},
+    changeListener:
+      page === "feed"
+        ? gPage
+        : page === "search" && type === "post"
+        ? gPage
+        : null,
   });
 
   useEffect(() => {
-    setLoading(false);
+    setLoading(true);
   }, [loadingRef[0]]);
 
   useEffect(() => {
-    setLoading(true);
+    setLoading(false);
   }, [loadingRef[1]]);
 
   return (
     <>
-      {type === "searchPost" && (
+      {page === "feed" && (
+        <>
+          {(data as IPost[]).map((e, i) => (
+            <>
+              <PostFeed post={e} user={e.author || null} key={e.id} />
+              {i === data.length - 1 && <div ref={setLastIntersecting}></div>}
+            </>
+          ))}
+          <div className="flex justify-center"> {loading && <Loader />}</div>
+        </>
+      )}
+      {page === "search" && type === "post" && (
         <>
           <div className="grid grid-cols-3 mt-4 gap-y-2 gap-x-2">
             {(data as IPost[]).map((e, i) => (
               <>
                 <div>
-                  <Box
-                    post={{ ...e, id: e.id }}
-                    style={"search"}
-                    key={e.id}
-                  ></Box>
+                  <Box post={{ ...e, id: e.id }} style={page} key={e.id}></Box>
                 </div>
                 {i === data.length - 1 && <div ref={setLastIntersecting}></div>}
               </>

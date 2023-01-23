@@ -1,14 +1,12 @@
 import { useEffect, useState } from "react";
-import { useStore } from "../apis/zustand";
-import { IPage, IType } from "../custom";
 
 interface IInfiniteScrollType {
-  changeRef: any;
+  changeListener: any;
   handleIntersect: Function;
   handleChange: Function;
 }
 export const useInfiniteScroll = ({
-  changeRef,
+  changeListener,
   handleIntersect,
   handleChange,
 }: IInfiniteScrollType) => {
@@ -27,7 +25,7 @@ export const useInfiniteScroll = ({
 
   useEffect(() => {
     handleChange();
-  }, [changeRef]);
+  }, [changeListener]);
 
   useEffect(() => {
     let observer: IntersectionObserver;

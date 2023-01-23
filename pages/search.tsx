@@ -28,8 +28,9 @@ export default function Search() {
         </Link>
         <List
           data={gSearch.posts}
-          type="searchPost"
-          loadingRef={[gSearch, gPage.sPost]}
+          page="search"
+          type="post"
+          loadingRef={[gPage.sPost, gSearch]}
         />
       </MotionFade>
     </>
