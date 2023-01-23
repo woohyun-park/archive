@@ -7,6 +7,8 @@ import MotionFloat from "../motions/motionFloat";
 import Box from "./Box";
 import Loader from "./Loader";
 import PostFeed from "./PostFeed";
+import { motion } from "framer-motion";
+import Link from "next/link";
 
 interface IListProps {
   data: IPost[] | ITag[];
@@ -91,14 +93,18 @@ export default function List({ data, route, type, loadingRef }: IListProps) {
             {(data as ITag[]).map((e, i) => (
               <>
                 <MotionFloat>
-                  <div className="flex items-center my-2 hover:cursor-pointer">
-                    <div className="p-2 mr-2 rounded-full bg-gray-3 w-fit">
-                      <RiHashtag size={SIZE.iconSmall} />
+                  <Link href={`tag/${e.name}`}>
+                    <div className="flex items-center my-2 hover:cursor-pointer">
+                      <div className="p-2 mr-2 rounded-full bg-gray-3 w-fit">
+                        <RiHashtag size={SIZE.iconSmall} />
+                      </div>
+                      <div className="my-1 text-base text-left">{`#${e.name}`}</div>
                     </div>
-                    <div className="my-1 text-base text-left">{`#${e.name}`}</div>
-                  </div>
+                    {i === data.length - 1 && (
+                      <div ref={setLastIntersecting}></div>
+                    )}
+                  </Link>
                 </MotionFloat>
-                {i === data.length - 1 && <div ref={setLastIntersecting}></div>}
               </>
             ))}
           </div>

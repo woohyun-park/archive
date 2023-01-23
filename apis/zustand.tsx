@@ -221,7 +221,7 @@ async function loadState(get: () => ICurUserState, id: string) {
   };
 }
 
-export const useStore = create(
+export const useStore = create<ICurUserState>()(
   devtools((set, get) => ({
     gCurUser: {
       id: "",
