@@ -24,7 +24,12 @@ import {
 } from "./firebase";
 import { Unsubscribe } from "firebase/auth";
 
-interface ICurUserState {
+interface IStatus {
+  isModalOpen: boolean;
+  keyword: string;
+}
+
+interface IState {
   gCurUser: IUser;
   gFeed: {
     posts: IPost[];
@@ -34,30 +39,29 @@ interface ICurUserState {
     tags: ITag[];
     users: IUser[];
   };
+  gStatus: IStatus;
   gPage: {
-    feed: number;
-    sPost: number;
-    sTag: number;
-    sUser: number;
+    feed: {
+      post: number;
+    };
+    search: {
+      post: number;
+      tag: number;
+      user: number;
+    };
   };
-  gModal: {
-    isOpen: boolean;
-  };
-  gKeyword: string;
-
+  gUnsubscribeUser: Unsubscribe | null;
+  gUnsubscribeLikes: Unsubscribe | null;
+  gUnsubscribeScraps: Unsubscribe | null;
   gInit: (id: string) => Promise<void>;
-  gSetKeyword: (keyword: string) => void;
-  gSetPage: (type: IPageType, page: number) => void;
   gSetFeed: (id: string, page: number) => Promise<void>;
   gSetSearch: (
     type: ISearchType,
     page: number,
     keyword?: string
   ) => Promise<void>;
-
-  gUnsubscribeUser: Unsubscribe | null;
-  gUnsubscribeLikes: Unsubscribe | null;
-  gUnsubscribeScraps: Unsubscribe | null;
+  gSetStatus: (status: IStatus) => void;
+  gSetPage: (type: IPageType, page: number) => void;
 }
 type ISearchType = "posts" | "tags" | "users";
 type IPageType = "feed" | ISearchPageType;
@@ -136,12 +140,12 @@ async function loadSearch<T>(
 async function loadListener(
   set: (
     partial:
-      | ICurUserState
-      | Partial<ICurUserState>
-      | ((state: ICurUserState) => ICurUserState | Partial<ICurUserState>),
+      | IState
+      | Partial<IState>
+      | ((state: IState) => IState | Partial<IState>),
     replace?: boolean | undefined
   ) => void,
-  get: () => ICurUserState,
+  get: () => IState,
   id: string
 ): Promise<{
   unsubscribeUser: Unsubscribe;
@@ -149,13 +153,13 @@ async function loadListener(
   unsubscribeScraps: Unsubscribe;
 }> {
   const unsubscribeUser = onSnapshot(doc(db, "users", id), (doc) => {
-    set((state) => {
+    set((state: IState) => {
       return {
         ...state,
         gCurUser: {
           ...(doc.data() as IUser),
-          likes: state.gCurUser.likes,
-          scraps: state.gCurUser.scraps,
+          likes: get().gCurUser.likes,
+          scraps: get().gCurUser.scraps,
         },
       };
     });
@@ -167,7 +171,7 @@ async function loadListener(
       snap.forEach((doc) => {
         datas.push({ ...(doc.data() as ILike) });
       });
-      set((state) => {
+      set((state: IState) => {
         return {
           ...state,
           gCurUser: { ...get().gCurUser, likes: datas },
@@ -182,7 +186,7 @@ async function loadListener(
       snap.forEach((doc) => {
         datas.push({ ...(doc.data() as IScrap) });
       });
-      set((state) => {
+      set((state: IState) => {
         return {
           ...state,
           gCurUser: { ...get().gCurUser, scraps: datas },
@@ -192,7 +196,7 @@ async function loadListener(
   );
   return { unsubscribeUser, unsubscribeLikes, unsubscribeScraps };
 }
-async function loadState(get: () => ICurUserState, id: string) {
+async function loadstate(get: () => IState, id: string) {
   const user = await getDoc(doc(db, "users", id));
   const likes = await getEach<ILike>("likes", id);
   const scraps = await getEach<IScrap>("scraps", id);
@@ -201,11 +205,9 @@ async function loadState(get: () => ICurUserState, id: string) {
     likes: likes,
     scraps: scraps,
   };
-  const posts = await loadFeed(id, get().gPage.feed);
+  const posts = await loadFeed(id, get().gPage.feed.post);
   const search = {
-    posts: await loadSearch<IPost>("sPost", get().gPage.sPost),
-    // tags: await loadSearch<ITag>("sTag", get().gPage.sTag),
-    // users: await loadSearch<IUser>("sUser", get().gPage.sUser),
+    posts: await loadSearch<IPost>("sPost", get().gPage.feed.post),
     tags: [],
     users: [],
   };
@@ -217,11 +219,14 @@ async function loadState(get: () => ICurUserState, id: string) {
       posts,
     },
     gSearch: search,
-    gKeyword: keyword,
+    gStatus: {
+      ...get().gStatus,
+      keyword,
+    },
   };
 }
 
-export const useStore = create<ICurUserState>()(
+export const useStore = create<IState>()(
   devtools((set, get) => ({
     gCurUser: {
       id: "",
@@ -230,36 +235,39 @@ export const useStore = create<ICurUserState>()(
       photoURL:
         "https://res.cloudinary.com/dl5qaj6le/image/upload/v1672976914/archive/static/default_user_photoURL.png",
       txt: "",
-      followers: [],
-      followings: [],
+      followers: [] as string[],
+      followings: [] as string[],
     },
     gFeed: {
-      posts: [],
-    },
-    gPage: {
-      feed: 1,
-      sPost: 1,
-      sTag: 1,
-      sUser: 1,
+      posts: [] as IPost[],
     },
     gSearch: {
-      posts: [],
-      tags: [],
-      users: [],
+      posts: [] as IPost[],
+      tags: [] as ITag[],
+      users: [] as IUser[],
     },
-    gModal: {
-      isOpen: false,
+    gStatus: {
+      isModalOpen: false,
+      keyword: "",
     },
-    gKeyword: "",
+    gPage: {
+      feed: {
+        post: 1,
+      },
+      search: {
+        post: 1,
+        tag: 1,
+        user: 1,
+      },
+    },
     gUnsubscribeUser: null,
     gUnsubscribeLikes: null,
     gUnsubscribeScraps: null,
-
     gInit: async (id: string) => {
       const { unsubscribeUser, unsubscribeLikes, unsubscribeScraps } =
         await loadListener(set, get, id);
-      const loadedState = await loadState(get, id);
-      set((state) => {
+      const loadedState = await loadstate(get, id);
+      set((state: IState) => {
         return {
           ...state,
           ...loadedState,
@@ -269,18 +277,9 @@ export const useStore = create<ICurUserState>()(
         };
       });
     },
-    gSetKeyword: (keyword: string) => {
-      console.log("gSetKeyword", keyword);
-      set((state) => {
-        return {
-          ...state,
-          gKeyword: keyword,
-        };
-      });
-    },
 
     gSetPage: (type: IPageType, page: number) => {
-      set((state) => {
+      set((state: IState) => {
         return {
           ...state,
           gPage: {
@@ -290,10 +289,18 @@ export const useStore = create<ICurUserState>()(
         };
       });
     },
+    gSetStatus: (status: IStatus) => {
+      set((state: IState) => {
+        return {
+          ...state,
+          gStatus: status,
+        };
+      });
+    },
     gSetFeed: async (id: string, page: number) => {
       if (page === 1) return;
-      const posts = await loadFeed(id, get().gPage.feed);
-      set((state) => {
+      const posts = await loadFeed(id, get().gPage.feed.post);
+      set((state: IState) => {
         return {
           ...state,
           gFeed: {
@@ -307,7 +314,7 @@ export const useStore = create<ICurUserState>()(
       if (type === "posts" && page === 1) return;
       if (type === "posts") {
         const posts = await loadSearch<IPost>("sPost", page);
-        set((state) => {
+        set((state: IState) => {
           return {
             ...state,
             gSearch: {
@@ -319,7 +326,7 @@ export const useStore = create<ICurUserState>()(
       } else if (type === "tags") {
         const tags = await loadSearch<ITag>("sTag", page, keyword);
         console.log("tags", tags!);
-        set((state) => {
+        set((state: IState) => {
           return {
             ...state,
             gSearch: {
@@ -330,7 +337,7 @@ export const useStore = create<ICurUserState>()(
         });
       } else if (type === "users") {
         const users = await loadSearch<IUser>("sUser", page);
-        set((state) => {
+        set((state: IState) => {
           return {
             ...state,
             gSearch: {

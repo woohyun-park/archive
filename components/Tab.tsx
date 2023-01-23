@@ -59,7 +59,7 @@ export default function Tab({ data, route, tab }: ITabProps) {
                 data={gSearch.tags}
                 route="search"
                 type="tag"
-                loadingRef={[gPage.sTag, gSearch.tags]}
+                loadingRef={[gPage.search.tag, gSearch.tags]}
                 key={i}
               />
             );

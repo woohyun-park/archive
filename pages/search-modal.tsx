@@ -27,7 +27,7 @@ interface ISearchState {
 }
 
 export default function Search() {
-  const { gCurUser, gSetSearch, gSearch, gKeyword, gSetKeyword } = useStore();
+  const { gCurUser, gSetSearch, gSearch, gStatus, gSetStatus } = useStore();
   const [state, setState] = useState<ISearchState>({
     prevKeyword: "",
     isInitial: true,
@@ -42,12 +42,12 @@ export default function Search() {
   const setLastIntersectingUser = useInfiniteScroll({
     changeListener: page.user,
     handleIntersect: () => setPage({ ...page, user: page.user + 1 }),
-    handleChange: () => setSearchedUsers(gKeyword, page.user + 1),
+    handleChange: () => setSearchedUsers(gStatus.keyword, page.user + 1),
   });
   const setLastIntersectingTag = useInfiniteScroll({
     changeListener: page.tag,
     handleIntersect: () => setPage({ ...page, tag: page.tag + 1 }),
-    handleChange: () => setSearchedTags(gKeyword, page.tag + 1),
+    handleChange: () => setSearchedTags(gStatus.keyword, page.tag + 1),
   });
 
   const [focus, setFocus] = useState(false);
@@ -60,8 +60,7 @@ export default function Search() {
   });
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    gSetKeyword(e.currentTarget.value);
-    // setState({ ...state, keyword: e.currentTarget.value });
+    gSetStatus({ ...gStatus, keyword: e.currentTarget.value });
   }
 
   function updateHistory(keyword: string) {
@@ -168,13 +167,13 @@ export default function Search() {
     // if (state.keyword === "") return;
     if (e.key === "Enter") {
       e.currentTarget.blur();
-      updateHistory(gKeyword);
+      updateHistory(gStatus.keyword);
       const searchedUsers = await getDatasByQuery<IUser>(
         query(
           collection(db, "users"),
           orderBy("displayName"),
-          startAt(gKeyword),
-          endAt(gKeyword + "\uf8ff"),
+          startAt(gStatus.keyword),
+          endAt(gStatus.keyword + "\uf8ff"),
           limit(page.user * 5)
         )
       );
@@ -182,12 +181,12 @@ export default function Search() {
         query(
           collection(db, "tags"),
           orderBy("name"),
-          startAt(gKeyword),
-          endAt(gKeyword + "\uf8ff"),
+          startAt(gStatus.keyword),
+          endAt(gStatus.keyword + "\uf8ff"),
           limit(page.tag * 5)
         )
       );
-      const res = await gSetSearch("tags", page.tag, gKeyword);
+      const res = await gSetSearch("tags", page.tag, gStatus.keyword);
       console.log("res!", res, gSearch);
       const searchedTags: IDict<ITag[]> = {};
       dataTags.forEach((each) =>
@@ -198,7 +197,7 @@ export default function Search() {
       setState({
         ...state,
         isInitial: false,
-        searchedKeyword: gKeyword,
+        searchedKeyword: gStatus.keyword,
         searchedUsers,
         searchedTags,
       });
@@ -256,7 +255,7 @@ export default function Search() {
                 className="mx-1"
                 size={SIZE.iconSmall}
                 onClick={() => {
-                  gSetKeyword("");
+                  gSetStatus({ ...gStatus, keyword: "" });
                   // setState({ ...state, keyword: "" });
                   searchRef.current?.focus();
                 }}
@@ -284,7 +283,9 @@ export default function Search() {
                 </div>
                 {[...(gCurUser.history || [])]
                   ?.filter(
-                    (each) => gKeyword === "" || each.indexOf(gKeyword) === 0
+                    (each) =>
+                      gStatus.keyword === "" ||
+                      each.indexOf(gStatus.keyword) === 0
                   )
                   .map((e, i) => (
                     <MotionFloat key={i}>
@@ -323,10 +324,6 @@ export default function Search() {
               ["person", "user"],
               ["tag", "list"],
             ]}
-            infiniteScrollRef={{
-              person: setLastIntersectingUser,
-              tag: setLastIntersectingTag,
-            }}
           />
         )}
       </MotionFade>
