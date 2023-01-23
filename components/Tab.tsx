@@ -11,7 +11,7 @@ import List from "./List";
 import { useStore } from "../apis/zustand";
 
 interface ITabProps {
-  data: IDict<any[] | IDict<any>>;
+  data?: IDict<any[] | IDict<any>>;
   route: IRoute;
   tab: string[][];
 }
@@ -41,15 +41,16 @@ export default function Tab({ data, route, tab }: ITabProps) {
             return (
               <>
                 <div className="grid grid-cols-3 gap-x-2 gap-y-2">
-                  {data[key].map((e: IPost) => (
-                    <>
-                      <Box
-                        post={{ ...e, id: e.id }}
-                        style={`${route}`}
-                        key={e.id}
-                      ></Box>
-                    </>
-                  ))}
+                  {data &&
+                    data[key].map((e: IPost) => (
+                      <>
+                        <Box
+                          post={{ ...e, id: e.id }}
+                          style={`${route}`}
+                          key={e.id}
+                        ></Box>
+                      </>
+                    ))}
                 </div>
               </>
             );
@@ -109,11 +110,12 @@ export default function Tab({ data, route, tab }: ITabProps) {
           } else if (type === "user") {
             return (
               <>
-                {data[key].map((user: IUser) => (
-                  <MotionFloat key={user.id}>
-                    <ProfileSmall user={user} style="search" key={user.id} />
-                  </MotionFloat>
-                ))}
+                {data &&
+                  data[key].map((user: IUser) => (
+                    <MotionFloat key={user.id}>
+                      <ProfileSmall user={user} style="search" key={user.id} />
+                    </MotionFloat>
+                  ))}
               </>
             );
           }

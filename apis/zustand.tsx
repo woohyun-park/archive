@@ -332,7 +332,7 @@ export const useStore = create<IState>()(
           };
         });
       } else if (type === "users") {
-        const users = await loadSearch<IUser>("sUser", page);
+        const users = await loadSearch<IUser>("sUser", page, keyword);
         set((state: IState) => {
           return {
             ...state,

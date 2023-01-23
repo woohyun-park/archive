@@ -21,38 +21,21 @@ import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 interface ISearchState {
   prevKeyword: string;
   isInitial: boolean;
-  searchedUsers: IUser[];
-  searchedTags: IDict<ITag[]>;
   searchedKeyword: string;
 }
 
 export default function Search() {
-  const { gCurUser, gSetSearch, gSearch, gStatus, gSetStatus } = useStore();
+  const { gCurUser, gSetSearch, gSearch, gStatus, gSetStatus, gPage } =
+    useStore();
   const [state, setState] = useState<ISearchState>({
     prevKeyword: "",
     isInitial: true,
-    searchedUsers: [],
-    searchedTags: {},
     searchedKeyword: "",
   });
   const [keyword, setKeyword] = useState(gStatus.keyword);
   useEffect(() => {
     gSetStatus({ ...gStatus, keyword });
   }, [keyword]);
-  const [page, setPage] = useState({
-    user: 1,
-    tag: 1,
-  });
-  const setLastIntersectingUser = useInfiniteScroll({
-    changeListener: page.user,
-    handleIntersect: () => setPage({ ...page, user: page.user + 1 }),
-    handleChange: () => setSearchedUsers(gStatus.keyword, page.user + 1),
-  });
-  const setLastIntersectingTag = useInfiniteScroll({
-    changeListener: page.tag,
-    handleIntersect: () => setPage({ ...page, tag: page.tag + 1 }),
-    handleChange: () => setSearchedTags(gStatus.keyword, page.tag + 1),
-  });
 
   const [focus, setFocus] = useState(false);
   const router = useRouter();
@@ -90,79 +73,17 @@ export default function Search() {
       });
     }
   }
-  async function setSearchedUsers(keyword: string, page: number) {
-    const searchedUsers = await getDatasByQuery<IUser>(
-      query(
-        collection(db, "users"),
-        orderBy("displayName"),
-        startAt(keyword),
-        endAt(keyword + "\uf8ff"),
-        limit(page * 5)
-      )
-    );
-    setState({
-      ...state,
-      searchedUsers,
-    });
-  }
-  async function setSearchedTags(keyword: string, page: number) {
-    const dataTags = await getDatasByQuery<ITag>(
-      query(
-        collection(db, "tags"),
-        orderBy("name"),
-        startAt(keyword),
-        endAt(keyword + "\uf8ff"),
-        limit(page * 5)
-      )
-    );
-    const searchedTags: IDict<ITag[]> = {};
-    dataTags.forEach((each) =>
-      searchedTags[each.name]
-        ? searchedTags[each.name].push(each)
-        : (searchedTags[each.name] = [each])
-    );
-    setState({
-      ...state,
-      searchedTags,
-    });
-  }
 
   async function handleClick(keyword: string) {
     updateHistory(keyword);
-    const searchedUsers = await getDatasByQuery<IUser>(
-      query(
-        collection(db, "users"),
-        orderBy("displayName"),
-        startAt(keyword),
-        endAt(keyword + "\uf8ff"),
-        limit(page.user * 5)
-      )
-    );
-    const dataTags = await getDatasByQuery<ITag>(
-      query(
-        collection(db, "tags"),
-        orderBy("name"),
-        startAt(keyword),
-        endAt(keyword + "\uf8ff"),
-        limit(page.tag * 5)
-      )
-    );
-    const res = await gSetSearch("tags", page.tag, keyword);
-    console.log("res!", res);
-    const searchedTags: IDict<ITag[]> = {};
-    dataTags.forEach((each) =>
-      searchedTags[each.name]
-        ? searchedTags[each.name].push(each)
-        : (searchedTags[each.name] = [each])
-    );
+    await gSetSearch("tags", gPage.search.tag, keyword);
+    await gSetSearch("users", gPage.search.user, keyword);
     setState({
       ...state,
       isInitial: false,
-      searchedKeyword: keyword,
-      searchedUsers,
-      searchedTags,
     });
     setFocus(false);
+    setKeyword(keyword);
   }
 
   // TODO: 한글을 치고 엔터를 누르면 블루갈롤 -> 블루갈롤롤과 같이 검색되는 현상이 있다.
@@ -172,38 +93,12 @@ export default function Search() {
     if (e.key === "Enter") {
       e.currentTarget.blur();
       updateHistory(gStatus.keyword);
-      const searchedUsers = await getDatasByQuery<IUser>(
-        query(
-          collection(db, "users"),
-          orderBy("displayName"),
-          startAt(gStatus.keyword),
-          endAt(gStatus.keyword + "\uf8ff"),
-          limit(page.user * 5)
-        )
-      );
-      const dataTags = await getDatasByQuery<ITag>(
-        query(
-          collection(db, "tags"),
-          orderBy("name"),
-          startAt(gStatus.keyword),
-          endAt(gStatus.keyword + "\uf8ff"),
-          limit(page.tag * 5)
-        )
-      );
-      const res = await gSetSearch("tags", page.tag, gStatus.keyword);
-      console.log("res!", res, gSearch);
-      const searchedTags: IDict<ITag[]> = {};
-      dataTags.forEach((each) =>
-        searchedTags[each.name]
-          ? searchedTags[each.name].push(each)
-          : (searchedTags[each.name] = [each])
-      );
+      await gSetSearch("tags", gPage.search.tag, gStatus.keyword);
+      await gSetSearch("users", gPage.search.user, gStatus.keyword);
       setState({
         ...state,
         isInitial: false,
         searchedKeyword: gStatus.keyword,
-        searchedUsers,
-        searchedTags,
       });
       setFocus(false);
     }
@@ -260,7 +155,7 @@ export default function Search() {
                 className="mx-1"
                 size={SIZE.iconSmall}
                 onClick={() => {
-                  gSetStatus({ ...gStatus, keyword: "" });
+                  setKeyword("");
                   searchRef.current?.focus();
                 }}
               />
@@ -320,8 +215,8 @@ export default function Search() {
         {!state.isInitial && !focus && (
           <Tab
             data={{
-              person: [...state.searchedUsers],
-              tag: { ...state.searchedTags },
+              person: [...gSearch.users],
+              tag: { ...gSearch.tags },
             }}
             route="search"
             tab={[
