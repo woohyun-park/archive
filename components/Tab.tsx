@@ -14,49 +14,10 @@ interface ITabProps {
   data: IDict<any[] | IDict<any>>;
   route: IRoute;
   tab: string[][];
-  infiniteScrollRef: any;
 }
 
-export default function Tab({
-  data,
-  route,
-  tab,
-  infiniteScrollRef,
-}: ITabProps) {
-  const [selected, setSelected] = useState<IDict<any>>({
-    tab: 0,
-    ...(() => {
-      const result: IDict<string> = {};
-      tab.map((each, i) => {
-        const [key, value] = each;
-        result[key] = "";
-      });
-      return result;
-    })(),
-  });
-  const [tags, setTags] = useState<IDict<ITag[]>>({});
-  const [page, setPage] = useState({
-    ...(() => {
-      const result: IDict<number> = {};
-      tab.map((each, i) => {
-        const [key, value] = each;
-        result[key] = 1;
-      });
-      return result;
-    })(),
-  });
-  async function loadTags() {
-    const result = { ...(data.tag as IDict<ITag[]>) };
-    for (const tag in result) {
-      for await (const each of result[tag]) {
-        each.post = await getData<IPost>("posts", each.pid || "");
-      }
-    }
-    setTags(result);
-  }
-  useEffect(() => {
-    if (tab.find((each) => each[0] === "tag")) loadTags();
-  }, []);
+export default function Tab({ data, route, tab }: ITabProps) {
+  const [selectedTab, setSelectedTab] = useState(0);
   const { gSearch, gPage } = useStore();
 
   return (
@@ -65,8 +26,8 @@ export default function Tab({
         {tab.map((each, i) => (
           <div
             className="w-full py-2 text-center border-b-2 text-gray-2 hover:cursor-pointer"
-            id={selected.tab === i ? "d1" : ""}
-            onClick={() => setSelected({ ...selected, tab: i })}
+            id={selectedTab === i ? "d1" : ""}
+            onClick={() => setSelectedTab(i)}
             key={i}
           >
             {each[0]}
@@ -75,7 +36,7 @@ export default function Tab({
       </div>
       {tab.map((each, i) => {
         const [key, type] = each;
-        if (selected.tab === i) {
+        if (selectedTab === i) {
           if (type === "post") {
             return (
               <>
@@ -94,44 +55,20 @@ export default function Tab({
             );
           } else if (type === "list") {
             return (
-              <>
-                {selected[key] !== "" && (
-                  <>
-                    <div className="mb-2 hover:cursor-pointer">
-                      <HiArrowLeft
-                        size={SIZE.icon}
-                        onClick={() => setSelected({ ...selected, [key]: "" })}
-                      />
-                    </div>
-                  </>
-                )}
-                {selected[key] === "" ? (
-                  <>
-                    <List
-                      data={gSearch.tags}
-                      route="search"
-                      type="tag"
-                      loadingRef={[gPage.sTag, gSearch.tags]}
-                    />
-                  </>
-                ) : (
-                  <div className="grid grid-cols-3 gap-x-2 gap-y-2">
-                    {tags[selected[key]].map(
-                      (each: ITag) =>
-                        each.post && (
-                          <Box post={each.post} style="search" key={each.id} />
-                        )
-                    )}
-                  </div>
-                )}
-              </>
+              <List
+                data={gSearch.tags}
+                route="search"
+                type="tag"
+                loadingRef={[gPage.sTag, gSearch.tags]}
+                key={i}
+              />
             );
           }
           // TODO: cont를 클릭했을때 화면이 위로 가는현상 고치기
           else if (type === "cont") {
             return (
               <>
-                <div className="grid grid-cols-3 gap-x-2 gap-y-2">
+                {/* <div className="grid grid-cols-3 gap-x-2 gap-y-2">
                   {selected[key] !== "" && (
                     <div className="mb-2 hover:cursor-pointer">
                       <HiArrowLeft
@@ -166,7 +103,7 @@ export default function Tab({
                       );
                     }
                   })()}
-                </div>
+                </div> */}
               </>
             );
           } else if (type === "user") {
