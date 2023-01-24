@@ -40,6 +40,7 @@ export default function List({ data, type, handleChange }: IListProps) {
   } = useStore();
   const router = useRouter();
   const route = getRoute(router);
+  console.log(data, type, route);
   const loadingRef =
     route === "feed"
       ? [gPage.feed.post, gFeed]
@@ -94,6 +95,7 @@ export default function List({ data, type, handleChange }: IListProps) {
 
   return (
     <>
+      {console.log(data, type, route)}
       {route === "feed" && (
         <>
           {(data as IPost[]).map((e, i) => (
