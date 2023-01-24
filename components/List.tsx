@@ -149,7 +149,7 @@ export default function List({ data, type, handleChange }: IListProps) {
         </>
       )}
       {route === "profile" &&
-        type === "tag" &&
+        (type === "tag" || type === "scrap") &&
         (selected === "" ? (
           <>
             <div className="grid grid-cols-3 mt-4 mb-24 gap-y-2 gap-x-2">
@@ -157,15 +157,15 @@ export default function List({ data, type, handleChange }: IListProps) {
                 const result: JSX.Element[] = [];
                 const arr = [...Object.entries(data)].slice(
                   0,
-                  gPage.profile.tag * POST_PER_PAGE.profile.tag
+                  gPage.profile[type] * POST_PER_PAGE.profile[type]
                 );
-                arr.forEach(([tag, posts], i) => {
+                arr.forEach(([each, posts], i) => {
                   result.push(
                     <Cont
-                      tag={tag}
+                      tag={each}
                       posts={posts}
-                      type="tag"
-                      onClick={() => setSelected(tag)}
+                      type={type}
+                      onClick={() => setSelected(each)}
                     />
                   );
                   i === arr.length - 1 &&
@@ -179,7 +179,11 @@ export default function List({ data, type, handleChange }: IListProps) {
         ) : (
           <>
             <div className="grid grid-cols-3 mt-4 mb-24 gap-y-2 gap-x-2">
-              <HiArrowLeft size={SIZE.icon} onClick={() => setSelected("")} />
+              <HiArrowLeft
+                className="hover:cursor-pointer"
+                size={SIZE.icon}
+                onClick={() => setSelected("")}
+              />
               <div></div>
               <div></div>
               {(data as IDict<IPost[]>)[selected].map((e, i) => (

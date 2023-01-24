@@ -70,7 +70,9 @@ type IPageType = "feed" | ISearchPageType;
 type ISearchPageType = "sPost" | "sTag" | "sUser";
 
 export const POST_PER_PAGE = {
-  feed: 5,
+  feed: {
+    post: 5,
+  },
   search: {
     post: 18,
     tag: 15,
@@ -78,6 +80,7 @@ export const POST_PER_PAGE = {
   },
   profile: {
     tag: 15,
+    scrap: 15,
   },
 };
 
@@ -88,7 +91,7 @@ async function loadFeed(id: string, page: number): Promise<IPost[]> {
       collection(db, "posts"),
       where("uid", "in", [...user.followings, id]),
       orderBy("createdAt", "desc"),
-      limit(page * POST_PER_PAGE.feed)
+      limit(page * POST_PER_PAGE.feed.post)
     )
   );
   const posts: IPost[] = [];
