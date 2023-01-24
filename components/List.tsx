@@ -17,6 +17,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import Cont from "./Cont";
 import { HiArrowLeft, HiX } from "react-icons/hi";
+import LinkSave from "./LinkSave";
 
 interface IListProps {
   data: IPost[] | ITag[] | IDict<IPost[]>;
@@ -28,6 +29,7 @@ interface IListProps {
 }
 
 export default function List({ data, type, route, handleChange }: IListProps) {
+  // console.log(data, type, route);
   const [loading, setLoading] = useState(false);
   const {
     gSetPage,
@@ -98,10 +100,12 @@ export default function List({ data, type, route, handleChange }: IListProps) {
         <>
           {(data as IPost[]).map((e, i) => (
             <>
-              <PostFeed post={e} user={e.author || null} key={e.id} />
-              {i === (data as IPost[]).length - 1 && (
-                <div ref={setLastIntersecting}></div>
-              )}
+              <LinkSave type={type}>
+                <PostFeed post={e} user={e.author || null} key={e.id} />
+                {i === (data as IPost[]).length - 1 && (
+                  <div ref={setLastIntersecting}></div>
+                )}
+              </LinkSave>
             </>
           ))}
           <div className="flex justify-center"> {loading && <Loader />}</div>

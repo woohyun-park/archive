@@ -204,6 +204,7 @@ export default function Search() {
               ["person", "user"],
               ["tag", "list"],
             ]}
+            route="search"
           />
         )}
       </MotionFade>

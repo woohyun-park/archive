@@ -33,7 +33,7 @@ import {
   getEach,
 } from "./firebase";
 import { Unsubscribe } from "firebase/auth";
-import { async } from "@firebase/util";
+import Router from "next/router";
 
 interface IState {
   gCurUser: IUser;
@@ -47,6 +47,7 @@ interface IState {
   };
   gStatus: IStatus;
   gPage: IDict<IDict<number>>;
+  gScroll: IDict<IDict<number>>;
   gUnsubscribeUser: Unsubscribe | null;
   gUnsubscribeLikes: Unsubscribe | null;
   gUnsubscribeScraps: Unsubscribe | null;
@@ -59,6 +60,7 @@ interface IState {
   ) => Promise<void>;
   gSetStatus: (status: IStatus) => void;
   gSetPage: (route: IRoute, type: IType, page: number) => void;
+  gSetScroll: (route: IRoute, type: IType, scroll: number) => void;
 }
 interface IStatus {
   isModalOpen: boolean;
@@ -270,6 +272,11 @@ export const useStore = create<IState>()(
         scrap: 1,
       },
     },
+    gScroll: {
+      feed: {
+        post: 0,
+      },
+    },
     gUnsubscribeUser: null,
     gUnsubscribeLikes: null,
     gUnsubscribeScraps: null,
@@ -290,6 +297,14 @@ export const useStore = create<IState>()(
     gSetPage: (route: IRoute, type: IType, page: number) => {
       set((state: IState) => {
         state.gPage[route][type] = page;
+        return {
+          ...state,
+        };
+      });
+    },
+    gSetScroll: (route: IRoute, type: IType, scroll: number) => {
+      set((state: IState) => {
+        state.gScroll[route][type] = scroll;
         return {
           ...state,
         };

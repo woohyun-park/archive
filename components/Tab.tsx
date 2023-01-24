@@ -4,8 +4,6 @@ import { IPost, IUser, IDict, ITag, IRoute, getRoute } from "../custom";
 import MotionFloat from "../motions/motionFloat";
 import ProfileSmall from "./ProfileSmall";
 import List from "./List";
-import { useStore } from "../apis/zustand";
-import { useRouter } from "next/router";
 
 interface ITabProps {
   data: IDict<IPost[] | ITag[] | IUser[] | IDict<IPost[]>>;
@@ -13,10 +11,8 @@ interface ITabProps {
   route: IRoute;
 }
 
-export default function Tab({ data, tab }: ITabProps) {
+export default function Tab({ data, tab, route }: ITabProps) {
   const [selectedTab, setSelectedTab] = useState(0);
-  const router = useRouter();
-  const route = getRoute(router);
 
   return (
     <>
