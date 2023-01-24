@@ -21,7 +21,7 @@ import { useStore } from "../apis/zustand";
 import { useRouter } from "next/router";
 
 interface ITabProps {
-  data?: IDict<any[] | IDict<any>>;
+  data: IDict<IPost[] | ITag[] | IUser[] | IDict<IPost[]>>;
   tab: string[][];
 }
 
@@ -52,29 +52,27 @@ export default function Tab({ data, tab }: ITabProps) {
             return (
               <>
                 <div className="grid grid-cols-3 gap-x-2 gap-y-2">
-                  {data &&
-                    data[key].map((e: IPost) => (
-                      <>
-                        <Box post={{ ...e, id: e.id }} key={e.id}></Box>
-                      </>
-                    ))}
+                  {(data[key] as IPost[]).map((e) => (
+                    <>
+                      <Box post={{ ...e, id: e.id }} key={e.id}></Box>
+                    </>
+                  ))}
                 </div>
               </>
             );
           } else if (type === "list") {
-            return (
-              <List
-                data={gSearch.tags}
-                type="tag"
-                loadingRef={[gPage.search.tag, gSearch.tags]}
-                key={i}
-              />
-            );
+            return <List data={data[key] as ITag[]} type="tag" key={i} />;
           }
           // TODO: cont를 클릭했을때 화면이 위로 가는현상 고치기
           else if (type === "cont") {
             return (
               <>
+                {key === "tag" && (
+                  <List data={data[key] as IDict<IPost[]>} type="tag" />
+                )}
+                {key === "scrap" && (
+                  <List data={data[key] as IDict<IPost[]>} type="scrap" />
+                )}
                 {/* <div className="grid grid-cols-3 gap-x-2 gap-y-2">
                   {selected[key] !== "" && (
                     <div className="mb-2 hover:cursor-pointer">
@@ -116,12 +114,11 @@ export default function Tab({ data, tab }: ITabProps) {
           } else if (type === "user") {
             return (
               <>
-                {data &&
-                  data[key].map((user: IUser) => (
-                    <MotionFloat key={user.id}>
-                      <ProfileSmall user={user} type="post" key={user.id} />
-                    </MotionFloat>
-                  ))}
+                {(data[key] as IUser[]).map((user) => (
+                  <MotionFloat key={user.id}>
+                    <ProfileSmall user={user} type="post" key={user.id} />
+                  </MotionFloat>
+                ))}
               </>
             );
           }

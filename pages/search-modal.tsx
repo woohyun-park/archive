@@ -198,7 +198,7 @@ export default function Search() {
           <Tab
             data={{
               person: [...gSearch.users],
-              tag: { ...gSearch.tags },
+              tag: [...gSearch.tags],
             }}
             tab={[
               ["person", "user"],

@@ -9,13 +9,22 @@ import {
   updateFollow,
 } from "../../apis/firebase";
 import Tab from "../../components/Tab";
-import { IDict, IPost, IScrap, ITag, IUser, SIZE } from "../../custom";
+import {
+  getRoute,
+  IDict,
+  IPost,
+  IScrap,
+  ITag,
+  IUser,
+  SIZE,
+} from "../../custom";
 import { HiOutlineCog } from "react-icons/hi";
 import { useStore } from "../../apis/zustand";
 import Link from "next/link";
 import { useState } from "react";
 import Image from "next/image";
 import MotionFade from "../../motions/motionFade";
+import { useRouter } from "next/router";
 
 interface IProfileProps {
   initUser: IUser;
@@ -39,6 +48,12 @@ export default function Profile({
       ? true
       : false,
   });
+  const [posts, setPosts] = useState(initPosts);
+  const [tags, setTags] = useState(initTags);
+  const [scraps, setScraps] = useState(initScraps);
+  const router = useRouter();
+  const route = getRoute(router);
+  console.log(tags, scraps, router, route);
 
   async function handleToggleFollow() {
     await updateFollow(gCurUser, initUser, user.isFollowing);
@@ -148,7 +163,7 @@ export default function Profile({
           </>
         )}
         <Tab
-          data={{ grid: initPosts, tag: initTags, scrap: initScraps }}
+          data={{ grid: posts, tag: tags, scrap: scraps }}
           tab={[
             ["grid", "post"],
             ["tag", "cont"],

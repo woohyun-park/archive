@@ -7,11 +7,7 @@ export default function Feed() {
   return (
     <>
       <h1 className="title-page">피드</h1>
-      <List
-        data={gFeed.posts}
-        type="post"
-        loadingRef={[gPage.feed.post, gFeed]}
-      />
+      <List data={gFeed.posts} type="post" />
       <div className="mb-24"></div>
     </>
   );

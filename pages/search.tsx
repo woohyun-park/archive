@@ -21,11 +21,7 @@ export default function Search() {
             </div>
           </div>
         </Link>
-        <List
-          data={gSearch.posts}
-          type="post"
-          loadingRef={[gPage.sPost, gSearch.posts]}
-        />
+        <List data={gSearch.posts} type="post" />
       </MotionFade>
     </>
   );

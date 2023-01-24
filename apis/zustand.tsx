@@ -33,7 +33,7 @@ import {
   getEach,
 } from "./firebase";
 import { Unsubscribe } from "firebase/auth";
-import { idText } from "typescript";
+import { async } from "@firebase/util";
 
 interface IState {
   gCurUser: IUser;
@@ -69,11 +69,16 @@ type ISearchType = "posts" | "tags" | "users";
 type IPageType = "feed" | ISearchPageType;
 type ISearchPageType = "sPost" | "sTag" | "sUser";
 
-const POST_PER_PAGE = {
+export const POST_PER_PAGE = {
   feed: 5,
-  sPost: 18,
-  sTag: 15,
-  sUser: 15,
+  search: {
+    post: 18,
+    tag: 15,
+    user: 15,
+  },
+  profile: {
+    tag: 15,
+  },
 };
 
 async function loadFeed(id: string, page: number): Promise<IPost[]> {
@@ -114,7 +119,7 @@ async function loadSearch<T>(
       query(
         collection(db, "posts"),
         orderBy("createdAt", "desc"),
-        limit(page * POST_PER_PAGE.sPost)
+        limit(page * POST_PER_PAGE.search.post)
       )
     );
   } else if (type === "sTag") {
@@ -124,7 +129,7 @@ async function loadSearch<T>(
         orderBy("name"),
         startAt(keyword === undefined ? "" : keyword),
         endAt((keyword === undefined ? "" : keyword) + "\uf8ff"),
-        limit(page * POST_PER_PAGE.sTag)
+        limit(page * POST_PER_PAGE.search.tag)
       )
     );
   } else {
@@ -134,7 +139,7 @@ async function loadSearch<T>(
         orderBy("displayName"),
         startAt(keyword),
         endAt(keyword + "\uf8ff"),
-        limit(page * POST_PER_PAGE.sUser)
+        limit(page * POST_PER_PAGE.search.user)
       )
     );
   }
@@ -213,7 +218,6 @@ async function loadstate(get: () => IState, id: string) {
     tags: [],
     users: [],
   };
-  const keyword = "";
 
   return {
     gCurUser: curUser,
@@ -221,10 +225,6 @@ async function loadstate(get: () => IState, id: string) {
       posts,
     },
     gSearch: search,
-    gStatus: {
-      ...get().gStatus,
-      keyword,
-    },
   };
 }
 
@@ -260,6 +260,11 @@ export const useStore = create<IState>()(
         post: 1,
         tag: 1,
         user: 1,
+      },
+      profile: {
+        grid: 1,
+        tag: 1,
+        scrap: 1,
       },
     },
     gUnsubscribeUser: null,
