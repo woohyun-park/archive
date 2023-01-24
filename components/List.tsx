@@ -21,12 +21,13 @@ import { HiArrowLeft, HiX } from "react-icons/hi";
 interface IListProps {
   data: IPost[] | ITag[] | IDict<IPost[]>;
   type: IType;
+  route: IRoute;
   handleIntersect?: Function;
   handleChange?: Function;
   changeListener?: any;
 }
 
-export default function List({ data, type, handleChange }: IListProps) {
+export default function List({ data, type, route, handleChange }: IListProps) {
   const [loading, setLoading] = useState(false);
   const {
     gSetPage,
@@ -38,9 +39,6 @@ export default function List({ data, type, handleChange }: IListProps) {
     gFeed,
     gSearch,
   } = useStore();
-  const router = useRouter();
-  const route = getRoute(router);
-  console.log(data, type, route);
   const loadingRef =
     route === "feed"
       ? [gPage.feed.post, gFeed]

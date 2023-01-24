@@ -1,21 +1,8 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Box from "./Box";
-import {
-  IPost,
-  IUser,
-  IDict,
-  SIZE,
-  ITag,
-  IType,
-  IRoute,
-  getRoute,
-} from "../custom";
-import { HiArrowLeft } from "react-icons/hi";
-import Cont from "./Cont";
+import { IPost, IUser, IDict, ITag, IRoute, getRoute } from "../custom";
 import MotionFloat from "../motions/motionFloat";
 import ProfileSmall from "./ProfileSmall";
-import { getData } from "../apis/firebase";
-import { RiHashtag } from "react-icons/ri";
 import List from "./List";
 import { useStore } from "../apis/zustand";
 import { useRouter } from "next/router";
@@ -23,11 +10,11 @@ import { useRouter } from "next/router";
 interface ITabProps {
   data: IDict<IPost[] | ITag[] | IUser[] | IDict<IPost[]>>;
   tab: string[][];
+  route: IRoute;
 }
 
 export default function Tab({ data, tab }: ITabProps) {
   const [selectedTab, setSelectedTab] = useState(0);
-  const { gSearch, gPage } = useStore();
   const router = useRouter();
   const route = getRoute(router);
 
@@ -61,17 +48,32 @@ export default function Tab({ data, tab }: ITabProps) {
               </>
             );
           } else if (type === "list") {
-            return <List data={data[key] as ITag[]} type="tag" key={i} />;
+            return (
+              <List
+                data={data[key] as ITag[]}
+                type="tag"
+                key={i}
+                route={route}
+              />
+            );
           }
           // TODO: cont를 클릭했을때 화면이 위로 가는현상 고치기
           else if (type === "cont") {
             return (
               <>
                 {key === "tag" && (
-                  <List data={data[key] as IDict<IPost[]>} type="tag" />
+                  <List
+                    data={data[key] as IDict<IPost[]>}
+                    type="tag"
+                    route={route}
+                  />
                 )}
                 {key === "scrap" && (
-                  <List data={data[key] as IDict<IPost[]>} type="scrap" />
+                  <List
+                    data={data[key] as IDict<IPost[]>}
+                    type="scrap"
+                    route={route}
+                  />
                 )}
                 {/* <div className="grid grid-cols-3 gap-x-2 gap-y-2">
                   {selected[key] !== "" && (

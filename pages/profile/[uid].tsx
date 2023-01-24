@@ -169,6 +169,7 @@ export default function Profile({
             ["tag", "cont"],
             ["scrap", "cont"],
           ]}
+          route="profile"
         />
       </MotionFade>
     </>

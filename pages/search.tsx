@@ -21,7 +21,7 @@ export default function Search() {
             </div>
           </div>
         </Link>
-        <List data={gSearch.posts} type="post" />
+        <List data={gSearch.posts} type="post" route="search" />
       </MotionFade>
     </>
   );
