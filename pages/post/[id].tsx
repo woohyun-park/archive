@@ -18,6 +18,8 @@ import Image from "next/image";
 import {
   addDoc,
   collection,
+  deleteDoc,
+  doc,
   orderBy,
   query,
   serverTimestamp,
@@ -41,6 +43,7 @@ export default function Post({ initPost, initUser }: IPostProps) {
   const { gCurUser } = useStore();
   const router = useRouter();
   const [post, setPost] = useState<IPost>(initPost);
+  const [submitListener, setSubmitListener] = useState<boolean | null>(null);
 
   function handleModify() {
     router.push(
@@ -81,6 +84,7 @@ export default function Post({ initPost, initUser }: IPostProps) {
       comments: [newComment, ...(post.comments as IComment[])],
     });
     setComment("");
+    setSubmitListener(!submitListener);
   }
   async function handleDeleteComment(e: React.MouseEvent<HTMLDivElement>) {
     const id = e.currentTarget.id;
@@ -94,13 +98,18 @@ export default function Post({ initPost, initUser }: IPostProps) {
   }
 
   const [comment, setComment] = useState("");
-  const commentInputRef: RefObject<HTMLTextAreaElement> = useRef(null);
-  const postActionRef: RefObject<HTMLDivElement> = useRef(null);
+  const commentRef = useRef<HTMLTextAreaElement>(null);
+  const actionRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
-    document
-      .querySelector("#postActionRef")
-      ?.scrollIntoView({ behavior: "smooth" });
-  }, [post.comments]);
+    if (submitListener !== null)
+      actionRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [submitListener]);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <>
       <MotionFade>
@@ -146,7 +155,15 @@ export default function Post({ initPost, initUser }: IPostProps) {
               ))}
             </div>
             <div className="mt-1 mb-4 whitespace-pre-wrap">{post.txt}</div>
-            <PostAction post={post} setPost={setPost} ref={postActionRef} />
+            <PostAction
+              post={post}
+              setPost={setPost}
+              onCommentClick={() => {
+                commentRef.current?.scrollIntoView({ behavior: "smooth" });
+                setTimeout(() => commentRef.current?.focus({}), 500);
+              }}
+              ref={actionRef}
+            />
             <MotionFloatList
               data={(post.comments && post.comments) || []}
               callBack={(comment: IComment) => (
@@ -165,7 +182,7 @@ export default function Post({ initPost, initUser }: IPostProps) {
                 placeholder={`${gCurUser.displayName}(으)로 댓글 달기...`}
                 value={comment}
                 onChange={handleChange}
-                ref={commentInputRef}
+                ref={commentRef}
                 autoFocus={router.query.isCommentFocused ? true : false}
                 style={{
                   marginLeft: "0.5rem",

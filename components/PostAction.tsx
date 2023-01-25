@@ -3,18 +3,15 @@ import {
   collection,
   deleteDoc,
   doc,
-  serverTimestamp,
   updateDoc,
 } from "firebase/firestore";
-import Image from "next/image";
 import { useRouter } from "next/router";
 import React, {
   Dispatch,
-  RefObject,
   SetStateAction,
   useEffect,
-  useRef,
   useState,
+  forwardRef,
 } from "react";
 import {
   HiBookmark,
@@ -23,21 +20,20 @@ import {
   HiOutlineHeart,
   HiOutlineChatBubbleOvalLeft,
 } from "react-icons/hi2";
-import { db, getDataByRef } from "../apis/firebase";
+import { db } from "../apis/firebase";
 import { useStore } from "../apis/zustand";
 import { getRoute, IComment, ILike, IPost, IScrap, SIZE } from "../custom";
-import Button from "./atoms/Button";
-import Textarea from "./atoms/Textarea";
-import Comment from "./Comment";
-import MotionFloatList from "../motions/MotionFloatList";
 
 type IPostActionProps = {
   post: IPost;
-  setPost: Dispatch<SetStateAction<IPost>>;
-  ref: RefObject<HTMLDivElement>;
+  setPost?: Dispatch<SetStateAction<IPost>>;
+  onCommentClick?: () => void;
 };
 
-export default function PostAction({ post, setPost, ref }: IPostActionProps) {
+export default forwardRef<HTMLDivElement, IPostActionProps>(function PostAction(
+  { post, setPost, onCommentClick },
+  ref
+) {
   const { gCurUser } = useStore();
   const [status, setStatus] = useState({
     isLiked: gCurUser.likes?.find((each) => each.pid === post.id)
@@ -49,7 +45,6 @@ export default function PostAction({ post, setPost, ref }: IPostActionProps) {
       : false,
     sid: gCurUser.scraps?.find((each) => each.pid === post.id)?.id,
   });
-  const commentRef: RefObject<HTMLTextAreaElement> = useRef(null);
   const router = useRouter();
   const route = getRoute(router);
 
@@ -98,30 +93,6 @@ export default function PostAction({ post, setPost, ref }: IPostActionProps) {
     }
   }
 
-  async function handleDelete(e: React.MouseEvent<HTMLDivElement>) {
-    const id = e.currentTarget.id;
-    const res = await deleteDoc(doc(db, "comments", id));
-    setPost({
-      ...post,
-      comments: [...(post.comments as IComment[])].filter(
-        (comment) => comment.id !== id
-      ),
-    });
-  }
-
-  function handleCommentClick(e: React.MouseEvent<SVGElement>) {
-    if (route === "post") {
-      commentRef.current?.focus();
-    } else if (route === "feed") {
-      router.push(
-        {
-          pathname: `/post/${post.id}`,
-          query: { isCommentFocused: true },
-        },
-        `/post/${post.id}`
-      );
-    }
-  }
   function displayLike() {
     const len = post.likes?.length;
     if (len === undefined) return 0;
@@ -159,7 +130,7 @@ export default function PostAction({ post, setPost, ref }: IPostActionProps) {
 
   return (
     <>
-      <div className="flex justify-between pt-4 mb-2" id="postActionRef">
+      <div className="flex justify-between pt-4 mb-2" ref={ref}>
         <div className="flex">
           <span className="mr-2 hover:cursor-pointer">
             {status.isLiked ? (
@@ -171,7 +142,7 @@ export default function PostAction({ post, setPost, ref }: IPostActionProps) {
           <span className="hover:cursor-pointer">
             <HiOutlineChatBubbleOvalLeft
               size={SIZE.icon}
-              onClick={handleCommentClick}
+              onClick={onCommentClick}
             />
           </span>
         </div>
@@ -230,4 +201,4 @@ export default function PostAction({ post, setPost, ref }: IPostActionProps) {
       )} */}
     </>
   );
-}
+});

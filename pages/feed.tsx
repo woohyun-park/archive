@@ -1,9 +1,13 @@
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useStore } from "../apis/zustand";
+import Box from "../components/Box";
 import LinkScroll from "../components/LinkScroll";
 import Loader from "../components/Loader";
+import PostAction from "../components/PostAction";
 import PostFeed from "../components/PostFeed";
+import ProfileSmall from "../components/ProfileSmall";
+import { IUser } from "../custom";
 import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 
 export default function Feed() {
@@ -26,7 +30,20 @@ export default function Feed() {
         <h1 className="title-page">피드</h1>
         {gFeed.posts.map((e, i) => (
           <LinkScroll key={i}>
-            <PostFeed post={e} user={e.author || null} key={e.id} />
+            <ProfileSmall post={e} user={e.author as IUser} type="post" />
+            <Box post={e} />
+            <PostAction
+              post={e}
+              onCommentClick={() =>
+                router.push(
+                  {
+                    pathname: `/post/${e.id}`,
+                    query: { isCommentFocused: true },
+                  },
+                  `/post/${e.id}`
+                )
+              }
+            />
             {i === gFeed.posts.length - 1 && (
               <div ref={setLastIntersecting}></div>
             )}
