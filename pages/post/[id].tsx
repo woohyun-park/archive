@@ -82,6 +82,16 @@ export default function Post({ initPost, initUser }: IPostProps) {
     });
     setComment("");
   }
+  async function handleDeleteComment(e: React.MouseEvent<HTMLDivElement>) {
+    const id = e.currentTarget.id;
+    const res = await deleteDoc(doc(db, "comments", id));
+    setPost({
+      ...post,
+      comments: [...(post.comments as IComment[])].filter(
+        (comment) => comment.id !== id
+      ),
+    });
+  }
 
   const [comment, setComment] = useState("");
   const commentInputRef: RefObject<HTMLTextAreaElement> = useRef(null);
@@ -142,7 +152,7 @@ export default function Post({ initPost, initUser }: IPostProps) {
               callBack={(comment: IComment) => (
                 <Comment
                   comment={comment}
-                  onClick={handleDelete}
+                  onClick={handleDeleteComment}
                   key={comment.id}
                 />
               )}

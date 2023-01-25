@@ -159,7 +159,7 @@ export default function PostAction({ post, setPost, ref }: IPostActionProps) {
 
   return (
     <>
-      <div className="flex justify-between mt-1 mb-2" id="postActionRef">
+      <div className="flex justify-between pt-4 mb-2" id="postActionRef">
         <div className="flex">
           <span className="mr-2 hover:cursor-pointer">
             {status.isLiked ? (
