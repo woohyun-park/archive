@@ -22,7 +22,7 @@ import {
 } from "react-icons/hi2";
 import { db } from "../apis/firebase";
 import { useStore } from "../apis/zustand";
-import { getRoute, IComment, ILike, IPost, IScrap, SIZE } from "../custom";
+import { ILike, IPost, IScrap, SIZE } from "../custom";
 
 type IPostActionProps = {
   post: IPost;
