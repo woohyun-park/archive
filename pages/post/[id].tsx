@@ -69,7 +69,7 @@ export default function Post({ initPost, initUser }: IPostProps) {
             {initPost.imgs.length === 0 ? (
               <div
                 className="w-[calc(100%+32px)] -translate-x-4 pb-[50%]"
-                id="d1"
+                id="post_d1"
               ></div>
             ) : (
               <div className="relative pb-[100%] w-[calc(100%+32px)] -translate-x-4">
@@ -96,7 +96,7 @@ export default function Post({ initPost, initUser }: IPostProps) {
         )}
 
         <style jsx>{`
-          #d1 {
+          #post_d1 {
             background-color: ${initPost.color};
           }
         `}</style>

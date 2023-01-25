@@ -61,7 +61,7 @@ export default function ProfileSmall({ user, post }: IProfileSmallProps) {
     <>
       <div
         className="flex items-center justify-between w-full"
-        id={`d1-${route}`}
+        id={`tab_d1-${route}`}
       >
         <div className="flex items-center">
           <div className="mr-1 profileImg-small">
@@ -125,10 +125,10 @@ export default function ProfileSmall({ user, post }: IProfileSmallProps) {
 
       <style jsx>
         {`
-          #d1-post {
+          #tab_d1-post {
             margin: 32px 0 8px 0;
           }
-          #d1-feed {
+          #tab_d1-feed {
             margin: 48px 0 8px 0;
           }
         `}

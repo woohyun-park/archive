@@ -5,9 +5,10 @@ import { useStore } from "../apis/zustand";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import MotionFade from "../motions/motionFade";
+import GridPost from "../components/GridPost";
 
 export default function Search() {
-  const { gSearch, gPage } = useStore();
+  const { gSearch, gPage, gSetPage, gSetSearch } = useStore();
   const router = useRouter();
 
   return (
@@ -21,7 +22,17 @@ export default function Search() {
             </div>
           </div>
         </Link>
-        <List data={gSearch.posts} type="post" route="search" />
+        <GridPost
+          posts={gSearch.posts}
+          handleIntersect={() =>
+            gSetPage("search", "post", gPage.search.post + 1)
+          }
+          handleChange={() => gSetSearch("posts", gPage.search.post)}
+          changeListener={gPage.search.post}
+          option={{
+            numCols: 3,
+          }}
+        />
       </MotionFade>
     </>
   );

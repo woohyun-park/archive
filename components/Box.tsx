@@ -14,7 +14,7 @@ export default function Box({ post }: IBoxProps) {
     <>
       <div className="relative overflow-hidden rounded-lg w-full pb-[100%]">
         {post.imgs.length === 0 ? (
-          <div className="absolute object-cover w-full h-full" id="d1" />
+          <div className="absolute object-cover w-full h-full" id="box_d1" />
         ) : (
           <>
             <Image
@@ -35,7 +35,7 @@ export default function Box({ post }: IBoxProps) {
         >
           <div
             className="absolute m-2 text-5xl font-bold break-words hover:cursor-pointer"
-            id={`d2-${route}`}
+            id={`box_d2-${route}`}
           >
             {post.title}
           </div>
@@ -53,17 +53,17 @@ export default function Box({ post }: IBoxProps) {
         * {
           color: ${COLOR.white};
         }
-        #d1 {
+        #box_d1 {
           background-color: ${post.color};
         }
-        #d2-feed {
+        #box_d2-feed {
           margin: 16px;
         }
-        #d2-search {
+        #box_d2-search {
           font-size: 16px;
           margin: 16px;
         }
-        #d2-profile {
+        #box_d2-profile {
           font-size: 24px;
           margin: 8px 4px;
           line-height: 20px;

@@ -12,21 +12,21 @@ import Cont from "./Cont";
 import { HiArrowLeft, HiX } from "react-icons/hi";
 import LinkScroll from "./LinkScroll";
 
-interface IListPostProps {
+interface IGridPostProps {
   posts: IPost[];
   handleIntersect: Function;
   handleChange: Function;
   changeListener: any;
-  option?: IListPostOption;
+  option?: IGridPostOption;
 }
 
-interface IListPostOption {
+interface IGridPostOption {
   includeProfile?: boolean;
   preserveScroll?: boolean;
   numCols?: number;
 }
 
-export default function ListPost({
+export default function GridPost({
   posts,
   handleIntersect,
   handleChange,
@@ -36,7 +36,7 @@ export default function ListPost({
     preserveScroll: false,
     numCols: 1,
   },
-}: IListPostProps) {
+}: IGridPostProps) {
   const { setLastIntersecting, loading } = useInfiniteScroll({
     handleIntersect,
     handleChange,
@@ -65,7 +65,9 @@ export default function ListPost({
         </>
       ) : (
         <>
-          <div className="grid mt-4 mb-16 gap-y-2 gap-x-2" id={"d1"}>
+          <div
+            className={`grid mt-4 mb-16 gap-y-2 gap-x-2 grid-cols-${option.numCols}`}
+          >
             {posts.map((e, i) => (
               <>
                 <div>
@@ -80,13 +82,6 @@ export default function ListPost({
           <div className="flex justify-center"> {loading && <Loader />}</div>
         </>
       )}
-      <style jsx>
-        {`
-          #d1 {
-            grid-column: ${option.numCols};
-          }
-        `}
-      </style>
     </>
   );
 }

@@ -12,7 +12,7 @@ export default function Color({ color, selected, onClick }: IColorProps) {
     <>
       <div
         className="flex items-center justify-center w-12 h-12 rounded-lg hover:cursor-pointer"
-        id="d1"
+        id="color_d1"
         color={color}
         onClick={onClick}
       >
@@ -21,7 +21,7 @@ export default function Color({ color, selected, onClick }: IColorProps) {
 
       <style jsx>
         {`
-          #d1 {
+          #color_d1 {
             background-color: ${color};
           }
         `}

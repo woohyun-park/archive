@@ -40,7 +40,7 @@ export default function Cont({ tag, posts, type, onClick }: IImageProps) {
           )}
           <div
             className="absolute p-1 m-2 text-base font-bold rounded-lg break-keep bg-black/75 hover:cursor-pointer"
-            id={`d1-${type}`}
+            id={`cont_d1-${type}`}
             onClick={onClick}
           >
             {tag === "모든 스크랩" ? tag : `#${tag}`}
@@ -49,7 +49,7 @@ export default function Cont({ tag, posts, type, onClick }: IImageProps) {
       )}
 
       <style jsx>{`
-        #d1-tag {
+        #cont_d1-tag {
           word-break: break-all;
         }
       `}</style>

@@ -41,72 +41,28 @@ export default function List({ data, type, route, handleChange }: IListProps) {
   } = useStore();
   const { setLastIntersecting, loading } = useInfiniteScroll({
     handleIntersect:
-      route === "feed"
-        ? () => gSetPage("feed", "post", gPage.feed.post + 1)
-        : route === "search" && type === "post"
-        ? () => gSetPage("search", "post", gPage.search.post + 1)
-        : route === "search" && type === "tag"
+      oute === "search" && type === "tag"
         ? () => gSetPage("search", "tag", gPage.search.tag + 1)
         : route === "profile" && type === "tag"
         ? () => gSetPage("profile", "tag", gPage.profile.tag + 1)
         : () => {},
     handleChange:
-      route === "feed"
-        ? () => gSetFeed(gCurUser.id, gPage.feed.post)
-        : route === "search" && type === "post"
-        ? () => gSetSearch("posts", gPage.search.post)
-        : route === "search" && type === "tag"
+      route === "search" && type === "tag"
         ? () => gSetSearch("tags", gPage.search.tag, gStatus.keyword)
         : route === "profile" && type === "tag"
         ? () => handleChange && handleChange()
         : () => {},
     changeListener:
-      route === "feed"
-        ? gPage.feed.post
-        : route === "search" && type === "post"
-        ? gPage.search.post
-        : route === "search" && type === "tag"
+      route === "search" && type === "tag"
         ? gPage.search.tag
         : route === "profile" && type === "tag"
         ? gPage.profile.tag
         : null,
   });
+  const [selected, setSelected] = useState("");
 
   return (
     <>
-      {console.log(data, type, route)}
-      {route === "feed" && (
-        <>
-          {(data as IPost[]).map((e, i) => (
-            <>
-              <LinkScroll type={type}>
-                <PostFeed post={e} user={e.author || null} key={e.id} />
-                {i === (data as IPost[]).length - 1 && (
-                  <div ref={setLastIntersecting}></div>
-                )}
-              </LinkScroll>
-            </>
-          ))}
-          <div className="flex justify-center"> {loading && <Loader />}</div>
-        </>
-      )}
-      {route === "search" && type === "post" && (
-        <>
-          <div className="grid grid-cols-3 mt-4 mb-16 gap-y-2 gap-x-2">
-            {(data as IPost[]).map((e, i) => (
-              <>
-                <div>
-                  <Box post={{ ...e, id: e.id }} key={e.id}></Box>
-                </div>
-                {i === (data as IPost[]).length - 1 && (
-                  <div ref={setLastIntersecting}></div>
-                )}
-              </>
-            ))}
-          </div>
-          <div className="flex justify-center"> {loading && <Loader />}</div>
-        </>
-      )}
       {route === "search" && type === "tag" && (
         <>
           <div className="grid mb-8">
