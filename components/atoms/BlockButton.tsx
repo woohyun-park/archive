@@ -15,7 +15,7 @@ export default function BlockButton({ children, type, onClick }: IBackProps) {
         className="
         p-2 ext-center rounded-lg
         inline-block w-full px-6 py-2.5 bg-black
-         text-white font-medium text-xs leading-tight uppercase 
+         text-white font-medium text-xs leading-tigh uppercase 
          shadow-md hover:bg-black-f hover:shadow-lg
           focus:bg-black-f focus:shadow-lg focus:outline-none 
           focus:ring-0 active:bg-black-f active:shadow-lg 

@@ -28,9 +28,9 @@ export default function Comment({ comment, onClick }: ICommentProps) {
 
   return (
     <>
-      <div className="flex items-center justify-between">
+      <div className="flex items-end justify-between my-1">
         <div className="flex items-center mt-2 mb-1">
-          <div className="mr-2 profileImg-small">
+          <div className="mt-1 mr-2 profileImg-small self-baseline">
             <Image src={user?.photoURL || ""} alt="" fill />
           </div>
           <div>
@@ -42,12 +42,14 @@ export default function Comment({ comment, onClick }: ICommentProps) {
                 {TIME.displayCreatedAt(comment.createdAt)}
               </div>
             </div>
-            <div className="-mt-1 text-base text-black">{comment?.txt}</div>
+            <div className="-mt-1 text-base text-black break-all">
+              {comment?.txt}
+            </div>
           </div>
         </div>
         {user?.id === gCurUser.id ? (
           <div
-            className="hover:cursor-pointer"
+            className="mx-2 mt-5 hover:cursor-pointer self-baseline"
             onClick={onClick}
             id={comment.id}
           >

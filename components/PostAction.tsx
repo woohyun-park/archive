@@ -19,6 +19,9 @@ import {
 import { db, getDataByRef } from "../apis/firebase";
 import { useStore } from "../apis/zustand";
 import { getRoute, IComment, ILike, IPost, IScrap, SIZE } from "../custom";
+import Button from "./atoms/Button";
+import Input from "./atoms/Input";
+import Textarea from "./atoms/Textarea";
 import Comment from "./Comment";
 
 type IPostActionProps = {
@@ -39,7 +42,7 @@ export default function PostAction({ post }: IPostActionProps) {
     sid: gCurUser.scraps?.find((each) => each.pid === postState.id)?.id,
   });
   const [comment, setComment] = useState("");
-  const commentRef: RefObject<HTMLInputElement> = useRef(null);
+  const commentRef: RefObject<HTMLTextAreaElement> = useRef(null);
   const router = useRouter();
   const route = getRoute(router);
 
@@ -88,7 +91,7 @@ export default function PostAction({ post }: IPostActionProps) {
     }
   }
 
-  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+  function handleChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
     setComment(e.target.value);
   }
 
@@ -215,17 +218,34 @@ export default function PostAction({ post }: IPostActionProps) {
           <div className="profileImg-small">
             <Image src={gCurUser.photoURL} alt="" fill />
           </div>
-          <input
+          {/* <input
             className="w-full m-2 button-gray text-start"
             placeholder={`${gCurUser.displayName}(으)로 댓글 달기...`}
             value={comment}
             onChange={handleChange}
             ref={commentRef}
             autoFocus={router.query.isCommentFocused ? true : false}
+          /> */}
+          {/* <Input
+            placeholder={`${gCurUser.displayName}(으)로 댓글 달기...`}
+            value={comment}
+            onChange={handleChange}
+            ref={commentRef}
+            autoFocus={router.query.isCommentFocused ? true : false}
+            style="margin-left: 0.5rem; margin-right: 0.5rem"
+          /> */}
+          <Textarea
+            placeholder={`${gCurUser.displayName}(으)로 댓글 달기...`}
+            value={comment}
+            onChange={handleChange}
+            ref={commentRef}
+            autoFocus={router.query.isCommentFocused ? true : false}
+            style={{
+              marginLeft: "0.5rem",
+              marginRight: "0.5rem ",
+            }}
           />
-          <button className="button-black min-w-[64px]" onClick={handleSubmit}>
-            게시
-          </button>
+          <Button onClick={handleSubmit}>게시</Button>
         </div>
       )}
     </>
