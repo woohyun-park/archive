@@ -11,7 +11,8 @@ module.exports = {
       logo: ["Rammetto One", "sans-serif"],
     },
     colors: {
-      black: colors.black,
+      "black-f": colors.black,
+      black: colors.gray[900],
       white: colors.white,
       red: colors.red[500],
       "gray-1": colors.gray[700],

@@ -8,6 +8,7 @@ import Image from "next/image";
 import { updateUser } from "../apis/firebase";
 import { AnimatePresence, motion } from "framer-motion";
 import MotionFade from "../motions/motionFade";
+import BlockButton from "../components/atoms/BlockButton";
 
 interface IForm {
   file: File[];
@@ -141,9 +142,7 @@ export default function Setting() {
             maxLength={150}
             className="h-16 resize-none inputForm_input"
           />
-          <button type="submit" className="button-black">
-            변경
-          </button>
+          <BlockButton type="submit">변경</BlockButton>
         </form>
       </MotionFade>
     </>
