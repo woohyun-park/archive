@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Box from "./Box";
 import { IPost, IUser, IDict, ITag, IRoute, getRoute } from "../custom";
-import MotionFloat from "../motions/motionFloat";
+import MotionFloat from "../motions/MotionFloat";
 import ProfileSmall from "./ProfileSmall";
 import List from "./views/List";
 

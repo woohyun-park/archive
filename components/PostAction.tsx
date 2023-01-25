@@ -23,6 +23,8 @@ import Button from "./atoms/Button";
 import Input from "./atoms/Input";
 import Textarea from "./atoms/Textarea";
 import Comment from "./Comment";
+import { motion } from "framer-motion";
+import MotionFloatList from "./motionFloatList";
 
 type IPostActionProps = {
   post: IPost;
@@ -209,31 +211,27 @@ export default function PostAction({ post }: IPostActionProps) {
         </div>
         <div>{`스크랩 ${displayScraps()}`}</div>
       </div>
-      {route === "post" &&
-        postState.comments?.map((comment) => (
-          <Comment comment={comment} onClick={handleDelete} key={comment.id} />
-        ))}
+
+      {route === "post" && (
+        <>
+          <MotionFloatList
+            data={(postState.comments && postState.comments) || []}
+            callBack={(comment: IComment) => (
+              <Comment
+                comment={comment}
+                onClick={handleDelete}
+                key={comment.id}
+              />
+            )}
+          />
+        </>
+      )}
+
       {route === "post" && (
         <div className="flex items-center justify-between mb-24">
           <div className="profileImg-small">
             <Image src={gCurUser.photoURL} alt="" fill />
           </div>
-          {/* <input
-            className="w-full m-2 button-gray text-start"
-            placeholder={`${gCurUser.displayName}(으)로 댓글 달기...`}
-            value={comment}
-            onChange={handleChange}
-            ref={commentRef}
-            autoFocus={router.query.isCommentFocused ? true : false}
-          /> */}
-          {/* <Input
-            placeholder={`${gCurUser.displayName}(으)로 댓글 달기...`}
-            value={comment}
-            onChange={handleChange}
-            ref={commentRef}
-            autoFocus={router.query.isCommentFocused ? true : false}
-            style="margin-left: 0.5rem; margin-right: 0.5rem"
-          /> */}
           <Textarea
             placeholder={`${gCurUser.displayName}(으)로 댓글 달기...`}
             value={comment}

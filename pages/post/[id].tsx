@@ -15,7 +15,7 @@ import { IComment, ILike, IPost, IScrap, IUser, SIZE } from "../../custom";
 import { useStore } from "../../apis/zustand";
 import Image from "next/image";
 import { collection, orderBy, query, where } from "firebase/firestore";
-import MotionFade from "../../motions/motionFade";
+import MotionFade from "../../motions/MotionFade";
 import Tag from "../../components/atoms/Tag";
 
 interface IPostProps {

@@ -19,7 +19,7 @@ import Image from "next/image";
 import ReactTextareaAutosize from "react-textarea-autosize";
 import Back from "../components/Back";
 import Modal from "../components/Modal";
-import MotionFade from "../motions/motionFade";
+import MotionFade from "../motions/MotionFade";
 
 interface IForm {
   file: File[];

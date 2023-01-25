@@ -15,7 +15,7 @@ import { useStore } from "../../apis/zustand";
 import Link from "next/link";
 import { useState } from "react";
 import Image from "next/image";
-import MotionFade from "../../motions/motionFade";
+import MotionFade from "../../motions/MotionFade";
 import BlockButton from "../../components/atoms/BlockButton";
 
 interface IProfileProps {

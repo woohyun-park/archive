@@ -29,16 +29,14 @@ export default function MotionFloat({ children }: IMotion) {
   };
   return (
     <>
-      <AnimatePresence>
-        <motion.div
-          initial="initial"
-          animate="animate"
-          exit="exit"
-          variants={variants}
-        >
-          {children}
-        </motion.div>
-      </AnimatePresence>
+      <motion.div
+        initial="initial"
+        animate="animate"
+        exit="exit"
+        variants={variants}
+      >
+        {children}
+      </motion.div>
     </>
   );
 }

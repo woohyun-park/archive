@@ -3,7 +3,7 @@ import { SIZE } from "../custom";
 import { HiSearch } from "react-icons/hi";
 import { useStore } from "../apis/zustand";
 import Link from "next/link";
-import MotionFade from "../motions/motionFade";
+import MotionFade from "../motions/MotionFade";
 import Box from "../components/Box";
 import Loader from "../components/Loader";
 import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
