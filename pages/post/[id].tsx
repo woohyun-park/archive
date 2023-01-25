@@ -86,7 +86,7 @@ export default function Post({ initPost, initUser }: IPostProps) {
             <div className="flex flex-wrap justify-end w-full mb-8">
               {initPost.tags.map((tag, i) => (
                 <Link key={i} href={{ pathname: `/tag/${tag}` }} legacyBehavior>
-                  <div className="mr-1 w-fit g-button1">{`#${tag}`}</div>
+                  <div className="mr-1 w-fit button-black">{`#${tag}`}</div>
                 </Link>
               ))}
             </div>

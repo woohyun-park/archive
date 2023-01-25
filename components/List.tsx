@@ -29,7 +29,6 @@ interface IListProps {
 }
 
 export default function List({ data, type, route, handleChange }: IListProps) {
-  // console.log(data, type, route);
   const [loading, setLoading] = useState(false);
   const {
     gSetPage,
