@@ -47,7 +47,7 @@ interface IState {
   };
   gStatus: IStatus;
   gPage: IDict<IDict<number>>;
-  gScroll: IDict<IDict<number>>;
+  gScroll: IDict<number>;
   gUnsubscribeUser: Unsubscribe | null;
   gUnsubscribeLikes: Unsubscribe | null;
   gUnsubscribeScraps: Unsubscribe | null;
@@ -60,7 +60,7 @@ interface IState {
   ) => Promise<void>;
   gSetStatus: (status: IStatus) => void;
   gSetPage: (route: IRoute, type: IType, page: number) => void;
-  gSetScroll: (route: IRoute, type: IType, scroll: number) => void;
+  gSetScroll: (pathname: string, scroll: number) => void;
 }
 interface IStatus {
   isModalOpen: boolean;
@@ -272,11 +272,7 @@ export const useStore = create<IState>()(
         scrap: 1,
       },
     },
-    gScroll: {
-      feed: {
-        post: 0,
-      },
-    },
+    gScroll: {},
     gUnsubscribeUser: null,
     gUnsubscribeLikes: null,
     gUnsubscribeScraps: null,
@@ -302,9 +298,9 @@ export const useStore = create<IState>()(
         };
       });
     },
-    gSetScroll: (route: IRoute, type: IType, scroll: number) => {
+    gSetScroll: (pathname: string, scroll: number) => {
       set((state: IState) => {
-        state.gScroll[route][type] = scroll;
+        state.gScroll[pathname] = scroll;
         return {
           ...state,
         };

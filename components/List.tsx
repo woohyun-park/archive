@@ -17,7 +17,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import Cont from "./Cont";
 import { HiArrowLeft, HiX } from "react-icons/hi";
-import LinkSave from "./LinkSave";
+import LinkScroll from "./LinkScroll";
 
 interface IListProps {
   data: IPost[] | ITag[] | IDict<IPost[]>;
@@ -29,7 +29,6 @@ interface IListProps {
 }
 
 export default function List({ data, type, route, handleChange }: IListProps) {
-  const [loading, setLoading] = useState(false);
   const {
     gSetPage,
     gPage,
@@ -40,17 +39,7 @@ export default function List({ data, type, route, handleChange }: IListProps) {
     gFeed,
     gSearch,
   } = useStore();
-  const loadingRef =
-    route === "feed"
-      ? [gPage.feed.post, gFeed]
-      : route === "search" && type === "post"
-      ? [gPage.sPost, gSearch.posts]
-      : route === "search" && type === "tag"
-      ? [gPage.search.tag, gSearch.tags]
-      : route === "profile" && type === "tag"
-      ? []
-      : [];
-  const { setLastIntersecting } = useInfiniteScroll({
+  const { setLastIntersecting, loading } = useInfiniteScroll({
     handleIntersect:
       route === "feed"
         ? () => gSetPage("feed", "post", gPage.feed.post + 1)
@@ -82,15 +71,6 @@ export default function List({ data, type, route, handleChange }: IListProps) {
         ? gPage.profile.tag
         : null,
   });
-  const [selected, setSelected] = useState("");
-
-  useEffect(() => {
-    setLoading(true);
-  }, [loadingRef[0]]);
-
-  useEffect(() => {
-    setLoading(false);
-  }, [loadingRef[1]]);
 
   return (
     <>
@@ -99,12 +79,12 @@ export default function List({ data, type, route, handleChange }: IListProps) {
         <>
           {(data as IPost[]).map((e, i) => (
             <>
-              <LinkSave type={type}>
+              <LinkScroll type={type}>
                 <PostFeed post={e} user={e.author || null} key={e.id} />
                 {i === (data as IPost[]).length - 1 && (
                   <div ref={setLastIntersecting}></div>
                 )}
-              </LinkSave>
+              </LinkScroll>
             </>
           ))}
           <div className="flex justify-center"> {loading && <Loader />}</div>
