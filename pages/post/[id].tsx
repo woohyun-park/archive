@@ -16,6 +16,7 @@ import { useStore } from "../../apis/zustand";
 import Image from "next/image";
 import { collection, orderBy, query, where } from "firebase/firestore";
 import MotionFade from "../../motions/motionFade";
+import Tag from "../../components/atoms/Tag";
 
 interface IPostProps {
   initPost: IPost;
@@ -85,9 +86,9 @@ export default function Post({ initPost, initUser }: IPostProps) {
             <h1 className="mb-1 text-5xl">{initPost.title}</h1>
             <div className="flex flex-wrap justify-end w-full mb-8">
               {initPost.tags.map((tag, i) => (
-                <Link key={i} href={{ pathname: `/tag/${tag}` }} legacyBehavior>
-                  <div className="mr-1 w-fit button-black">{`#${tag}`}</div>
-                </Link>
+                <Tag key={i} style="margin: 0.125rem">
+                  {tag}
+                </Tag>
               ))}
             </div>
             <div className="mt-1 mb-4 whitespace-pre-wrap">{initPost.txt}</div>

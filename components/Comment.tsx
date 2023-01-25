@@ -42,7 +42,7 @@ export default function Comment({ comment, onClick }: ICommentProps) {
                 {TIME.displayCreatedAt(comment.createdAt)}
               </div>
             </div>
-            <div className="-mt-1 text-base text-black break-all">
+            <div className="-mt-1 text-base leading-5 text-black break-all">
               {comment?.txt}
             </div>
           </div>
