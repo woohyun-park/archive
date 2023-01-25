@@ -1,23 +1,14 @@
-import {
-  JSXElementConstructor,
-  ReactElement,
-  ReactFragment,
-  useEffect,
-  useState,
-} from "react";
+import { useState } from "react";
 import { RiHashtag } from "react-icons/ri";
-import { POST_PER_PAGE, useStore } from "../apis/zustand";
-import { IRoute, IPost, IType, IDict, ITag, SIZE, getRoute } from "../custom";
-import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
-import MotionFloat from "../motions/motionFloat";
-import Box from "./Box";
-import Loader from "./Loader";
-import PostFeed from "./PostFeed";
+import { POST_PER_PAGE, useStore } from "../../apis/zustand";
+import { IRoute, IPost, IType, IDict, ITag, SIZE } from "../../custom";
+import { useInfiniteScroll } from "../../hooks/useInfiniteScroll";
+import MotionFloat from "../../motions/motionFloat";
+import Box from "../Box";
+import Loader from "../Loader";
 import Link from "next/link";
-import { useRouter } from "next/router";
-import Cont from "./Cont";
+import Cont from "../Cont";
 import { HiArrowLeft, HiX } from "react-icons/hi";
-import LinkScroll from "./LinkScroll";
 
 interface IListProps {
   data: IPost[] | ITag[] | IDict<IPost[]>;
@@ -29,19 +20,10 @@ interface IListProps {
 }
 
 export default function List({ data, type, route, handleChange }: IListProps) {
-  const {
-    gSetPage,
-    gPage,
-    gSetSearch,
-    gSetFeed,
-    gCurUser,
-    gStatus,
-    gFeed,
-    gSearch,
-  } = useStore();
+  const { gSetPage, gPage, gSetSearch, gStatus } = useStore();
   const { setLastIntersecting, loading } = useInfiniteScroll({
     handleIntersect:
-      oute === "search" && type === "tag"
+      route === "search" && type === "tag"
         ? () => gSetPage("search", "tag", gPage.search.tag + 1)
         : route === "profile" && type === "tag"
         ? () => gSetPage("profile", "tag", gPage.profile.tag + 1)

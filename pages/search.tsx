@@ -1,15 +1,20 @@
-import List from "../components/List";
+import List from "../components/views/List";
 import { SIZE } from "../custom";
 import { HiSearch } from "react-icons/hi";
 import { useStore } from "../apis/zustand";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import MotionFade from "../motions/motionFade";
-import GridPost from "../components/GridPost";
+import Box from "../components/Box";
+import Loader from "../components/Loader";
+import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 
 export default function Search() {
   const { gSearch, gPage, gSetPage, gSetSearch } = useStore();
-  const router = useRouter();
+  const { setLastIntersecting, loading } = useInfiniteScroll({
+    handleIntersect: () => gSetPage("search", "post", gPage.search.post + 1),
+    handleChange: () => gSetSearch("posts", gPage.search.post),
+    changeListener: gPage.search.post,
+  });
 
   return (
     <>
@@ -22,17 +27,19 @@ export default function Search() {
             </div>
           </div>
         </Link>
-        <GridPost
-          posts={gSearch.posts}
-          handleIntersect={() =>
-            gSetPage("search", "post", gPage.search.post + 1)
-          }
-          handleChange={() => gSetSearch("posts", gPage.search.post)}
-          changeListener={gPage.search.post}
-          option={{
-            numCols: 3,
-          }}
-        />
+        <div className="grid grid-cols-3 mt-4 mb-16 gap-y-2 gap-x-2">
+          {gSearch.posts.map((e, i) => (
+            <>
+              <div>
+                <Box post={{ ...e, id: e.id }} key={e.id}></Box>
+              </div>
+              {i === gSearch.posts.length - 1 && (
+                <div ref={setLastIntersecting}></div>
+              )}
+            </>
+          ))}
+        </div>
+        <div className="flex justify-center"> {loading && <Loader />}</div>
       </MotionFade>
     </>
   );

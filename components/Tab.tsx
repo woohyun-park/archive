@@ -3,7 +3,7 @@ import Box from "./Box";
 import { IPost, IUser, IDict, ITag, IRoute, getRoute } from "../custom";
 import MotionFloat from "../motions/motionFloat";
 import ProfileSmall from "./ProfileSmall";
-import List from "./List";
+import List from "./views/List";
 
 interface ITabProps {
   data: IDict<IPost[] | ITag[] | IUser[] | IDict<IPost[]>>;
