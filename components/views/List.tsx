@@ -17,7 +17,7 @@ import {
   getRoute,
 } from "../../custom";
 import { useInfiniteScroll } from "../../hooks/useInfiniteScroll";
-import MotionFloat from "../../motions/MotionFloat";
+import MotionFloat from "../../motions/motionFloat";
 import Box from "../Box";
 import Loader from "../Loader";
 import PostFeed from "../PostFeed";

@@ -5,8 +5,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { useStore } from "../apis/zustand";
 import { updateUser } from "../apis/firebase";
 import { useRouter } from "next/router";
-import MotionFade from "../motions/MotionFade";
-import MotionFloat from "../motions/MotionFloat";
+import MotionFade from "../motions/motionFade";
+import MotionFloat from "../motions/motionFloat";
 import { useOutsideClick } from "../hooks/useOutsideClick";
 
 interface ISearchState {

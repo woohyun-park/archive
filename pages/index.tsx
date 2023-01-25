@@ -1,4 +1,4 @@
-import MotionFade from "../motions/MotionFade";
+import MotionFade from "../motions/motionFade";
 import Feed from "./feed";
 
 export default function Index() {

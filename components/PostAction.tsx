@@ -8,7 +8,14 @@ import {
 } from "firebase/firestore";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import React, { RefObject, useEffect, useRef, useState } from "react";
+import React, {
+  Dispatch,
+  RefObject,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import {
   HiBookmark,
   HiOutlineBookmark,
@@ -20,30 +27,28 @@ import { db, getDataByRef } from "../apis/firebase";
 import { useStore } from "../apis/zustand";
 import { getRoute, IComment, ILike, IPost, IScrap, SIZE } from "../custom";
 import Button from "./atoms/Button";
-import Input from "./atoms/Input";
 import Textarea from "./atoms/Textarea";
 import Comment from "./Comment";
-import { motion } from "framer-motion";
 import MotionFloatList from "../motions/MotionFloatList";
 
 type IPostActionProps = {
   post: IPost;
+  setPost: Dispatch<SetStateAction<IPost>>;
+  ref: RefObject<HTMLDivElement>;
 };
 
-export default function PostAction({ post }: IPostActionProps) {
-  const [postState, setPostState] = useState(post);
+export default function PostAction({ post, setPost, ref }: IPostActionProps) {
   const { gCurUser } = useStore();
   const [status, setStatus] = useState({
-    isLiked: gCurUser.likes?.find((each) => each.pid === postState.id)
+    isLiked: gCurUser.likes?.find((each) => each.pid === post.id)
       ? true
       : false,
-    lid: gCurUser.likes?.find((each) => each.pid === postState.id)?.id,
-    isScraped: gCurUser.scraps?.find((each) => each.pid === postState.id)
+    lid: gCurUser.likes?.find((each) => each.pid === post.id)?.id,
+    isScraped: gCurUser.scraps?.find((each) => each.pid === post.id)
       ? true
       : false,
-    sid: gCurUser.scraps?.find((each) => each.pid === postState.id)?.id,
+    sid: gCurUser.scraps?.find((each) => each.pid === post.id)?.id,
   });
-  const [comment, setComment] = useState("");
   const commentRef: RefObject<HTMLTextAreaElement> = useRef(null);
   const router = useRouter();
   const route = getRoute(router);
@@ -51,14 +56,14 @@ export default function PostAction({ post }: IPostActionProps) {
   useEffect(() => {
     setStatus({
       ...status,
-      isLiked: gCurUser.likes?.find((each) => each.pid === postState.id)
+      isLiked: gCurUser.likes?.find((each) => each.pid === post.id)
         ? true
         : false,
-      lid: gCurUser.likes?.find((each) => each.pid === postState.id)?.id,
-      isScraped: gCurUser.scraps?.find((each) => each.pid === postState.id)
+      lid: gCurUser.likes?.find((each) => each.pid === post.id)?.id,
+      isScraped: gCurUser.scraps?.find((each) => each.pid === post.id)
         ? true
         : false,
-      sid: gCurUser.scraps?.find((each) => each.pid === postState.id)?.id,
+      sid: gCurUser.scraps?.find((each) => each.pid === post.id)?.id,
     });
   }, [gCurUser]);
 
@@ -68,7 +73,7 @@ export default function PostAction({ post }: IPostActionProps) {
     } else {
       const newLike: ILike = {
         uid: gCurUser.id,
-        pid: postState.id || "",
+        pid: post.id || "",
       };
       const ref = await addDoc(collection(db, "likes"), newLike);
       await updateDoc(ref, {
@@ -83,7 +88,7 @@ export default function PostAction({ post }: IPostActionProps) {
     } else {
       const newScrap: IScrap = {
         uid: gCurUser.id,
-        pid: postState.id || "",
+        pid: post.id || "",
         cont: "모든 스크랩",
       };
       const ref = await addDoc(collection(db, "scraps"), newScrap);
@@ -93,35 +98,12 @@ export default function PostAction({ post }: IPostActionProps) {
     }
   }
 
-  function handleChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
-    setComment(e.target.value);
-  }
-
-  async function handleSubmit(e: React.MouseEvent<HTMLButtonElement>) {
-    const tempComment: IComment = {
-      uid: gCurUser.id,
-      pid: postState.id || "",
-      txt: comment,
-      createdAt: serverTimestamp(),
-    };
-    const ref = await addDoc(collection(db, "comments"), tempComment);
-    await updateDoc(ref, {
-      id: ref.id,
-    });
-    const newComment = await getDataByRef<IComment>(ref);
-    setPostState({
-      ...postState,
-      comments: [newComment, ...(postState.comments as IComment[])],
-    });
-    setComment("");
-  }
-
   async function handleDelete(e: React.MouseEvent<HTMLDivElement>) {
     const id = e.currentTarget.id;
     const res = await deleteDoc(doc(db, "comments", id));
-    setPostState({
-      ...postState,
-      comments: [...(postState.comments as IComment[])].filter(
+    setPost({
+      ...post,
+      comments: [...(post.comments as IComment[])].filter(
         (comment) => comment.id !== id
       ),
     });
@@ -133,17 +115,17 @@ export default function PostAction({ post }: IPostActionProps) {
     } else if (route === "feed") {
       router.push(
         {
-          pathname: `/post/${postState.id}`,
+          pathname: `/post/${post.id}`,
           query: { isCommentFocused: true },
         },
-        `/post/${postState.id}`
+        `/post/${post.id}`
       );
     }
   }
   function displayLike() {
-    const len = postState.likes?.length;
+    const len = post.likes?.length;
     if (len === undefined) return 0;
-    if (postState.likes?.find((each) => each.uid === gCurUser.id)) {
+    if (post.likes?.find((each) => each.uid === gCurUser.id)) {
       if (status.isLiked) {
         return len;
       } else {
@@ -158,9 +140,9 @@ export default function PostAction({ post }: IPostActionProps) {
     }
   }
   function displayScraps() {
-    const len = postState.scraps?.length;
+    const len = post.scraps?.length;
     if (len === undefined) return 0;
-    if (postState.scraps?.find((each) => each.uid === gCurUser.id)) {
+    if (post.scraps?.find((each) => each.uid === gCurUser.id)) {
       if (status.isScraped) {
         return len;
       } else {
@@ -177,7 +159,7 @@ export default function PostAction({ post }: IPostActionProps) {
 
   return (
     <>
-      <div className="flex justify-between mt-1 mb-2">
+      <div className="flex justify-between mt-1 mb-2" id="postActionRef">
         <div className="flex">
           <span className="mr-2 hover:cursor-pointer">
             {status.isLiked ? (
@@ -207,15 +189,15 @@ export default function PostAction({ post }: IPostActionProps) {
         <div>
           {`좋아요 ${displayLike()}`}
           &nbsp;&nbsp;
-          {`댓글 ${postState.comments?.length}`}
+          {`댓글 ${post.comments?.length}`}
         </div>
         <div>{`스크랩 ${displayScraps()}`}</div>
       </div>
 
-      {route === "post" && (
+      {/* {route === "post" && (
         <>
           <MotionFloatList
-            data={(postState.comments && postState.comments) || []}
+            data={(post.comments && post.comments) || []}
             callBack={(comment: IComment) => (
               <Comment
                 comment={comment}
@@ -225,9 +207,9 @@ export default function PostAction({ post }: IPostActionProps) {
             )}
           />
         </>
-      )}
+      )} */}
 
-      {route === "post" && (
+      {/* {route === "post" && (
         <div className="flex items-center justify-between mb-24">
           <div className="profileImg-small">
             <Image src={gCurUser.photoURL} alt="" fill />
@@ -245,7 +227,7 @@ export default function PostAction({ post }: IPostActionProps) {
           />
           <Button onClick={handleSubmit}>게시</Button>
         </div>
-      )}
+      )} */}
     </>
   );
 }

@@ -1,5 +1,4 @@
-import { kMaxLength } from "buffer";
-import { AnimatePresence, motion, Variants } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import { useRouter } from "next/router";
 
 type IMotion = {

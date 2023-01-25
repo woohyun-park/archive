@@ -6,7 +6,7 @@ import { db } from "../apis/firebase";
 import TIME from "../apis/time";
 import { useStore } from "../apis/zustand";
 import { IComment, IUser } from "../custom";
-import MotionFloat from "../motions/MotionFloat";
+import MotionFloat from "../motions/motionFloat";
 
 type ICommentProps = {
   comment: IComment;

@@ -1,5 +1,5 @@
 import { useStore } from "../apis/zustand";
-import MotionFade from "../motions/MotionFade";
+import MotionFade from "../motions/motionFade";
 
 export default function Alarm() {
   return (

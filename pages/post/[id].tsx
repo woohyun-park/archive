@@ -5,6 +5,7 @@ import {
   db,
   deletePost,
   getData,
+  getDataByRef,
   getDatasByQuery,
   getPath,
 } from "../../apis/firebase";
@@ -14,9 +15,22 @@ import ProfileSmall from "../../components/ProfileSmall";
 import { IComment, ILike, IPost, IScrap, IUser, SIZE } from "../../custom";
 import { useStore } from "../../apis/zustand";
 import Image from "next/image";
-import { collection, orderBy, query, where } from "firebase/firestore";
-import MotionFade from "../../motions/MotionFade";
+import {
+  addDoc,
+  collection,
+  orderBy,
+  query,
+  serverTimestamp,
+  updateDoc,
+  where,
+} from "firebase/firestore";
+import MotionFade from "../../motions/motionFade";
 import Tag from "../../components/atoms/Tag";
+import React, { RefObject, useEffect, useRef, useState } from "react";
+import Textarea from "../../components/atoms/Textarea";
+import Button from "../../components/atoms/Button";
+import MotionFloatList from "../../motions/MotionFloatList";
+import Comment from "../../components/Comment";
 
 interface IPostProps {
   initPost: IPost;
@@ -26,12 +40,13 @@ interface IPostProps {
 export default function Post({ initPost, initUser }: IPostProps) {
   const { gCurUser } = useStore();
   const router = useRouter();
+  const [post, setPost] = useState<IPost>(initPost);
 
   function handleModify() {
     router.push(
       {
         pathname: "/add",
-        query: { post: JSON.stringify(initPost) },
+        query: { post: JSON.stringify(post) },
       },
       "/modify"
     );
@@ -39,14 +54,43 @@ export default function Post({ initPost, initUser }: IPostProps) {
 
   async function handleDelete() {
     if (confirm("정말 삭제하시겠습니까?")) {
-      await deletePost(initPost?.id as string);
+      await deletePost(post?.id as string);
       alert("삭제되었습니다");
     } else {
-      console.log(initPost);
+      console.log(post);
     }
     router.push("/");
   }
+  function handleChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
+    setComment(e.target.value);
+  }
+  async function handleSubmit(e: React.MouseEvent<HTMLButtonElement>) {
+    const tempComment: IComment = {
+      uid: gCurUser.id,
+      pid: post.id || "",
+      txt: comment,
+      createdAt: serverTimestamp(),
+    };
+    const ref = await addDoc(collection(db, "comments"), tempComment);
+    await updateDoc(ref, {
+      id: ref.id,
+    });
+    const newComment = await getDataByRef<IComment>(ref);
+    setPost({
+      ...post,
+      comments: [newComment, ...(post.comments as IComment[])],
+    });
+    setComment("");
+  }
 
+  const [comment, setComment] = useState("");
+  const commentInputRef: RefObject<HTMLTextAreaElement> = useRef(null);
+  const postActionRef: RefObject<HTMLDivElement> = useRef(null);
+  useEffect(() => {
+    document
+      .querySelector("#postActionRef")
+      ?.scrollIntoView({ behavior: "smooth" });
+  }, [post.comments]);
   return (
     <>
       <MotionFade>
@@ -67,7 +111,7 @@ export default function Post({ initPost, initUser }: IPostProps) {
                 </div>
               )}
             </div>
-            {initPost.imgs.length === 0 ? (
+            {post.imgs.length === 0 ? (
               <div
                 className="w-[calc(100%+32px)] -translate-x-4 pb-[50%]"
                 id="post_d1"
@@ -75,30 +119,57 @@ export default function Post({ initPost, initUser }: IPostProps) {
             ) : (
               <div className="relative pb-[100%] w-[calc(100%+32px)] -translate-x-4">
                 <Image
-                  src={initPost.imgs[0]}
+                  src={post.imgs[0]}
                   alt=""
                   className="object-cover"
                   fill
                 />
               </div>
             )}
-            <ProfileSmall post={initPost} user={initUser} type="post" />
-            <h1 className="mb-1 text-5xl">{initPost.title}</h1>
+            <ProfileSmall post={post} user={initUser} type="post" />
+            <h1 className="mb-1 text-5xl">{post.title}</h1>
             <div className="flex flex-wrap justify-end w-full mb-8">
-              {initPost.tags.map((tag, i) => (
+              {post.tags.map((tag, i) => (
                 <Tag key={i} style="margin: 0.125rem">
                   {tag}
                 </Tag>
               ))}
             </div>
-            <div className="mt-1 mb-4 whitespace-pre-wrap">{initPost.txt}</div>
-            <PostAction post={initPost} />
+            <div className="mt-1 mb-4 whitespace-pre-wrap">{post.txt}</div>
+            <PostAction post={post} setPost={setPost} ref={postActionRef} />
+            <MotionFloatList
+              data={(post.comments && post.comments) || []}
+              callBack={(comment: IComment) => (
+                <Comment
+                  comment={comment}
+                  onClick={handleDelete}
+                  key={comment.id}
+                />
+              )}
+            />
+            <div className="flex items-center justify-between mb-24">
+              <div className="profileImg-small">
+                <Image src={gCurUser.photoURL} alt="" fill />
+              </div>
+              <Textarea
+                placeholder={`${gCurUser.displayName}(으)로 댓글 달기...`}
+                value={comment}
+                onChange={handleChange}
+                ref={commentInputRef}
+                autoFocus={router.query.isCommentFocused ? true : false}
+                style={{
+                  marginLeft: "0.5rem",
+                  marginRight: "0.5rem ",
+                }}
+              />
+              <Button onClick={handleSubmit}>게시</Button>
+            </div>
           </>
         )}
 
         <style jsx>{`
           #post_d1 {
-            background-color: ${initPost.color};
+            background-color: ${post.color};
           }
         `}</style>
       </MotionFade>

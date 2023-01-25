@@ -7,7 +7,7 @@ import Back from "../components/Back";
 import Image from "next/image";
 import { updateUser } from "../apis/firebase";
 import { AnimatePresence, motion } from "framer-motion";
-import MotionFade from "../motions/MotionFade";
+import MotionFade from "../motions/motionFade";
 import BlockButton from "../components/atoms/BlockButton";
 
 interface IForm {

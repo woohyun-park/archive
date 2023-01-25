@@ -1,5 +1,4 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { useRouter } from "next/router";
 
 type IMotion = {
   children: React.ReactNode;
