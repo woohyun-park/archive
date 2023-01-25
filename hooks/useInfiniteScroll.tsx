@@ -18,11 +18,8 @@ export const useInfiniteScroll = ({
   const onIntersect: IntersectionObserverCallback = (entries, observer) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
-        console.log("intersect");
         setLoading(true);
-        console.log("loadingTrue");
         handleIntersect();
-        console.log("handleIntersect");
         observer.unobserve(entry.target);
       }
     });
@@ -30,9 +27,7 @@ export const useInfiniteScroll = ({
 
   async function change() {
     await handleChange();
-    console.log("handleChange");
     setLoading(false);
-    console.log("loadingFalse");
   }
 
   useEffect(() => {

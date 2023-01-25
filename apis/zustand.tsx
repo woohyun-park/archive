@@ -48,9 +48,6 @@ interface IState {
   gStatus: IStatus;
   gPage: IDict<IDict<number>>;
   gScroll: IDict<number>;
-  gUnsubscribeUser: Unsubscribe | null;
-  gUnsubscribeLikes: Unsubscribe | null;
-  gUnsubscribeScraps: Unsubscribe | null;
   gInit: (id: string) => Promise<void>;
   gSetFeed: (id: string, page: number) => Promise<void>;
   gSetSearch: (
@@ -166,12 +163,13 @@ async function loadListener(
 }> {
   const unsubscribeUser = onSnapshot(doc(db, "users", id), (doc) => {
     set((state: IState) => {
+      console.log("unsubscribeUser", state);
       return {
         ...state,
         gCurUser: {
           ...(doc.data() as IUser),
-          likes: get().gCurUser.likes,
-          scraps: get().gCurUser.scraps,
+          likes: state.gCurUser.likes,
+          scraps: state.gCurUser.scraps,
         },
       };
     });
@@ -184,9 +182,10 @@ async function loadListener(
         datas.push({ ...(doc.data() as ILike) });
       });
       set((state: IState) => {
+        console.log("unsubscribeLikes", state);
         return {
           ...state,
-          gCurUser: { ...get().gCurUser, likes: datas },
+          gCurUser: { ...state.gCurUser, likes: datas },
         };
       });
     }
@@ -199,9 +198,10 @@ async function loadListener(
         datas.push({ ...(doc.data() as IScrap) });
       });
       set((state: IState) => {
+        console.log("unsubscribeScraps", state);
         return {
           ...state,
-          gCurUser: { ...get().gCurUser, scraps: datas },
+          gCurUser: { ...state.gCurUser, scraps: datas },
         };
       });
     }
@@ -214,8 +214,8 @@ async function loadstate(get: () => IState, id: string) {
   const scraps = await getEach<IScrap>("scraps", id);
   const curUser = {
     ...(user.data() as IUser),
-    likes: likes,
-    scraps: scraps,
+    likes,
+    scraps,
   };
   const posts = await loadFeed(id, get().gPage.feed.post);
   const search = {
@@ -273,24 +273,19 @@ export const useStore = create<IState>()(
       },
     },
     gScroll: {},
-    gUnsubscribeUser: null,
-    gUnsubscribeLikes: null,
-    gUnsubscribeScraps: null,
     gInit: async (id: string) => {
-      const { unsubscribeUser, unsubscribeLikes, unsubscribeScraps } =
-        await loadListener(set, get, id);
+      console.log("gInit", id);
       const loadedState = await loadstate(get, id);
       set((state: IState) => {
         return {
           ...state,
           ...loadedState,
-          gUnsubscribeUser: unsubscribeUser,
-          gUnsubscribeLikes: unsubscribeLikes,
-          gUnsubscribeScraps: unsubscribeScraps,
         };
       });
+      await loadListener(set, get, id);
     },
     gSetPage: (route: IRoute, type: IType, page: number) => {
+      console.log("gSetPage", route, type, page);
       set((state: IState) => {
         state.gPage[route][type] = page;
         return {
@@ -299,6 +294,7 @@ export const useStore = create<IState>()(
       });
     },
     gSetScroll: (pathname: string, scroll: number) => {
+      console.log("gSetScroll", pathname, scroll);
       set((state: IState) => {
         state.gScroll[pathname] = scroll;
         return {
@@ -307,6 +303,7 @@ export const useStore = create<IState>()(
       });
     },
     gSetStatus: (status: IStatus) => {
+      console.log("gSetStatus", status);
       set((state: IState) => {
         return {
           ...state,
@@ -315,6 +312,7 @@ export const useStore = create<IState>()(
       });
     },
     gSetFeed: async (id: string, page: number) => {
+      console.log("gSetFeed", id, page);
       if (page === 1) return;
       const posts = await loadFeed(id, get().gPage.feed.post);
       set((state: IState) => {
@@ -327,6 +325,7 @@ export const useStore = create<IState>()(
       });
     },
     gSetSearch: async (type: ISearchType, page: number, keyword?: string) => {
+      console.log("gSetSearch", type, page, number, keyword);
       if (type === "posts" && page === 1) return;
       if (type === "posts") {
         const posts = await loadSearch<IPost>("sPost", page);

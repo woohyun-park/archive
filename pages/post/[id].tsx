@@ -42,7 +42,9 @@ interface IPostProps {
 export default function Post({ initPost, initUser }: IPostProps) {
   const { gCurUser } = useStore();
   const router = useRouter();
+  console.log("initPost!", initPost);
   const [post, setPost] = useState<IPost>(initPost);
+  console.log(post);
   const [submitListener, setSubmitListener] = useState<boolean | null>(null);
 
   function handleModify() {
@@ -157,7 +159,6 @@ export default function Post({ initPost, initUser }: IPostProps) {
             <div className="mt-1 mb-4 whitespace-pre-wrap">{post.txt}</div>
             <PostAction
               post={post}
-              setPost={setPost}
               onCommentClick={() => {
                 commentRef.current?.scrollIntoView({ behavior: "smooth" });
                 setTimeout(() => commentRef.current?.focus({}), 500);

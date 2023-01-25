@@ -5,7 +5,6 @@ import Box from "../components/Box";
 import LinkScroll from "../components/LinkScroll";
 import Loader from "../components/Loader";
 import PostAction from "../components/PostAction";
-import PostFeed from "../components/PostFeed";
 import ProfileSmall from "../components/ProfileSmall";
 import { IUser } from "../custom";
 import { useInfiniteScroll } from "../hooks/useInfiniteScroll";

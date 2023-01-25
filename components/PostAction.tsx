@@ -26,12 +26,11 @@ import { getRoute, IComment, ILike, IPost, IScrap, SIZE } from "../custom";
 
 type IPostActionProps = {
   post: IPost;
-  setPost?: Dispatch<SetStateAction<IPost>>;
   onCommentClick?: () => void;
 };
 
 export default forwardRef<HTMLDivElement, IPostActionProps>(function PostAction(
-  { post, setPost, onCommentClick },
+  { post, onCommentClick },
   ref
 ) {
   const { gCurUser } = useStore();
@@ -45,8 +44,8 @@ export default forwardRef<HTMLDivElement, IPostActionProps>(function PostAction(
       : false,
     sid: gCurUser.scraps?.find((each) => each.pid === post.id)?.id,
   });
+  console.log(gCurUser, post);
   const router = useRouter();
-  const route = getRoute(router);
 
   useEffect(() => {
     setStatus({
