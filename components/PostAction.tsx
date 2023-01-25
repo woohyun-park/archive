@@ -24,7 +24,7 @@ import Input from "./atoms/Input";
 import Textarea from "./atoms/Textarea";
 import Comment from "./Comment";
 import { motion } from "framer-motion";
-import MotionFloatList from "./motionFloatList";
+import MotionFloatList from "../motions/MotionFloatList";
 
 type IPostActionProps = {
   post: IPost;

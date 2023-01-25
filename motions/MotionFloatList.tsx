@@ -16,7 +16,7 @@ const itemVariants: Variants = {
 
 interface ITestProps {
   data: any[];
-  callBack: (value: never, index: number, array: never[]) => ReactNode;
+  callBack: (value: any, index: number, array: any[]) => ReactNode;
 }
 
 export default function MotionFloatList({ data, callBack }: ITestProps) {
@@ -40,7 +40,7 @@ export default function MotionFloatList({ data, callBack }: ITestProps) {
         style={{ pointerEvents: isOpen ? "auto" : "none" }}
       >
         {data.map(callBack).map((e, i) => (
-          <motion.div key={i} variants={itemVariants}>
+          <motion.div key={data[i].id} variants={itemVariants}>
             {e}
           </motion.div>
         ))}
