@@ -80,7 +80,7 @@ export default function List({ data, type, route, handleChange }: IListProps) {
                   <Link href={`tag/${e.name}`}>
                     <div className="flex items-center my-2 hover:cursor-pointer">
                       <div className="p-2 mr-2 rounded-full bg-gray-3 w-fit">
-                        <RiHashtag size={SIZE.iconSmall} />
+                        <RiHashtag size={SIZE.iconSm} />
                       </div>
                       <div className="my-1 text-base text-left">{`#${e.name}`}</div>
                     </div>

@@ -8,6 +8,7 @@ import Image from "next/image";
 import { updateUser } from "../apis/firebase";
 import MotionFade from "../motions/motionFade";
 import Btn from "../components/atoms/Btn";
+import IconBtn from "../components/atoms/IconBtn";
 
 interface IForm {
   file: File[];
@@ -89,7 +90,8 @@ export default function Setting() {
         {isSubmitting && (
           <div className="absolute top-0 left-0 z-10 w-full h-full bg-black/20"></div>
         )}
-        <Back
+        <IconBtn
+          type="back"
           onClick={() => {
             if (isDirty) {
               if (confirm(`프로필 수정을 취소하시겠습니까?`)) router.back();

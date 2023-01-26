@@ -21,7 +21,7 @@ export default function Modify({ post }: IModifyProps) {
   return (
     <>
       <div className="hover:cursor-pointer" onClick={handleModify}>
-        <HiPencil size={SIZE.iconSmall} />
+        <HiPencil size={SIZE.iconSm} />
       </div>
     </>
   );

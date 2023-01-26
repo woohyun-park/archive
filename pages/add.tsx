@@ -14,12 +14,13 @@ import { useStore } from "../apis/zustand";
 import { useRouter } from "next/router";
 import { HiArrowLeft, HiX } from "react-icons/hi";
 import { useForm } from "react-hook-form";
-import Color from "../components/Color";
+import Color from "../components/atoms/Color";
 import Image from "next/image";
 import ReactTextareaAutosize from "react-textarea-autosize";
 import Modal from "../components/Modal";
 import MotionFade from "../motions/motionFade";
-import Back from "../components/atoms/Back";
+import Btn from "../components/atoms/Btn";
+import IconBtn from "../components/atoms/IconBtn";
 
 interface IForm {
   file: File[];
@@ -293,7 +294,8 @@ export default function Add() {
   return (
     <MotionFade>
       <Modal show={isSubmitting} content={<></>} />
-      <Back
+      <IconBtn
+        type="back"
         onClick={() => {
           if (
             confirm(

@@ -23,7 +23,7 @@ export default function Search() {
         <Link href="/search-modal">
           <div className="flex">
             <div className="flex items-center w-full p-1 mb-1 rounded-md bg-gray-3 hover:cursor-pointer">
-              <HiSearch size={SIZE.iconSmall} />
+              <HiSearch size={SIZE.iconSm} />
             </div>
           </div>
         </Link>

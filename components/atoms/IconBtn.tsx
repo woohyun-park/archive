@@ -1,13 +1,17 @@
-import { HiHeart, HiOutlineHeart } from "react-icons/hi";
 import {
+  HiXMark,
+  HiHeart,
+  HiOutlineHeart,
   HiBookmark,
   HiOutlineBookmark,
   HiOutlineChatBubbleOvalLeft,
+  HiArrowLeft,
+  HiPencil,
 } from "react-icons/hi2";
-import { IType, SIZE } from "../../custom";
+import { SIZE } from "../../custom";
 
 interface IIconBtnProps {
-  type: IType;
+  type: "like" | "comment" | "scrap" | "back" | "delete" | "modify";
   fill?: boolean;
   size?: string;
   onClick?: () => void;
@@ -41,6 +45,28 @@ export default function IconBtn({
             <HiOutlineBookmark size={size} onClick={onClick} />
           )}
         </>
+      )}
+      {type === "back" && (
+        <>
+          <div className="flex justify-between bg-bg1">
+            <div className="my-4 hover:cursor-pointer" onClick={onClick}>
+              <HiArrowLeft size={size} />
+            </div>
+          </div>
+        </>
+      )}
+      {type === "delete" && (
+        <div className="hover:cursor-pointer" onClick={onClick}>
+          <HiXMark size={size} />
+        </div>
+      )}
+      {type === "modify" && (
+        <div
+          className="flex items-center hover:cursor-pointer"
+          onClick={onClick}
+        >
+          <HiPencil size={size} />
+        </div>
       )}
     </>
   );

@@ -20,7 +20,8 @@ export const DEFAULT: IDefault = {
 
 export const SIZE = {
   icon: "32px",
-  iconSmall: "24px",
+  iconSm: "24px",
+  iconXs: "16px",
 };
 
 export const COLOR: IDict<string> = {

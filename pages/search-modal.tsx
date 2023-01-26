@@ -123,7 +123,7 @@ export default function Search() {
         <div ref={recentRef}>
           <div className="flex mb-4">
             <div className="flex items-center w-full p-1 rounded-md bg-gray-3 hover:cursor-pointer">
-              <HiSearch size={SIZE.iconSmall} />
+              <HiSearch size={SIZE.iconSm} />
               <input
                 className="w-full m-1 bg-gray-3"
                 type="text"
@@ -135,7 +135,7 @@ export default function Search() {
               />
               <HiX
                 className="mx-1"
-                size={SIZE.iconSmall}
+                size={SIZE.iconSm}
                 onClick={() => {
                   setKeyword("");
                   searchRef.current?.focus();
@@ -185,7 +185,7 @@ export default function Search() {
                           id={String(i)}
                           onClick={handleDelete}
                         >
-                          <HiX size={SIZE.iconSmall} />
+                          <HiX size={SIZE.iconSm} />
                         </div>
                       </div>
                     </MotionFloat>

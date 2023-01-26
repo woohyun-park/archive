@@ -1,14 +1,14 @@
 import { arrayRemove, arrayUnion, doc, updateDoc } from "firebase/firestore";
 import Link from "next/link";
-import { db, updateUser } from "../apis/firebase";
+import { db, deletePost, updateUser } from "../apis/firebase";
 import { useStore } from "../apis/zustand";
-import { getRoute, IPost, IRoute, IType, IUser } from "../custom";
+import { getRoute, IPost, IRoute, IType, IUser, SIZE } from "../custom";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
-import Delete from "./Delete";
 import Modify from "./Modify";
 import TIME from "../apis/time";
+import IconBtn from "./atoms/IconBtn";
 
 type IProfileSmallProps = {
   user: IUser;
@@ -112,8 +112,32 @@ export default function ProfileSmall({ user, post }: IProfileSmallProps) {
             return (
               <>
                 <div className="flex">
-                  <Modify post={post as IPost} />
-                  <Delete id={post?.id || ""} />
+                  <IconBtn
+                    type="modify"
+                    size={SIZE.iconSm}
+                    onClick={() => {
+                      router.push(
+                        {
+                          pathname: "/add",
+                          query: { post: JSON.stringify(post) },
+                        },
+                        "/modify"
+                      );
+                    }}
+                  />
+                  <IconBtn
+                    type="delete"
+                    size={SIZE.icon}
+                    onClick={async () => {
+                      if (confirm("정말 삭제하시겠습니까?")) {
+                        await deletePost(post?.id || "");
+                        alert("삭제되었습니다");
+                      } else {
+                        console.log(post?.id);
+                      }
+                      router.push("/");
+                    }}
+                  />
                 </div>
               </>
             );

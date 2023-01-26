@@ -108,10 +108,16 @@ export default function Layout({ children }: ILayoutProps) {
         <>loading...</>
       ) : login.isLoggedIn ? (
         <>
-          <div className="m-4 mb-16">{children}</div>
-          {!(router.pathname === "/setting" || router.pathname === "/add") && (
-            <Nav />
+          {router.pathname.split("/")[1] === "post" ? (
+            <div className="m-4 mb-4">{children}</div>
+          ) : (
+            <div className="m-4 mb-16">{children}</div>
           )}
+          {!(
+            router.pathname === "/setting" ||
+            router.pathname === "/add" ||
+            router.pathname.split("/")[1] === "post"
+          ) && <Nav />}
         </>
       ) : (
         <div className="flex flex-col items-center">

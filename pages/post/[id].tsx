@@ -31,6 +31,7 @@ import Textarea from "../../components/atoms/Textarea";
 import Btn from "../../components/atoms/Btn";
 import MotionFloatList from "../../motions/MotionFloatList";
 import Comment from "../../components/Comment";
+import IconBtn from "../../components/atoms/IconBtn";
 
 interface IPostProps {
   initPost: IPost;
@@ -116,7 +117,7 @@ export default function Post({ initPost, initUser }: IPostProps) {
         ) : (
           <>
             <div className="flex items-baseline justify-between">
-              <Back onClick={router.back} />
+              <IconBtn type="back" onClick={router.back} />
               {gCurUser.id === initUser.id && (
                 <div className="flex items-center pt-6 mt-12">
                   <div className="hover:cursor-pointer" onClick={handleModify}>
@@ -167,7 +168,7 @@ export default function Post({ initPost, initUser }: IPostProps) {
               ref={actionRef}
             />
             <MotionFloatList
-              data={(post.comments && post.comments) || []}
+              data={(post.comments && post.comments.slice(0, 10)) || []}
               callBack={(comment: IComment) => (
                 <Comment
                   comment={comment}
@@ -176,7 +177,12 @@ export default function Post({ initPost, initUser }: IPostProps) {
                 />
               )}
             />
-            <div className="flex items-center justify-between mb-24">
+            {post.comments && post.comments?.length > 10 && (
+              <div className="mb-2 text-xs text-center hover:cursor-pointer">
+                {"모두보기"}
+              </div>
+            )}
+            <div className="sticky bottom-0 flex items-center justify-between w-full py-4 bg-white">
               <div className="profileImg-small">
                 <Image src={gCurUser.photoURL} alt="" fill />
               </div>

@@ -21,7 +21,7 @@ export default function Delete({ id }: IDeleteProps) {
   return (
     <>
       <div className="hover:cursor-pointer" onClick={handleDelete}>
-        <HiX size={SIZE.iconSmall} />
+        <HiX size={SIZE.iconSm} />
       </div>
     </>
   );
