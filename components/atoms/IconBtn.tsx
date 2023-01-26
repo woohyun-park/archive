@@ -14,6 +14,7 @@ interface IIconBtnProps {
   type: "like" | "comment" | "scrap" | "back" | "delete" | "modify";
   fill?: boolean;
   size?: string;
+  style?: string;
   onClick?: () => void;
 }
 
@@ -21,53 +22,48 @@ export default function IconBtn({
   type,
   fill = false,
   size = SIZE.icon,
+  style,
   onClick = () => {},
 }: IIconBtnProps) {
   return (
     <>
-      {type === "like" && (
-        <>
-          {fill ? (
-            <HiHeart size={size} onClick={onClick} />
-          ) : (
-            <HiOutlineHeart size={size} onClick={onClick} />
-          )}
-        </>
-      )}
-      {type === "comment" && (
-        <HiOutlineChatBubbleOvalLeft size={size} onClick={onClick} />
-      )}
-      {type === "scrap" && (
-        <>
-          {fill ? (
-            <HiBookmark size={size} onClick={onClick} />
-          ) : (
-            <HiOutlineBookmark size={size} onClick={onClick} />
-          )}
-        </>
-      )}
-      {type === "back" && (
-        <>
-          <div className="flex justify-between bg-bg1">
-            <div className="my-4 hover:cursor-pointer" onClick={onClick}>
-              <HiArrowLeft size={size} />
-            </div>
-          </div>
-        </>
-      )}
-      {type === "delete" && (
-        <div className="hover:cursor-pointer" onClick={onClick}>
-          <HiXMark size={size} />
-        </div>
-      )}
-      {type === "modify" && (
-        <div
-          className="flex items-center hover:cursor-pointer"
-          onClick={onClick}
-        >
-          <HiPencil size={size} />
-        </div>
-      )}
+      <div
+        id="iconBtn_b1"
+        className="flex items-center justify-center transition duration-150 ease-in-out hover:cursor-pointer"
+      >
+        {type === "like" && (
+          <>
+            {fill ? (
+              <HiHeart size={size} onClick={onClick} />
+            ) : (
+              <HiOutlineHeart size={size} onClick={onClick} />
+            )}
+          </>
+        )}
+        {type === "comment" && (
+          <HiOutlineChatBubbleOvalLeft size={size} onClick={onClick} />
+        )}
+        {type === "scrap" && (
+          <>
+            {fill ? (
+              <HiBookmark size={size} onClick={onClick} />
+            ) : (
+              <HiOutlineBookmark size={size} onClick={onClick} />
+            )}
+          </>
+        )}
+        {type === "back" && <HiArrowLeft size={size} onClick={onClick} />}
+        {type === "delete" && <HiXMark size={size} onClick={onClick} />}
+        {type === "modify" && <HiPencil size={size} onClick={onClick} />}
+      </div>
+
+      <style jsx>
+        {`
+          #iconBtn_b1 {
+            ${style}
+          }
+        `}
+      </style>
     </>
   );
 }

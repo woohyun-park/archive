@@ -6,7 +6,6 @@ import { getRoute, IPost, IRoute, IType, IUser, SIZE } from "../custom";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
-import Modify from "./Modify";
 import TIME from "../apis/time";
 import IconBtn from "./atoms/IconBtn";
 

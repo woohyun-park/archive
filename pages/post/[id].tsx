@@ -117,15 +117,19 @@ export default function Post({ initPost, initUser }: IPostProps) {
         ) : (
           <>
             <div className="flex items-baseline justify-between">
-              <IconBtn type="back" onClick={router.back} />
+              <IconBtn
+                type="back"
+                style="margin: 16px 0;"
+                onClick={router.back}
+              />
               {gCurUser.id === initUser.id && (
                 <div className="flex items-center pt-6 mt-12">
-                  <div className="hover:cursor-pointer" onClick={handleModify}>
-                    <HiPencil size={SIZE.icon} />
-                  </div>
-                  <div className="hover:cursor-pointer" onClick={handleDelete}>
-                    <HiX size={SIZE.icon} />
-                  </div>
+                  <IconBtn
+                    type="modify"
+                    onClick={handleModify}
+                    size={SIZE.iconSm}
+                  />
+                  <IconBtn type="delete" onClick={handleDelete} />
                 </div>
               )}
             </div>
