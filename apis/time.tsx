@@ -1,6 +1,5 @@
 import dayjs from "dayjs";
 import { FieldValue } from "firebase/firestore";
-import { IPost } from "../custom";
 
 const TIME = {
   displayCreatedAt: (createdAt: FieldValue | Date | undefined | null) => {

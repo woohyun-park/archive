@@ -71,42 +71,6 @@ export default function Tab({ data, tab, route }: ITabProps) {
                     route={route}
                   />
                 )}
-                {/* <div className="grid grid-cols-3 gap-x-2 gap-y-2">
-                  {selected[key] !== "" && (
-                    <div className="mb-2 hover:cursor-pointer">
-                      <HiArrowLeft
-                        size={SIZE.icon}
-                        onClick={() => setSelected({ ...selected, [key]: "" })}
-                      />
-                    </div>
-                  )}
-                  {(() => {
-                    const datas = data[key] as IDict<any>;
-                    if (selected[key] === "") {
-                      const result = [];
-                      for (const data in datas) {
-                        result.push(
-                          <Cont
-                            tag={data}
-                            posts={datas[data]}
-                            onClick={() =>
-                              setSelected({ ...selected, [key]: data })
-                            }
-                          />
-                        );
-                      }
-                      return result;
-                    } else {
-                      return (
-                        <>
-                          {datas[selected[key]].map((e: IPost) => (
-                            <Box post={e} style="profile" key={e.id} />
-                          ))}
-                        </>
-                      );
-                    }
-                  })()}
-                </div> */}
               </>
             );
           } else if (type === "user") {

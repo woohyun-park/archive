@@ -12,8 +12,6 @@ import Nav from "./Nav";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { COLOR, DEFAULT, IUser, SIZE } from "../custom";
 import { RiAppleFill, RiFacebookFill, RiGoogleFill } from "react-icons/ri";
-import { IconBase } from "react-icons";
-import BlockButton from "./atoms/BlockButton";
 
 interface ILayoutProps {
   children: React.ReactNode;

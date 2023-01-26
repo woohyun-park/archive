@@ -114,16 +114,9 @@ export default function Profile({
         <div className="h-full py-4 break-all min-h-[96px]">{initUser.txt}</div>
 
         {initUser.id === gCurUser.id ? (
-          <>
-            {/* <button
-              onClick={() => signOut(auth)}
-              className="w-full my-4 button-black"
-            >
-            </button> */}
-            <Btn onClick={() => signOut(auth)} style="width: 100%;">
-              로그아웃
-            </Btn>
-          </>
+          <Btn onClick={() => signOut(auth)} style="width: 100%;">
+            로그아웃
+          </Btn>
         ) : (
           <>
             {(() => {

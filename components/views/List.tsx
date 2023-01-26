@@ -1,31 +1,14 @@
-import {
-  JSXElementConstructor,
-  ReactElement,
-  ReactFragment,
-  useEffect,
-  useState,
-} from "react";
+import { useState } from "react";
 import { RiHashtag } from "react-icons/ri";
 import { POST_PER_PAGE, useStore } from "../../apis/zustand";
-import {
-  IRoute,
-  IPost,
-  IType,
-  IDict,
-  ITag,
-  SIZE,
-  getRoute,
-} from "../../custom";
+import { IRoute, IPost, IType, IDict, ITag, SIZE } from "../../custom";
 import { useInfiniteScroll } from "../../hooks/useInfiniteScroll";
 import MotionFloat from "../../motions/motionFloat";
 import Box from "../Box";
 import Loader from "../Loader";
-import PostFeed from "../PostFeed";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import Cont from "../Cont";
-import { HiArrowLeft, HiX } from "react-icons/hi";
-import LinkScroll from "../LinkScroll";
+import { HiArrowLeft } from "react-icons/hi";
 
 interface IListProps {
   data: IPost[] | ITag[] | IDict<IPost[]>;
@@ -37,16 +20,7 @@ interface IListProps {
 }
 
 export default function List({ data, type, route, handleChange }: IListProps) {
-  const {
-    gSetPage,
-    gPage,
-    gSetSearch,
-    gSetFeed,
-    gCurUser,
-    gStatus,
-    gFeed,
-    gSearch,
-  } = useStore();
+  const { gSetPage, gPage, gSetSearch, gStatus } = useStore();
   const { setLastIntersecting, loading } = useInfiniteScroll({
     handleIntersect:
       route === "search" && type === "tag"

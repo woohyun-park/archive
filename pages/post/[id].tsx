@@ -8,7 +8,6 @@ import {
   getDatasByQuery,
   getPath,
 } from "../../apis/firebase";
-import Back from "../../components/atoms/Back";
 import Action from "../../components/Action";
 import ProfileSmall from "../../components/ProfileSmall";
 import { IComment, ILike, IPost, IScrap, IUser, SIZE } from "../../custom";

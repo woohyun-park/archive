@@ -7,7 +7,7 @@ import {
 } from "firebase/firestore";
 import React, { useEffect, useState, forwardRef } from "react";
 import { db } from "../apis/firebase";
-import { IPost, IUser, SIZE, IDict } from "../custom";
+import { IPost, IUser, IDict } from "../custom";
 import IconBtn from "./atoms/IconBtn";
 
 interface IActionProps {
