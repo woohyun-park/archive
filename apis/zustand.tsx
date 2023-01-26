@@ -62,6 +62,7 @@ interface IState {
 interface IStatus {
   isModalOpen: boolean;
   keyword: string;
+  orchestra: boolean[];
 }
 
 type ISearchType = "posts" | "tags" | "users";
@@ -256,6 +257,7 @@ export const useStore = create<IState>()(
     gStatus: {
       isModalOpen: false,
       keyword: "",
+      orchestra: [],
     },
     gPage: {
       feed: {
