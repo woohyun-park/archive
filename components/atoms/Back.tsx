@@ -3,26 +3,19 @@ import { HiArrowLeft } from "react-icons/hi";
 import { SIZE } from "../../custom";
 
 interface IBackProps {
-  message?: string;
+  size?: string;
+  onClick?: () => void;
 }
 
-export default function Back({ message }: IBackProps) {
-  const router = useRouter();
-
+export default function Back({
+  size = SIZE.icon,
+  onClick = () => {},
+}: IBackProps) {
   return (
     <>
       <div className="flex justify-between bg-bg1">
-        <div
-          className="my-4 hover:cursor-pointer"
-          onClick={() => {
-            if (message) {
-              if (confirm(message)) router.back();
-              return;
-            }
-            router.back();
-          }}
-        >
-          <HiArrowLeft size={SIZE.icon} />
+        <div className="my-4 hover:cursor-pointer" onClick={onClick}>
+          <HiArrowLeft size={size} />
         </div>
       </div>
     </>

@@ -9,7 +9,7 @@ import {
   getDatasByQuery,
   getPath,
 } from "../../apis/firebase";
-import Back from "../../components/Back";
+import Back from "../../components/atoms/Back";
 import Action from "../../components/Action";
 import ProfileSmall from "../../components/ProfileSmall";
 import { IComment, ILike, IPost, IScrap, IUser, SIZE } from "../../custom";
@@ -118,7 +118,7 @@ export default function Post({ initPost, initUser }: IPostProps) {
         ) : (
           <>
             <div className="flex items-baseline justify-between">
-              <Back />
+              <Back onClick={router.back} />
               {gCurUser.id === initUser.id && (
                 <div className="flex items-center pt-6 mt-12">
                   <div className="hover:cursor-pointer" onClick={handleModify}>

@@ -28,7 +28,7 @@ export default forwardRef<HTMLDivElement, IActionProps>(function Action(
     setStatus({
       ...calcLikeAndScrapStatus(),
     });
-  }, [curUser]);
+  }, [curUser.likes, curUser.scraps]);
 
   function calcLikeAndScrapStatus() {
     return {

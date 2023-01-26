@@ -17,9 +17,9 @@ import { useForm } from "react-hook-form";
 import Color from "../components/Color";
 import Image from "next/image";
 import ReactTextareaAutosize from "react-textarea-autosize";
-import Back from "../components/Back";
 import Modal from "../components/Modal";
 import MotionFade from "../motions/motionFade";
+import Back from "../components/atoms/Back";
 
 interface IForm {
   file: File[];
@@ -294,7 +294,14 @@ export default function Add() {
     <MotionFade>
       <Modal show={isSubmitting} content={<></>} />
       <Back
-        message={`아카이브 ${prevPost ? "수정" : "작성"}을 취소하시겠습니까?`}
+        onClick={() => {
+          if (
+            confirm(
+              `아카이브 ${prevPost ? "수정" : "작성"}을 취소하시겠습니까?`
+            )
+          )
+            router.back();
+        }}
       />
       <form
         className="flex flex-col mt-4"
