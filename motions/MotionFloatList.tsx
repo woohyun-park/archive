@@ -5,21 +5,28 @@ const itemVariants: Variants = {
   animate: {
     transform: `translateY(0px)`,
     opacity: 1,
-    transition: { duration: 0.33 },
+    transition: { duration: 1 },
   },
   exit: {
     transform: `translateY(16px)`,
     opacity: 0,
-    transition: { duration: 0.33 },
+    transition: { duration: 1 },
   },
 };
 
 interface ITestProps {
   data: any[];
+  staggerChildren?: number;
+  delayChildren?: number;
   callBack: (value: any, index: number, array: any[]) => ReactNode;
 }
 
-export default function MotionFloatList({ data, callBack }: ITestProps) {
+export default function MotionFloatList({
+  data,
+  delayChildren = 0.3,
+  staggerChildren = 0.05,
+  callBack,
+}: ITestProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
@@ -31,8 +38,8 @@ export default function MotionFloatList({ data, callBack }: ITestProps) {
         variants={{
           animate: {
             transition: {
-              delayChildren: 0.3,
-              staggerChildren: 0.05,
+              delayChildren,
+              staggerChildren,
             },
           },
           exit: {},

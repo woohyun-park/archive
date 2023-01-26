@@ -13,17 +13,17 @@ export default function MotionFloat({ children }: IMotion) {
     initial: {
       transform: `translateY(16px)`,
       opacity: 0,
-      transition: { duration: 0.33 },
+      transition: { duration: 1 },
     },
     animate: {
       transform: `translateY(0px)`,
       opacity: 1,
-      transition: { duration: 0.33 },
+      transition: { duration: 1 },
     },
     exit: {
       transform: `translateY(16px)`,
       opacity: 0,
-      transition: { duration: 0.33 },
+      transition: { duration: 1 },
     },
   };
   return (
