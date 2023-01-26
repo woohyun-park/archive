@@ -6,9 +6,8 @@ import { useForm } from "react-hook-form";
 import Back from "../components/atoms/Back";
 import Image from "next/image";
 import { updateUser } from "../apis/firebase";
-import { AnimatePresence, motion } from "framer-motion";
 import MotionFade from "../motions/motionFade";
-import BlockButton from "../components/atoms/BlockButton";
+import Btn from "../components/atoms/Btn";
 
 interface IForm {
   file: File[];
@@ -148,7 +147,7 @@ export default function Setting() {
             maxLength={150}
             className="h-16 resize-none inputForm_input"
           />
-          <BlockButton type="submit">변경</BlockButton>
+          <Btn type="submit">변경</Btn>
         </form>
       </MotionFade>
     </>

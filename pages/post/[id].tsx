@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { HiPencil, HiX } from "react-icons/hi";
 import {
@@ -27,10 +26,9 @@ import {
   where,
 } from "firebase/firestore";
 import MotionFade from "../../motions/motionFade";
-import Tag from "../../components/atoms/Tag";
 import React, { RefObject, useEffect, useRef, useState } from "react";
 import Textarea from "../../components/atoms/Textarea";
-import Button from "../../components/atoms/Button";
+import Btn from "../../components/atoms/Btn";
 import MotionFloatList from "../../motions/MotionFloatList";
 import Comment from "../../components/Comment";
 
@@ -88,7 +86,7 @@ export default function Post({ initPost, initUser }: IPostProps) {
   }
   async function handleDeleteComment(e: React.MouseEvent<HTMLDivElement>) {
     const id = e.currentTarget.id;
-    const res = await deleteDoc(doc(db, "comments", id));
+    await deleteDoc(doc(db, "comments", id));
     setPost({
       ...post,
       comments: [...(post.comments as IComment[])].filter(
@@ -146,12 +144,16 @@ export default function Post({ initPost, initUser }: IPostProps) {
               </div>
             )}
             <ProfileSmall post={post} user={initUser} type="post" />
-            <h1 className="mb-1 text-5xl">{post.title}</h1>
+            <h1 className="mb-4 text-5xl">{post.title}</h1>
             <div className="flex flex-wrap justify-end w-full mb-8">
               {post.tags.map((tag, i) => (
-                <Tag key={i} style="margin: 0.125rem">
-                  {tag}
-                </Tag>
+                <Btn
+                  key={i}
+                  onClick={() => router.push(`/tag/${tag}`)}
+                  style="margin: 0.125rem; padding-right: 0.5rem; padding-left: 0.5rem"
+                >
+                  {`#${tag}`}
+                </Btn>
               ))}
             </div>
             <div className="mt-1 mb-4 whitespace-pre-wrap">{post.txt}</div>
@@ -189,7 +191,7 @@ export default function Post({ initPost, initUser }: IPostProps) {
                   marginRight: "0.5rem ",
                 }}
               />
-              <Button onClick={handleSubmit}>게시</Button>
+              <Btn onClick={handleSubmit}>게시</Btn>
             </div>
           </>
         )}

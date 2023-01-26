@@ -16,7 +16,7 @@ import Link from "next/link";
 import { useState } from "react";
 import Image from "next/image";
 import MotionFade from "../../motions/motionFade";
-import BlockButton from "../../components/atoms/BlockButton";
+import Btn from "../../components/atoms/Btn";
 
 interface IProfileProps {
   initUser: IUser;
@@ -120,7 +120,9 @@ export default function Profile({
               className="w-full my-4 button-black"
             >
             </button> */}
-            <BlockButton onClick={() => signOut(auth)}>로그아웃</BlockButton>
+            <Btn onClick={() => signOut(auth)} style="width: 100%;">
+              로그아웃
+            </Btn>
           </>
         ) : (
           <>
