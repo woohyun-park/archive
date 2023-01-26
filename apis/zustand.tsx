@@ -325,7 +325,6 @@ export const useStore = create<IState>()(
       });
     },
     gSetSearch: async (type: ISearchType, page: number, keyword?: string) => {
-      console.log("gSetSearch", type, page, number, keyword);
       if (type === "posts" && page === 1) return;
       if (type === "posts") {
         const posts = await loadSearch<IPost>("sPost", page);

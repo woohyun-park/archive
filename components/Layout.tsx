@@ -30,8 +30,7 @@ interface ILogin {
 export default function Layout({ children }: ILayoutProps) {
   const provider = new GoogleAuthProvider();
   const router = useRouter();
-  const { gInit, gUnsubscribeLikes, gUnsubscribeScraps, gUnsubscribeUser } =
-    useStore();
+  const { gInit } = useStore();
   const [login, setLogin] = useState<ILogin>({
     email: "",
     password: "",
@@ -46,9 +45,6 @@ export default function Layout({ children }: ILayoutProps) {
         await gInit(authState.uid);
         setLogin({ ...login, isLoggedIn: true });
       } else {
-        if (gUnsubscribeLikes) gUnsubscribeLikes();
-        if (gUnsubscribeScraps) gUnsubscribeScraps();
-        if (gUnsubscribeUser) gUnsubscribeUser();
         setLogin({ ...login, isLoggedIn: false });
       }
     });

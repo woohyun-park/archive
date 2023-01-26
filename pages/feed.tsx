@@ -4,7 +4,7 @@ import { useStore } from "../apis/zustand";
 import Box from "../components/Box";
 import LinkScroll from "../components/LinkScroll";
 import Loader from "../components/Loader";
-import PostAction from "../components/PostAction";
+import Action from "../components/Action";
 import ProfileSmall from "../components/ProfileSmall";
 import { IUser } from "../custom";
 import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
@@ -31,8 +31,9 @@ export default function Feed() {
           <LinkScroll key={i}>
             <ProfileSmall post={e} user={e.author as IUser} type="post" />
             <Box post={e} />
-            <PostAction
+            <Action
               post={e}
+              curUser={gCurUser}
               onCommentClick={() =>
                 router.push(
                   {
