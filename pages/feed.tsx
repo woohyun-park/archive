@@ -1,26 +1,20 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { useStore } from "../apis/zustand";
+import { POST_PER_PAGE, useStore } from "../apis/zustand";
 import Box from "../components/Box";
 import LinkScroll from "../components/LinkScroll";
 import Loader from "../components/Loader";
 import Action from "../components/Action";
 import ProfileSmall from "../components/ProfileSmall";
-import { IPost, IUser } from "../custom";
+import { IPost, IUser, SIZE } from "../custom";
 import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 import MotionFloat from "../motions/motionFloat";
+import { IoRefreshSharp } from "react-icons/io5";
+import IconBtn from "../components/atoms/IconBtn";
 
 export default function Feed() {
-  const {
-    gFeed,
-    gScroll,
-    gSetPage,
-    gCurUser,
-    gPage,
-    gSetFeed,
-    gStatus,
-    gSetStatus,
-  } = useStore();
+  const { gFeed, gScroll, gSetPage, gCurUser, gSetFeed, gStatus, gSetStatus } =
+    useStore();
   const router = useRouter();
 
   useEffect(() => {
@@ -30,9 +24,9 @@ export default function Feed() {
   }, []);
 
   const { setLastIntersecting, loading } = useInfiniteScroll({
-    handleIntersect: () => gSetPage("feed", "post", gPage.feed.post + 1),
-    handleChange: () => gSetFeed(gCurUser.id, gPage.feed.post),
-    changeListener: gPage.feed.post,
+    handleIntersect: () => gSetFeed(gCurUser.id, false),
+    handleChange: () => {},
+    changeListener: null,
   });
 
   useEffect(() => {
@@ -66,12 +60,18 @@ export default function Feed() {
   return (
     <>
       <div>
-        <h1 className="title-page">피드</h1>
+        <div className="flex items-baseline justify-between">
+          <h1 className="title-page">피드</h1>
+          <IconBtn
+            type="refresh"
+            onClick={() => {
+              gSetFeed(gCurUser.id, true);
+            }}
+          />
+        </div>
         {gFeed.posts.map((e, i) =>
           i >= gStatus.orchestra ? (
-            <MotionFloat duration={1} key={i}>
-              {eachPost(e, i)}
-            </MotionFloat>
+            <MotionFloat key={i}>{eachPost(e, i)}</MotionFloat>
           ) : (
             <>{eachPost(e, i)}</>
           )

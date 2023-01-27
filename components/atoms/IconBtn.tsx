@@ -8,10 +8,11 @@ import {
   HiArrowLeft,
   HiPencil,
 } from "react-icons/hi2";
+import { IoRefreshSharp } from "react-icons/io5";
 import { SIZE } from "../../custom";
 
 interface IIconBtnProps {
-  type: "like" | "comment" | "scrap" | "back" | "delete" | "modify";
+  type: "like" | "comment" | "scrap" | "back" | "delete" | "modify" | "refresh";
   fill?: boolean;
   size?: string;
   style?: string;
@@ -55,6 +56,7 @@ export default function IconBtn({
         {type === "back" && <HiArrowLeft size={size} onClick={onClick} />}
         {type === "delete" && <HiXMark size={size} onClick={onClick} />}
         {type === "modify" && <HiPencil size={size} onClick={onClick} />}
+        {type === "refresh" && <IoRefreshSharp size={size} onClick={onClick} />}
       </div>
 
       <style jsx>
