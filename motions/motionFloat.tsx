@@ -1,13 +1,18 @@
 import { motion, Variants } from "framer-motion";
 import { useRouter } from "next/router";
+import { useRef } from "react";
 
 type IMotion = {
   children: React.ReactNode;
-  duration: number;
+  duration?: number;
+  amount?: number;
 };
 
-export default function MotionFloat({ children, duration = 0.33 }: IMotion) {
-  const router = useRouter();
+export default function MotionFloat({
+  children,
+  duration = 0.33,
+  amount = 0.1,
+}: IMotion) {
   const variants: Variants = {
     initial: {
       transform: `translateY(16px)`,
@@ -20,16 +25,19 @@ export default function MotionFloat({ children, duration = 0.33 }: IMotion) {
       transition: { duration },
     },
   };
+  const scrollRef = useRef(null);
   return (
     <>
-      <motion.div
-        initial="initial"
-        whileInView="whileInView"
-        viewport={{ once: true }}
-        variants={variants}
-      >
-        {children}
-      </motion.div>
+      <div ref={scrollRef}>
+        <motion.div
+          initial="initial"
+          whileInView="whileInView"
+          viewport={{ once: true, amount }}
+          variants={variants}
+        >
+          {children}
+        </motion.div>
+      </div>
     </>
   );
 }
