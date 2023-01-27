@@ -71,69 +71,30 @@ export default function Feed() {
     <>
       <div>
         <h1 className="title-page">피드</h1>
-        {(() => {
-          return orchestra.map((e, i) => {
-            return gStatus.orchestra > i ? (
-              e.arr.map((e, i) => (
-                <LinkScroll key={i}>
-                  <ProfileSmall post={e} user={e.author as IUser} type="post" />
-                  <Box post={e} />
-                  <Action
-                    post={e}
-                    curUser={gCurUser}
-                    onCommentClick={() =>
-                      router.push(
-                        {
-                          pathname: `/post/${e.id}`,
-                          query: { isCommentFocused: true },
-                        },
-                        `/post/${e.id}`
-                      )
-                    }
-                  />
-                  {i === gFeed.posts.length - 1 && (
-                    <div ref={setLastIntersecting}></div>
-                  )}
-                </LinkScroll>
-              ))
-            ) : (
-              <MotionFloatList
-                key={i}
-                data={e.arr}
-                callBack={(e, i) => (
-                  <MotionFloat>
-                    <LinkScroll key={i}>
-                      <ProfileSmall
-                        post={e}
-                        user={e.author as IUser}
-                        type="post"
-                      />
-                      <Box post={e} />
-                      <Action
-                        post={e}
-                        curUser={gCurUser}
-                        onCommentClick={() =>
-                          router.push(
-                            {
-                              pathname: `/post/${e.id}`,
-                              query: { isCommentFocused: true },
-                            },
-                            `/post/${e.id}`
-                          )
-                        }
-                      />
-                      {i === gFeed.posts.length - 1 && (
-                        <div ref={setLastIntersecting}></div>
-                      )}
-                    </LinkScroll>
-                  </MotionFloat>
-                )}
-                delayChildren={1}
-                staggerChildren={1}
+        {gFeed.posts.map((e, i) => (
+          <MotionFloat key={i}>
+            <LinkScroll key={i}>
+              <ProfileSmall post={e} user={e.author as IUser} type="post" />
+              <Box post={e} />
+              <Action
+                post={e}
+                curUser={gCurUser}
+                onCommentClick={() =>
+                  router.push(
+                    {
+                      pathname: `/post/${e.id}`,
+                      query: { isCommentFocused: true },
+                    },
+                    `/post/${e.id}`
+                  )
+                }
               />
-            );
-          });
-        })()}
+              {i === gFeed.posts.length - 1 && (
+                <div ref={setLastIntersecting}></div>
+              )}
+            </LinkScroll>
+          </MotionFloat>
+        ))}
         <div className="flex justify-center"> {loading && <Loader />}</div>
         <div className="mb-24"></div>
       </div>
