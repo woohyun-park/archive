@@ -1,5 +1,4 @@
 import { useRouter } from "next/router";
-import { HiPencil, HiX } from "react-icons/hi";
 import {
   db,
   deletePost,
@@ -28,9 +27,9 @@ import MotionFade from "../../motions/motionFade";
 import React, { RefObject, useEffect, useRef, useState } from "react";
 import Textarea from "../../components/atoms/Textarea";
 import Btn from "../../components/atoms/Btn";
-import MotionFloatList from "../../motions/MotionFloatList";
 import Comment from "../../components/Comment";
 import IconBtn from "../../components/atoms/IconBtn";
+import MotionFloat from "../../motions/motionFloat";
 
 interface IPostProps {
   initPost: IPost;
@@ -170,16 +169,16 @@ export default function Post({ initPost, initUser }: IPostProps) {
               }}
               ref={actionRef}
             />
-            <MotionFloatList
-              data={(post.comments && post.comments.slice(0, 10)) || []}
-              callBack={(comment: IComment) => (
-                <Comment
-                  comment={comment}
-                  onClick={handleDeleteComment}
-                  key={comment.id}
-                />
-              )}
-            />
+            {post.comments &&
+              post.comments.slice(0, 10).map((e) => (
+                <MotionFloat key={e.id}>
+                  <Comment
+                    comment={e}
+                    onClick={handleDeleteComment}
+                    key={e.id}
+                  />
+                </MotionFloat>
+              ))}
             {post.comments && post.comments?.length > 10 && (
               <div className="mb-2 text-xs text-center hover:cursor-pointer">
                 {"모두보기"}

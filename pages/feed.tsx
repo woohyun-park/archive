@@ -8,7 +8,6 @@ import Action from "../components/Action";
 import ProfileSmall from "../components/ProfileSmall";
 import { IPost, IUser } from "../custom";
 import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
-import MotionFloatList from "../motions/MotionFloatList";
 import MotionFloat from "../motions/motionFloat";
 
 export default function Feed() {
