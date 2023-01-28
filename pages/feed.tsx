@@ -38,15 +38,7 @@ export default function Feed() {
   }, []);
 
   useEffect(() => {
-    gSetFeed(gCurUser.id, true);
-    if (refreshTimeout) {
-      clearTimeout(refreshTimeout);
-    }
-    setRefreshTimeout(
-      setTimeout(() => {
-        setRefreshLoading(false);
-      }, 1000)
-    );
+    gSetFeed(gCurUser.id, true).then(() => setRefreshLoading(false));
   }, [resetRefresh]);
 
   const eachPost = (e: IPost, i: number) => (

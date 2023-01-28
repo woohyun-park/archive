@@ -393,7 +393,17 @@ export const useStore = create<IState>()(
     gSetFeed: async (id: string, isRefresh: boolean) => {
       console.log("gSetFeed", id);
       if (isRefresh) {
-        const posts = await refreshFeed(id);
+        let posts;
+        await Promise.all([
+          refreshFeed(id),
+          new Promise((resolve, reject) => {
+            setTimeout(() => {
+              resolve();
+            }, 3000);
+          }),
+        ]).then((values) => {
+          posts = values[0];
+        });
         set((state: IState) => {
           return {
             ...state,
