@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { POST_PER_PAGE, useStore } from "../apis/zustand";
+import { useStore } from "../apis/zustand";
 import Box from "../components/Box";
 import LinkScroll from "../components/LinkScroll";
 import Loader from "../components/Loader";
@@ -10,35 +10,37 @@ import { IPost, IUser, SIZE } from "../custom";
 import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 import MotionFloat from "../motions/motionFloat";
 import IconBtn from "../components/atoms/IconBtn";
+import useFeedState from "../apis/useFeedState";
 
 export default function Feed() {
-  const { gFeed, gScroll, gSetPage, gCurUser, gSetFeed, gStatus, gSetStatus } =
-    useStore();
+  const { gCurUser } = useStore();
+  const { posts, orchestra, scroll, setPosts, setOrchestra, setScroll } =
+    useFeedState();
   const router = useRouter();
   const [refreshLoading, setRefreshLoading] = useState(false);
-  const [refreshTimeout, setRefreshTimeout] = useState<NodeJS.Timeout>();
-  const [resetRefresh, setResetRefresh] = useState(true);
+  const [resetRefresh, setResetRefresh] = useState<boolean | null>(null);
 
   const { setLastIntersecting, loading } = useInfiniteScroll({
     handleIntersect: () => {
-      gSetFeed(gCurUser.id, false);
+      setPosts(gCurUser.id, "load");
     },
     handleChange: () => {},
-    changeListener: gFeed.posts,
+    changeListener: posts,
   });
 
   useEffect(() => {
     router.beforePopState(() => {
-      gSetStatus({ ...gStatus, orchestra: gFeed.posts.length });
+      setOrchestra(posts.length);
       return true;
     });
     setTimeout(() => {
-      window.scrollTo(0, gScroll[router.pathname]);
+      window.scrollTo(0, scroll);
     }, 10);
   }, []);
 
   useEffect(() => {
-    gSetFeed(gCurUser.id, true).then(() => setRefreshLoading(false));
+    if (resetRefresh === null) return;
+    setPosts(gCurUser.id, "refresh").then(() => setRefreshLoading(false));
   }, [resetRefresh]);
 
   const eachPost = (e: IPost, i: number) => (
@@ -58,7 +60,7 @@ export default function Feed() {
           )
         }
       />
-      {i === gFeed.posts.length - 1 && <div ref={setLastIntersecting}></div>}
+      {i === posts.length - 1 && <div ref={setLastIntersecting}></div>}
     </LinkScroll>
   );
 
@@ -70,15 +72,14 @@ export default function Feed() {
           <IconBtn
             type="refresh"
             onClick={() => {
-              console.log("clicked!", refreshLoading);
               setRefreshLoading(true);
               setResetRefresh(!resetRefresh);
             }}
           />
         </div>
         <Loader isVisible={refreshLoading} />
-        {gFeed.posts.map((e, i) =>
-          i >= gStatus.orchestra ? (
+        {posts.map((e, i) =>
+          i >= orchestra ? (
             <MotionFloat key={String(i)}>{eachPost(e, i)}</MotionFloat>
           ) : (
             <>{eachPost(e, i)}</>
