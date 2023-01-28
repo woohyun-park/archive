@@ -9,24 +9,22 @@ import ProfileSmall from "../components/ProfileSmall";
 import { IPost, IUser, SIZE } from "../custom";
 import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 import MotionFloat from "../motions/motionFloat";
-import { IoRefreshSharp } from "react-icons/io5";
 import IconBtn from "../components/atoms/IconBtn";
 
 export default function Feed() {
   const { gFeed, gScroll, gSetPage, gCurUser, gSetFeed, gStatus, gSetStatus } =
     useStore();
   const router = useRouter();
-
-  useEffect(() => {
-    setTimeout(() => {
-      window.scrollTo(0, gScroll[router.pathname]);
-    }, 10);
-  }, []);
+  const [refreshLoading, setRefreshLoading] = useState(false);
+  const [refreshTimeout, setRefreshTimeout] = useState<NodeJS.Timeout>();
+  const [resetRefresh, setResetRefresh] = useState(true);
 
   const { setLastIntersecting, loading } = useInfiniteScroll({
-    handleIntersect: () => gSetFeed(gCurUser.id, false),
+    handleIntersect: () => {
+      gSetFeed(gCurUser.id, false);
+    },
     handleChange: () => {},
-    changeListener: null,
+    changeListener: gFeed.posts,
   });
 
   useEffect(() => {
@@ -34,7 +32,22 @@ export default function Feed() {
       gSetStatus({ ...gStatus, orchestra: gFeed.posts.length });
       return true;
     });
+    setTimeout(() => {
+      window.scrollTo(0, gScroll[router.pathname]);
+    }, 10);
   }, []);
+
+  useEffect(() => {
+    gSetFeed(gCurUser.id, true);
+    if (refreshTimeout) {
+      clearTimeout(refreshTimeout);
+    }
+    setRefreshTimeout(
+      setTimeout(() => {
+        setRefreshLoading(false);
+      }, 1000)
+    );
+  }, [resetRefresh]);
 
   const eachPost = (e: IPost, i: number) => (
     <LinkScroll key={i}>
@@ -65,13 +78,26 @@ export default function Feed() {
           <IconBtn
             type="refresh"
             onClick={() => {
-              gSetFeed(gCurUser.id, true);
+              console.log("clicked!", refreshLoading);
+              setRefreshLoading(true);
+              setResetRefresh(!resetRefresh);
             }}
           />
         </div>
+        <div
+          className={
+            refreshLoading
+              ? "flex justify-center h-[82px] duration-500"
+              : "flex justify-center h-0 duration-500"
+          }
+        >
+          <MotionFloat key="refreshLoader" isVisible={refreshLoading}>
+            <Loader />
+          </MotionFloat>
+        </div>
         {gFeed.posts.map((e, i) =>
           i >= gStatus.orchestra ? (
-            <MotionFloat key={i}>{eachPost(e, i)}</MotionFloat>
+            <MotionFloat key={String(i)}>{eachPost(e, i)}</MotionFloat>
           ) : (
             <>{eachPost(e, i)}</>
           )
