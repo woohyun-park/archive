@@ -1,11 +1,38 @@
-export default function Loader() {
+import { MutableRefObject, useEffect, useRef } from "react";
+import MotionFloat from "../motions/motionFloat";
+
+interface ILoaderProps {
+  isVisible: boolean;
+  scrollIntoView?: boolean;
+}
+
+export default function Loader({ isVisible, scrollIntoView }: ILoaderProps) {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    setTimeout(() => {
+      isVisible &&
+        scrollIntoView &&
+        ref.current?.scrollIntoView({ behavior: "smooth" });
+    }, 300);
+  }, [isVisible]);
   return (
     <>
-      <div className="lds-ellipsis">
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
+      <div
+        className={
+          isVisible
+            ? "flex justify-center h-[82px] duration-500"
+            : "flex justify-center h-0 duration-500"
+        }
+        ref={ref}
+      >
+        <MotionFloat key="refreshLoader" isVisible={isVisible}>
+          <div className="lds-ellipsis">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </MotionFloat>
       </div>
 
       <style jsx>

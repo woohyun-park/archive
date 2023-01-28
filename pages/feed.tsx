@@ -84,17 +84,7 @@ export default function Feed() {
             }}
           />
         </div>
-        <div
-          className={
-            refreshLoading
-              ? "flex justify-center h-[82px] duration-500"
-              : "flex justify-center h-0 duration-500"
-          }
-        >
-          <MotionFloat key="refreshLoader" isVisible={refreshLoading}>
-            <Loader />
-          </MotionFloat>
-        </div>
+        <Loader isVisible={refreshLoading} />
         {gFeed.posts.map((e, i) =>
           i >= gStatus.orchestra ? (
             <MotionFloat key={String(i)}>{eachPost(e, i)}</MotionFloat>
@@ -102,7 +92,7 @@ export default function Feed() {
             <>{eachPost(e, i)}</>
           )
         )}
-        <div className="flex justify-center"> {loading && <Loader />}</div>
+        <Loader isVisible={loading} scrollIntoView={true} />
         <div className="mb-24"></div>
       </div>
     </>
