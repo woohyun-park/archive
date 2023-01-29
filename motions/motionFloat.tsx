@@ -1,5 +1,4 @@
 import { AnimatePresence, motion, Variants } from "framer-motion";
-import { useRouter } from "next/router";
 import { useRef } from "react";
 
 type IMotion = {
