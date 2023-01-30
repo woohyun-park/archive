@@ -41,7 +41,7 @@ export const useInfiniteScroll = ({
       observer.observe(lastIntersecting);
     }
     return () => observer && observer.disconnect();
-  }, []);
+  }, [lastIntersecting]);
 
   return {
     setLastIntersecting,
