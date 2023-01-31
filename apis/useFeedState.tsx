@@ -1,19 +1,19 @@
 import create from "zustand";
 import { devtools } from "zustand/middleware";
-import { IComment, IDict, ILike, IPost, IScrap, ITag, IUser } from "../custom";
+import { IComment, IDict, ILike, IPost, IScrap, IUser } from "../custom";
 import {
   collection,
   doc,
   DocumentData,
-  endAt,
   endBefore,
   getDocs,
   limit,
   orderBy,
+  Query,
   query,
   QueryDocumentSnapshot,
+  QuerySnapshot,
   startAfter,
-  startAt,
   Timestamp,
   where,
 } from "firebase/firestore";
@@ -22,60 +22,53 @@ import { POST_PER_PAGE } from "./zustand";
 
 interface IFeedStore {
   posts: IPost[];
-  orchestra: number;
+  animate: IDict<boolean>;
   scroll: number;
-  getPosts: (id: string, status: IFeedStoreStatus) => Promise<void>;
+
+  getPosts: (id: string, status: IFeedGetType) => Promise<void>;
+  getAnimate: (posts: IPost[]) => IDict<boolean>;
+
   setPosts: (posts: IPost[]) => void;
-  setOrchestra: (orchestra: number) => void;
+  setAnimate: (animate: IDict<boolean>) => void;
   setScroll: (scroll: number) => void;
 }
 
-type IFeedStoreStatus = "init" | "load" | "refresh" | "delete";
+type IFeedGetType = "init" | "load" | "refresh";
 
-export let feedFirstVisible: QueryDocumentSnapshot<DocumentData>;
-export let feedLastVisible: QueryDocumentSnapshot<DocumentData>;
+let feedFirstVisible: QueryDocumentSnapshot<DocumentData>;
+let feedLastVisible: QueryDocumentSnapshot<DocumentData>;
 
-async function getPostsHelper(
-  id: string,
-  prevPosts: IPost[],
-  status: IFeedStoreStatus
-): Promise<IPost[]> {
-  const user = await getDataByRef<IUser>(doc(db, "users", id));
-  const q =
-    status === "init"
-      ? query(
-          collection(db, "posts"),
-          where("uid", "in", [...user.followings, id]),
-          orderBy("createdAt", "desc"),
-          limit(POST_PER_PAGE.feed.post)
-        )
-      : status === "load"
-      ? query(
-          collection(db, "posts"),
-          where("uid", "in", [...user.followings, id]),
-          orderBy("createdAt", "desc"),
-          startAfter(feedLastVisible),
-          limit(POST_PER_PAGE.feed.post)
-        )
-      : status === "refresh"
-      ? query(
-          collection(db, "posts"),
-          where("uid", "in", [...user.followings, id]),
-          orderBy("createdAt", "desc"),
-          endBefore(feedFirstVisible)
-        )
-      : status === "delete"
-      ? query(
-          collection(db, "posts"),
-          where("uid", "in", [...user.followings, id]),
-          orderBy("createdAt", "desc"),
-          startAt(feedFirstVisible),
-          endAt(feedLastVisible)
-        )
-      : null;
-  if (!q) return [];
+function getQueryByType(user: IUser, type: IFeedGetType): Query<DocumentData> {
+  const id = user.id;
+  if (type === "init")
+    return query(
+      collection(db, "posts"),
+      where("uid", "in", [...user.followings, id]),
+      orderBy("createdAt", "desc"),
+      limit(POST_PER_PAGE.feed.post)
+    );
+  else if (type === "load")
+    return query(
+      collection(db, "posts"),
+      where("uid", "in", [...user.followings, id]),
+      orderBy("createdAt", "desc"),
+      startAfter(feedLastVisible),
+      limit(POST_PER_PAGE.feed.post)
+    );
+  else
+    return query(
+      collection(db, "posts"),
+      where("uid", "in", [...user.followings, id]),
+      orderBy("createdAt", "desc"),
+      endBefore(feedFirstVisible)
+    );
+}
+
+async function getPostsByQuery(
+  q: Query
+): Promise<[QuerySnapshot<DocumentData>, IPost[]]> {
   const snap = await getDocs(q);
-  let posts: IPost[] = [];
+  const posts: IPost[] = [];
   for (const doc of snap.docs) {
     const post: IPost = doc.data() as IPost;
     const uid = post.uid;
@@ -91,51 +84,82 @@ async function getPostsHelper(
     post.createdAt = (post.createdAt as Timestamp).toDate();
     posts.push(post);
   }
-  if (status === "init") {
-  } else if (status === "load") {
-    posts = [...prevPosts, ...posts];
-  } else if (status === "refresh") {
-    posts = [...posts, ...prevPosts];
-  }
+  return [snap, posts];
+}
+
+function calculateNewPosts(
+  prevPosts: IPost[],
+  posts: IPost[],
+  type: IFeedGetType
+) {
+  if (type === "init") return [...posts];
+  else if (type === "load") return [...prevPosts, ...posts];
+  else return [...posts, ...prevPosts];
+}
+
+function setCursorByType(
+  snap: QuerySnapshot<DocumentData>,
+  type: IFeedGetType
+) {
   if (snap.docs.length !== 0) {
-    if (status === "init") {
+    if (type === "init") {
       feedFirstVisible = snap.docs[0];
       feedLastVisible = snap.docs[snap.docs.length - 1];
-    } else if (status === "load") {
+    } else if (type === "load") {
       feedLastVisible = snap.docs[snap.docs.length - 1];
-    } else if (status === "refresh") {
+    } else if (type === "refresh") {
       feedFirstVisible = snap.docs[0];
     }
   }
-  return posts;
+}
+
+async function getPostsHelper(
+  id: string,
+  prevPosts: IPost[],
+  type: IFeedGetType
+): Promise<IPost[]> {
+  const user = await getDataByRef<IUser>(doc(db, "users", id));
+  const q = getQueryByType(user, type);
+  const [snap, posts] = await getPostsByQuery(q);
+  setCursorByType(snap, type);
+  return calculateNewPosts(prevPosts, posts, type);
+}
+
+async function setMinTimeout() {
+  return;
 }
 
 const useFeedState = create<IFeedStore>()(
   devtools((set, get) => ({
     posts: [] as IPost[],
-    orchestra: 0,
+    animate: {},
     scroll: 0,
-    getPosts: async (id: string, status: IFeedStoreStatus) => {
-      console.log("getPosts!", id, status);
+    getPosts: async (id: string, type: IFeedGetType) => {
+      console.log("getPosts", id, type);
       let posts: IPost[] = [];
+      let animate: IDict<boolean> = {};
       await Promise.all([
-        getPostsHelper(id, get().posts, status),
+        getPostsHelper(id, get().posts, type),
         new Promise((resolve, reject) => {
           setTimeout(() => {
             resolve(0);
           }, 1000);
         }),
       ]).then((values) => {
-        posts = values[0];
+        const [resPosts, resTimeout] = values;
+        posts = resPosts;
+        animate = get().getAnimate(posts);
       });
       set((state: IFeedStore) => {
         return {
           ...state,
           posts,
+          animate,
         };
       });
     },
     setPosts: (posts: IPost[]) => {
+      console.log("setPosts", posts);
       set((state: IFeedStore) => {
         return {
           ...state,
@@ -143,15 +167,25 @@ const useFeedState = create<IFeedStore>()(
         };
       });
     },
-    setOrchestra: (orchestra: number) => {
+    getAnimate: (posts: IPost[]) => {
+      const animate = get().animate;
+      for (const post of posts) {
+        const pid = post?.id || "";
+        animate[pid] = animate[pid] === undefined ? true : false;
+      }
+      return animate;
+    },
+    setAnimate: (animate: IDict<boolean>) => {
+      console.log("setAnimate");
       set((state: IFeedStore) => {
         return {
           ...state,
-          orchestra,
+          animate,
         };
       });
     },
     setScroll: (scroll: number) => {
+      console.log("setScroll", scroll);
       set((state: IFeedStore) => {
         return {
           ...state,

@@ -135,7 +135,6 @@ export default function ProfileSmall({ user, post }: IProfileSmallProps) {
                       } else {
                         console.log(post?.id);
                       }
-                      router.push("/");
                     }}
                   />
                 </div>

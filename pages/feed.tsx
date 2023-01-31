@@ -14,8 +14,15 @@ import useFeedState from "../apis/useFeedState";
 
 export default function Feed() {
   const { gCurUser } = useStore();
-  const { posts, orchestra, scroll, getPosts, setOrchestra, setScroll } =
-    useFeedState();
+  const {
+    posts,
+    animate,
+    getAnimate,
+    scroll,
+    getPosts,
+    setAnimate,
+    setScroll,
+  } = useFeedState();
   const router = useRouter();
   const [refreshLoading, setRefreshLoading] = useState(false);
   const [resetRefresh, setResetRefresh] = useState<boolean | null>(null);
@@ -29,8 +36,12 @@ export default function Feed() {
   });
 
   useEffect(() => {
+    console.log(loading, setLastIntersecting, posts, animate, scroll);
+  }, [loading]);
+
+  useEffect(() => {
     router.beforePopState(() => {
-      setOrchestra(posts.length);
+      setAnimate(getAnimate(posts));
       return true;
     });
     setTimeout(() => {
@@ -44,7 +55,7 @@ export default function Feed() {
   }, [resetRefresh]);
 
   const eachPost = (e: IPost, i: number) => (
-    <LinkScroll key={i}>
+    <LinkScroll key={e.id}>
       <ProfileSmall post={e} user={e.author as IUser} type="post" />
       <Box post={e} />
       <Action
@@ -60,7 +71,9 @@ export default function Feed() {
           )
         }
       />
-      {i === posts.length - 1 && <div ref={setLastIntersecting}></div>}
+      {i === posts.length - 1 && (
+        <div id={e.id} ref={setLastIntersecting}></div>
+      )}
     </LinkScroll>
   );
 
@@ -79,8 +92,8 @@ export default function Feed() {
         </div>
         <Loader isVisible={refreshLoading} />
         {posts.map((e, i) =>
-          i >= orchestra ? (
-            <MotionFloat key={String(i)}>{eachPost(e, i)}</MotionFloat>
+          animate[e.id || ""] ? (
+            <MotionFloat key={e.id || String(i)}>{eachPost(e, i)}</MotionFloat>
           ) : (
             <>{eachPost(e, i)}</>
           )

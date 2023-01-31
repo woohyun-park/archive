@@ -2,7 +2,8 @@ const { withSuperjson } = require("next-superjson");
 
 /** @type {import('next').NextConfig} */
 const nextConfig = withSuperjson()({
-  reactStrictMode: true,
+  // reactStrictMode: true,
+  reactStrictMode: false,
   images: {
     domains: ["res.cloudinary.com"],
   },

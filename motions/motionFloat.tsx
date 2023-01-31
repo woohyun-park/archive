@@ -33,7 +33,6 @@ export default function MotionFloat({
       transition: { duration },
     },
   };
-  const scrollRef = useRef(null);
   return (
     <>
       <AnimatePresence>

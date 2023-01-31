@@ -13,6 +13,7 @@ export default function Loader({ isVisible, scrollIntoView }: ILoaderProps) {
       isVisible &&
         scrollIntoView &&
         ref.current?.scrollIntoView({ behavior: "smooth" });
+      console.log("loader useEffect1");
     }, 300);
   }, [isVisible]);
   return (

@@ -16,6 +16,7 @@ export const useInfiniteScroll = ({
   const [loading, setLoading] = useState(false);
 
   const onIntersect: IntersectionObserverCallback = (entries, observer) => {
+    console.log("onIntersect");
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
         setLoading(true);
@@ -26,6 +27,7 @@ export const useInfiniteScroll = ({
   };
 
   async function change() {
+    console.log("change");
     await handleChange();
     setLoading(false);
   }

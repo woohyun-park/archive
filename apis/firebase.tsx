@@ -5,17 +5,20 @@ import {
   collection,
   deleteDoc,
   doc,
+  DocumentData,
   DocumentReference,
   getDoc,
   getDocs,
   getFirestore,
   Query,
   query,
+  QuerySnapshot,
+  Timestamp,
   updateDoc,
   where,
 } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
-import { IComment, IDict, ILike, IScrap, ITag, IUser } from "../custom";
+import { IComment, IDict, ILike, IPost, IScrap, ITag, IUser } from "../custom";
 
 interface IPathParams {
   params: { [param: string]: string };
