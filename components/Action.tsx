@@ -16,40 +16,30 @@ interface IActionProps {
   onCommentClick?: () => void;
 }
 
+type IActionType = "likes" | "scraps";
+
 export default forwardRef<HTMLDivElement, IActionProps>(function Action(
   { post, curUser, onCommentClick },
   ref
 ) {
-  const [status, setStatus] = useState({
-    ...calcLikeAndScrapStatus(),
-  });
+  const [status, setStatus] = useState<IDict<string>>({ ...calcStatus() });
 
   useEffect(() => {
-    setStatus({
-      ...calcLikeAndScrapStatus(),
-    });
+    setStatus({ ...calcStatus() });
   }, [curUser.likes, curUser.scraps]);
 
-  function calcLikeAndScrapStatus() {
+  function calcStatus() {
+    const likes = curUser.likes?.find((each) => each.pid === post.id);
+    const scraps = curUser.scraps?.find((each) => each.pid === post.id);
     return {
-      likes: curUser.likes?.find((each) => each.pid === post.id) ? true : false,
-      lid: curUser.likes?.find((each) => each.pid === post.id)?.id || "",
-      scraps: curUser.scraps?.find((each) => each.pid === post.id)
-        ? true
-        : false,
-      sid: curUser.scraps?.find((each) => each.pid === post.id)?.id || "",
+      likes: likes ? (likes.id as string) : "",
+      scraps: scraps ? (scraps.id as string) : "",
     };
   }
 
-  async function handleToggle(type: "likes" | "scraps") {
+  async function handleToggle(type: IActionType) {
     if (status[type]) {
-      await deleteDoc(
-        doc(
-          db,
-          type,
-          type === "likes" ? status.lid : type === "scraps" ? status.sid : ""
-        )
-      );
+      await deleteDoc(doc(db, type, status[type]));
     } else {
       const newData: IDict<string> = {
         uid: curUser.id,
@@ -57,28 +47,16 @@ export default forwardRef<HTMLDivElement, IActionProps>(function Action(
       };
       type === "scraps" ? (newData.cont = "모든 스크랩") : void 0;
       const ref = await addDoc(collection(db, type), newData);
-      await updateDoc(ref, {
-        id: ref.id,
-      });
+      await updateDoc(ref, { id: ref.id });
     }
   }
 
-  function displayLikeAndScrap(type: "likes" | "scraps") {
+  function displayStatus(type: IActionType) {
     const len = post[type]?.length;
     if (len === undefined) return 0;
-    if (post[type]?.find((each) => each.uid === curUser.id)) {
-      if (status[type]) {
-        return len;
-      } else {
-        return len - 1;
-      }
-    } else {
-      if (status[type]) {
-        return len + 1;
-      } else {
-        return len;
-      }
-    }
+    if (post[type]?.find((each) => each.uid === curUser.id))
+      return status[type] ? len : len - 1;
+    else return status[type] ? len + 1 : len;
   }
 
   return (
@@ -88,7 +66,7 @@ export default forwardRef<HTMLDivElement, IActionProps>(function Action(
           <span className="mr-2 hover:cursor-pointer">
             <IconBtn
               type="like"
-              fill={status.likes}
+              fill={status.likes !== "" ? true : false}
               onClick={() => handleToggle("likes")}
             />
           </span>
@@ -100,7 +78,7 @@ export default forwardRef<HTMLDivElement, IActionProps>(function Action(
           <span className="hover:cursor-pointer">
             <IconBtn
               type="scrap"
-              fill={status.scraps}
+              fill={status.scraps !== "" ? true : false}
               onClick={() => handleToggle("scraps")}
             />
           </span>
@@ -108,11 +86,11 @@ export default forwardRef<HTMLDivElement, IActionProps>(function Action(
       </div>
       <div className="flex justify-between mb-2 text-xs">
         <div>
-          {`좋아요 ${displayLikeAndScrap("likes")}`}
+          {`좋아요 ${displayStatus("likes")}`}
           &nbsp;&nbsp;
           {`댓글 ${post.comments?.length}`}
         </div>
-        <div>{`스크랩 ${displayLikeAndScrap("scraps")}`}</div>
+        <div>{`스크랩 ${displayStatus("scraps")}`}</div>
       </div>
     </>
   );
