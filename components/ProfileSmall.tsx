@@ -24,7 +24,7 @@ export default function ProfileSmall({ user, post }: IProfileSmallProps) {
   const router = useRouter();
   const route = getRoute(router);
 
-  const { posts, setPosts, setHidden } = feedStore();
+  const { posts, setPosts, getPosts } = feedStore();
 
   useEffect(() => {
     setIsFollowing(

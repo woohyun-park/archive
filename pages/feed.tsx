@@ -54,6 +54,9 @@ export default function Feed() {
     setTimeout(() => {
       window.scrollTo(0, scroll);
     }, 10);
+    if (router.query.refresh) {
+      handleRefresh();
+    }
   }, []);
 
   useEffect(() => {
@@ -81,29 +84,19 @@ export default function Feed() {
       {i === posts.length - 1 && <div ref={setLastIntersecting}></div>}
     </LinkScroll>
   );
+  function handleRefresh() {
+    setRefreshLoading(true);
+    setResetRefresh(!resetRefresh);
+  }
 
   return (
     <>
       <div>
         <div className="flex items-baseline justify-between">
           <h1 className="title-page">피드</h1>
-          <IconBtn
-            type="refresh"
-            onClick={() => {
-              setRefreshLoading(true);
-              setResetRefresh(!resetRefresh);
-            }}
-          />
+          <IconBtn type="refresh" onClick={handleRefresh} />
         </div>
         <Loader isVisible={refreshLoading} />
-        {/* {posts.map((e, i) =>
-          !orchestra.has(e.id || "") ? (
-            <MotionFloat key={e.id || ""}>{eachPost(e, i)}</MotionFloat>
-          ) : (
-            <>{eachPost(e, i)}</>
-          )
-        )} */}
-
         <AnimatePresence initial={false}>
           {posts.map((e, i) =>
             !orchestra.has(e.id || "") ? (

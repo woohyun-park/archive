@@ -21,6 +21,7 @@ import Modal from "../components/Modal";
 import MotionFade from "../motions/motionFade";
 import Btn from "../components/atoms/Btn";
 import IconBtn from "../components/atoms/IconBtn";
+import { feedStore } from "../apis/feedStore";
 
 interface IForm {
   file: File[];
@@ -33,6 +34,7 @@ interface IForm {
 
 export default function Add() {
   const { gCurUser } = useStore();
+  const { getPosts } = feedStore();
   const router = useRouter();
   const [prevPost, setPrevPost] = useState(
     router.query.post
@@ -209,7 +211,7 @@ export default function Add() {
           await updateDoc(tagRef, { id: tagRef.id });
         }
       }
-      router.push("/");
+      router.push({ pathname: "/", query: { refresh: true } });
     }
   }
   function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
