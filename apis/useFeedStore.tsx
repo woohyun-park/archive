@@ -20,7 +20,7 @@ import {
   where,
 } from "firebase/firestore";
 import { db, getData, getDataByRef, getEach } from "./firebase";
-import { POST_PER_PAGE } from "./zustand";
+import { POST_PER_PAGE } from "./useStore";
 
 interface IFeedStore {
   posts: IPost[];
@@ -128,7 +128,7 @@ async function getPostsHelper(
   return posts;
 }
 
-export const feedStore = create<IFeedStore>()(
+export const useFeedStore = create<IFeedStore>()(
   devtools((set, get) => ({
     posts: [] as IPost[],
     orchestra: new Set<string>(),

@@ -1,12 +1,12 @@
 import axios, { AxiosRequestConfig } from "axios";
 import { useRouter } from "next/router";
 import React, { useRef, useState } from "react";
-import { useStore } from "../apis/zustand";
+import { useStore } from "../apis/useStore";
 import { useForm } from "react-hook-form";
 import Back from "../components/atoms/Back";
 import Image from "next/image";
 import { updateUser } from "../apis/firebase";
-import MotionFade from "../motions/motionFade";
+import Motion from "../motions/Motion";
 import Btn from "../components/atoms/Btn";
 import IconBtn from "../components/atoms/IconBtn";
 
@@ -86,7 +86,7 @@ export default function Setting() {
 
   return (
     <>
-      <MotionFade>
+      <Motion type="fade">
         {isSubmitting && (
           <div className="absolute top-0 left-0 z-10 w-full h-full bg-black/20"></div>
         )}
@@ -151,7 +151,7 @@ export default function Setting() {
           />
           <Btn type="submit">변경</Btn>
         </form>
-      </MotionFade>
+      </Motion>
     </>
   );
 }

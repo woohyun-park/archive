@@ -1,14 +1,14 @@
 import { arrayRemove, arrayUnion, doc, updateDoc } from "firebase/firestore";
 import Link from "next/link";
 import { db, deletePost, updateUser } from "../apis/firebase";
-import { useStore } from "../apis/zustand";
+import { useStore } from "../apis/useStore";
 import { getRoute, IPost, IRoute, IType, IUser, SIZE } from "../custom";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import TIME from "../apis/time";
 import IconBtn from "./atoms/IconBtn";
-import { feedStore, feedFirstVisible } from "../apis/feedStore";
+import { useFeedStore, feedFirstVisible } from "../apis/useFeedStore";
 
 type IProfileSmallProps = {
   user: IUser;
@@ -24,7 +24,7 @@ export default function ProfileSmall({ user, post }: IProfileSmallProps) {
   const router = useRouter();
   const route = getRoute(router);
 
-  const { posts, setPosts, getPosts } = feedStore();
+  const { posts, setPosts, getPosts } = useFeedStore();
 
   useEffect(() => {
     setIsFollowing(

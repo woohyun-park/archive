@@ -4,9 +4,9 @@ import { useEffect, useState } from "react";
 import { HiX } from "react-icons/hi";
 import { db } from "../apis/firebase";
 import TIME from "../apis/time";
-import { useStore } from "../apis/zustand";
+import { useStore } from "../apis/useStore";
 import { IComment, IUser } from "../custom";
-import MotionFloat from "../motions/motionFloat";
+import Motion from "../motions/Motion";
 
 type ICommentProps = {
   comment: IComment;
@@ -29,7 +29,7 @@ export default function Comment({ comment, onClick }: ICommentProps) {
 
   return (
     <>
-      <MotionFloat>
+      <Motion type="float">
         <div className="flex items-end justify-between my-1">
           <div className="flex items-center mt-2 mb-1">
             <div className="mt-1 mr-2 profileImg-small self-baseline">
@@ -61,7 +61,7 @@ export default function Comment({ comment, onClick }: ICommentProps) {
             <></>
           )}
         </div>
-      </MotionFloat>
+      </Motion>
     </>
   );
 }

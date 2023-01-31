@@ -1,9 +1,9 @@
 import List from "../components/views/List";
 import { SIZE } from "../custom";
 import { HiSearch } from "react-icons/hi";
-import { useStore } from "../apis/zustand";
+import { useStore } from "../apis/useStore";
 import Link from "next/link";
-import MotionFade from "../motions/motionFade";
+import Motion from "../motions/Motion";
 import Box from "../components/Box";
 import Loader from "../components/Loader";
 import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
@@ -18,7 +18,7 @@ export default function Search() {
 
   return (
     <>
-      <MotionFade>
+      <Motion type="fade">
         <h1 className="title-page">검색</h1>
         <Link href="/search-modal">
           <div className="flex">
@@ -40,7 +40,7 @@ export default function Search() {
           ))}
         </div>
         <div className="flex justify-center"> {loading && <Loader />}</div>
-      </MotionFade>
+      </Motion>
     </>
   );
 }

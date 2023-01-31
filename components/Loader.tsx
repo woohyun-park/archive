@@ -1,5 +1,5 @@
 import { MutableRefObject, useEffect, useRef } from "react";
-import MotionFloat from "../motions/motionFloat";
+import Motion from "../motions/Motion";
 
 interface ILoaderProps {
   isVisible: boolean;
@@ -25,14 +25,14 @@ export default function Loader({ isVisible, scrollIntoView }: ILoaderProps) {
         }
         ref={ref}
       >
-        <MotionFloat key="refreshLoader" isVisible={isVisible}>
+        <Motion type="float" key="refreshLoader" isVisible={isVisible}>
           <div className="lds-ellipsis">
             <div></div>
             <div></div>
             <div></div>
             <div></div>
           </div>
-        </MotionFloat>
+        </Motion>
       </div>
 
       <style jsx>

@@ -10,7 +10,7 @@ import {
 import Action from "../../components/Action";
 import ProfileSmall from "../../components/ProfileSmall";
 import { IComment, ILike, IPost, IScrap, IUser, SIZE } from "../../custom";
-import { useStore } from "../../apis/zustand";
+import { useStore } from "../../apis/useStore";
 import Image from "next/image";
 import {
   addDoc,
@@ -23,13 +23,12 @@ import {
   updateDoc,
   where,
 } from "firebase/firestore";
-import MotionFade from "../../motions/motionFade";
+import Motion from "../../motions/Motion";
 import React, { RefObject, useEffect, useRef, useState } from "react";
 import Textarea from "../../components/atoms/Textarea";
 import Btn from "../../components/atoms/Btn";
 import Comment from "../../components/Comment";
 import IconBtn from "../../components/atoms/IconBtn";
-import MotionFloat from "../../motions/motionFloat";
 
 interface IPostProps {
   initPost: IPost;
@@ -109,7 +108,7 @@ export default function Post({ initPost, initUser }: IPostProps) {
 
   return (
     <>
-      <MotionFade>
+      <Motion type="fade">
         {initPost === null && initUser === null ? (
           <div>존재하지 않는 페이지입니다</div>
         ) : (
@@ -171,13 +170,13 @@ export default function Post({ initPost, initUser }: IPostProps) {
             />
             {post.comments &&
               post.comments.slice(0, 10).map((e) => (
-                <MotionFloat key={e.id}>
+                <Motion type="float" key={e.id}>
                   <Comment
                     comment={e}
                     onClick={handleDeleteComment}
                     key={e.id}
                   />
-                </MotionFloat>
+                </Motion>
               ))}
             {post.comments && post.comments?.length > 10 && (
               <div className="mb-2 text-xs text-center hover:cursor-pointer">
@@ -209,7 +208,7 @@ export default function Post({ initPost, initUser }: IPostProps) {
             background-color: ${post.color};
           }
         `}</style>
-      </MotionFade>
+      </Motion>
     </>
   );
 }

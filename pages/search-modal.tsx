@@ -2,11 +2,10 @@ import Tab from "../components/Tab";
 import { SIZE } from "../custom";
 import { HiSearch, HiX } from "react-icons/hi";
 import React, { useEffect, useRef, useState } from "react";
-import { useStore } from "../apis/zustand";
+import { useStore } from "../apis/useStore";
 import { updateUser } from "../apis/firebase";
 import { useRouter } from "next/router";
-import MotionFade from "../motions/motionFade";
-import MotionFloat from "../motions/motionFloat";
+import Motion from "../motions/Motion";
 import { useOutsideClick } from "../hooks/useOutsideClick";
 
 interface ISearchState {
@@ -113,13 +112,13 @@ export default function Search() {
         // key에 변수를 넣어서 강제로 리렌더링!
         // 왜냐하면 그냥 {resultTitle}에 대한 검색결과에만 변수를 넣으면
         // 해당부분만 리렌더링되므로 애니메이션이 트리거되지 않기때문
-        <MotionFloat key={state.searchedKeyword}>
+        <Motion type="float" key={state.searchedKeyword}>
           <h1 className="mt-8 mb-2 text-lg font-bold">
             {state.searchedKeyword}에 대한 검색결과
           </h1>
-        </MotionFloat>
+        </Motion>
       )}
-      <MotionFade>
+      <Motion type="fade">
         <div ref={recentRef}>
           <div className="flex mb-4">
             <div className="flex items-center w-full p-1 rounded-md bg-gray-3 hover:cursor-pointer">
@@ -169,7 +168,7 @@ export default function Search() {
                       each.indexOf(gStatus.keyword) === 0
                   )
                   .map((e, i) => (
-                    <MotionFloat key={i}>
+                    <Motion type="float" key={e}>
                       <div
                         key={i}
                         className="flex items-center justify-between my-4 text-sm text-gray-1"
@@ -188,7 +187,7 @@ export default function Search() {
                           <HiX size={SIZE.iconSm} />
                         </div>
                       </div>
-                    </MotionFloat>
+                    </Motion>
                   ))}
               </div>
             </div>
@@ -207,7 +206,7 @@ export default function Search() {
             route="search"
           />
         )}
-      </MotionFade>
+      </Motion>
     </>
   );
 }

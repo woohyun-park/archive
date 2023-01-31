@@ -6,13 +6,13 @@ import {
 } from "firebase/auth";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import { useStore } from "../apis/zustand";
+import { useStore } from "../apis/useStore";
 import { auth, db } from "../apis/firebase";
 import Nav from "./Nav";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { COLOR, DEFAULT, IUser, SIZE } from "../custom";
 import { RiAppleFill, RiFacebookFill, RiGoogleFill } from "react-icons/ri";
-import { feedStore } from "../apis/feedStore";
+import { useFeedStore } from "../apis/useFeedStore";
 
 interface ILayoutProps {
   children: React.ReactNode;
@@ -30,7 +30,7 @@ export default function Layout({ children }: ILayoutProps) {
   const provider = new GoogleAuthProvider();
   const router = useRouter();
   const { gInit } = useStore();
-  const { getPosts } = feedStore();
+  const { getPosts } = useFeedStore();
   const [login, setLogin] = useState<ILogin>({
     email: "",
     password: "",

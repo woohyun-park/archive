@@ -9,19 +9,18 @@ import {
 } from "firebase/firestore";
 import React, { useRef, useState } from "react";
 import { db, getEach } from "../apis/firebase";
-import { COLOR, IPost, SIZE, ITag, DEFAULT, IDict } from "../custom";
-import { useStore } from "../apis/zustand";
+import { COLOR, IPost, ITag, IDict } from "../custom";
+import { useStore } from "../apis/useStore";
 import { useRouter } from "next/router";
-import { HiArrowLeft, HiX } from "react-icons/hi";
+import { HiX } from "react-icons/hi";
 import { useForm } from "react-hook-form";
 import Color from "../components/atoms/Color";
 import Image from "next/image";
 import ReactTextareaAutosize from "react-textarea-autosize";
 import Modal from "../components/Modal";
-import MotionFade from "../motions/motionFade";
-import Btn from "../components/atoms/Btn";
+import Motion from "../motions/Motion";
 import IconBtn from "../components/atoms/IconBtn";
-import { feedStore } from "../apis/feedStore";
+import { useFeedStore } from "../apis/useFeedStore";
 
 interface IForm {
   file: File[];
@@ -34,7 +33,7 @@ interface IForm {
 
 export default function Add() {
   const { gCurUser } = useStore();
-  const { getPosts } = feedStore();
+  const { getPosts } = useFeedStore();
   const router = useRouter();
   const [prevPost, setPrevPost] = useState(
     router.query.post
@@ -294,7 +293,7 @@ export default function Add() {
   }
 
   return (
-    <MotionFade>
+    <Motion type="fade">
       <Modal show={isSubmitting} content={<></>} />
       <IconBtn
         type="back"
@@ -469,6 +468,6 @@ export default function Add() {
           {prevPost ? "완료" : "생성"}
         </button>
       </form>
-    </MotionFade>
+    </Motion>
   );
 }

@@ -11,11 +11,11 @@ import {
 import Tab from "../../components/Tab";
 import { IDict, IPost, IScrap, ITag, IUser, SIZE } from "../../custom";
 import { HiOutlineCog } from "react-icons/hi";
-import { useStore } from "../../apis/zustand";
+import { useStore } from "../../apis/useStore";
 import Link from "next/link";
 import { useState } from "react";
 import Image from "next/image";
-import MotionFade from "../../motions/motionFade";
+import Motion from "../../motions/Motion";
 import Btn from "../../components/atoms/Btn";
 
 interface IProfileProps {
@@ -58,7 +58,7 @@ export default function Profile({
 
   return (
     <>
-      <MotionFade>
+      <Motion type="fade">
         {initUser.id === gCurUser.id && (
           <div className="flex justify-end">
             <Link href="/setting" legacyBehavior>
@@ -155,7 +155,7 @@ export default function Profile({
           ]}
           route="profile"
         />
-      </MotionFade>
+      </Motion>
     </>
   );
 }

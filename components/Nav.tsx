@@ -12,9 +12,9 @@ import {
   HiUser,
   HiOutlineUser,
 } from "react-icons/hi";
-import { useStore } from "../apis/zustand";
+import { useStore } from "../apis/useStore";
 import { SIZE } from "../custom";
-import LinkScroll from "./LinkScroll";
+import WrapScroll from "./wrappers/WrapScroll";
 
 export default function Nav() {
   const { gCurUser } = useStore();
@@ -23,7 +23,7 @@ export default function Nav() {
 
   return (
     <>
-      <LinkScroll>
+      <WrapScroll>
         <div className="box-border fixed bottom-0 flex justify-around w-full pt-6 pb-9 bg-white max-w-[480px]">
           <Link href="/" legacyBehavior>
             <a>
@@ -71,7 +71,7 @@ export default function Nav() {
             </a>
           </Link>
         </div>
-      </LinkScroll>
+      </WrapScroll>
     </>
   );
 }

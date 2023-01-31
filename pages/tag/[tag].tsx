@@ -1,13 +1,13 @@
 import { useRouter } from "next/router";
-import MotionFade from "../../motions/motionFade";
+import Motion from "../../motions/Motion";
 
 export default function Tag({}) {
   const router = useRouter();
   return (
-    <MotionFade>
+    <Motion type="fade">
       <div>
         <h4>tag</h4>
       </div>
-    </MotionFade>
+    </Motion>
   );
 }

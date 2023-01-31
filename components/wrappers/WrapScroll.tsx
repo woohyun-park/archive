@@ -1,13 +1,12 @@
 import { useRouter } from "next/router";
 import React from "react";
-import { feedStore } from "../apis/feedStore";
-import { useStore } from "../apis/zustand";
+import { useStore } from "../../apis/useStore";
 
-interface ILinkScroll {
+interface IWrapScroll {
   children: React.ReactNode;
 }
 
-export default function LinkScroll({ children }: ILinkScroll) {
+export default function WrapScroll({ children }: IWrapScroll) {
   const { gSetScroll } = useStore();
   const router = useRouter();
   function onClick(e: React.MouseEvent<HTMLElement>) {

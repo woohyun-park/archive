@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Box from "./Box";
 import { IPost, IUser, IDict, ITag, IRoute, getRoute } from "../custom";
-import MotionFloat from "../motions/motionFloat";
+import Motion from "../motions/Motion";
 import ProfileSmall from "./ProfileSmall";
 import List from "./views/List";
 
@@ -77,9 +77,9 @@ export default function Tab({ data, tab, route }: ITabProps) {
             return (
               <>
                 {(data[key] as IUser[]).map((user) => (
-                  <MotionFloat key={user.id}>
+                  <Motion type="float" key={user.id}>
                     <ProfileSmall user={user} type="post" key={user.id} />
-                  </MotionFloat>
+                  </Motion>
                 ))}
               </>
             );
