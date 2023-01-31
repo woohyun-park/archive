@@ -24,13 +24,13 @@ import { POST_PER_PAGE } from "./zustand";
 
 interface IFeedStore {
   posts: IPost[];
-  orchestra: number;
+  orchestra: Set<string>;
   scroll: number;
 
   getPosts: (id: string, type: IFeedGetType) => Promise<void>;
 
   setPosts: (posts: IPost[]) => void;
-  setOrchestra: (orchestra: number) => void;
+  setOrchestra: (posts: IPost[]) => void;
   setScroll: (scroll: number) => void;
 }
 
@@ -130,7 +130,7 @@ async function getPostsHelper(
 const useFeedState = create<IFeedStore>()(
   devtools((set, get) => ({
     posts: [] as IPost[],
-    orchestra: 0,
+    orchestra: new Set<string>(),
     scroll: 0,
     getPosts: async (id: string, type: IFeedGetType) => {
       console.log("getPosts!", id, type);
@@ -160,7 +160,12 @@ const useFeedState = create<IFeedStore>()(
         };
       });
     },
-    setOrchestra: (orchestra: number) => {
+    setOrchestra: (posts: IPost[]) => {
+      const orchestra = new Set<string>();
+      for (const post of posts) {
+        const id = post.id || "";
+        orchestra.add(id);
+      }
       set((state: IFeedStore) => {
         return {
           ...state,

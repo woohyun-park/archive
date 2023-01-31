@@ -30,7 +30,7 @@ export default function Feed() {
 
   useEffect(() => {
     router.beforePopState(() => {
-      setOrchestra(posts.length);
+      setOrchestra(posts);
       return true;
     });
     setTimeout(() => {
@@ -79,7 +79,7 @@ export default function Feed() {
         </div>
         <Loader isVisible={refreshLoading} />
         {posts.map((e, i) =>
-          i >= orchestra ? (
+          !orchestra.has(e.id || "") ? (
             <MotionFloat key={String(i)}>{eachPost(e, i)}</MotionFloat>
           ) : (
             <>{eachPost(e, i)}</>
