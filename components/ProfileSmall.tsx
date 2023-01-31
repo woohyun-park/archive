@@ -8,7 +8,7 @@ import { useRouter } from "next/router";
 import Image from "next/image";
 import { displayCreatedAt } from "../libs/timeLib";
 import IconBtn from "./atoms/IconBtn";
-import { useFeedStore, feedFirstVisible } from "../stores/useFeedStore";
+import { useFeedStore } from "../stores/useFeedStore";
 
 type IProfileSmallProps = {
   user: IUser;
