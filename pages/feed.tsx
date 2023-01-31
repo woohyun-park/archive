@@ -31,9 +31,8 @@ const variants: Variants = {
 };
 
 export default function Feed() {
-  const { gCurUser } = useStore();
-  const { posts, orchestra, scroll, getPosts, setOrchestra, setScroll } =
-    feedStore();
+  const { gCurUser, gScroll } = useStore();
+  const { posts, getPosts } = feedStore();
   const router = useRouter();
   const [refreshLoading, setRefreshLoading] = useState(false);
   const [resetRefresh, setResetRefresh] = useState<boolean | null>(null);
@@ -48,11 +47,10 @@ export default function Feed() {
 
   useEffect(() => {
     router.beforePopState(() => {
-      setOrchestra(posts);
       return true;
     });
     setTimeout(() => {
-      window.scrollTo(0, scroll);
+      window.scrollTo(0, gScroll[router.pathname]);
     }, 10);
     if (router.query.refresh) {
       handleRefresh();
@@ -98,22 +96,18 @@ export default function Feed() {
         </div>
         <Loader isVisible={refreshLoading} />
         <AnimatePresence initial={false}>
-          {posts.map((e, i) =>
-            !orchestra.has(e.id || "") ? (
-              <motion.div
-                key={e.id || ""}
-                initial="initial"
-                animate="animate"
-                exit="exit"
-                viewport={{ once: true, amount: 0.1 }}
-                variants={variants}
-              >
-                {eachPost(e, i)}
-              </motion.div>
-            ) : (
-              <>{eachPost(e, i)}</>
-            )
-          )}
+          {posts.map((e, i) => (
+            <motion.div
+              key={e.id || ""}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              viewport={{ once: true, amount: 0.1 }}
+              variants={variants}
+            >
+              {eachPost(e, i)}
+            </motion.div>
+          ))}
         </AnimatePresence>
         <Loader isVisible={loading} scrollIntoView={true} />
         <div className="mb-24"></div>

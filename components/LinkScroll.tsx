@@ -8,14 +8,11 @@ interface ILinkScroll {
 }
 
 export default function LinkScroll({ children }: ILinkScroll) {
-  const { setScroll } = feedStore();
+  const { gSetScroll } = useStore();
+  const router = useRouter();
   function onClick(e: React.MouseEvent<HTMLElement>) {
     e.preventDefault;
-    setScroll(window.scrollY);
+    gSetScroll(router.pathname, window.scrollY);
   }
-  return (
-    <>
-      <div onClick={onClick}>{children}</div>
-    </>
-  );
+  return <div onClick={onClick}>{children}</div>;
 }
