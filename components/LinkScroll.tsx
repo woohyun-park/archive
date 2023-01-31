@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 import React from "react";
+import useFeedState from "../apis/useFeedState";
 import { useStore } from "../apis/zustand";
 
 interface ILinkScroll {
@@ -9,10 +10,10 @@ interface ILinkScroll {
 export default function LinkScroll({ children }: ILinkScroll) {
   const router = useRouter();
 
-  const { gSetScroll } = useStore();
+  const { setScroll } = useFeedState();
   function onClick(e: React.MouseEvent<HTMLElement>) {
     e.preventDefault;
-    gSetScroll(router.pathname, window.scrollY);
+    setScroll(window.scrollY);
   }
   return <div onClick={onClick}>{children}</div>;
 }
