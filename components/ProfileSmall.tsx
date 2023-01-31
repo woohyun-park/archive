@@ -6,7 +6,7 @@ import { getRoute, IPost, IRoute, IType, IUser, SIZE } from "../libs/custom";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
-import TIME from "../apis/time";
+import { displayCreatedAt } from "../libs/timeLib";
 import IconBtn from "./atoms/IconBtn";
 import { useFeedStore, feedFirstVisible } from "../stores/useFeedStore";
 
@@ -74,7 +74,7 @@ export default function ProfileSmall({ user, post }: IProfileSmallProps) {
             </Link>
             {route === "feed" || route === "post" ? (
               <div className="text-xs text-gray-1 -mt-[1px]">
-                {TIME.displayCreatedAt(post?.createdAt)}
+                {displayCreatedAt(post?.createdAt)}
               </div>
             ) : (
               <div className="w-full overflow-hidden text-xs whitespace-pre-wrap text-gray-1 text-ellipsis">

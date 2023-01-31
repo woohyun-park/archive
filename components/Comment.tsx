@@ -3,10 +3,10 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { HiX } from "react-icons/hi";
 import { db } from "../apis/firebase";
-import TIME from "../apis/time";
 import { useStore } from "../stores/useStore";
 import { IComment, IUser } from "../libs/custom";
 import Motion from "../motions/Motion";
+import { displayCreatedAt } from "../libs/timeLib";
 
 type ICommentProps = {
   comment: IComment;
@@ -41,7 +41,7 @@ export default function Comment({ comment, onClick }: ICommentProps) {
                   {user?.displayName}
                 </div>
                 <div className="text-xs text-gray-1">
-                  {TIME.displayCreatedAt(comment.createdAt)}
+                  {displayCreatedAt(comment.createdAt)}
                 </div>
               </div>
               <div className="-mt-1 text-base leading-5 text-black break-all">
