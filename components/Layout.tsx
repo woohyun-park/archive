@@ -30,7 +30,7 @@ export default function Layout({ children }: ILayoutProps) {
   const provider = new GoogleAuthProvider();
   const router = useRouter();
   const { gInit } = useStore();
-  const { setPosts } = useFeedState();
+  const { getPosts } = useFeedState();
   const [login, setLogin] = useState<ILogin>({
     email: "",
     password: "",
@@ -43,7 +43,7 @@ export default function Layout({ children }: ILayoutProps) {
     auth.onAuthStateChanged(async (authState) => {
       if (authState) {
         await gInit(authState.uid);
-        await setPosts(authState.uid, "init");
+        await getPosts(authState.uid, "init");
         setLogin({ ...login, isLoggedIn: true });
       } else {
         setLogin({ ...login, isLoggedIn: false });

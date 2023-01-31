@@ -14,7 +14,7 @@ import useFeedState from "../apis/useFeedState";
 
 export default function Feed() {
   const { gCurUser } = useStore();
-  const { posts, orchestra, scroll, setPosts, setOrchestra, setScroll } =
+  const { posts, orchestra, scroll, getPosts, setOrchestra, setScroll } =
     useFeedState();
   const router = useRouter();
   const [refreshLoading, setRefreshLoading] = useState(false);
@@ -22,7 +22,7 @@ export default function Feed() {
 
   const { setLastIntersecting, loading } = useInfiniteScroll({
     handleIntersect: () => {
-      setPosts(gCurUser.id, "load");
+      getPosts(gCurUser.id, "load");
     },
     handleChange: () => {},
     changeListener: posts,
@@ -40,7 +40,7 @@ export default function Feed() {
 
   useEffect(() => {
     if (resetRefresh === null) return;
-    setPosts(gCurUser.id, "refresh").then(() => setRefreshLoading(false));
+    getPosts(gCurUser.id, "refresh").then(() => setRefreshLoading(false));
   }, [resetRefresh]);
 
   const eachPost = (e: IPost, i: number) => (

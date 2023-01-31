@@ -126,6 +126,7 @@ export async function deletePost(id: string) {
     }
   }
 
+  const ref = doc(db, "posts", id);
   await deleteDoc(doc(db, "posts", id));
   const likes = await getEach<ILike>("likes", id);
   const scraps = await getEach<IScrap>("scraps", id);
@@ -136,5 +137,5 @@ export async function deletePost(id: string) {
   deleteEach(comments, "comments");
   deleteEach(tags, "tags");
 
-  return null;
+  return ref;
 }

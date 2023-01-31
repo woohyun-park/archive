@@ -5,6 +5,7 @@ import {
   collection,
   doc,
   DocumentData,
+  endAt,
   endBefore,
   getDocs,
   limit,
@@ -12,6 +13,7 @@ import {
   query,
   QueryDocumentSnapshot,
   startAfter,
+  startAt,
   Timestamp,
   where,
 } from "firebase/firestore";
@@ -22,21 +24,21 @@ interface IFeedStore {
   posts: IPost[];
   orchestra: number;
   scroll: number;
-  setPosts: (id: string, status: IFeedStoreStatus) => Promise<void>;
+  getPosts: (id: string, status: IFeedStoreStatus) => Promise<void>;
+  setPosts: (posts: IPost[]) => void;
   setOrchestra: (orchestra: number) => void;
   setScroll: (scroll: number) => void;
-
-  test: number;
 }
 
-type IFeedStoreStatus = "init" | "load" | "refresh";
+type IFeedStoreStatus = "init" | "load" | "refresh" | "delete";
 
-let feedFirstVisible: QueryDocumentSnapshot<DocumentData>;
-let feedLastVisible: QueryDocumentSnapshot<DocumentData>;
+export let feedFirstVisible: QueryDocumentSnapshot<DocumentData>;
+export let feedLastVisible: QueryDocumentSnapshot<DocumentData>;
 
-async function getFeed(
+async function getPostsHelper(
   id: string,
-  status: "init" | "load" | "refresh"
+  prevPosts: IPost[],
+  status: IFeedStoreStatus
 ): Promise<IPost[]> {
   const user = await getDataByRef<IUser>(doc(db, "users", id));
   const q =
@@ -62,16 +64,18 @@ async function getFeed(
           orderBy("createdAt", "desc"),
           endBefore(feedFirstVisible)
         )
-      : "";
-  const snap = await getDocs(
-    query(
-      collection(db, "posts"),
-      where("uid", "in", [...user.followings, id]),
-      orderBy("createdAt", "desc"),
-      limit(POST_PER_PAGE.feed.post)
-    )
-  );
-  const posts: IPost[] = [];
+      : status === "delete"
+      ? query(
+          collection(db, "posts"),
+          where("uid", "in", [...user.followings, id]),
+          orderBy("createdAt", "desc"),
+          startAt(feedFirstVisible),
+          endAt(feedLastVisible)
+        )
+      : null;
+  if (!q) return [];
+  const snap = await getDocs(q);
+  let posts: IPost[] = [];
   for (const doc of snap.docs) {
     const post: IPost = doc.data() as IPost;
     const uid = post.uid;
@@ -86,6 +90,12 @@ async function getFeed(
     post.author = author;
     post.createdAt = (post.createdAt as Timestamp).toDate();
     posts.push(post);
+  }
+  if (status === "init") {
+  } else if (status === "load") {
+    posts = [...prevPosts, ...posts];
+  } else if (status === "refresh") {
+    posts = [...posts, ...prevPosts];
   }
   if (snap.docs.length !== 0) {
     if (status === "init") {
@@ -105,11 +115,11 @@ const useFeedState = create<IFeedStore>()(
     posts: [] as IPost[],
     orchestra: 0,
     scroll: 0,
-    setPosts: async (id: string, status: IFeedStoreStatus) => {
-      console.log("setPosts!", id, status);
+    getPosts: async (id: string, status: IFeedStoreStatus) => {
+      console.log("getPosts!", id, status);
       let posts: IPost[] = [];
       await Promise.all([
-        getFeed(id, status),
+        getPostsHelper(id, get().posts, status),
         new Promise((resolve, reject) => {
           setTimeout(() => {
             resolve(0);
@@ -121,8 +131,15 @@ const useFeedState = create<IFeedStore>()(
       set((state: IFeedStore) => {
         return {
           ...state,
-          test: state.test + 1,
-          posts: [...posts, ...state.posts],
+          posts,
+        };
+      });
+    },
+    setPosts: (posts: IPost[]) => {
+      set((state: IFeedStore) => {
+        return {
+          ...state,
+          posts,
         };
       });
     },
@@ -142,8 +159,6 @@ const useFeedState = create<IFeedStore>()(
         };
       });
     },
-
-    test: 0,
   }))
 );
 
