@@ -22,7 +22,7 @@ export default function MotionFloat({
       opacity: 0,
       transition: { duration },
     },
-    whileInView: {
+    animate: {
       transform: `translateY(0px)`,
       opacity: 1,
       transition: { duration },
@@ -33,7 +33,6 @@ export default function MotionFloat({
       transition: { duration },
     },
   };
-  const scrollRef = useRef(null);
   return (
     <>
       <AnimatePresence>
@@ -41,7 +40,7 @@ export default function MotionFloat({
           <motion.div
             key={key}
             initial="initial"
-            whileInView="whileInView"
+            animate="animate"
             exit="exit"
             viewport={{ once: true, amount }}
             variants={variants}

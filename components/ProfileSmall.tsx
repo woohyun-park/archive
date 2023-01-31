@@ -130,7 +130,7 @@ export default function ProfileSmall({ user, post }: IProfileSmallProps) {
                     onClick={async () => {
                       if (confirm("정말 삭제하시겠습니까?")) {
                         const ref = await deletePost(post?.id || "");
-                        setHidden(post?.id || "");
+                        setPosts([...posts].filter((e) => e.id !== post?.id));
                         alert("삭제되었습니다");
                       } else {
                         console.log(post?.id);

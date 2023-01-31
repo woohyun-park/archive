@@ -26,13 +26,11 @@ interface IFeedStore {
   posts: IPost[];
   orchestra: Set<string>;
   scroll: number;
-  hidden: Set<string>;
 
   getPosts: (id: string, type: IFeedGetType) => Promise<void>;
 
   setPosts: (posts: IPost[]) => void;
   setOrchestra: (posts: IPost[]) => void;
-  setHidden: (pid: string) => void;
   setScroll: (scroll: number) => void;
 }
 
@@ -134,7 +132,6 @@ export const feedStore = create<IFeedStore>()(
   devtools((set, get) => ({
     posts: [] as IPost[],
     orchestra: new Set<string>(),
-    hidden: new Set<string>(),
     scroll: 0,
     getPosts: async (id: string, type: IFeedGetType) => {
       console.log("getPosts!", id, type);
@@ -174,16 +171,6 @@ export const feedStore = create<IFeedStore>()(
         return {
           ...state,
           orchestra,
-        };
-      });
-    },
-    setHidden: (pid: string) => {
-      const hidden = get().hidden;
-      hidden.add(pid);
-      set((state: IFeedStore) => {
-        return {
-          ...state,
-          hidden,
         };
       });
     },
