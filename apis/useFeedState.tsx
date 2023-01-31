@@ -10,8 +10,10 @@ import {
   getDocs,
   limit,
   orderBy,
+  Query,
   query,
   QueryDocumentSnapshot,
+  QuerySnapshot,
   startAfter,
   startAt,
   Timestamp,
@@ -24,58 +26,50 @@ interface IFeedStore {
   posts: IPost[];
   orchestra: number;
   scroll: number;
-  getPosts: (id: string, status: IFeedStoreStatus) => Promise<void>;
+
+  getPosts: (id: string, type: IFeedGetType) => Promise<void>;
+
   setPosts: (posts: IPost[]) => void;
   setOrchestra: (orchestra: number) => void;
   setScroll: (scroll: number) => void;
 }
 
-type IFeedStoreStatus = "init" | "load" | "refresh" | "delete";
+type IFeedGetType = "init" | "load" | "refresh";
 
 export let feedFirstVisible: QueryDocumentSnapshot<DocumentData>;
 export let feedLastVisible: QueryDocumentSnapshot<DocumentData>;
 
-async function getPostsHelper(
-  id: string,
-  prevPosts: IPost[],
-  status: IFeedStoreStatus
-): Promise<IPost[]> {
-  const user = await getDataByRef<IUser>(doc(db, "users", id));
-  const q =
-    status === "init"
-      ? query(
-          collection(db, "posts"),
-          where("uid", "in", [...user.followings, id]),
-          orderBy("createdAt", "desc"),
-          limit(POST_PER_PAGE.feed.post)
-        )
-      : status === "load"
-      ? query(
-          collection(db, "posts"),
-          where("uid", "in", [...user.followings, id]),
-          orderBy("createdAt", "desc"),
-          startAfter(feedLastVisible),
-          limit(POST_PER_PAGE.feed.post)
-        )
-      : status === "refresh"
-      ? query(
-          collection(db, "posts"),
-          where("uid", "in", [...user.followings, id]),
-          orderBy("createdAt", "desc"),
-          endBefore(feedFirstVisible)
-        )
-      : status === "delete"
-      ? query(
-          collection(db, "posts"),
-          where("uid", "in", [...user.followings, id]),
-          orderBy("createdAt", "desc"),
-          startAt(feedFirstVisible),
-          endAt(feedLastVisible)
-        )
-      : null;
-  if (!q) return [];
+function getQueryByType(user: IUser, type: IFeedGetType): Query<DocumentData> {
+  const id = user.id;
+  if (type === "init")
+    return query(
+      collection(db, "posts"),
+      where("uid", "in", [...user.followings, id]),
+      orderBy("createdAt", "desc"),
+      limit(POST_PER_PAGE.feed.post)
+    );
+  else if (type === "load")
+    return query(
+      collection(db, "posts"),
+      where("uid", "in", [...user.followings, id]),
+      orderBy("createdAt", "desc"),
+      startAfter(feedLastVisible),
+      limit(POST_PER_PAGE.feed.post)
+    );
+  else
+    return query(
+      collection(db, "posts"),
+      where("uid", "in", [...user.followings, id]),
+      orderBy("createdAt", "desc"),
+      endBefore(feedFirstVisible)
+    );
+}
+
+async function getPostsByQuery(
+  q: Query
+): Promise<[QuerySnapshot<DocumentData>, IPost[]]> {
   const snap = await getDocs(q);
-  let posts: IPost[] = [];
+  const posts: IPost[] = [];
   for (const doc of snap.docs) {
     const post: IPost = doc.data() as IPost;
     const uid = post.uid;
@@ -91,22 +85,45 @@ async function getPostsHelper(
     post.createdAt = (post.createdAt as Timestamp).toDate();
     posts.push(post);
   }
-  if (status === "init") {
-  } else if (status === "load") {
-    posts = [...prevPosts, ...posts];
-  } else if (status === "refresh") {
-    posts = [...posts, ...prevPosts];
-  }
+  return [snap, posts];
+}
+
+function combinePrevAndNewPosts(
+  prevPosts: IPost[],
+  posts: IPost[],
+  type: IFeedGetType
+) {
+  if (type === "init") return [...posts];
+  else if (type === "load") return [...prevPosts, ...posts];
+  else return [...posts, ...prevPosts];
+}
+
+function setCursorByType(
+  snap: QuerySnapshot<DocumentData>,
+  type: IFeedGetType
+) {
   if (snap.docs.length !== 0) {
-    if (status === "init") {
+    if (type === "init") {
       feedFirstVisible = snap.docs[0];
       feedLastVisible = snap.docs[snap.docs.length - 1];
-    } else if (status === "load") {
+    } else if (type === "load") {
       feedLastVisible = snap.docs[snap.docs.length - 1];
-    } else if (status === "refresh") {
+    } else if (type === "refresh") {
       feedFirstVisible = snap.docs[0];
     }
   }
+}
+
+async function getPostsHelper(
+  id: string,
+  prevPosts: IPost[],
+  type: IFeedGetType
+): Promise<IPost[]> {
+  const user = await getDataByRef<IUser>(doc(db, "users", id));
+  const q = getQueryByType(user, type);
+  let [snap, posts] = await getPostsByQuery(q);
+  posts = combinePrevAndNewPosts(prevPosts, posts, type);
+  setCursorByType(snap, type);
   return posts;
 }
 
@@ -115,11 +132,11 @@ const useFeedState = create<IFeedStore>()(
     posts: [] as IPost[],
     orchestra: 0,
     scroll: 0,
-    getPosts: async (id: string, status: IFeedStoreStatus) => {
-      console.log("getPosts!", id, status);
+    getPosts: async (id: string, type: IFeedGetType) => {
+      console.log("getPosts!", id, type);
       let posts: IPost[] = [];
       await Promise.all([
-        getPostsHelper(id, get().posts, status),
+        getPostsHelper(id, get().posts, type),
         new Promise((resolve, reject) => {
           setTimeout(() => {
             resolve(0);
