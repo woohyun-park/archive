@@ -1,8 +1,8 @@
 import Tab from "../components/Tab";
-import { SIZE } from "../custom";
+import { SIZE } from "../libs/custom";
 import { HiSearch, HiX } from "react-icons/hi";
 import React, { useEffect, useRef, useState } from "react";
-import { useStore } from "../apis/useStore";
+import { useStore } from "../stores/useStore";
 import { updateUser } from "../apis/firebase";
 import { useRouter } from "next/router";
 import Motion from "../motions/Motion";

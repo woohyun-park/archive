@@ -9,7 +9,7 @@ import {
   HiPencil,
 } from "react-icons/hi2";
 import { IoRefreshSharp } from "react-icons/io5";
-import { SIZE } from "../../custom";
+import { SIZE } from "../../libs/custom";
 
 interface IIconBtnProps {
   type: "like" | "comment" | "scrap" | "back" | "delete" | "modify" | "refresh";

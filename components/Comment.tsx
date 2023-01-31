@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import { HiX } from "react-icons/hi";
 import { db } from "../apis/firebase";
 import TIME from "../apis/time";
-import { useStore } from "../apis/useStore";
-import { IComment, IUser } from "../custom";
+import { useStore } from "../stores/useStore";
+import { IComment, IUser } from "../libs/custom";
 import Motion from "../motions/Motion";
 
 type ICommentProps = {

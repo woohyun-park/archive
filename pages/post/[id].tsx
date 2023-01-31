@@ -9,8 +9,8 @@ import {
 } from "../../apis/firebase";
 import Action from "../../components/Action";
 import ProfileSmall from "../../components/ProfileSmall";
-import { IComment, ILike, IPost, IScrap, IUser, SIZE } from "../../custom";
-import { useStore } from "../../apis/useStore";
+import { IComment, ILike, IPost, IScrap, IUser, SIZE } from "../../libs/custom";
+import { useStore } from "../../stores/useStore";
 import Image from "next/image";
 import {
   addDoc,

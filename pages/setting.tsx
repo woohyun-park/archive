@@ -1,9 +1,8 @@
 import axios, { AxiosRequestConfig } from "axios";
 import { useRouter } from "next/router";
 import React, { useRef, useState } from "react";
-import { useStore } from "../apis/useStore";
+import { useStore } from "../stores/useStore";
 import { useForm } from "react-hook-form";
-import Back from "../components/atoms/Back";
 import Image from "next/image";
 import { updateUser } from "../apis/firebase";
 import Motion from "../motions/Motion";

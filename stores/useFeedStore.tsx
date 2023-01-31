@@ -1,6 +1,6 @@
 import create from "zustand";
 import { devtools } from "zustand/middleware";
-import { IComment, IDict, ILike, IPost, IScrap, ITag, IUser } from "../custom";
+import { IComment, ILike, IPost, IScrap, IUser } from "../libs/custom";
 import {
   collection,
   doc,
@@ -19,7 +19,7 @@ import {
   Timestamp,
   where,
 } from "firebase/firestore";
-import { db, getData, getDataByRef, getEach } from "./firebase";
+import { db, getData, getDataByRef, getEach } from "../apis/firebase";
 import { POST_PER_PAGE } from "./useStore";
 
 interface IFeedStore {

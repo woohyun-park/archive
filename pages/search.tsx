@@ -1,7 +1,7 @@
 import List from "../components/views/List";
-import { SIZE } from "../custom";
+import { SIZE } from "../libs/custom";
 import { HiSearch } from "react-icons/hi";
-import { useStore } from "../apis/useStore";
+import { useStore } from "../stores/useStore";
 import Link from "next/link";
 import Motion from "../motions/Motion";
 import Box from "../components/Box";

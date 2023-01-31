@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { RiHashtag } from "react-icons/ri";
-import { POST_PER_PAGE, useStore } from "../../apis/useStore";
-import { IRoute, IPost, IType, IDict, ITag, SIZE } from "../../custom";
+import { POST_PER_PAGE, useStore } from "../../stores/useStore";
+import { IRoute, IPost, IType, IDict, ITag, SIZE } from "../../libs/custom";
 import { useInfiniteScroll } from "../../hooks/useInfiniteScroll";
 import Motion from "../../motions/Motion";
 import Box from "../Box";

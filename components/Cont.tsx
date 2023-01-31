@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { getRoute, IPost, IType } from "../custom";
+import { getRoute, IPost, IType } from "../libs/custom";
 import ContImage from "./ContImage";
 
 interface IImageProps {

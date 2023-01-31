@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import React from "react";
-import { useStore } from "../../apis/useStore";
+import { useStore } from "../../stores/useStore";
 
 interface IWrapScroll {
   children: React.ReactNode;

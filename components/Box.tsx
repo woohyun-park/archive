@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { COLOR, getRoute, IPost } from "../custom";
+import { COLOR, getRoute, IPost } from "../libs/custom";
 
 interface IBoxProps {
   post: IPost;

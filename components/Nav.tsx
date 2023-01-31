@@ -12,8 +12,8 @@ import {
   HiUser,
   HiOutlineUser,
 } from "react-icons/hi";
-import { useStore } from "../apis/useStore";
-import { SIZE } from "../custom";
+import { useStore } from "../stores/useStore";
+import { SIZE } from "../libs/custom";
 import WrapScroll from "./wrappers/WrapScroll";
 
 export default function Nav() {

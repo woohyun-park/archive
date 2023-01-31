@@ -1,17 +1,17 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { useStore } from "../apis/useStore";
+import { useStore } from "../stores/useStore";
 import Box from "../components/Box";
 import WrapScroll from "../components/wrappers/WrapScroll";
 import Loader from "../components/Loader";
 import Action from "../components/Action";
 import ProfileSmall from "../components/ProfileSmall";
-import { IUser } from "../custom";
+import { IUser } from "../libs/custom";
 import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 import IconBtn from "../components/atoms/IconBtn";
-import { useFeedStore } from "../apis/useFeedStore";
+import { useFeedStore } from "../stores/useFeedStore";
 import { AnimatePresence, motion, Variants } from "framer-motion";
-import { floatVariants } from "../motions/motionLib";
+import { floatVariants } from "../libs/motionLib";
 
 export default function Feed() {
   const { gCurUser, gScroll } = useStore();

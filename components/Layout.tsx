@@ -6,13 +6,13 @@ import {
 } from "firebase/auth";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import { useStore } from "../apis/useStore";
+import { useStore } from "../stores/useStore";
 import { auth, db } from "../apis/firebase";
 import Nav from "./Nav";
 import { doc, getDoc, setDoc } from "firebase/firestore";
-import { COLOR, DEFAULT, IUser, SIZE } from "../custom";
+import { COLOR, DEFAULT, IUser, SIZE } from "../libs/custom";
 import { RiAppleFill, RiFacebookFill, RiGoogleFill } from "react-icons/ri";
-import { useFeedStore } from "../apis/useFeedStore";
+import { useFeedStore } from "../stores/useFeedStore";
 
 interface ILayoutProps {
   children: React.ReactNode;

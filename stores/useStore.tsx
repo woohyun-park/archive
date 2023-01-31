@@ -10,7 +10,7 @@ import {
   ITag,
   IType,
   IUser,
-} from "../custom";
+} from "../libs/custom";
 import {
   collection,
   doc,
@@ -35,7 +35,7 @@ import {
   getDataByRef,
   getDatasByQuery,
   getEach,
-} from "./firebase";
+} from "../apis/firebase";
 import { Unsubscribe } from "firebase/auth";
 
 interface IState {

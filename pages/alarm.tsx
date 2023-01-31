@@ -1,4 +1,4 @@
-import { useStore } from "../apis/useStore";
+import { useStore } from "../stores/useStore";
 import Motion from "../motions/Motion";
 
 export default function Alarm() {

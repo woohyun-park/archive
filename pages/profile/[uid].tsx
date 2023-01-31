@@ -9,9 +9,9 @@ import {
   updateFollow,
 } from "../../apis/firebase";
 import Tab from "../../components/Tab";
-import { IDict, IPost, IScrap, ITag, IUser, SIZE } from "../../custom";
+import { IDict, IPost, IScrap, ITag, IUser, SIZE } from "../../libs/custom";
 import { HiOutlineCog } from "react-icons/hi";
-import { useStore } from "../../apis/useStore";
+import { useStore } from "../../stores/useStore";
 import Link from "next/link";
 import { useState } from "react";
 import Image from "next/image";

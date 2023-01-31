@@ -1,5 +1,5 @@
 import { HiCheck } from "react-icons/hi";
-import { COLOR, SIZE } from "../../custom";
+import { COLOR, SIZE } from "../../libs/custom";
 
 interface IColorProps {
   color: string;

@@ -15,7 +15,7 @@ import {
   where,
 } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
-import { IComment, IDict, ILike, IScrap, ITag, IUser } from "../custom";
+import { IComment, IDict, ILike, IScrap, ITag, IUser } from "../libs/custom";
 
 interface IPathParams {
   params: { [param: string]: string };

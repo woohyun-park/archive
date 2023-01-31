@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { fadeVariants, floatVariants, IMotionType } from "./motionLib";
+import { fadeVariants, floatVariants, IMotionType } from "../libs/motionLib";
 
 type IMotion = {
   children: React.ReactNode;

@@ -2,11 +2,14 @@ import { MutableRefObject, useEffect, useRef } from "react";
 import Motion from "../motions/Motion";
 
 interface ILoaderProps {
-  isVisible: boolean;
+  isVisible?: boolean;
   scrollIntoView?: boolean;
 }
 
-export default function Loader({ isVisible, scrollIntoView }: ILoaderProps) {
+export default function Loader({
+  isVisible = true,
+  scrollIntoView,
+}: ILoaderProps) {
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     setTimeout(() => {

@@ -1,14 +1,14 @@
 import { arrayRemove, arrayUnion, doc, updateDoc } from "firebase/firestore";
 import Link from "next/link";
 import { db, deletePost, updateUser } from "../apis/firebase";
-import { useStore } from "../apis/useStore";
-import { getRoute, IPost, IRoute, IType, IUser, SIZE } from "../custom";
+import { useStore } from "../stores/useStore";
+import { getRoute, IPost, IRoute, IType, IUser, SIZE } from "../libs/custom";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import TIME from "../apis/time";
 import IconBtn from "./atoms/IconBtn";
-import { useFeedStore, feedFirstVisible } from "../apis/useFeedStore";
+import { useFeedStore, feedFirstVisible } from "../stores/useFeedStore";
 
 type IProfileSmallProps = {
   user: IUser;

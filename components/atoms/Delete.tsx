@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { HiX } from "react-icons/hi";
 import { deletePost } from "../../apis/firebase";
-import { SIZE } from "../../custom";
+import { SIZE } from "../../libs/custom";
 
 interface IDeleteProps {
   id: string;

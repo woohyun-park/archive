@@ -9,8 +9,8 @@ import {
 } from "firebase/firestore";
 import React, { useRef, useState } from "react";
 import { db, getEach } from "../apis/firebase";
-import { COLOR, IPost, ITag, IDict } from "../custom";
-import { useStore } from "../apis/useStore";
+import { COLOR, IPost, ITag, IDict } from "../libs/custom";
+import { useStore } from "../stores/useStore";
 import { useRouter } from "next/router";
 import { HiX } from "react-icons/hi";
 import { useForm } from "react-hook-form";
@@ -20,7 +20,7 @@ import ReactTextareaAutosize from "react-textarea-autosize";
 import Modal from "../components/Modal";
 import Motion from "../motions/Motion";
 import IconBtn from "../components/atoms/IconBtn";
-import { useFeedStore } from "../apis/useFeedStore";
+import { useFeedStore } from "../stores/useFeedStore";
 
 interface IForm {
   file: File[];
