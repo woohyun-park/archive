@@ -12,7 +12,7 @@ export default function Box({ post }: IBoxProps) {
   const route = getRoute(router);
   return (
     <>
-      <div className="relative overflow-hidden rounded-lg w-full pb-[100%]">
+      <div className="relative overflow-hidden rounded-lg w-full pb-[100%] duration-500">
         {post.imgs.length === 0 ? (
           <div className="absolute object-cover w-full h-full" id="box_d1" />
         ) : (

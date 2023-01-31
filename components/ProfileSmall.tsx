@@ -8,7 +8,7 @@ import { useRouter } from "next/router";
 import Image from "next/image";
 import TIME from "../apis/time";
 import IconBtn from "./atoms/IconBtn";
-import useFeedState, { feedFirstVisible } from "../apis/useFeedState";
+import { feedStore, feedFirstVisible } from "../apis/feedStore";
 
 type IProfileSmallProps = {
   user: IUser;
@@ -24,7 +24,7 @@ export default function ProfileSmall({ user, post }: IProfileSmallProps) {
   const router = useRouter();
   const route = getRoute(router);
 
-  const { posts, setPosts } = useFeedState();
+  const { posts, setPosts, setHidden } = feedStore();
 
   useEffect(() => {
     setIsFollowing(
@@ -130,12 +130,11 @@ export default function ProfileSmall({ user, post }: IProfileSmallProps) {
                     onClick={async () => {
                       if (confirm("정말 삭제하시겠습니까?")) {
                         const ref = await deletePost(post?.id || "");
-                        setPosts([...posts].filter((e) => e.id !== post?.id));
+                        setHidden(post?.id || "");
                         alert("삭제되었습니다");
                       } else {
                         console.log(post?.id);
                       }
-                      router.push("/");
                     }}
                   />
                 </div>

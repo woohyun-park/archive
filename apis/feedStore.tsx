@@ -26,11 +26,13 @@ interface IFeedStore {
   posts: IPost[];
   orchestra: Set<string>;
   scroll: number;
+  hidden: Set<string>;
 
   getPosts: (id: string, type: IFeedGetType) => Promise<void>;
 
   setPosts: (posts: IPost[]) => void;
   setOrchestra: (posts: IPost[]) => void;
+  setHidden: (pid: string) => void;
   setScroll: (scroll: number) => void;
 }
 
@@ -61,7 +63,7 @@ function getQueryByType(user: IUser, type: IFeedGetType): Query<DocumentData> {
       collection(db, "posts"),
       where("uid", "in", [...user.followings, id]),
       orderBy("createdAt", "desc"),
-      endBefore(feedFirstVisible)
+      endAt(feedLastVisible)
     );
 }
 
@@ -95,7 +97,7 @@ function combinePrevAndNewPosts(
 ) {
   if (type === "init") return [...posts];
   else if (type === "load") return [...prevPosts, ...posts];
-  else return [...posts, ...prevPosts];
+  else return [...posts];
 }
 
 function setCursorByType(
@@ -110,6 +112,7 @@ function setCursorByType(
       feedLastVisible = snap.docs[snap.docs.length - 1];
     } else if (type === "refresh") {
       feedFirstVisible = snap.docs[0];
+      feedLastVisible = snap.docs[snap.docs.length - 1];
     }
   }
 }
@@ -127,10 +130,11 @@ async function getPostsHelper(
   return posts;
 }
 
-const useFeedState = create<IFeedStore>()(
+export const feedStore = create<IFeedStore>()(
   devtools((set, get) => ({
     posts: [] as IPost[],
     orchestra: new Set<string>(),
+    hidden: new Set<string>(),
     scroll: 0,
     getPosts: async (id: string, type: IFeedGetType) => {
       console.log("getPosts!", id, type);
@@ -173,6 +177,16 @@ const useFeedState = create<IFeedStore>()(
         };
       });
     },
+    setHidden: (pid: string) => {
+      const hidden = get().hidden;
+      hidden.add(pid);
+      set((state: IFeedStore) => {
+        return {
+          ...state,
+          hidden,
+        };
+      });
+    },
     setScroll: (scroll: number) => {
       set((state: IFeedStore) => {
         return {
@@ -183,5 +197,3 @@ const useFeedState = create<IFeedStore>()(
     },
   }))
 );
-
-export default useFeedState;

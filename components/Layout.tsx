@@ -12,7 +12,7 @@ import Nav from "./Nav";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { COLOR, DEFAULT, IUser, SIZE } from "../custom";
 import { RiAppleFill, RiFacebookFill, RiGoogleFill } from "react-icons/ri";
-import useFeedState from "../apis/useFeedState";
+import { feedStore } from "../apis/feedStore";
 
 interface ILayoutProps {
   children: React.ReactNode;
@@ -30,7 +30,7 @@ export default function Layout({ children }: ILayoutProps) {
   const provider = new GoogleAuthProvider();
   const router = useRouter();
   const { gInit } = useStore();
-  const { getPosts } = useFeedState();
+  const { getPosts } = feedStore();
   const [login, setLogin] = useState<ILogin>({
     email: "",
     password: "",

@@ -10,12 +10,19 @@ import { IPost, IUser, SIZE } from "../custom";
 import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 import MotionFloat from "../motions/motionFloat";
 import IconBtn from "../components/atoms/IconBtn";
-import useFeedState from "../apis/useFeedState";
+import { feedStore } from "../apis/feedStore";
 
 export default function Feed() {
   const { gCurUser } = useStore();
-  const { posts, orchestra, scroll, getPosts, setOrchestra, setScroll } =
-    useFeedState();
+  const {
+    posts,
+    orchestra,
+    scroll,
+    getPosts,
+    setOrchestra,
+    setScroll,
+    hidden,
+  } = feedStore();
   const router = useRouter();
   const [refreshLoading, setRefreshLoading] = useState(false);
   const [resetRefresh, setResetRefresh] = useState<boolean | null>(null);
@@ -44,7 +51,7 @@ export default function Feed() {
   }, [resetRefresh]);
 
   const eachPost = (e: IPost, i: number) => (
-    <LinkScroll key={i}>
+    <LinkScroll key={e.id} isVisible={!hidden.has(e.id || "")}>
       <ProfileSmall post={e} user={e.author as IUser} type="post" />
       <Box post={e} />
       <Action
@@ -80,7 +87,7 @@ export default function Feed() {
         <Loader isVisible={refreshLoading} />
         {posts.map((e, i) =>
           !orchestra.has(e.id || "") ? (
-            <MotionFloat key={String(i)}>{eachPost(e, i)}</MotionFloat>
+            <MotionFloat key={e.id || ""}>{eachPost(e, i)}</MotionFloat>
           ) : (
             <>{eachPost(e, i)}</>
           )
