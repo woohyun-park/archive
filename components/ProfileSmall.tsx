@@ -8,7 +8,7 @@ import { useRouter } from "next/router";
 import Image from "next/image";
 import { displayCreatedAt } from "../libs/timeLib";
 import IconBtn from "./atoms/IconBtn";
-import { useFeedStore } from "../stores/useFeedStore";
+import { useFeed } from "../stores/useFeed";
 
 type IProfileSmallProps = {
   user: IUser;
@@ -24,7 +24,7 @@ export default function ProfileSmall({ user, post }: IProfileSmallProps) {
   const router = useRouter();
   const route = getRoute(router);
 
-  const { posts, setPosts, getPosts } = useFeedStore();
+  const { posts, setPosts, getPosts } = useFeed();
 
   useEffect(() => {
     setIsFollowing(

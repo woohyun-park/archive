@@ -8,26 +8,20 @@ import {
   getPostsByQuery,
   getQueryByType,
   setCursorByType,
-} from "./useFeedStoreHelper";
-
-interface IFeedStore {
-  posts: IPost[];
-  scroll: number;
-
-  getPosts: (id: string, type: IFeedGetType) => Promise<void>;
-
-  setPosts: (posts: IPost[]) => void;
-  setScroll: (scroll: number) => void;
-}
+} from "./useFeedHelper";
 
 export type IFeedGetType = "init" | "load" | "refresh";
 
-export const useFeedStore = create<IFeedStore>()(
+interface IFeedStore {
+  posts: IPost[];
+  getPosts: (id: string, type: IFeedGetType) => Promise<void>;
+  setPosts: (posts: IPost[]) => void;
+}
+
+export const useFeed = create<IFeedStore>()(
   devtools((set, get) => ({
     posts: [] as IPost[],
-    scroll: 0,
     getPosts: async (id: string, type: IFeedGetType) => {
-      console.log("getPosts!", id, type);
       let posts: IPost[] = [];
       await Promise.all([
         (async () => {
@@ -58,14 +52,6 @@ export const useFeedStore = create<IFeedStore>()(
         return {
           ...state,
           posts,
-        };
-      });
-    },
-    setScroll: (scroll: number) => {
-      set((state: IFeedStore) => {
-        return {
-          ...state,
-          scroll,
         };
       });
     },

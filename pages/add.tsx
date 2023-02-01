@@ -20,7 +20,7 @@ import ReactTextareaAutosize from "react-textarea-autosize";
 import Modal from "../components/Modal";
 import Motion from "../motions/Motion";
 import IconBtn from "../components/atoms/IconBtn";
-import { useFeedStore } from "../stores/useFeedStore";
+import { useFeed } from "../stores/useFeed";
 
 interface IForm {
   file: File[];
@@ -33,7 +33,7 @@ interface IForm {
 
 export default function Add() {
   const { gCurUser } = useStore();
-  const { getPosts } = useFeedStore();
+  const { getPosts } = useFeed();
   const router = useRouter();
   const [prevPost, setPrevPost] = useState(
     router.query.post

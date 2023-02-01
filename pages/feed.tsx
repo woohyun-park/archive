@@ -9,14 +9,16 @@ import ProfileSmall from "../components/ProfileSmall";
 import { IUser } from "../libs/custom";
 import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 import IconBtn from "../components/atoms/IconBtn";
-import { useFeedStore } from "../stores/useFeedStore";
+import { useFeed } from "../stores/useFeed";
 import { AnimatePresence, motion, Variants } from "framer-motion";
 import { floatVariants } from "../libs/motionLib";
+import { useScrollSave } from "../stores/useScrollSave";
 
 export default function Feed() {
-  const { gCurUser, gScroll } = useStore();
-  const { posts, getPosts } = useFeedStore();
+  const { gCurUser } = useStore();
+  const { posts, getPosts } = useFeed();
   const router = useRouter();
+  const { scroll } = useScrollSave();
   const [refreshLoading, setRefreshLoading] = useState(false);
   const [resetRefresh, setResetRefresh] = useState<boolean | null>(null);
 
@@ -33,7 +35,7 @@ export default function Feed() {
       return true;
     });
     setTimeout(() => {
-      window.scrollTo(0, gScroll[router.pathname]);
+      window.scrollTo(0, scroll[router.pathname]);
     }, 10);
     if (router.query.refresh) {
       handleRefresh();

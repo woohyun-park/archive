@@ -50,7 +50,6 @@ interface IState {
   };
   gStatus: IStatus;
   gPage: IDict<IDict<number>>;
-  gScroll: IDict<number>;
   gInit: (id: string) => Promise<void>;
   gSetFeed: (id: string, isRefresh: boolean) => Promise<void>;
   gSetSearch: (
@@ -60,7 +59,6 @@ interface IState {
   ) => Promise<void>;
   gSetStatus: (status: IStatus) => void;
   gSetPage: (route: IRoute, type: IType, page: number) => void;
-  gSetScroll: (pathname: string, scroll: number) => void;
 }
 interface IStatus {
   isModalOpen: boolean;
@@ -367,15 +365,6 @@ export const useStore = create<IState>()(
       console.log("gSetPage", route, type, page);
       set((state: IState) => {
         state.gPage[route][type] = page;
-        return {
-          ...state,
-        };
-      });
-    },
-    gSetScroll: (pathname: string, scroll: number) => {
-      console.log("gSetScroll", pathname, scroll);
-      set((state: IState) => {
-        state.gScroll[pathname] = scroll;
         return {
           ...state,
         };

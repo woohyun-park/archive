@@ -16,7 +16,7 @@ import {
 } from "firebase/firestore";
 import { db, getData, getEach } from "../apis/firebase";
 import { POST_PER_PAGE } from "./useStore";
-import { IFeedGetType } from "./useFeedStore";
+import { IFeedGetType } from "./useFeed";
 
 export let feedFirstVisible: QueryDocumentSnapshot<DocumentData>;
 export let feedLastVisible: QueryDocumentSnapshot<DocumentData>;
@@ -33,7 +33,7 @@ export function getQueryByType(
       orderBy("createdAt", "desc"),
       limit(POST_PER_PAGE.feed.post)
     );
-  else if (type === "load")
+  if (type === "load")
     return query(
       collection(db, "posts"),
       where("uid", "in", [...user.followings, id]),
@@ -41,13 +41,12 @@ export function getQueryByType(
       startAfter(feedLastVisible),
       limit(POST_PER_PAGE.feed.post)
     );
-  else
-    return query(
-      collection(db, "posts"),
-      where("uid", "in", [...user.followings, id]),
-      orderBy("createdAt", "desc"),
-      endAt(feedLastVisible)
-    );
+  return query(
+    collection(db, "posts"),
+    where("uid", "in", [...user.followings, id]),
+    orderBy("createdAt", "desc"),
+    endAt(feedLastVisible)
+  );
 }
 
 export async function getPostsByQuery(
