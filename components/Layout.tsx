@@ -13,6 +13,7 @@ import { doc, getDoc, setDoc } from "firebase/firestore";
 import { COLOR, DEFAULT, IUser, SIZE } from "../libs/custom";
 import { RiAppleFill, RiFacebookFill, RiGoogleFill } from "react-icons/ri";
 import { useFeed } from "../stores/useFeed";
+import { useUser } from "../stores/useUser";
 
 interface ILayoutProps {
   children: React.ReactNode;
@@ -30,6 +31,7 @@ export default function Layout({ children }: ILayoutProps) {
   const provider = new GoogleAuthProvider();
   const router = useRouter();
   const { gInit } = useStore();
+  const { getCurUser } = useUser();
   const { getPosts } = useFeed();
   const [login, setLogin] = useState<ILogin>({
     email: "",
@@ -43,6 +45,7 @@ export default function Layout({ children }: ILayoutProps) {
     auth.onAuthStateChanged(async (authState) => {
       if (authState) {
         await gInit(authState.uid);
+        await getCurUser(authState.uid);
         await getPosts(authState.uid, "init");
         setLogin({ ...login, isLoggedIn: true });
       } else {

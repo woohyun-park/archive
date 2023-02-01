@@ -12,12 +12,12 @@ import {
   HiUser,
   HiOutlineUser,
 } from "react-icons/hi";
-import { useStore } from "../stores/useStore";
 import { SIZE } from "../libs/custom";
 import WrapScroll from "./wrappers/WrapScroll";
+import { useUser } from "../stores/useUser";
 
 export default function Nav() {
-  const { gCurUser } = useStore();
+  const { curUser } = useUser();
   const router = useRouter();
   const path = router.pathname;
 
@@ -61,9 +61,9 @@ export default function Nav() {
               )}
             </a>
           </Link>
-          <Link href={`/profile/${gCurUser.id}`} legacyBehavior>
+          <Link href={`/profile/${curUser.id}`} legacyBehavior>
             <a>
-              {router.query.uid === gCurUser.id ? (
+              {router.query.uid === curUser.id ? (
                 <HiUser size={SIZE.icon} />
               ) : (
                 <HiOutlineUser size={SIZE.icon} />

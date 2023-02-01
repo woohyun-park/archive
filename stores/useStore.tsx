@@ -1,32 +1,17 @@
 import create from "zustand";
 import { devtools } from "zustand/middleware";
-import {
-  IDict,
-  ILike,
-  IPost,
-  IRoute,
-  IScrap,
-  ITag,
-  IType,
-  IUser,
-} from "../libs/custom";
+import { IDict, IPost, IRoute, ITag, IType, IUser } from "../libs/custom";
 import {
   collection,
-  doc,
   endAt,
-  getDoc,
   limit,
-  onSnapshot,
   orderBy,
   query,
   startAt,
-  where,
 } from "firebase/firestore";
 import { db, getDatasByQuery, getEach } from "../apis/firebase";
-import { Unsubscribe } from "firebase/auth";
 
 interface IState {
-  gCurUser: IUser;
   gSearch: {
     posts: IPost[];
     tags: ITag[];
@@ -102,74 +87,7 @@ async function loadSearch<T>(
     );
   }
 }
-async function loadListener(
-  set: (
-    partial:
-      | IState
-      | Partial<IState>
-      | ((state: IState) => IState | Partial<IState>),
-    replace?: boolean | undefined
-  ) => void,
-  get: () => IState,
-  id: string
-): Promise<{
-  unsubscribeUser: Unsubscribe;
-  unsubscribeLikes: Unsubscribe;
-  unsubscribeScraps: Unsubscribe;
-}> {
-  const unsubscribeUser = onSnapshot(doc(db, "users", id), (doc) => {
-    set((state: IState) => {
-      return {
-        ...state,
-        gCurUser: {
-          ...(doc.data() as IUser),
-          likes: state.gCurUser.likes,
-          scraps: state.gCurUser.scraps,
-        },
-      };
-    });
-  });
-  const unsubscribeLikes = onSnapshot(
-    query(collection(db, "likes"), where("uid", "==", id)),
-    (snap) => {
-      const datas: ILike[] = [];
-      snap.forEach((doc) => {
-        datas.push({ ...(doc.data() as ILike) });
-      });
-      set((state: IState) => {
-        return {
-          ...state,
-          gCurUser: { ...state.gCurUser, likes: datas },
-        };
-      });
-    }
-  );
-  const unsubscribeScraps = onSnapshot(
-    query(collection(db, "scraps"), where("uid", "==", id)),
-    (snap) => {
-      const datas: IScrap[] = [];
-      snap.forEach((doc) => {
-        datas.push({ ...(doc.data() as IScrap) });
-      });
-      set((state: IState) => {
-        return {
-          ...state,
-          gCurUser: { ...state.gCurUser, scraps: datas },
-        };
-      });
-    }
-  );
-  return { unsubscribeUser, unsubscribeLikes, unsubscribeScraps };
-}
 async function loadstate(get: () => IState, id: string) {
-  const user = await getDoc(doc(db, "users", id));
-  const likes = await getEach<ILike>("likes", id);
-  const scraps = await getEach<IScrap>("scraps", id);
-  const curUser = {
-    ...(user.data() as IUser),
-    likes,
-    scraps,
-  };
   const search = {
     posts: await loadSearch<IPost>("sPost", get().gPage.search.post),
     tags: [],
@@ -177,23 +95,12 @@ async function loadstate(get: () => IState, id: string) {
   };
 
   return {
-    gCurUser: curUser,
     gSearch: search,
   };
 }
 
 export const useStore = create<IState>()(
   devtools((set, get) => ({
-    gCurUser: {
-      id: "",
-      email: "",
-      displayName: "",
-      photoURL:
-        "https://res.cloudinary.com/dl5qaj6le/image/upload/v1672976914/archive/static/default_user_photoURL.png",
-      txt: "",
-      followers: [] as string[],
-      followings: [] as string[],
-    },
     gSearch: {
       posts: [] as IPost[],
       tags: [] as ITag[],
@@ -223,7 +130,6 @@ export const useStore = create<IState>()(
           ...loadedState,
         };
       });
-      await loadListener(set, get, id);
     },
     gSetPage: (route: IRoute, type: IType, page: number) => {
       set((state: IState) => {

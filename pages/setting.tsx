@@ -8,6 +8,7 @@ import { updateUser } from "../apis/firebase";
 import Motion from "../motions/Motion";
 import Btn from "../components/atoms/Btn";
 import IconBtn from "../components/atoms/IconBtn";
+import { useUser } from "../stores/useUser";
 
 interface IForm {
   file: File[];
@@ -16,8 +17,8 @@ interface IForm {
 }
 
 export default function Setting() {
-  const { gCurUser } = useStore();
-  const [preview, setPreview] = useState(gCurUser.photoURL);
+  const { curUser } = useUser();
+  const [preview, setPreview] = useState(curUser.photoURL);
   const router = useRouter();
   const {
     register,
@@ -27,17 +28,17 @@ export default function Setting() {
   } = useForm<IForm>({
     defaultValues: {
       file: undefined,
-      displayName: gCurUser.displayName,
-      txt: gCurUser.txt,
+      displayName: curUser.displayName,
+      txt: curUser.txt,
     },
   });
   const file = register("file");
   const fileRef = useRef<HTMLInputElement | null>(null);
 
   async function onValid(data: IForm) {
-    if (gCurUser.photoURL === preview) {
+    if (curUser.photoURL === preview) {
       updateUser({
-        id: gCurUser.id,
+        id: curUser.id,
         displayName: data.displayName,
         txt: data.txt,
       });
@@ -60,14 +61,14 @@ export default function Setting() {
         )
         .then(async (res) => {
           updateUser({
-            id: gCurUser.id,
+            id: curUser.id,
             displayName: data.displayName,
             txt: data.txt,
             photoURL: res.data.url,
           });
         });
     }
-    router.push(`/profile/${gCurUser.id}`);
+    router.push(`/profile/${curUser.id}`);
   }
   function handleImageOnChange(e: React.ChangeEvent<HTMLInputElement>) {
     file.onChange(e);

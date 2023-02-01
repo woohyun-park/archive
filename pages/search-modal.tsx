@@ -7,6 +7,7 @@ import { updateUser } from "../apis/firebase";
 import { useRouter } from "next/router";
 import Motion from "../motions/Motion";
 import { useOutsideClick } from "../hooks/useOutsideClick";
+import { useUser } from "../stores/useUser";
 
 interface ISearchState {
   isInitial: boolean;
@@ -14,8 +15,8 @@ interface ISearchState {
 }
 
 export default function Search() {
-  const { gCurUser, gSetSearch, gSearch, gStatus, gSetStatus, gPage } =
-    useStore();
+  const { gSetSearch, gSearch, gStatus, gSetStatus, gPage } = useStore();
+  const { curUser } = useUser();
   const [state, setState] = useState<ISearchState>({
     isInitial: true,
     searchedKeyword: "",
@@ -39,24 +40,24 @@ export default function Search() {
   }
 
   function updateHistory(keyword: string) {
-    if (gCurUser.history) {
-      const index = gCurUser.history.indexOf(keyword);
+    if (curUser.history) {
+      const index = curUser.history.indexOf(keyword);
       index === -1
         ? updateUser({
-            ...gCurUser,
-            history: [keyword, ...gCurUser.history],
+            ...curUser,
+            history: [keyword, ...curUser.history],
           })
         : updateUser({
-            ...gCurUser,
+            ...curUser,
             history: [
               keyword,
-              ...gCurUser.history.slice(0, index),
-              ...gCurUser.history.slice(index + 1, gCurUser.history.length),
+              ...curUser.history.slice(0, index),
+              ...curUser.history.slice(index + 1, curUser.history.length),
             ],
           });
     } else {
       updateUser({
-        ...gCurUser,
+        ...curUser,
         history: [keyword],
       });
     }
@@ -87,17 +88,17 @@ export default function Search() {
 
   function handleDeleteAll(e: React.MouseEvent<HTMLElement>) {
     updateUser({
-      ...gCurUser,
+      ...curUser,
       history: [],
     });
   }
 
   function handleDelete(e: React.MouseEvent<HTMLElement>) {
-    const history = gCurUser.history;
+    const history = curUser.history;
     const id = e.currentTarget.id;
     if (history) {
       updateUser({
-        ...gCurUser,
+        ...curUser,
         history: [
           ...history.slice(0, Number(id)),
           ...history.slice(Number(id) + 1, history.length),
@@ -161,7 +162,7 @@ export default function Search() {
                     모두 삭제
                   </div>
                 </div>
-                {[...(gCurUser.history || [])]
+                {[...(curUser.history || [])]
                   ?.filter(
                     (each) =>
                       gStatus.keyword === "" ||

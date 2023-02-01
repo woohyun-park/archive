@@ -1,15 +1,22 @@
 import create from "zustand";
 import { devtools } from "zustand/middleware";
 import { ILike, IScrap, IUser } from "../libs/custom";
-import { doc, getDoc, onSnapshot } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  onSnapshot,
+  query,
+  where,
+} from "firebase/firestore";
 import { db, getEach } from "../apis/firebase";
 
 interface IState {
   curUser: IUser;
-  getCurUser: (id: string) => void;
+  getCurUser: (id: string) => Promise<void>;
 }
 
-export const useStore = create<IState>()(
+export const useUser = create<IState>()(
   devtools((set, get) => ({
     curUser: {
       id: "",
@@ -30,7 +37,7 @@ export const useStore = create<IState>()(
         likes,
         scraps,
       };
-      onSnapshot(doc(db, "users", id), (doc) => {
+      const unsubscribeUser = onSnapshot(doc(db, "users", id), (doc) => {
         set((state: IState) => {
           return {
             ...state,
@@ -42,6 +49,36 @@ export const useStore = create<IState>()(
           };
         });
       });
+      const unsubscribeLikes = onSnapshot(
+        query(collection(db, "likes"), where("uid", "==", id)),
+        (snap) => {
+          const datas: ILike[] = [];
+          snap.forEach((doc) => {
+            datas.push({ ...(doc.data() as ILike) });
+          });
+          set((state: IState) => {
+            return {
+              ...state,
+              curUser: { ...state.curUser, likes: datas },
+            };
+          });
+        }
+      );
+      const unsubscribeScraps = onSnapshot(
+        query(collection(db, "scraps"), where("uid", "==", id)),
+        (snap) => {
+          const datas: IScrap[] = [];
+          snap.forEach((doc) => {
+            datas.push({ ...(doc.data() as IScrap) });
+          });
+          set((state: IState) => {
+            return {
+              ...state,
+              curUser: { ...state.curUser, scraps: datas },
+            };
+          });
+        }
+      );
       set((state: IState) => {
         return {
           ...state,

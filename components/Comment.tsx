@@ -7,6 +7,7 @@ import { useStore } from "../stores/useStore";
 import { IComment, IUser } from "../libs/custom";
 import Motion from "../motions/Motion";
 import { displayCreatedAt } from "../libs/timeLib";
+import { useUser } from "../stores/useUser";
 
 type ICommentProps = {
   comment: IComment;
@@ -15,7 +16,7 @@ type ICommentProps = {
 
 export default function Comment({ comment, onClick }: ICommentProps) {
   const [user, setUser] = useState<IUser | null>(null);
-  const { gCurUser } = useStore();
+  const { curUser } = useUser();
 
   useEffect(() => {
     async function init() {
@@ -49,7 +50,7 @@ export default function Comment({ comment, onClick }: ICommentProps) {
               </div>
             </div>
           </div>
-          {user?.id === gCurUser.id ? (
+          {user?.id === curUser.id ? (
             <div
               className="mx-2 mt-5 hover:cursor-pointer self-baseline"
               onClick={onClick}

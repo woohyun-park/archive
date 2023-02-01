@@ -21,6 +21,7 @@ import Modal from "../components/Modal";
 import Motion from "../motions/Motion";
 import IconBtn from "../components/atoms/IconBtn";
 import { useFeed } from "../stores/useFeed";
+import { useUser } from "../stores/useUser";
 
 interface IForm {
   file: File[];
@@ -32,7 +33,7 @@ interface IForm {
 }
 
 export default function Add() {
-  const { gCurUser } = useStore();
+  const { curUser } = useUser();
   const { getPosts } = useFeed();
   const router = useRouter();
   const [prevPost, setPrevPost] = useState(
@@ -115,7 +116,7 @@ export default function Add() {
           // 이미지를 올렸으며 등록인 경우
           else {
             const postRef = await addDoc(collection(db, "posts"), {
-              uid: gCurUser.id,
+              uid: curUser.id,
               createdAt: serverTimestamp(),
               title: data.title,
               txt: data.txt,
@@ -128,7 +129,7 @@ export default function Add() {
           }
           for await (const tag of data.tags) {
             const tempTag: ITag = {
-              uid: gCurUser.id,
+              uid: curUser.id,
               pid,
               name: tag,
             };
@@ -154,7 +155,7 @@ export default function Add() {
             });
             for await (const tag of data.tags) {
               const tempTag: ITag = {
-                uid: gCurUser.id,
+                uid: curUser.id,
                 pid: prevPost.id,
                 name: tag,
               };
@@ -189,7 +190,7 @@ export default function Add() {
         // 색깔이며 수정이 아닌 경우
         else {
           const postRef = await addDoc(collection(db, "posts"), {
-            uid: gCurUser.id,
+            uid: curUser.id,
             createdAt: serverTimestamp(),
             title: data.title,
             txt: data.txt,
@@ -202,7 +203,7 @@ export default function Add() {
         }
         for await (const tag of data.tags) {
           const tempTag: ITag = {
-            uid: gCurUser.id,
+            uid: curUser.id,
             pid: pid,
             name: tag,
           };

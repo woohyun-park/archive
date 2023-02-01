@@ -1,9 +1,7 @@
 import { AnimatePresence } from "framer-motion";
 import type { AppProps } from "next/app";
 import { useRouter } from "next/router";
-import { useStore } from "../stores/useStore";
 import Layout from "../components/Layout";
-import Modal from "../components/Modal";
 import "../styles/globals.css";
 
 export default function App({ Component, pageProps }: AppProps) {

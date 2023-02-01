@@ -13,9 +13,10 @@ import { useFeed } from "../stores/useFeed";
 import { AnimatePresence, motion, Variants } from "framer-motion";
 import { floatVariants } from "../libs/motionLib";
 import { useScrollSave } from "../stores/useScrollSave";
+import { useUser } from "../stores/useUser";
 
 export default function Feed() {
-  const { gCurUser } = useStore();
+  const { curUser } = useUser();
   const { posts, getPosts } = useFeed();
   const router = useRouter();
   const { scroll } = useScrollSave();
@@ -24,7 +25,7 @@ export default function Feed() {
 
   const { setLastIntersecting, loading } = useInfiniteScroll({
     handleIntersect: () => {
-      getPosts(gCurUser.id, "load");
+      getPosts(curUser.id, "load");
     },
     handleChange: () => {},
     changeListener: posts,
@@ -44,7 +45,7 @@ export default function Feed() {
 
   useEffect(() => {
     if (resetRefresh === null) return;
-    getPosts(gCurUser.id, "refresh").then(() => setRefreshLoading(false));
+    getPosts(curUser.id, "refresh").then(() => setRefreshLoading(false));
   }, [resetRefresh]);
 
   function handleRefresh() {
@@ -75,7 +76,7 @@ export default function Feed() {
                 <Box post={e} />
                 <Action
                   post={e}
-                  curUser={gCurUser}
+                  curUser={curUser}
                   onCommentClick={() =>
                     router.push(
                       {

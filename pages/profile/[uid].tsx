@@ -11,12 +11,12 @@ import {
 import Tab from "../../components/Tab";
 import { IDict, IPost, IScrap, ITag, IUser, SIZE } from "../../libs/custom";
 import { HiOutlineCog } from "react-icons/hi";
-import { useStore } from "../../stores/useStore";
 import Link from "next/link";
 import { useState } from "react";
 import Image from "next/image";
 import Motion from "../../motions/Motion";
 import Btn from "../../components/atoms/Btn";
+import { useUser } from "../../stores/useUser";
 
 interface IProfileProps {
   initUser: IUser;
@@ -31,12 +31,12 @@ export default function Profile({
   initScraps,
   initTags,
 }: IProfileProps) {
-  const { gCurUser } = useStore();
+  const { curUser } = useUser();
   const [user, setUser] = useState({
-    initIsFollowing: gCurUser.followings.find((elem) => elem === initUser.id)
+    initIsFollowing: curUser.followings.find((elem) => elem === initUser.id)
       ? true
       : false,
-    isFollowing: gCurUser.followings.find((elem) => elem === initUser.id)
+    isFollowing: curUser.followings.find((elem) => elem === initUser.id)
       ? true
       : false,
   });
@@ -45,7 +45,7 @@ export default function Profile({
   const [scraps, setScraps] = useState(initScraps);
 
   async function handleToggleFollow() {
-    await updateFollow(gCurUser, initUser, user.isFollowing);
+    await updateFollow(curUser, initUser, user.isFollowing);
     let len = initUser.followers.length;
     if (user.initIsFollowing === user.isFollowing) {
     } else if (user.initIsFollowing) {
@@ -59,7 +59,7 @@ export default function Profile({
   return (
     <>
       <Motion type="fade">
-        {initUser.id === gCurUser.id && (
+        {initUser.id === curUser.id && (
           <div className="flex justify-end">
             <Link href="/setting" legacyBehavior>
               <div className="flex justify-end text-black">
@@ -82,8 +82,8 @@ export default function Profile({
                 <div className="text-gray-2">팔로워</div>
                 <div className="profileNum">
                   {(() => {
-                    if (initUser.id === gCurUser.id) {
-                      return gCurUser.followers.length;
+                    if (initUser.id === curUser.id) {
+                      return curUser.followers.length;
                     }
                     const len = initUser.followers.length;
                     if (user.initIsFollowing === user.isFollowing) {
@@ -99,8 +99,8 @@ export default function Profile({
               <div>
                 <div className="text-gray-2">팔로잉</div>
                 <div className="profileNum">
-                  {initUser.id === gCurUser.id
-                    ? gCurUser.followings.length
+                  {initUser.id === curUser.id
+                    ? curUser.followings.length
                     : initUser.followings.length}
                 </div>
               </div>
@@ -113,7 +113,7 @@ export default function Profile({
 
         <div className="h-full py-4 break-all min-h-[96px]">{initUser.txt}</div>
 
-        {initUser.id === gCurUser.id ? (
+        {initUser.id === curUser.id ? (
           <Btn onClick={() => signOut(auth)} style="width: 100%;">
             로그아웃
           </Btn>
@@ -121,8 +121,8 @@ export default function Profile({
           <>
             {(() => {
               const result = [];
-              if (gCurUser.id !== initUser.id) {
-                if (gCurUser.followings.find((elem) => elem === initUser.id)) {
+              if (curUser.id !== initUser.id) {
+                if (curUser.followings.find((elem) => elem === initUser.id)) {
                   result.push(
                     <button
                       onClick={handleToggleFollow}

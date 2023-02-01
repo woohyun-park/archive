@@ -9,6 +9,7 @@ import Image from "next/image";
 import { displayCreatedAt } from "../libs/timeLib";
 import IconBtn from "./atoms/IconBtn";
 import { useFeed } from "../stores/useFeed";
+import { useUser } from "../stores/useUser";
 
 type IProfileSmallProps = {
   user: IUser;
@@ -17,9 +18,9 @@ type IProfileSmallProps = {
 };
 
 export default function ProfileSmall({ user, post }: IProfileSmallProps) {
-  const { gCurUser } = useStore();
+  const { curUser } = useUser();
   const [isFollowing, setIsFollowing] = useState(() =>
-    gCurUser.followings.find((elem) => elem === user.id) ? true : false
+    curUser.followings.find((elem) => elem === user.id) ? true : false
   );
   const router = useRouter();
   const route = getRoute(router);
@@ -28,34 +29,34 @@ export default function ProfileSmall({ user, post }: IProfileSmallProps) {
 
   useEffect(() => {
     setIsFollowing(
-      gCurUser.followings.find((elem) => elem === user.id) ? true : false
+      curUser.followings.find((elem) => elem === user.id) ? true : false
     );
-  }, [gCurUser]);
+  }, [curUser]);
 
   async function handleToggleFollow() {
-    const gCurUserRef = doc(db, "users", gCurUser.id);
+    const curUserRef = doc(db, "users", curUser.id);
     const userRef = doc(db, "users", user.id);
     if (isFollowing) {
-      await updateDoc(gCurUserRef, { followings: arrayRemove(user.id) });
+      await updateDoc(curUserRef, { followings: arrayRemove(user.id) });
       await updateDoc(userRef, {
-        followers: arrayRemove(gCurUser.id),
+        followers: arrayRemove(curUser.id),
       });
     } else {
-      await updateDoc(gCurUserRef, {
+      await updateDoc(curUserRef, {
         followings: arrayUnion(user.id),
       });
       await updateDoc(userRef, {
-        followers: arrayUnion(gCurUser.id),
+        followers: arrayUnion(curUser.id),
       });
     }
-    const tempFollowings = new Set(gCurUser.followings);
+    const tempFollowings = new Set(curUser.followings);
     if (isFollowing) {
       tempFollowings.delete(user.id);
     } else {
       tempFollowings.add(user.id);
     }
     const followings = Array.from(tempFollowings) as string[];
-    updateUser({ id: gCurUser.id, followings: followings });
+    updateUser({ id: curUser.id, followings: followings });
     setIsFollowing(!isFollowing);
   }
 
@@ -86,7 +87,7 @@ export default function ProfileSmall({ user, post }: IProfileSmallProps) {
         {(() => {
           // TODO: 분기 확인해서 변경할것
           if (route === "post" || route === "search") {
-            if (gCurUser.id === user.id) {
+            if (curUser.id === user.id) {
               return <></>;
             } else if (isFollowing) {
               return (
@@ -107,7 +108,7 @@ export default function ProfileSmall({ user, post }: IProfileSmallProps) {
                 </div>
               );
             }
-          } else if (user.id === gCurUser.id) {
+          } else if (user.id === curUser.id) {
             return (
               <>
                 <div className="flex">

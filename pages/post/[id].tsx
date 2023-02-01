@@ -29,6 +29,7 @@ import Textarea from "../../components/atoms/Textarea";
 import Btn from "../../components/atoms/Btn";
 import Comment from "../../components/Comment";
 import IconBtn from "../../components/atoms/IconBtn";
+import { useUser } from "../../stores/useUser";
 
 interface IPostProps {
   initPost: IPost;
@@ -36,7 +37,7 @@ interface IPostProps {
 }
 
 export default function Post({ initPost, initUser }: IPostProps) {
-  const { gCurUser } = useStore();
+  const { curUser } = useUser();
   const router = useRouter();
   const [post, setPost] = useState<IPost>(initPost);
   const [submitListener, setSubmitListener] = useState<boolean | null>(null);
@@ -65,7 +66,7 @@ export default function Post({ initPost, initUser }: IPostProps) {
   }
   async function handleSubmit(e: React.MouseEvent<HTMLButtonElement>) {
     const tempComment: IComment = {
-      uid: gCurUser.id,
+      uid: curUser.id,
       pid: post.id || "",
       txt: comment,
       createdAt: serverTimestamp(),
@@ -119,7 +120,7 @@ export default function Post({ initPost, initUser }: IPostProps) {
                 style="margin: 16px 0;"
                 onClick={router.back}
               />
-              {gCurUser.id === initUser.id && (
+              {curUser.id === initUser.id && (
                 <div className="flex items-center pt-6 mt-12">
                   <IconBtn
                     type="modify"
@@ -161,7 +162,7 @@ export default function Post({ initPost, initUser }: IPostProps) {
             <div className="mt-1 mb-4 whitespace-pre-wrap">{post.txt}</div>
             <Action
               post={post}
-              curUser={gCurUser}
+              curUser={curUser}
               onCommentClick={() => {
                 commentRef.current?.scrollIntoView({ behavior: "smooth" });
                 setTimeout(() => commentRef.current?.focus({}), 500);
@@ -185,10 +186,10 @@ export default function Post({ initPost, initUser }: IPostProps) {
             )}
             <div className="sticky bottom-0 flex items-center justify-between w-full py-4 bg-white">
               <div className="profileImg-small">
-                <Image src={gCurUser.photoURL} alt="" fill />
+                <Image src={curUser.photoURL} alt="" fill />
               </div>
               <Textarea
-                placeholder={`${gCurUser.displayName}(으)로 댓글 달기...`}
+                placeholder={`${curUser.displayName}(으)로 댓글 달기...`}
                 value={comment}
                 onChange={handleChange}
                 ref={commentRef}
