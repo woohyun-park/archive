@@ -1,7 +1,6 @@
 import create from "zustand";
 import { devtools } from "zustand/middleware";
 import {
-  IComment,
   IDict,
   ILike,
   IPost,
@@ -14,35 +13,20 @@ import {
 import {
   collection,
   doc,
-  DocumentData,
   endAt,
-  endBefore,
   getDoc,
-  getDocs,
   limit,
   onSnapshot,
   orderBy,
   query,
-  QueryDocumentSnapshot,
-  startAfter,
   startAt,
-  Timestamp,
   where,
 } from "firebase/firestore";
-import {
-  db,
-  getData,
-  getDataByRef,
-  getDatasByQuery,
-  getEach,
-} from "../apis/firebase";
+import { db, getDatasByQuery, getEach } from "../apis/firebase";
 import { Unsubscribe } from "firebase/auth";
 
 interface IState {
   gCurUser: IUser;
-  gFeed: {
-    posts: IPost[];
-  };
   gSearch: {
     posts: IPost[];
     tags: ITag[];
@@ -51,7 +35,6 @@ interface IState {
   gStatus: IStatus;
   gPage: IDict<IDict<number>>;
   gInit: (id: string) => Promise<void>;
-  gSetFeed: (id: string, isRefresh: boolean) => Promise<void>;
   gSetSearch: (
     type: ISearchType,
     page: number,
@@ -63,7 +46,6 @@ interface IState {
 interface IStatus {
   isModalOpen: boolean;
   keyword: string;
-  orchestra: number;
 }
 
 type ISearchType = "posts" | "tags" | "users";
@@ -84,111 +66,6 @@ export const POST_PER_PAGE = {
     scrap: 15,
   },
 };
-
-let feedFirstVisible: QueryDocumentSnapshot<DocumentData>;
-let feedLastVisible: QueryDocumentSnapshot<DocumentData>;
-
-async function initFeed(id: string): Promise<IPost[]> {
-  const user = await getDataByRef<IUser>(doc(db, "users", id));
-  const snap = await getDocs(
-    query(
-      collection(db, "posts"),
-      where("uid", "in", [...user.followings, id]),
-      orderBy("createdAt", "desc"),
-      limit(POST_PER_PAGE.feed.post)
-    )
-  );
-  const posts: IPost[] = [];
-  for (const doc of snap.docs) {
-    const post: IPost = doc.data() as IPost;
-    const uid = post.uid;
-    const pid = post.id || "";
-    const author: IUser = await getData<IUser>("users", uid);
-    const likes = await getEach<ILike>("likes", pid);
-    const scraps = await getEach<IScrap>("scraps", pid);
-    const comments = await getEach<IComment>("comments", pid);
-    post.likes = likes ? likes : [];
-    post.scraps = scraps ? scraps : [];
-    post.comments = comments ? comments : [];
-    post.author = author;
-    post.createdAt = (post.createdAt as Timestamp).toDate();
-    posts.push(post);
-  }
-  if (snap.docs.length !== 0) {
-    feedFirstVisible = snap.docs[0];
-    feedLastVisible = snap.docs[snap.docs.length - 1];
-  }
-  console.log("initFeed", posts.length);
-  return posts;
-}
-async function loadFeed(id: string): Promise<IPost[]> {
-  const user = await getDataByRef<IUser>(doc(db, "users", id));
-  const snap = await getDocs(
-    query(
-      collection(db, "posts"),
-      where("uid", "in", [...user.followings, id]),
-      orderBy("createdAt", "desc"),
-      startAfter(feedLastVisible),
-      limit(POST_PER_PAGE.feed.post)
-    )
-  );
-
-  const posts: IPost[] = [];
-  for (const doc of snap.docs) {
-    const post: IPost = doc.data() as IPost;
-    const uid = post.uid;
-    const pid = post.id || "";
-    const author: IUser = await getData<IUser>("users", uid);
-    const likes = await getEach<ILike>("likes", pid);
-    const scraps = await getEach<IScrap>("scraps", pid);
-    const comments = await getEach<IComment>("comments", pid);
-    post.likes = likes ? likes : [];
-    post.scraps = scraps ? scraps : [];
-    post.comments = comments ? comments : [];
-    post.author = author;
-    post.createdAt = (post.createdAt as Timestamp).toDate();
-    posts.push(post);
-  }
-  if (snap.docs.length !== 0) {
-    feedLastVisible = snap.docs[snap.docs.length - 1];
-  }
-  console.log("loadFeed", posts.length);
-  return posts;
-}
-
-async function refreshFeed(id: string): Promise<IPost[]> {
-  const user = await getDataByRef<IUser>(doc(db, "users", id));
-  const snap = await getDocs(
-    query(
-      collection(db, "posts"),
-      where("uid", "in", [...user.followings, id]),
-      orderBy("createdAt", "desc"),
-      endBefore(feedFirstVisible)
-    )
-  );
-
-  const posts: IPost[] = [];
-  for (const doc of snap.docs) {
-    const post: IPost = doc.data() as IPost;
-    const uid = post.uid;
-    const pid = post.id || "";
-    const author: IUser = await getData<IUser>("users", uid);
-    const likes = await getEach<ILike>("likes", pid);
-    const scraps = await getEach<IScrap>("scraps", pid);
-    const comments = await getEach<IComment>("comments", pid);
-    post.likes = likes ? likes : [];
-    post.scraps = scraps ? scraps : [];
-    post.comments = comments ? comments : [];
-    post.author = author;
-    post.createdAt = (post.createdAt as Timestamp).toDate();
-    posts.push(post);
-  }
-  if (snap.docs.length !== 0) {
-    feedFirstVisible = snap.docs[0];
-  }
-  console.log("refreshFeed", posts.length);
-  return posts;
-}
 
 async function loadSearch<T>(
   type: ISearchPageType,
@@ -242,7 +119,6 @@ async function loadListener(
 }> {
   const unsubscribeUser = onSnapshot(doc(db, "users", id), (doc) => {
     set((state: IState) => {
-      console.log("unsubscribeUser", state);
       return {
         ...state,
         gCurUser: {
@@ -261,7 +137,6 @@ async function loadListener(
         datas.push({ ...(doc.data() as ILike) });
       });
       set((state: IState) => {
-        console.log("unsubscribeLikes", state);
         return {
           ...state,
           gCurUser: { ...state.gCurUser, likes: datas },
@@ -277,7 +152,6 @@ async function loadListener(
         datas.push({ ...(doc.data() as IScrap) });
       });
       set((state: IState) => {
-        console.log("unsubscribeScraps", state);
         return {
           ...state,
           gCurUser: { ...state.gCurUser, scraps: datas },
@@ -296,7 +170,6 @@ async function loadstate(get: () => IState, id: string) {
     likes,
     scraps,
   };
-  const posts = await initFeed(id);
   const search = {
     posts: await loadSearch<IPost>("sPost", get().gPage.search.post),
     tags: [],
@@ -305,9 +178,6 @@ async function loadstate(get: () => IState, id: string) {
 
   return {
     gCurUser: curUser,
-    gFeed: {
-      posts,
-    },
     gSearch: search,
   };
 }
@@ -324,9 +194,6 @@ export const useStore = create<IState>()(
       followers: [] as string[],
       followings: [] as string[],
     },
-    gFeed: {
-      posts: [] as IPost[],
-    },
     gSearch: {
       posts: [] as IPost[],
       tags: [] as ITag[],
@@ -335,7 +202,6 @@ export const useStore = create<IState>()(
     gStatus: {
       isModalOpen: false,
       keyword: "",
-      orchestra: 0,
     },
     gPage: {
       search: {
@@ -349,9 +215,7 @@ export const useStore = create<IState>()(
         scrap: 1,
       },
     },
-    gScroll: {},
     gInit: async (id: string) => {
-      console.log("gInit", id);
       const loadedState = await loadstate(get, id);
       set((state: IState) => {
         return {
@@ -362,7 +226,6 @@ export const useStore = create<IState>()(
       await loadListener(set, get, id);
     },
     gSetPage: (route: IRoute, type: IType, page: number) => {
-      console.log("gSetPage", route, type, page);
       set((state: IState) => {
         state.gPage[route][type] = page;
         return {
@@ -371,47 +234,12 @@ export const useStore = create<IState>()(
       });
     },
     gSetStatus: (status: IStatus) => {
-      console.log("gSetStatus", status);
       set((state: IState) => {
         return {
           ...state,
           gStatus: status,
         };
       });
-    },
-    gSetFeed: async (id: string, isRefresh: boolean) => {
-      console.log("gSetFeed", id);
-      if (isRefresh) {
-        let posts: IPost[];
-        await Promise.all([
-          refreshFeed(id),
-          new Promise((resolve, reject) => {
-            setTimeout(() => {
-              resolve(0);
-            }, 3000);
-          }),
-        ]).then((values) => {
-          posts = values[0];
-        });
-        set((state: IState) => {
-          return {
-            ...state,
-            gFeed: {
-              posts: [...posts, ...state.gFeed.posts],
-            },
-          };
-        });
-      } else {
-        const posts = await loadFeed(id);
-        set((state: IState) => {
-          return {
-            ...state,
-            gFeed: {
-              posts: [...state.gFeed.posts, ...posts],
-            },
-          };
-        });
-      }
     },
     gSetSearch: async (type: ISearchType, page: number, keyword?: string) => {
       if (type === "posts" && page === 1) return;
