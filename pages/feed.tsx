@@ -45,11 +45,13 @@ export default function Feed() {
       return true;
     });
     setTimeout(() => {
-      window.scrollTo(0, scroll[router.pathname]);
+      if (router.query.refresh) {
+        window.scrollTo(0, 0);
+        handleRefresh();
+      } else {
+        window.scrollTo(0, scroll[router.pathname]);
+      }
     }, 10);
-    if (router.query.refresh) {
-      handleRefresh();
-    }
   }, []);
 
   useEffect(() => {
@@ -68,67 +70,62 @@ export default function Feed() {
 
   return (
     <>
-      <div className="flex items-center justify-between px-4 pb-2 mt-16 border-b-8 border-gray-4f">
-        <h1 className="title-page">archive</h1>
-        <div className="flex items-center justify-center">
-          <HiOutlineBell
-            size={SIZE.icon}
-            className="mr-2 hover:cursor-pointer"
-          />
-          <ProfileImg user={curUser} />
+      <div className="flex flex-col">
+        <div className="flex items-center justify-between px-4 pb-2 mt-16 border-b-8 border-gray-4f">
+          <h1 className="title-page">archive</h1>
+          <div className="flex items-center justify-center">
+            <HiOutlineBell
+              size={SIZE.icon}
+              className="mr-2 hover:cursor-pointer"
+            />
+            <ProfileImg user={curUser} />
+          </div>
         </div>
-      </div>
-      <div className="relative flex items-center justify-between px-4 py-2 border-b-2 border-dotted border-gray-4f">
-        {/* <IconBtn type="search" size={SIZE.iconSm} /> */}
-        <IconInput
-          type="search"
-          onFocus={() => setSearch(true)}
-          onBlur={() => setSearch(false)}
-        />
-        <AnimatePresence>
-          {!search && (
-            <motion.div
-              key="refresh"
-              className="absolute right-0 flex items-center justify-end mr-4 w-9 h-9"
-              initial="initial"
-              animate="animate"
-              exit="exit"
-              variants={fadeVariants}
-            >
-              <IconBtn
-                type="refresh"
-                size={SIZE.iconSm}
-                onClick={handleRefresh}
-              />
-            </motion.div>
-          )}
-          {search && (
-            <motion.div
-              key="cancel"
-              className="absolute right-0 flex items-center justify-end mr-4 text-sm w-9 h-9 hover:cursor-pointer"
-              initial="initial"
-              animate="animate"
-              exit="exit"
-              variants={fadeVariants}
-            >
-              취소
-            </motion.div>
-          )}
+        <div className="relative flex items-center justify-between px-4 py-2 border-b-2 border-dotted border-gray-4f">
+          <IconInput
+            icon="search"
+            onFocus={() => setSearch(true)}
+            onBlur={() => setSearch(false)}
+            variants={swipeRightVariants}
+          />
+
+          <AnimatePresence>
+            {search && (
+              <motion.div
+                key="cancel"
+                className="absolute right-0 flex items-center justify-end mr-6 text-sm w-9 h-9 hover:cursor-pointer"
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                variants={swipeRightVariants}
+              >
+                취소
+              </motion.div>
+            )}
+          </AnimatePresence>
+          {/* <div className="w-9 h-9"></div> */}
+        </div>
+        <motion.div
+          key="refresh"
+          className="self-end mt-4 mr-4 w-fit"
+          initial="false"
+          whileHover={{ rotate: 180 }}
+        >
+          <IconBtn icon="refresh" size={SIZE.iconSm} onClick={handleRefresh} />
+        </motion.div>
+        <Loader isVisible={refreshLoading} />
+        <AnimatePresence initial={false}>
+          {posts.map((e, i) => (
+            <>
+              <FeedPost post={e} />
+              {i === posts.length - 1 && <div ref={setLastIntersecting}></div>}
+              <hr className="w-full h-2 text-gray-4f bg-gray-4f" />
+            </>
+          ))}
         </AnimatePresence>
-        <div className="w-9 h-9"></div>
+        <Loader isVisible={loading} scrollIntoView={true} />
+        <div className="mb-24"></div>
       </div>
-      <Loader isVisible={refreshLoading} />
-      <AnimatePresence initial={false}>
-        {posts.map((e, i) => (
-          <>
-            <FeedPost post={e} />
-            {i === posts.length - 1 && <div ref={setLastIntersecting}></div>}
-            <hr className="w-full h-2 text-gray-4f bg-gray-4f" />
-          </>
-        ))}
-      </AnimatePresence>
-      <Loader isVisible={loading} scrollIntoView={true} />
-      <div className="mb-24"></div>
     </>
   );
 }

@@ -66,19 +66,19 @@ export default forwardRef<HTMLDivElement, IActionProps>(function Action(
           <div className="flex">
             <span className="mr-2 hover:cursor-pointer">
               <IconBtn
-                type="like"
+                icon="like"
                 fill={status.likes !== "" ? true : false}
                 onClick={() => handleToggle("likes")}
               />
             </span>
             <span className="hover:cursor-pointer">
-              <IconBtn type="comment" onClick={onCommentClick} />
+              <IconBtn icon="comment" onClick={onCommentClick} />
             </span>
           </div>
           <div>
             <span className="hover:cursor-pointer">
               <IconBtn
-                type="scrap"
+                icon="scrap"
                 fill={status.scraps !== "" ? true : false}
                 onClick={() => handleToggle("scraps")}
               />

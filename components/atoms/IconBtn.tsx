@@ -13,7 +13,7 @@ import { IoRefreshSharp } from "react-icons/io5";
 import { SIZE } from "../../libs/custom";
 
 interface IIconBtnProps {
-  type:
+  icon:
     | "like"
     | "comment"
     | "scrap"
@@ -29,7 +29,7 @@ interface IIconBtnProps {
 }
 
 export default function IconBtn({
-  type,
+  icon,
   fill = false,
   size = SIZE.icon,
   style,
@@ -41,7 +41,7 @@ export default function IconBtn({
         id="iconBtn_b1"
         className="flex items-center justify-center transition duration-150 ease-in-out hover:cursor-pointer"
       >
-        {type === "like" && (
+        {icon === "like" && (
           <>
             {fill ? (
               <HiHeart size={size} onClick={onClick} />
@@ -50,10 +50,10 @@ export default function IconBtn({
             )}
           </>
         )}
-        {type === "comment" && (
+        {icon === "comment" && (
           <HiOutlineChatBubbleOvalLeft size={size} onClick={onClick} />
         )}
-        {type === "scrap" && (
+        {icon === "scrap" && (
           <>
             {fill ? (
               <HiBookmark size={size} onClick={onClick} />
@@ -62,11 +62,11 @@ export default function IconBtn({
             )}
           </>
         )}
-        {type === "back" && <HiArrowLeft size={size} onClick={onClick} />}
-        {type === "delete" && <HiXMark size={size} onClick={onClick} />}
-        {type === "modify" && <HiPencil size={size} onClick={onClick} />}
-        {type === "refresh" && <IoRefreshSharp size={size} onClick={onClick} />}
-        {type === "search" && (
+        {icon === "back" && <HiArrowLeft size={size} onClick={onClick} />}
+        {icon === "delete" && <HiXMark size={size} onClick={onClick} />}
+        {icon === "modify" && <HiPencil size={size} onClick={onClick} />}
+        {icon === "refresh" && <IoRefreshSharp size={size} onClick={onClick} />}
+        {icon === "search" && (
           <HiMagnifyingGlass size={size} onClick={onClick} />
         )}
       </div>

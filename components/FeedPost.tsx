@@ -1,22 +1,15 @@
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { COLOR, getRoute, IPost } from "../libs/custom";
-import { useEffect, useState } from "react";
-import { useStore } from "../stores/useStore";
+import { getRoute, IPost } from "../libs/custom";
 import Box from "../components/Box";
 import WrapScroll from "../components/wrappers/WrapScroll";
-import Loader from "../components/Loader";
 import Action from "../components/Action";
 import ProfileSmall from "../components/ProfileSmall";
 import { IUser } from "../libs/custom";
-import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
-import IconBtn from "../components/atoms/IconBtn";
-import { useFeed } from "../stores/useFeed";
-import { AnimatePresence, motion, Variants } from "framer-motion";
+import { motion } from "framer-motion";
 import { floatVariants } from "../libs/motionLib";
-import { useScrollSave } from "../stores/useScrollSave";
 import { useUser } from "../stores/useUser";
+import Title from "./atoms/Title";
 
 interface IFeedPostProps {
   post: IPost;
@@ -40,21 +33,7 @@ export default function FeedPost({ post }: IFeedPostProps) {
         <WrapScroll key={post.id}>
           <ProfileSmall post={post} user={post.author as IUser} type="post" />
           <Box post={post} />
-
-          <Link
-            href={{
-              pathname: `/post/${post.id}`,
-              query: { post: JSON.stringify(post) },
-            }}
-            as={`/post/${post.id}`}
-          >
-            <div
-              className="mt-4 mb-4 text-5xl font-bold break-words hover:cursor-pointer"
-              id={`box_d2-${route}`}
-            >
-              {post.title}
-            </div>
-          </Link>
+          <Title post={post} />
           <div className="bottom-0 right-0 flex flex-row-reverse flex-wrap-reverse text-left ">
             {route === "feed" &&
               [...post.tags]?.reverse().map((tag, i) => (

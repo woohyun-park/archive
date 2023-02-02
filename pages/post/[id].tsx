@@ -30,6 +30,7 @@ import Btn from "../../components/atoms/Btn";
 import Comment from "../../components/Comment";
 import IconBtn from "../../components/atoms/IconBtn";
 import { useUser } from "../../stores/useUser";
+import Title from "../../components/atoms/Title";
 
 interface IPostProps {
   initPost: IPost;
@@ -116,18 +117,18 @@ export default function Post({ initPost, initUser }: IPostProps) {
           <>
             <div className="flex items-baseline justify-between">
               <IconBtn
-                type="back"
+                icon="back"
                 style="margin: 16px 0;"
                 onClick={router.back}
               />
               {curUser.id === initUser.id && (
                 <div className="flex items-center pt-6 mt-12">
                   <IconBtn
-                    type="modify"
+                    icon="modify"
                     onClick={handleModify}
                     size={SIZE.iconSm}
                   />
-                  <IconBtn type="delete" onClick={handleDelete} />
+                  <IconBtn icon="delete" onClick={handleDelete} />
                 </div>
               )}
             </div>
@@ -147,7 +148,7 @@ export default function Post({ initPost, initUser }: IPostProps) {
               </div>
             )}
             <ProfileSmall post={post} user={initUser} type="post" />
-            <h1 className="mb-4 text-5xl">{post.title}</h1>
+            <Title post={post} />
             <div className="flex flex-wrap justify-end w-full mb-8">
               {post.tags.map((tag, i) => (
                 <Btn
