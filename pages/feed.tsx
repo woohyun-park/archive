@@ -6,16 +6,23 @@ import WrapScroll from "../components/wrappers/WrapScroll";
 import Loader from "../components/Loader";
 import Action from "../components/Action";
 import ProfileSmall from "../components/ProfileSmall";
-import { getRoute, IUser } from "../libs/custom";
+import { getRoute, IUser, SIZE } from "../libs/custom";
 import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 import IconBtn from "../components/atoms/IconBtn";
 import { useFeed } from "../stores/useFeed";
 import { AnimatePresence, motion, Variants } from "framer-motion";
-import { floatVariants } from "../libs/motionLib";
+import {
+  fadeVariants,
+  floatVariants,
+  swipeRightVariants,
+} from "../libs/motionLib";
 import { useScrollSave } from "../stores/useScrollSave";
 import { useUser } from "../stores/useUser";
 import Link from "next/link";
 import FeedPost from "../components/FeedPost";
+import { HiOutlineBell } from "react-icons/hi2";
+import ProfileImg from "../components/atoms/ProfileImg";
+import IconInput from "../components/atoms/IconInput";
 
 export default function Feed() {
   const { curUser } = useUser();
@@ -55,22 +62,68 @@ export default function Feed() {
     setResetRefresh(!resetRefresh);
   }
 
+  const [search, setSearch] = useState(false);
+
   const route = getRoute(router);
 
   return (
     <>
-      <div className="flex items-baseline justify-between">
-        <h1 className="title-page">피드</h1>
-        <IconBtn type="refresh" onClick={handleRefresh} />
+      <div className="flex items-center justify-between px-4 pb-2 mt-16 border-b-8 border-gray-4f">
+        <h1 className="title-page">archive</h1>
+        <div className="flex items-center justify-center">
+          <HiOutlineBell
+            size={SIZE.icon}
+            className="mr-2 hover:cursor-pointer"
+          />
+          <ProfileImg user={curUser} />
+        </div>
+      </div>
+      <div className="relative flex items-center justify-between px-4 py-2 border-b-2 border-dotted border-gray-4f">
+        {/* <IconBtn type="search" size={SIZE.iconSm} /> */}
+        <IconInput
+          type="search"
+          onFocus={() => setSearch(true)}
+          onBlur={() => setSearch(false)}
+        />
+        <AnimatePresence>
+          {!search && (
+            <motion.div
+              key="refresh"
+              className="absolute right-0 flex items-center justify-end mr-4 w-9 h-9"
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              variants={fadeVariants}
+            >
+              <IconBtn
+                type="refresh"
+                size={SIZE.iconSm}
+                onClick={handleRefresh}
+              />
+            </motion.div>
+          )}
+          {search && (
+            <motion.div
+              key="cancel"
+              className="absolute right-0 flex items-center justify-end mr-4 text-sm w-9 h-9 hover:cursor-pointer"
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              variants={fadeVariants}
+            >
+              취소
+            </motion.div>
+          )}
+        </AnimatePresence>
+        <div className="w-9 h-9"></div>
       </div>
       <Loader isVisible={refreshLoading} />
       <AnimatePresence initial={false}>
         {posts.map((e, i) => (
           <>
-            <div className="mb-4">
-              <FeedPost post={e} />
-              {i === posts.length - 1 && <div ref={setLastIntersecting}></div>}
-            </div>
+            <FeedPost post={e} />
+            {i === posts.length - 1 && <div ref={setLastIntersecting}></div>}
+            <hr className="w-full h-2 text-gray-4f bg-gray-4f" />
           </>
         ))}
       </AnimatePresence>

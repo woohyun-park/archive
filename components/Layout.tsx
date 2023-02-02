@@ -292,7 +292,7 @@ export default function Layout({ children }: ILayoutProps) {
               ? "100vh"
               : "calc(100vh - 72px)"};
             max-height: ${router.pathname === "/setting" ? "100vh" : ""};
-            background-color: ${COLOR["gray-4f"]};
+            background-color: ${COLOR["white"]};
             box-sizing: border-box;
             display: ${login.isLoggedIn ? "" : "flex"};
             justify-content: center;

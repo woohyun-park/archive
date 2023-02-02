@@ -3,15 +3,21 @@ import { useRouter } from "next/router";
 import {
   HiHome,
   HiOutlineHome,
-  HiSearch,
-  HiOutlineSearch,
+  HiMagnifyingGlass,
+  HiOutlineMagnifyingGlass,
+  // HiSearch,
+  // HiOutlineSearch,
+  HiLightBulb,
+  HiOutlineLightBulb,
   HiPlus,
   HiOutlinePlus,
   HiPlusCircle,
+  HiSparkles,
+  HiOutlineSparkles,
   HiOutlinePlusCircle,
   HiUser,
   HiOutlineUser,
-} from "react-icons/hi";
+} from "react-icons/hi2";
 import { SIZE } from "../libs/custom";
 import WrapScroll from "./wrappers/WrapScroll";
 import { useUser } from "../stores/useUser";
@@ -46,11 +52,11 @@ export default function Nav() {
           </Link>
           <Link href="/search" legacyBehavior>
             <div className="flex flex-col items-center align-center hover:cursor-pointer">
-              <div>
+              <div className="mb-1">
                 {path === "/search" || path === "/search-modal" ? (
-                  <HiSearch size={SIZE.icon} />
+                  <HiLightBulb size={SIZE.icon} />
                 ) : (
-                  <HiOutlineSearch size={SIZE.icon} />
+                  <HiOutlineLightBulb size={SIZE.icon} />
                 )}
               </div>
               <div className="text-xs">둘러보기</div>

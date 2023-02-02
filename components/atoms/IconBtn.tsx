@@ -7,12 +7,21 @@ import {
   HiOutlineChatBubbleOvalLeft,
   HiArrowLeft,
   HiPencil,
+  HiMagnifyingGlass,
 } from "react-icons/hi2";
 import { IoRefreshSharp } from "react-icons/io5";
 import { SIZE } from "../../libs/custom";
 
 interface IIconBtnProps {
-  type: "like" | "comment" | "scrap" | "back" | "delete" | "modify" | "refresh";
+  type:
+    | "like"
+    | "comment"
+    | "scrap"
+    | "back"
+    | "delete"
+    | "modify"
+    | "refresh"
+    | "search";
   fill?: boolean;
   size?: string;
   style?: string;
@@ -57,6 +66,9 @@ export default function IconBtn({
         {type === "delete" && <HiXMark size={size} onClick={onClick} />}
         {type === "modify" && <HiPencil size={size} onClick={onClick} />}
         {type === "refresh" && <IoRefreshSharp size={size} onClick={onClick} />}
+        {type === "search" && (
+          <HiMagnifyingGlass size={size} onClick={onClick} />
+        )}
       </div>
 
       <style jsx>

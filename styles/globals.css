@@ -2,13 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: "LINESeedKR-Bd";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_11-01@1.0/LINESeedKR-Bd.woff2")
+    format("woff2");
+  font-weight: 700;
+  font-style: normal;
+}
+
 body {
   font-family: "NanumSquare", sans-serif;
 }
 
 @layer components {
   .title-page {
-    @apply mt-16 mb-12 text-5xl font-bold;
+    font-family: "LINESeedKR-Bd", sans-serif;
+    letter-spacing: -0.1rem;
+    @apply text-4xl font-bold -translate-y-1;
   }
 
   .profileImg-small {

@@ -10,6 +10,7 @@ import { displayCreatedAt } from "../libs/timeLib";
 import IconBtn from "./atoms/IconBtn";
 import { useFeed } from "../stores/useFeed";
 import { useUser } from "../stores/useUser";
+import ProfileImg from "./atoms/ProfileImg";
 
 type IProfileSmallProps = {
   user: IUser;
@@ -64,11 +65,7 @@ export default function ProfileSmall({ user, post }: IProfileSmallProps) {
     <>
       <div className="flex items-center justify-between w-full mt-2 mb-2">
         <div className="flex items-center">
-          <div className="mr-1 profileImg-small">
-            <Link href={`/profile/${user?.id}`}>
-              <Image src={user.photoURL} alt="" fill />
-            </Link>
-          </div>
+          <ProfileImg user={user} />
           <div>
             <Link href={`/profile/${user?.id}`} legacyBehavior>
               <a className="text-sm text-black">{user?.displayName}</a>
