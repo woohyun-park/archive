@@ -6,7 +6,7 @@ import WrapScroll from "../components/wrappers/WrapScroll";
 import Loader from "../components/Loader";
 import Action from "../components/Action";
 import ProfileSmall from "../components/ProfileSmall";
-import { IUser } from "../libs/custom";
+import { getRoute, IUser } from "../libs/custom";
 import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 import IconBtn from "../components/atoms/IconBtn";
 import { useFeed } from "../stores/useFeed";
@@ -14,6 +14,8 @@ import { AnimatePresence, motion, Variants } from "framer-motion";
 import { floatVariants } from "../libs/motionLib";
 import { useScrollSave } from "../stores/useScrollSave";
 import { useUser } from "../stores/useUser";
+import Link from "next/link";
+import FeedPost from "../components/FeedPost";
 
 export default function Feed() {
   const { curUser } = useUser();
@@ -53,50 +55,27 @@ export default function Feed() {
     setResetRefresh(!resetRefresh);
   }
 
+  const route = getRoute(router);
+
   return (
     <>
-      <div>
-        <div className="flex items-baseline justify-between">
-          <h1 className="title-page">피드</h1>
-          <IconBtn type="refresh" onClick={handleRefresh} />
-        </div>
-        <Loader isVisible={refreshLoading} />
-        <AnimatePresence initial={false}>
-          {posts.map((e, i) => (
-            <motion.div
-              key={e.id || ""}
-              initial="initial"
-              animate="animate"
-              exit="exit"
-              viewport={{ once: true, amount: 0.1 }}
-              variants={floatVariants}
-            >
-              <WrapScroll key={e.id}>
-                <ProfileSmall post={e} user={e.author as IUser} type="post" />
-                <Box post={e} />
-                <Action
-                  post={e}
-                  curUser={curUser}
-                  onCommentClick={() =>
-                    router.push(
-                      {
-                        pathname: `/post/${e.id}`,
-                        query: { isCommentFocused: true },
-                      },
-                      `/post/${e.id}`
-                    )
-                  }
-                />
-                {i === posts.length - 1 && (
-                  <div ref={setLastIntersecting}></div>
-                )}
-              </WrapScroll>
-            </motion.div>
-          ))}
-        </AnimatePresence>
-        <Loader isVisible={loading} scrollIntoView={true} />
-        <div className="mb-24"></div>
+      <div className="flex items-baseline justify-between">
+        <h1 className="title-page">피드</h1>
+        <IconBtn type="refresh" onClick={handleRefresh} />
       </div>
+      <Loader isVisible={refreshLoading} />
+      <AnimatePresence initial={false}>
+        {posts.map((e, i) => (
+          <>
+            <div className="mb-4">
+              <FeedPost post={e} />
+              {i === posts.length - 1 && <div ref={setLastIntersecting}></div>}
+            </div>
+          </>
+        ))}
+      </AnimatePresence>
+      <Loader isVisible={loading} scrollIntoView={true} />
+      <div className="mb-24"></div>
     </>
   );
 }

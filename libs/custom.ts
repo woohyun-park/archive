@@ -25,20 +25,18 @@ export const SIZE = {
 };
 
 export const COLOR: IDict<string> = {
-  black: "#000",
+  "black-f": "#000",
+  black: "#111827",
   white: "#fff",
-  "gray-1": "#374151",
-  "gray-2": "#9ca3af",
-  "gray-3": "#e5e7eb",
-  "gray-4": "#f3f4f6",
-
   red: "#ef4444",
-  orange: "#F7892B",
-  yellow: "#F7D733",
-  green: "#2EB87C",
-  blue: "#1BC0DB",
-  navy: "#0B4F92",
-  purple: "#602E84",
+  "gray-1f": "#1f2937",
+  "gray-1": "#374151",
+  "gray-2f": "#6b7280",
+  "gray-2": "#9ca3af",
+  "gray-3f": "#d1d5db",
+  "gray-3": "#e5e7eb",
+  "gray-4f": "#f3f4f6",
+  "gray-4": "#f9fafb",
 };
 
 Object.freeze(DEFAULT);

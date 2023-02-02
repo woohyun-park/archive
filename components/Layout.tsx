@@ -141,18 +141,16 @@ export default function Layout({ children }: ILayoutProps) {
     ],
   ];
 
-  const carouselVariants: Variants = {
-    active: { opacity: 0 },
-    inactive: { opacity: 1 },
-  };
-
+  console.log(router.pathname);
   return (
     <>
       {login.isLoggedIn === null ? (
         <>loading...</>
       ) : login.isLoggedIn ? (
         <>
-          {router.pathname.split("/")[1] === "post" ? (
+          {router.pathname === "/" ? (
+            <div className="my-4">{children}</div>
+          ) : router.pathname.split("/")[1] === "post" ? (
             <div className="m-4 mb-4">{children}</div>
           ) : (
             <div className="m-4 mb-16">{children}</div>
@@ -164,8 +162,8 @@ export default function Layout({ children }: ILayoutProps) {
           ) && <Nav />}
         </>
       ) : (
-        <div className="flex flex-col w-[100vw] p-4">
-          <div className="flex flex-col items-center text-2xl">
+        <div className="flex flex-col w-full h-[100vh] p-4 justify-center">
+          <div className="flex flex-col items-center mt-8 text-3xl">
             {message.map((e, i) =>
               i === page ? (
                 <Motion key={String(i)} type="float">
@@ -198,12 +196,18 @@ export default function Layout({ children }: ILayoutProps) {
               )}
             </div>
           </div>
-
-          <Btn style="width: 100%; background-color: #F3E366; color:black; margin-bottom: 0.5rem;">
-            카카오톡으로 로그인
-          </Btn>
-          <Btn style="width: 100%;">Apple로 로그인</Btn>
-          {login.error}
+          <div>
+            <Btn style="width: 100%; background-color: #F3E366; color:black; margin-bottom: 0.5rem;">
+              카카오톡으로 로그인
+            </Btn>
+            <Btn style="width: 100%;">Apple로 로그인</Btn>
+            <button
+              className="p-1 m-2 text-white bg-black rounded-full"
+              onClick={handleSocialLogin}
+            >
+              <RiGoogleFill size={SIZE.icon} />
+            </button>
+          </div>
         </div>
         /* <h1 className="-mb-2 text-5xl font-bold font-logo">archive</h1>
           <div className="text-sm mb-36">archive your inspiration</div>
@@ -269,11 +273,14 @@ export default function Layout({ children }: ILayoutProps) {
 
       <style jsx global>
         {`
+          #__next {
+            width: 100%;
+          }
           :root {
             display: flex;
             justify-content: center;
             width: 100%;
-            background-color: ${COLOR["gray-4"]};
+            background-color: ${COLOR["gray-4f"]};
           }
           body {
             margin: 0;
@@ -285,7 +292,7 @@ export default function Layout({ children }: ILayoutProps) {
               ? "100vh"
               : "calc(100vh - 72px)"};
             max-height: ${router.pathname === "/setting" ? "100vh" : ""};
-            background-color: white;
+            background-color: ${COLOR["gray-4f"]};
             box-sizing: border-box;
             display: ${login.isLoggedIn ? "" : "flex"};
             justify-content: center;

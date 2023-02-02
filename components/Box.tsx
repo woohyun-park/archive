@@ -12,7 +12,7 @@ export default function Box({ post }: IBoxProps) {
   const route = getRoute(router);
   return (
     <>
-      <div className="relative overflow-hidden rounded-lg w-full pb-[100%] duration-500">
+      <div className="pb-[100%] relative overflow-hidden rounded-lg w-full duration-500">
         {post.imgs.length === 0 ? (
           <div className="absolute object-cover w-full h-full" id="box_d1" />
         ) : (
@@ -26,7 +26,7 @@ export default function Box({ post }: IBoxProps) {
             <div className="absolute w-full h-full bg-black/10"></div>
           </>
         )}
-        <Link
+        {/* <Link
           href={{
             pathname: `/post/${post.id}`,
             query: { post: JSON.stringify(post) },
@@ -39,15 +39,15 @@ export default function Box({ post }: IBoxProps) {
           >
             {post.title}
           </div>
-        </Link>
-        <div className="absolute bottom-0 right-0 flex flex-row-reverse flex-wrap-reverse w-2/3 m-4 text-right">
+        </Link> */}
+        {/* <div className="absolute bottom-0 right-0 flex flex-row-reverse flex-wrap-reverse w-2/3 m-4 text-right">
           {route === "feed" &&
             [...post.tags]?.reverse().map((tag, i) => (
               <Link key={i} href={{ pathname: `/tag/${tag}` }} legacyBehavior>
                 <button className="m-1 mb-0 button-black hover:cursor-pointer">{`#${tag}`}</button>
               </Link>
             ))}
-        </div>
+        </div> */}
       </div>
       <style jsx>{`
         * {

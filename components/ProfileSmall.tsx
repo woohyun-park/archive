@@ -62,7 +62,7 @@ export default function ProfileSmall({ user, post }: IProfileSmallProps) {
 
   return (
     <>
-      <div className="flex items-center justify-between w-full mt-4 mb-2">
+      <div className="flex items-center justify-between w-full mt-2 mb-2">
         <div className="flex items-center">
           <div className="mr-1 profileImg-small">
             <Link href={`/profile/${user?.id}`}>

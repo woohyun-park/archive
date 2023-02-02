@@ -61,36 +61,38 @@ export default forwardRef<HTMLDivElement, IActionProps>(function Action(
 
   return (
     <>
-      <div className="flex justify-between pt-4 mb-2" ref={ref}>
-        <div className="flex">
-          <span className="mr-2 hover:cursor-pointer">
-            <IconBtn
-              type="like"
-              fill={status.likes !== "" ? true : false}
-              onClick={() => handleToggle("likes")}
-            />
-          </span>
-          <span className="hover:cursor-pointer">
-            <IconBtn type="comment" onClick={onCommentClick} />
-          </span>
+      <div className="mb-4">
+        <div className="flex justify-between pt-4 mb-2" ref={ref}>
+          <div className="flex">
+            <span className="mr-2 hover:cursor-pointer">
+              <IconBtn
+                type="like"
+                fill={status.likes !== "" ? true : false}
+                onClick={() => handleToggle("likes")}
+              />
+            </span>
+            <span className="hover:cursor-pointer">
+              <IconBtn type="comment" onClick={onCommentClick} />
+            </span>
+          </div>
+          <div>
+            <span className="hover:cursor-pointer">
+              <IconBtn
+                type="scrap"
+                fill={status.scraps !== "" ? true : false}
+                onClick={() => handleToggle("scraps")}
+              />
+            </span>
+          </div>
         </div>
-        <div>
-          <span className="hover:cursor-pointer">
-            <IconBtn
-              type="scrap"
-              fill={status.scraps !== "" ? true : false}
-              onClick={() => handleToggle("scraps")}
-            />
-          </span>
+        <div className="flex justify-between mb-2 text-xs">
+          <div>
+            {`좋아요 ${displayStatus("likes")}`}
+            &nbsp;&nbsp;
+            {`댓글 ${post.comments?.length}`}
+          </div>
+          <div>{`스크랩 ${displayStatus("scraps")}`}</div>
         </div>
-      </div>
-      <div className="flex justify-between mb-2 text-xs">
-        <div>
-          {`좋아요 ${displayStatus("likes")}`}
-          &nbsp;&nbsp;
-          {`댓글 ${post.comments?.length}`}
-        </div>
-        <div>{`스크랩 ${displayStatus("scraps")}`}</div>
       </div>
     </>
   );
