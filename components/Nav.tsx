@@ -52,15 +52,6 @@ export default function Nav() {
               )}
             </a>
           </Link>
-          <Link href="/alarm" legacyBehavior>
-            <a>
-              {path === "/alarm" ? (
-                <HiBell size={SIZE.icon} />
-              ) : (
-                <HiOutlineBell size={SIZE.icon} />
-              )}
-            </a>
-          </Link>
           <Link href={`/profile/${curUser.id}`} legacyBehavior>
             <a>
               {router.query.uid === curUser.id ? (
