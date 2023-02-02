@@ -7,8 +7,8 @@ import {
   HiOutlineSearch,
   HiPlus,
   HiOutlinePlus,
-  HiBell,
-  HiOutlineBell,
+  HiPlusCircle,
+  HiOutlinePlusCircle,
   HiUser,
   HiOutlineUser,
 } from "react-icons/hi";
@@ -24,35 +24,39 @@ export default function Nav() {
   return (
     <>
       <WrapScroll>
-        <div className="box-border fixed bottom-0 flex justify-around w-full pt-6 pb-9 bg-white max-w-[480px]">
+        <div className="box-border fixed bottom-0 flex justify-around w-full pt-1 pb-8 px-8 bg-white max-w-[480px]">
           <Link href="/" legacyBehavior>
-            <a>
-              {path === "/" ? (
-                <HiHome size={SIZE.icon} />
-              ) : (
-                <HiOutlineHome size={SIZE.icon} />
-              )}
-            </a>
-          </Link>
-          <Link href="/search" legacyBehavior>
-            <a>
-              {path === "/search" || path === "/search-modal" ? (
-                <HiSearch size={SIZE.icon} />
-              ) : (
-                <HiOutlineSearch size={SIZE.icon} />
-              )}
-            </a>
+            <div className="flex flex-col items-center align-center hover:cursor-pointer">
+              <div className="mb-1">
+                {path === "/" ? (
+                  <HiHome size={SIZE.icon} />
+                ) : (
+                  <HiOutlineHome size={SIZE.icon} />
+                )}
+              </div>
+              <div className="text-xs">홈</div>
+            </div>
           </Link>
           <Link href="/add" legacyBehavior>
             <a>
-              {path === "/add" ? (
-                <HiPlus size={SIZE.icon} />
-              ) : (
-                <HiOutlinePlus size={SIZE.icon} />
-              )}
+              <div className="flex items-center justify-center text-3xl text-white -translate-y-5 bg-black rounded-full w-14 h-14">
+                +
+              </div>
             </a>
           </Link>
-          <Link href={`/profile/${curUser.id}`} legacyBehavior>
+          <Link href="/search" legacyBehavior>
+            <div className="flex flex-col items-center align-center hover:cursor-pointer">
+              <div>
+                {path === "/search" || path === "/search-modal" ? (
+                  <HiSearch size={SIZE.icon} />
+                ) : (
+                  <HiOutlineSearch size={SIZE.icon} />
+                )}
+              </div>
+              <div className="text-xs">둘러보기</div>
+            </div>
+          </Link>
+          {/* <Link href={`/profile/${curUser.id}`} legacyBehavior>
             <a>
               {router.query.uid === curUser.id ? (
                 <HiUser size={SIZE.icon} />
@@ -60,7 +64,7 @@ export default function Nav() {
                 <HiOutlineUser size={SIZE.icon} />
               )}
             </a>
-          </Link>
+          </Link> */}
         </div>
       </WrapScroll>
     </>
