@@ -14,6 +14,10 @@ import { COLOR, DEFAULT, IUser, SIZE } from "../libs/custom";
 import { RiAppleFill, RiFacebookFill, RiGoogleFill } from "react-icons/ri";
 import { useFeed } from "../stores/useFeed";
 import { useUser } from "../stores/useUser";
+import Btn from "../components/atoms/Btn";
+import { motion, Variants } from "framer-motion";
+import Image from "next/image";
+import Motion from "../motions/Motion";
 
 interface ILayoutProps {
   children: React.ReactNode;
@@ -106,6 +110,42 @@ export default function Layout({ children }: ILayoutProps) {
     }
   }
 
+  const [page, setPage] = useState(0);
+  function test() {
+    return <></>;
+  }
+  const message: [JSX.Element, string][] = [
+    [
+      <>
+        나의 일상과 취향을
+        <br />
+        한곳에 아카이브해요
+      </>,
+      "",
+    ],
+    [
+      <>
+        나만의 태그를 통해
+        <br />
+        손쉽게 분류하고 검색해요
+      </>,
+      "",
+    ],
+    [
+      <>
+        같은 관심사를 가진 사람들의
+        <br />
+        아카이브를 둘러봐요
+      </>,
+      "",
+    ],
+  ];
+
+  const carouselVariants: Variants = {
+    active: { opacity: 0 },
+    inactive: { opacity: 1 },
+  };
+
   return (
     <>
       {login.isLoggedIn === null ? (
@@ -124,8 +164,48 @@ export default function Layout({ children }: ILayoutProps) {
           ) && <Nav />}
         </>
       ) : (
-        <div className="flex flex-col items-center">
-          <h1 className="-mb-2 text-5xl font-bold font-logo">archive</h1>
+        <div className="flex flex-col w-[100vw] p-4">
+          <div className="flex flex-col items-center text-2xl">
+            {message.map((e, i) =>
+              i === page ? (
+                <Motion key={String(i)} type="float">
+                  <div className="mb-4 text-center">{e[0]}</div>
+                  <Image
+                    src={e[1]}
+                    alt=""
+                    className="mb-16 bg-white h-72 w-72"
+                  />
+                </Motion>
+              ) : (
+                <></>
+              )
+            )}
+            <div className="flex justify-between w-20 m-auto mb-16">
+              {message.map((e, i) =>
+                i === page ? (
+                  <motion.div
+                    key={i}
+                    className="w-8 h-4 duration-300 ease-in-out rounded-full bg-gray-2f hover:cursor-pointer"
+                    onClick={() => setPage(i)}
+                  ></motion.div>
+                ) : (
+                  <motion.div
+                    key={i}
+                    className="w-4 h-4 duration-300 ease-in-out rounded-full bg-gray-3 hover:cursor-pointer"
+                    onClick={() => setPage(i)}
+                  ></motion.div>
+                )
+              )}
+            </div>
+          </div>
+
+          <Btn style="width: 100%; background-color: #F3E366; color:black; margin-bottom: 0.5rem;">
+            카카오톡으로 로그인
+          </Btn>
+          <Btn style="width: 100%;">Apple로 로그인</Btn>
+          {login.error}
+        </div>
+        /* <h1 className="-mb-2 text-5xl font-bold font-logo">archive</h1>
           <div className="text-sm mb-36">archive your inspiration</div>
           <form onSubmit={handleEmailLogin} className="flex flex-col w-80">
             <input
@@ -184,9 +264,7 @@ export default function Layout({ children }: ILayoutProps) {
                 <RiFacebookFill size={SIZE.icon} />
               </button>
             </div>
-          )}
-          {login.error}
-        </div>
+          )} */
       )}
 
       <style jsx global>
