@@ -31,7 +31,7 @@ export default function Search() {
           {gSearch.posts.map((e, i) => (
             <>
               <div>
-                <Box post={{ ...e, id: e.id }} key={e.id}></Box>
+                <Box post={{ ...e, id: e.id }} key={"search" + e.id}></Box>
               </div>
               {i === gSearch.posts.length - 1 && (
                 <div ref={setLastIntersecting}></div>

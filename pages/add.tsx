@@ -370,7 +370,7 @@ export default function Add() {
                   color={COLOR[e]}
                   onClick={() => handleColorClick(COLOR[e])}
                   selected={status.selectedColor === COLOR[e]}
-                  key={e}
+                  key={"add_color" + e}
                 />
               )
             )}
@@ -430,7 +430,7 @@ export default function Add() {
           {watch("tags")?.map((each) => (
             <span
               className="flex my-1 mr-1 button-black w-fit hover:cursor-pointer"
-              key={each}
+              key={"add_tag" + each}
             >
               <span className="mr-1">{each}</span>
               <span className="text-white" id={each} onClick={handleTagRemove}>

@@ -22,7 +22,7 @@ export default function FeedPost({ post }: IFeedPostProps) {
   return (
     <>
       <motion.div
-        key={post.id || ""}
+        key={post.id}
         initial="initial"
         animate="animate"
         exit="exit"
@@ -30,14 +30,18 @@ export default function FeedPost({ post }: IFeedPostProps) {
         variants={floatVariants}
         className="px-4 py-1 bg-white "
       >
-        <WrapScroll key={post.id}>
+        <WrapScroll>
           <ProfileSmall post={post} user={post.author as IUser} type="post" />
           <Box post={post} />
           <Title post={post} />
           <div className="bottom-0 right-0 flex flex-row-reverse flex-wrap-reverse text-left ">
             {route === "feed" &&
               [...post.tags]?.reverse().map((tag, i) => (
-                <Link key={i} href={{ pathname: `/tag/${tag}` }} legacyBehavior>
+                <Link
+                  key={post.id}
+                  href={{ pathname: `/tag/${tag}` }}
+                  legacyBehavior
+                >
                   <button className="m-1 mb-0 button-black hover:cursor-pointer">{`#${tag}`}</button>
                 </Link>
               ))}

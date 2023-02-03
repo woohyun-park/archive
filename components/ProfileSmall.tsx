@@ -110,7 +110,7 @@ export default function ProfileSmall({ user, post }: IProfileSmallProps) {
               <>
                 <div className="flex">
                   <IconBtn
-                    type="modify"
+                    icon="modify"
                     size={SIZE.iconSm}
                     onClick={() => {
                       router.push(
@@ -123,7 +123,7 @@ export default function ProfileSmall({ user, post }: IProfileSmallProps) {
                     }}
                   />
                   <IconBtn
-                    type="delete"
+                    icon="delete"
                     size={SIZE.icon}
                     onClick={async () => {
                       if (confirm("정말 삭제하시겠습니까?")) {

@@ -170,10 +170,7 @@ export default function Search() {
                   )
                   .map((e, i) => (
                     <Motion type="float" key={e}>
-                      <div
-                        key={i}
-                        className="flex items-center justify-between my-4 text-sm text-gray-1"
-                      >
+                      <div className="flex items-center justify-between my-4 text-sm text-gray-1">
                         <div
                           className="w-full hover:cursor-pointer"
                           onClick={() => handleClick(e)}

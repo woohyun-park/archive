@@ -1,6 +1,7 @@
 import { AnimatePresence, motion, Variants } from "framer-motion";
 import React, { HTMLInputTypeAttribute, Ref, useRef } from "react";
 import { HiMagnifyingGlass } from "react-icons/hi2";
+import { useOutsideClick } from "../../hooks/useOutsideClick";
 import { SIZE } from "../../libs/custom";
 import { fadeVariants } from "../../libs/motionLib";
 import IconBtn from "./IconBtn";
@@ -12,8 +13,9 @@ interface IIconInputProps {
   placeholder?: string;
   onChange?: React.ChangeEventHandler<HTMLInputElement>;
   onFocus?: React.ChangeEventHandler<HTMLInputElement>;
-  onBlur?: React.ChangeEventHandler<HTMLInputElement>;
-  onClick2?: React.MouseEventHandler<HTMLOrSVGElement>;
+  onBlur?: () => void;
+  onRefreshClick?: React.MouseEventHandler<HTMLOrSVGElement>;
+  onCancelClick?: React.MouseEventHandler<HTMLOrSVGElement>;
   autoFocus?: boolean;
   style?: string;
   size?: string;
@@ -32,18 +34,28 @@ export default function IconInput({
   style,
   size = SIZE.iconSm,
   isOpen,
-  onClick2,
+  onRefreshClick,
+  onCancelClick,
 }: IIconInputProps) {
   const ref = useRef<HTMLInputElement>(null);
+  const contRef = useRef<HTMLDivElement>(null);
   function onClick() {
     ref.current?.focus();
   }
+  useOutsideClick({
+    ref: contRef,
+    onClick: () => {
+      onBlur && onBlur();
+      console.log("outside!");
+    },
+  });
   return (
     <>
       <div
         className={`relative flex items-center w-full ${
           isOpen ? "justify-between" : ""
         }`}
+        ref={contRef}
       >
         <AnimatePresence>
           {icon === "search" && (
@@ -57,24 +69,25 @@ export default function IconInput({
               />
               {!isOpen && (
                 <motion.div
-                  key="refresh"
+                  key="iconInput_refresh"
                   initial="initial"
                   animate="animate"
                   exit="exit"
                   variants={fadeVariants}
-                  onClick={onClick2}
+                  onClick={onRefreshClick}
                 >
                   <IconBtn icon="refresh" size={size} />
                 </motion.div>
               )}
               {isOpen && (
                 <motion.div
-                  key="cancel"
+                  key="iconInput_cancel"
                   className="z-10 flex items-center justify-end px-1 text-sm hover:cursor-pointer"
                   initial="initial"
                   animate="animate"
                   exit="exit"
                   variants={fadeVariants}
+                  onClick={onCancelClick}
                 >
                   취소
                 </motion.div>
@@ -84,7 +97,7 @@ export default function IconInput({
         </AnimatePresence>
         <motion.input
           type={type}
-          className="absolute z-0 block pl-5 my-1 text-base font-normal border-2 border-solid rounded-lg pr-9 form-control text-gray-1 bg-gray-3 bg-clip-padding border-gray-3 focus:text-gray-1 focus:border-gray-3 focus:outline-none"
+          className="absolute z-0 block my-1 text-base font-normal border-2 border-solid rounded-lg form-control text-gray-1 bg-gray-3 bg-clip-padding border-gray-3 focus:text-gray-1 focus:border-gray-3 focus:outline-none"
           value={value}
           placeholder={placeholder}
           onChange={onChange}
@@ -93,10 +106,14 @@ export default function IconInput({
           initial={{
             opacity: 0,
             width: "0",
+            paddingLeft: "0",
+            paddingRight: "0",
           }}
           animate={{
             opacity: 0,
             width: "0",
+            paddingLeft: "0",
+            paddingRight: "0",
           }}
           whileFocus={{
             width: "100%",
@@ -104,6 +121,8 @@ export default function IconInput({
             transition: {
               duration: 0.3,
             },
+            paddingLeft: "1.25rem",
+            paddingRight: "2.25rem",
           }}
           ref={ref}
           autoFocus={autoFocus}

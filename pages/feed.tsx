@@ -1,24 +1,12 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { useStore } from "../stores/useStore";
-import Box from "../components/Box";
-import WrapScroll from "../components/wrappers/WrapScroll";
 import Loader from "../components/Loader";
-import Action from "../components/Action";
-import ProfileSmall from "../components/ProfileSmall";
-import { getRoute, IUser, SIZE } from "../libs/custom";
+import { SIZE } from "../libs/custom";
 import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
-import IconBtn from "../components/atoms/IconBtn";
 import { useFeed } from "../stores/useFeed";
-import { AnimatePresence, motion, Variants } from "framer-motion";
-import {
-  fadeVariants,
-  floatVariants,
-  swipeRightVariants,
-} from "../libs/motionLib";
+import { AnimatePresence } from "framer-motion";
 import { useScrollSave } from "../stores/useScrollSave";
 import { useUser } from "../stores/useUser";
-import Link from "next/link";
 import FeedPost from "../components/FeedPost";
 import { HiOutlineBell } from "react-icons/hi2";
 import ProfileImg from "../components/atoms/ProfileImg";
@@ -63,10 +51,8 @@ export default function Feed() {
     setRefreshLoading(true);
     setResetRefresh(!resetRefresh);
   }
-
   const [search, setSearch] = useState(false);
-
-  const route = getRoute(router);
+  const [keyword, setKeyword] = useState("");
 
   return (
     <>
@@ -84,17 +70,21 @@ export default function Feed() {
         <div className="relative flex items-center px-4 py-2 border-b-2 border-dotted border-gray-4f">
           <IconInput
             icon="search"
-            // isOpen={true}
+            value={keyword}
             isOpen={search}
             onFocus={() => setSearch(true)}
-            onBlur={() => setSearch(false)}
+            onBlur={() => {
+              setSearch(false);
+            }}
+            onChange={(e) => setKeyword(e.target.value)}
             size={SIZE.iconSm}
-            onClick2={handleRefresh}
+            onCancelClick={() => {
+              setSearch(false);
+              setKeyword("");
+            }}
+            onRefreshClick={handleRefresh}
           />
-
-          <AnimatePresence></AnimatePresence>
         </div>
-
         <Loader isVisible={refreshLoading} />
         <AnimatePresence initial={false}>
           {posts.map((e, i) => (
