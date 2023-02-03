@@ -31,8 +31,26 @@ export default function Nav() {
     <>
       <WrapScroll>
         <div className="box-border fixed bottom-0 flex justify-around w-full pt-1 pb-8 px-8 bg-white max-w-[480px]">
-          <Link href="/" legacyBehavior>
-            <div className="flex flex-col items-center align-center hover:cursor-pointer">
+          {path !== "/" ? (
+            <Link href="/" legacyBehavior>
+              <div className="flex flex-col items-center align-center hover:cursor-pointer">
+                <div className="mb-1">
+                  {path === "/" ? (
+                    <HiHome size={SIZE.icon} />
+                  ) : (
+                    <HiOutlineHome size={SIZE.icon} />
+                  )}
+                </div>
+                <div className="text-xs">홈</div>
+              </div>
+            </Link>
+          ) : (
+            <div
+              className="flex flex-col items-center align-center hover:cursor-pointer"
+              onClick={() =>
+                window.scrollTo({ top: 0, left: 0, behavior: "smooth" })
+              }
+            >
               <div className="mb-1">
                 {path === "/" ? (
                   <HiHome size={SIZE.icon} />
@@ -42,7 +60,7 @@ export default function Nav() {
               </div>
               <div className="text-xs">홈</div>
             </div>
-          </Link>
+          )}
           <Link href="/add" legacyBehavior>
             <a>
               <div className="flex items-center justify-center text-3xl text-white -translate-y-5 bg-black rounded-full w-14 h-14">

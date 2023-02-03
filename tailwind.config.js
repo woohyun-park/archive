@@ -7,9 +7,6 @@ module.exports = {
     "./components/**/*.{js,jsx,ts,tsx}",
   ],
   theme: {
-    fontFamily: {
-      logo: ["Rammetto One", "sans-serif"],
-    },
     colors: {
       "black-f": colors.black,
       black: colors.gray[900],

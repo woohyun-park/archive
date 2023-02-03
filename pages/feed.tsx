@@ -29,12 +29,9 @@ export default function Feed() {
   });
 
   useEffect(() => {
-    router.beforePopState(() => {
-      return true;
-    });
     setTimeout(() => {
       if (router.query.refresh) {
-        window.scrollTo(0, 0);
+        window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
         handleRefresh();
       } else {
         window.scrollTo(0, scroll[router.pathname]);
