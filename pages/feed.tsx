@@ -81,38 +81,20 @@ export default function Feed() {
             <ProfileImg user={curUser} />
           </div>
         </div>
-        <div className="relative flex items-center justify-between px-4 py-2 border-b-2 border-dotted border-gray-4f">
+        <div className="relative flex items-center px-4 py-2 border-b-2 border-dotted border-gray-4f">
           <IconInput
             icon="search"
+            // isOpen={true}
+            isOpen={search}
             onFocus={() => setSearch(true)}
             onBlur={() => setSearch(false)}
-            variants={swipeRightVariants}
+            size={SIZE.iconSm}
+            onClick2={handleRefresh}
           />
 
-          <AnimatePresence>
-            {search && (
-              <motion.div
-                key="cancel"
-                className="absolute right-0 flex items-center justify-end mr-6 text-sm w-9 h-9 hover:cursor-pointer"
-                initial="initial"
-                animate="animate"
-                exit="exit"
-                variants={swipeRightVariants}
-              >
-                취소
-              </motion.div>
-            )}
-          </AnimatePresence>
-          {/* <div className="w-9 h-9"></div> */}
+          <AnimatePresence></AnimatePresence>
         </div>
-        <motion.div
-          key="refresh"
-          className="self-end mt-4 mr-4 w-fit"
-          initial="false"
-          whileHover={{ rotate: 180 }}
-        >
-          <IconBtn icon="refresh" size={SIZE.iconSm} onClick={handleRefresh} />
-        </motion.div>
+
         <Loader isVisible={refreshLoading} />
         <AnimatePresence initial={false}>
           {posts.map((e, i) => (

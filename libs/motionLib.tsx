@@ -24,22 +24,4 @@ export const fadeVariants: Variants = {
   exit: { opacity: 0 },
 };
 
-export const swipeRightVariants: Variants = {
-  initial: {
-    opacity: 0,
-    transform: "translateX(16px)",
-    transition: { duration: 0.1 },
-  },
-  animate: {
-    opacity: 1,
-    transform: "translateX(0px)",
-    transition: { duration: 0.1 },
-  },
-  exit: {
-    opacity: 0,
-    transform: "translateX(16px)",
-    transition: { duration: 0.1 },
-  },
-};
-
 export type IMotionType = "float" | "fade";
