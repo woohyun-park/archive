@@ -45,12 +45,9 @@ export default function Tab({ data, tab, route }: ITabProps) {
             );
           } else if (type === "list") {
             return (
-              <List
-                data={data[key] as ITag[]}
-                type="tag"
-                key={i}
-                route={route}
-              />
+              <>
+                <List data={data[key] as ITag[]} type="tag" route={route} />
+              </>
             );
           }
           // TODO: cont를 클릭했을때 화면이 위로 가는현상 고치기

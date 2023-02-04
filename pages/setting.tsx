@@ -90,14 +90,16 @@ export default function Setting() {
         {isSubmitting && (
           <div className="absolute top-0 left-0 z-10 w-full h-full bg-black/20"></div>
         )}
-        <IconBtn
-          icon="back"
-          onClick={() => {
-            if (isDirty) {
-              if (confirm(`프로필 수정을 취소하시겠습니까?`)) router.back();
-            } else router.back();
-          }}
-        />
+        <div className="flex mb-4">
+          <IconBtn
+            icon="back"
+            onClick={() => {
+              if (isDirty) {
+                if (confirm(`프로필 수정을 취소하시겠습니까?`)) router.back();
+              } else router.back();
+            }}
+          />
+        </div>
         <div className="flex justify-center">
           <div className="relative object-cover w-24 h-24 overflow-hidden rounded-full">
             <Image
