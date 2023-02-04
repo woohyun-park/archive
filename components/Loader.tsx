@@ -45,8 +45,8 @@ export default function Loader({
           .lds-ellipsis {
             display: inline-block;
             position: relative;
-            width: 80px;
-            height: 80px;
+            width: 76px;
+            height: 76px;
           }
           .lds-ellipsis div {
             position: absolute;

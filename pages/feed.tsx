@@ -92,7 +92,8 @@ export default function Feed() {
             </>
           ))}
         </AnimatePresence>
-        <Loader isVisible={loading} scrollIntoView={true} />
+        <Loader isVisible={true} scrollIntoView={true} />
+        {/* <Loader isVisible={loading} scrollIntoView={true} /> */}
         <div className="mb-24"></div>
       </div>
     </>

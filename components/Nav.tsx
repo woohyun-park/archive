@@ -30,7 +30,7 @@ export default function Nav() {
   return (
     <>
       <WrapScroll>
-        <div className="box-border fixed bottom-0 flex justify-around w-full pt-1 pb-8 px-8 bg-white max-w-[480px]">
+        <div className="box-border fixed bottom-0 grid grid-cols-3 justify-around w-full pt-1 pb-8 px-8 bg-white max-w-[480px]">
           {path !== "/" ? (
             <Link href="/" legacyBehavior>
               <div className="flex flex-col items-center align-center hover:cursor-pointer">
@@ -62,11 +62,11 @@ export default function Nav() {
             </div>
           )}
           <Link href="/add" legacyBehavior>
-            <a>
+            <div className="flex items-center justify-center">
               <div className="flex items-center justify-center text-3xl text-white -translate-y-5 bg-black rounded-full w-14 h-14">
                 +
               </div>
-            </a>
+            </div>
           </Link>
           <Link href="/search" legacyBehavior>
             <div className="flex flex-col items-center align-center hover:cursor-pointer">
