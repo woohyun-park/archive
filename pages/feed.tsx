@@ -11,6 +11,7 @@ import FeedPost from "../components/FeedPost";
 import { HiOutlineBell } from "react-icons/hi2";
 import ProfileImg from "../components/atoms/ProfileImg";
 import IconInput from "../components/atoms/IconInput";
+import IconBtn from "../components/atoms/IconBtn";
 
 export default function Feed() {
   const { curUser } = useUser();
@@ -55,18 +56,15 @@ export default function Feed() {
     <>
       <div className="flex flex-col">
         <div className="flex items-center justify-between px-4 pb-2 mt-16 border-b-8 border-gray-4f">
-          <h1 className="title-page">archive</h1>
+          <h1 className="title-logo">archive</h1>
           <div className="flex items-center justify-center">
-            <HiOutlineBell
-              size={SIZE.icon}
-              className="mr-2 hover:cursor-pointer"
-            />
+            <IconBtn icon="alarm" onClick={() => router.push("/alarm")} />
             <ProfileImg user={curUser} />
           </div>
         </div>
         <div className="relative flex items-center px-4 py-2 border-b-2 border-dotted border-gray-4f">
           <IconInput
-            icon="search"
+            icon="filter"
             value={keyword}
             isOpen={search}
             onFocus={() => setSearch(true)}
@@ -92,8 +90,7 @@ export default function Feed() {
             </>
           ))}
         </AnimatePresence>
-        <Loader isVisible={true} scrollIntoView={true} />
-        {/* <Loader isVisible={loading} scrollIntoView={true} /> */}
+        <Loader isVisible={loading} scrollIntoView={true} />
         <div className="mb-24"></div>
       </div>
     </>

@@ -63,7 +63,7 @@ export default function Nav() {
           )}
           <Link href="/add" legacyBehavior>
             <div className="flex items-center justify-center">
-              <div className="flex items-center justify-center text-3xl text-white -translate-y-5 bg-black rounded-full w-14 h-14">
+              <div className="flex items-center justify-center text-3xl text-white -translate-y-5 bg-black rounded-full hover:cursor-pointer w-14 h-14">
                 +
               </div>
             </div>

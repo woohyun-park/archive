@@ -5,23 +5,33 @@ import {
   HiBookmark,
   HiOutlineBookmark,
   HiOutlineChatBubbleOvalLeft,
-  HiArrowLeft,
+  HiChevronLeft,
   HiPencil,
   HiMagnifyingGlass,
+  HiOutlineBell,
+  HiArrowPath,
+  HiOutlineArrowUturnLeft,
+  HiArrowUturnDown,
+  HiArrowUturnLeft,
+  HiOutlineFunnel,
+  HiFunnel,
 } from "react-icons/hi2";
-import { IoRefreshSharp } from "react-icons/io5";
 import { SIZE } from "../../libs/custom";
 
+export type IIcon =
+  | "like"
+  | "comment"
+  | "scrap"
+  | "back"
+  | "delete"
+  | "modify"
+  | "refresh"
+  | "search"
+  | "alarm"
+  | "filter";
+
 interface IIconBtnProps {
-  icon:
-    | "like"
-    | "comment"
-    | "scrap"
-    | "back"
-    | "delete"
-    | "modify"
-    | "refresh"
-    | "search";
+  icon: IIcon;
   fill?: boolean;
   size?: string;
   style?: string;
@@ -62,13 +72,17 @@ export default function IconBtn({
             )}
           </>
         )}
-        {icon === "back" && <HiArrowLeft size={size} onClick={onClick} />}
+        {icon === "back" && <HiChevronLeft size={size} onClick={onClick} />}
         {icon === "delete" && <HiXMark size={size} onClick={onClick} />}
         {icon === "modify" && <HiPencil size={size} onClick={onClick} />}
-        {icon === "refresh" && <IoRefreshSharp size={size} onClick={onClick} />}
+        {icon === "refresh" && (
+          <HiArrowUturnLeft size={size} onClick={onClick} />
+        )}
         {icon === "search" && (
           <HiMagnifyingGlass size={size} onClick={onClick} />
         )}
+        {icon === "alarm" && <HiOutlineBell size={size} onClick={onClick} />}
+        {icon === "filter" && <HiOutlineFunnel size={size} onClick={onClick} />}
       </div>
 
       <style jsx>

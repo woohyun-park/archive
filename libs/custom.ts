@@ -121,6 +121,18 @@ export interface IScrap {
   isLoadedAt?: Date;
 }
 
+export interface IAlarm {
+  id: string;
+  uid: string;
+  photoURL: string;
+  targetUid: string;
+  targetPid: string;
+  targetImg: string;
+  targetCid: string;
+  targetTxt: string;
+  createdAt: Date;
+}
+
 export function getRoute(router: NextRouter): IRoute {
   return router.pathname === "/"
     ? "feed"

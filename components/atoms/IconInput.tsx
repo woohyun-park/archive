@@ -4,10 +4,10 @@ import { HiMagnifyingGlass } from "react-icons/hi2";
 import { useOutsideClick } from "../../hooks/useOutsideClick";
 import { SIZE } from "../../libs/custom";
 import { fadeVariants } from "../../libs/motionLib";
-import IconBtn from "./IconBtn";
+import IconBtn, { IIcon } from "./IconBtn";
 interface IIconInputProps {
   children?: React.ReactNode;
-  icon?: "search";
+  icon?: IIcon;
   type?: HTMLInputTypeAttribute;
   value?: string;
   placeholder?: string;
@@ -58,42 +58,47 @@ export default function IconInput({
         ref={contRef}
       >
         <AnimatePresence>
-          {icon === "search" && (
-            <>
-              <HiMagnifyingGlass
-                size={size}
-                onClick={onClick}
-                className={`z-10 duration-100 hover:cursor-pointer ${
-                  isOpen ? "scale-75" : "scale-100"
-                }`}
-              />
-              {!isOpen && (
-                <motion.div
-                  key="iconInput_refresh"
-                  initial="initial"
-                  animate="animate"
-                  exit="exit"
-                  variants={fadeVariants}
-                  onClick={onRefreshClick}
-                >
-                  <IconBtn icon="refresh" size={size} />
-                </motion.div>
-              )}
-              {isOpen && (
-                <motion.div
-                  key="iconInput_cancel"
-                  className="z-10 flex items-center justify-end px-1 text-sm hover:cursor-pointer"
-                  initial="initial"
-                  animate="animate"
-                  exit="exit"
-                  variants={fadeVariants}
-                  onClick={onCancelClick}
-                >
-                  취소
-                </motion.div>
-              )}
-            </>
-          )}
+          <>
+            <div
+              className={`z-10 duration-100 hover:cursor-pointer ${
+                isOpen ? "scale-75" : "scale-100"
+              }`}
+            >
+              <IconBtn icon={icon as IIcon} size={size} onClick={onClick} />
+            </div>
+            {/* <HiMagnifyingGlass
+              size={size}
+              onClick={onClick}
+              className={`z-10 duration-100 hover:cursor-pointer ${
+                isOpen ? "scale-75" : "scale-100"
+              }`}
+            /> */}
+            {!isOpen && (
+              <motion.div
+                key="iconInput_refresh"
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                variants={fadeVariants}
+                onClick={onRefreshClick}
+              >
+                <IconBtn icon="refresh" size={size} />
+              </motion.div>
+            )}
+            {isOpen && (
+              <motion.div
+                key="iconInput_cancel"
+                className="z-10 flex items-center justify-end px-1 text-sm hover:cursor-pointer"
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                variants={fadeVariants}
+                onClick={onCancelClick}
+              >
+                취소
+              </motion.div>
+            )}
+          </>
         </AnimatePresence>
         <motion.input
           type={type}

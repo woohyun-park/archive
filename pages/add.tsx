@@ -296,17 +296,19 @@ export default function Add() {
   return (
     <Motion type="fade">
       <Modal show={isSubmitting} content={<></>} />
-      <IconBtn
-        type="back"
-        onClick={() => {
-          if (
-            confirm(
-              `아카이브 ${prevPost ? "수정" : "작성"}을 취소하시겠습니까?`
+      <div className="flex">
+        <IconBtn
+          icon="back"
+          onClick={() => {
+            if (
+              confirm(
+                `아카이브 ${prevPost ? "수정" : "작성"}을 취소하시겠습니까?`
+              )
             )
-          )
-            router.back();
-        }}
-      />
+              router.back();
+          }}
+        />
+      </div>
       <form
         className="flex flex-col mt-4"
         onKeyDown={checkKeyDown}
