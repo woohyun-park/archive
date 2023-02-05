@@ -145,7 +145,9 @@ export default function Layout({ children }: ILayoutProps) {
   return (
     <>
       {login.isLoggedIn === null ? (
-        <>loading...</>
+        <div className="flex items-center justify-center h-[100vh]">
+          loading...
+        </div>
       ) : login.isLoggedIn ? (
         <>
           {router.pathname === "/" ? (
