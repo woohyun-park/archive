@@ -1,6 +1,5 @@
 import { AnimatePresence, motion, Variants } from "framer-motion";
 import React, { HTMLInputTypeAttribute, Ref, useRef } from "react";
-import { HiMagnifyingGlass } from "react-icons/hi2";
 import { useOutsideClick } from "../../hooks/useOutsideClick";
 import { SIZE } from "../../libs/custom";
 import { fadeVariants } from "../../libs/motionLib";

@@ -9,12 +9,8 @@ import {
   HiPencil,
   HiMagnifyingGlass,
   HiOutlineBell,
-  HiArrowPath,
-  HiOutlineArrowUturnLeft,
-  HiArrowUturnDown,
   HiArrowUturnLeft,
   HiOutlineFunnel,
-  HiFunnel,
 } from "react-icons/hi2";
 import { SIZE } from "../../libs/custom";
 

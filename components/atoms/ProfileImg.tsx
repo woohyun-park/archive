@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import { HTMLInputTypeAttribute } from "react";
 import { IUser } from "../../libs/custom";
 interface IProfileImgProps {
   user: IUser;

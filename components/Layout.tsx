@@ -11,7 +11,6 @@ import { auth, db } from "../apis/firebase";
 import Nav from "./Nav";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { COLOR, DEFAULT, IUser, SIZE } from "../libs/custom";
-import { RiAppleFill, RiFacebookFill, RiGoogleFill } from "react-icons/ri";
 import { useFeed } from "../stores/useFeed";
 import { useUser } from "../stores/useUser";
 import Btn from "../components/atoms/Btn";
