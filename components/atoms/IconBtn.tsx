@@ -11,6 +11,7 @@ import {
   HiOutlineBell,
   HiArrowUturnLeft,
   HiOutlineFunnel,
+  HiCog8Tooth,
 } from "react-icons/hi2";
 import { SIZE } from "../../libs/custom";
 
@@ -24,7 +25,8 @@ export type IIcon =
   | "refresh"
   | "search"
   | "alarm"
-  | "filter";
+  | "filter"
+  | "setting";
 
 interface IIconBtnProps {
   icon: IIcon;
@@ -79,6 +81,7 @@ export default function IconBtn({
         )}
         {icon === "alarm" && <HiOutlineBell size={size} onClick={onClick} />}
         {icon === "filter" && <HiOutlineFunnel size={size} onClick={onClick} />}
+        {icon === "setting" && <HiCog8Tooth size={size} onClick={onClick} />}
       </div>
 
       <style jsx>

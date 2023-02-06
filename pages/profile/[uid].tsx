@@ -17,6 +17,7 @@ import Image from "next/image";
 import Motion from "../../motions/Motion";
 import Btn from "../../components/atoms/Btn";
 import { useUser } from "../../stores/useUser";
+import IconBtn from "../../components/atoms/IconBtn";
 
 interface IProfileProps {
   initUser: IUser;
@@ -63,7 +64,7 @@ export default function Profile({
           <div className="flex justify-end">
             <Link href="/setting" legacyBehavior>
               <div className="flex justify-end text-black">
-                <HiOutlineCog size={SIZE.icon} />
+                <IconBtn icon="setting" />
               </div>
             </Link>
           </div>
