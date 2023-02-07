@@ -42,28 +42,26 @@ export default function FormTag({
       )}
       {orderFirst === "tag" && (
         <>
-          <div className="w-full">
-            <div className="flex flex-wrap">
-              {tags.map((each) => (
-                <span
-                  className="flex my-1 mr-1 button-black w-fit hover:cursor-pointer"
-                  key={"add_tag" + each}
-                >
-                  <span className="mr-1">{each}</span>
-                  <span className="text-white" id={each} onClick={onDelete}>
-                    <HiX />
-                  </span>
+          <div className="flex flex-wrap">
+            {tags.map((each) => (
+              <span
+                className="flex my-1 mr-1 button-black w-fit hover:cursor-pointer"
+                key={each}
+              >
+                <span className="mr-1">{each}</span>
+                <span className="text-white" id={each} onClick={onDelete}>
+                  <HiX />
                 </span>
-              ))}
-            </div>
-            <input
-              onChange={onChange}
-              value={tag}
-              maxLength={17}
-              id="tag"
-              className="inputForm_input"
-            />
+              </span>
+            ))}
           </div>
+          <input
+            onChange={onChange}
+            value={tag}
+            maxLength={17}
+            id="tag"
+            className="inputForm_input"
+          />
         </>
       )}
       {orderFirst === "input" && (

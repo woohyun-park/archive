@@ -1,44 +1,22 @@
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Loader from "../components/Loader";
-import { IUser, SIZE } from "../libs/custom";
+import { SIZE } from "../libs/custom";
 import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 import { useFeed } from "../stores/useFeed";
 import { AnimatePresence } from "framer-motion";
 import { useScrollSave } from "../stores/useScrollSave";
 import { useUser } from "../stores/useUser";
 import FeedPost from "../components/FeedPost";
-import { HiOutlineBell } from "react-icons/hi2";
 import ProfileImg from "../components/atoms/ProfileImg";
-import IconInput from "../components/atoms/IconInput";
 import IconBtn from "../components/atoms/IconBtn";
-import { useTag } from "../hooks/useTag";
-import FormTag from "../components/atoms/FormTag";
 import { motion } from "framer-motion";
 import { fadeVariants } from "../libs/motionLib";
-import { db, getDataByRef } from "../apis/firebase";
-import {
-  collection,
-  doc,
-  DocumentData,
-  orderBy,
-  Query,
-  query,
-  where,
-} from "firebase/firestore";
-import { getPostsByQuery } from "../stores/useFeedHelper";
-import Tag from "./tag/[tag]";
+import Input from "../components/atoms/Input";
 
 export default function Feed() {
   const { curUser } = useUser();
-  const { posts, getPosts } = useFeed();
-  const [curPosts, setCurPosts] = useState(posts);
-  const router = useRouter();
-  const { scroll } = useScrollSave();
-  const [refreshLoading, setRefreshLoading] = useState(false);
-  const [resetRefresh, setResetRefresh] = useState<boolean | null>(null);
-  const [filterLoading, setFilterLoading] = useState(false);
-
+  const { posts, filteredPosts, getPosts, getFilteredPosts } = useFeed();
   const { setLastIntersecting, loading } = useInfiniteScroll({
     handleIntersect: () => {
       tag.length === 0 && getPosts(curUser.id, "load");
@@ -46,6 +24,14 @@ export default function Feed() {
     handleChange: () => {},
     changeListener: posts,
   });
+  const router = useRouter();
+  const [curPosts, setCurPosts] = useState(posts);
+  const { scroll } = useScrollSave();
+  const [refreshLoading, setRefreshLoading] = useState(false);
+  const [resetRefresh, setResetRefresh] = useState<boolean | null>(null);
+  const [filterLoading, setFilterLoading] = useState(false);
+  const [tag, setTag] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     setTimeout(() => {
@@ -66,42 +52,32 @@ export default function Feed() {
     getPosts(curUser.id, "refresh").then(() => setRefreshLoading(false));
   }, [resetRefresh]);
 
-  function handleRefresh() {
-    setRefreshLoading(true);
-    setResetRefresh(!resetRefresh);
-  }
-  const { tag, tags, error, onChange, onDelete, setTag } = useTag();
-
-  const [isOpen, setIsOpen] = useState(false);
-
   useEffect(() => {
     setFilterLoading(true);
   }, [tag]);
 
   useEffect(() => {
     async function filterPosts() {
-      async function getFilteredPosts() {
-        const id = curUser.id;
-        const user = await getDataByRef<IUser>(doc(db, "users", id));
-        const q = query(
-          collection(db, "posts"),
-          where("uid", "in", [...user.followings, id]),
-          where("tags", "array-contains", tag),
-          orderBy("createdAt", "desc")
-        );
-        return await getPostsByQuery(q);
-      }
-      console.log(tag.length);
       if (tag.length === 0) {
         setCurPosts(posts);
       } else {
-        const [snap, posts] = await getFilteredPosts();
-        setCurPosts(posts);
+        await getFilteredPosts(curUser.id, tag);
+        setCurPosts(filteredPosts);
       }
       setFilterLoading(false);
     }
     filterPosts();
   }, [filterLoading]);
+
+  function handleRefresh() {
+    setRefreshLoading(true);
+    setResetRefresh(!resetRefresh);
+  }
+
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    e.preventDefault();
+    setTag(e.target.value);
+  }
 
   return (
     <>
@@ -117,7 +93,7 @@ export default function Feed() {
           <div
             className={
               isOpen
-                ? "z-10 scale-75 duration-100 ease-in-out absolute top-4"
+                ? "z-10 left-[1.125rem] scale-75 duration-100 ease-in-out absolute top-[1.125rem]"
                 : "z-10 duration-100 ease-in-out"
             }
           >
@@ -129,7 +105,7 @@ export default function Feed() {
           </div>
           {isOpen ? (
             <div
-              className="absolute z-10 top-4 right-6 hover:cursor-pointer"
+              className="absolute z-10 top-[1.125rem] right-6 hover:cursor-pointer"
               onClick={() => {
                 setIsOpen(false);
                 setTag("");
@@ -144,30 +120,23 @@ export default function Feed() {
               onClick={handleRefresh}
             />
           )}
-
-          {
-            <AnimatePresence>
-              {isOpen && (
-                <motion.div
-                  key="feed_input"
-                  className="top-0 z-0 w-full"
-                  variants={fadeVariants}
-                >
-                  <FormTag
-                    tag={tag}
-                    tags={tags}
-                    error={error}
-                    onChange={onChange}
-                    onDelete={onDelete}
-                    style="padding-left: 1.5rem; width: 100%; margin-left: 0;"
-                    orderFirst="input"
-                  />
-                </motion.div>
-              )}
-            </AnimatePresence>
-          }
+          <AnimatePresence>
+            {isOpen && (
+              <motion.div
+                key="feed_input"
+                className="top-0 z-0 w-full"
+                variants={fadeVariants}
+              >
+                <Input
+                  type="text"
+                  value={tag}
+                  onChange={handleChange}
+                  style="padding-left: 1.5rem"
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
-
         <Loader isVisible={refreshLoading || filterLoading} />
         <AnimatePresence initial={false}>
           {curPosts.map((e, i) => (
