@@ -8,8 +8,8 @@ import { useState } from "react";
 
 interface IFilterAndRefresh {
   tag: string;
-  setTag: Function;
-  onRefresh: Function;
+  setTag: React.Dispatch<React.SetStateAction<string>>;
+  onRefresh: () => void;
 }
 
 export default function FilterAndRefresh({
@@ -18,10 +18,12 @@ export default function FilterAndRefresh({
   onRefresh,
 }: IFilterAndRefresh) {
   const [isOpen, setIsOpen] = useState(false);
+
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     e.preventDefault();
     setTag(e.target.value);
   }
+
   return (
     <>
       <div className="relative flex items-center px-4 py-2 border-b-2 border-dotted border-gray-4f">

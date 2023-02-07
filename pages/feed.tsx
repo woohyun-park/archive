@@ -10,6 +10,7 @@ import FeedPost from "../components/FeedPost";
 import ProfileImg from "../components/atoms/ProfileImg";
 import IconBtn from "../components/atoms/IconBtn";
 import FilterAndRefresh from "../components/FilterAndRefresh";
+import { debounce } from "lodash";
 
 export default function Feed() {
   const { curUser } = useUser();
@@ -50,7 +51,9 @@ export default function Feed() {
   }, [resetRefresh]);
 
   useEffect(() => {
-    setFilterLoading(true);
+    debounce(() => {
+      setFilterLoading(true);
+    }, 500)();
   }, [tag]);
 
   useEffect(() => {
