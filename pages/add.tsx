@@ -12,6 +12,7 @@ import { useUser } from "../stores/useUser";
 import FormInput from "../components/atoms/FormInput";
 import { handleColor, handleImage } from "../libs/formLib";
 import { useTag } from "../hooks/useTag";
+import FormTag from "../components/atoms/FormTag";
 
 export interface IForm {
   file: File[];
@@ -34,7 +35,7 @@ export default function Add() {
   const [preview, setPreview] = useState<string>(
     prevPost && prevPost.imgs.length !== 0 ? prevPost.imgs[0] : ""
   );
-  const { tag, tags, errors, handleChange, handleRemove } = useTag({
+  const { tag, tags, error, handleChange, handleRemove } = useTag({
     initTags: prevPost ? prevPost.tags : [],
   });
   const {
@@ -66,7 +67,6 @@ export default function Add() {
       router.push({ pathname: "/", query: { refresh: true } });
     }
   }
-
   function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
     file.onChange(e);
     if (!e.target.files) {
@@ -202,42 +202,12 @@ export default function Add() {
           name="title"
           txt="제목"
         />
-        <div className="inputForm">
-          <div className="inputForm_left">
-            <label className="mr-1 inputForm_label">태그</label>
-            <div className="inputForm_txt">
-              {errors["tags"] === "" ? `${tags.length}/5` : ""}
-            </div>
-          </div>
-          <div
-            className={
-              tag.length === 0 || errors.tags !== ""
-                ? "inputForm_txt inputForm_txt-invalid "
-                : "inputForm_txt"
-            }
-          >
-            {errors["tags"] === "" ? `${tag.length}/16` : errors["tags"]}
-          </div>
-        </div>
-        <div className="flex flex-wrap">
-          {tags.map((each) => (
-            <span
-              className="flex my-1 mr-1 button-black w-fit hover:cursor-pointer"
-              key={"add_tag" + each}
-            >
-              <span className="mr-1">{each}</span>
-              <span className="text-white" id={each} onClick={handleRemove}>
-                <HiX />
-              </span>
-            </span>
-          ))}
-        </div>
-        <input
+        <FormTag
+          tag={tag}
+          tags={tags}
+          error={error}
           onChange={handleChange}
-          value={tag}
-          maxLength={17}
-          id="tag"
-          className="inputForm_input"
+          onDelete={handleRemove}
         />
         <FormInput
           type="textarea"

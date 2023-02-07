@@ -7,9 +7,7 @@ interface ITag {
 export const useTag = ({ initTags }: ITag) => {
   const [tag, setTag] = useState("");
   const [tags, setTags] = useState<string[]>(initTags ? initTags : []);
-  const [errors, setErrors] = useState({
-    tags: "",
-  });
+  const [error, setError] = useState("");
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     e.preventDefault();
     const newTag = e.target.value.split(" ")[0];
@@ -22,10 +20,7 @@ export const useTag = ({ initTags }: ITag) => {
       setTag(newTag);
     } else {
       if (tags.length === 5) {
-        setErrors({
-          ...errors,
-          tags: "태그는 최대 5개까지 추가할 수 있습니다.",
-        });
+        setError("태그는 최대 5개까지 추가할 수 있습니다.");
         return;
       }
       let tempTags = [...tags];
@@ -44,10 +39,7 @@ export const useTag = ({ initTags }: ITag) => {
       setTags(tempTags);
       setTag("");
     }
-    setErrors({
-      ...errors,
-      tags: "",
-    });
+    setError("");
   }
   function handleRemove(e: React.MouseEvent<HTMLSpanElement>) {
     const tag = e.currentTarget.id;
@@ -63,5 +55,5 @@ export const useTag = ({ initTags }: ITag) => {
       e.preventDefault();
   }
 
-  return { tag, tags, errors, handleChange, handleRemove };
+  return { tag, tags, error, handleChange, handleRemove };
 };
