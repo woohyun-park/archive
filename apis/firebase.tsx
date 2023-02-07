@@ -1,5 +1,6 @@
 import { initializeApp } from "firebase/app";
 import {
+  addDoc,
   arrayRemove,
   arrayUnion,
   collection,
@@ -115,6 +116,29 @@ export async function updateFollow(
     await updateDoc(userRef, {
       followers: arrayUnion(curUser.id),
     });
+  }
+}
+
+export async function removeTags(pid: string | undefined) {
+  const deleteTags = await getEach<ITag>("tags", pid as string);
+  for (const tag of deleteTags) {
+    await deleteDoc(doc(db, "tags", tag.id as string));
+  }
+}
+
+export async function addTags(
+  arr: string[],
+  uid: string,
+  pid: string | undefined
+) {
+  for await (const tag of arr) {
+    const tempTag: ITag = {
+      uid,
+      pid,
+      name: tag,
+    };
+    const tagRef = await addDoc(collection(db, "tags"), tempTag);
+    await updateDoc(tagRef, { id: tagRef.id });
   }
 }
 

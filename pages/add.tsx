@@ -15,18 +15,15 @@ import { HiX } from "react-icons/hi";
 import { useForm } from "react-hook-form";
 import Color from "../components/atoms/Color";
 import Image from "next/image";
-import ReactTextareaAutosize from "react-textarea-autosize";
 import Modal from "../components/Modal";
 import Motion from "../motions/Motion";
 import IconBtn from "../components/atoms/IconBtn";
-import { useFeed } from "../stores/useFeed";
 import { useUser } from "../stores/useUser";
-import Input from "../components/atoms/Input";
 import FormInput from "../components/atoms/FormInput";
+import { handleColor, handleImage } from "../libs/formLib";
 
 export interface IForm {
   file: File[];
-
   title: string;
   tags: string[];
   txt: string;
@@ -75,145 +72,14 @@ export default function Add() {
   async function onValid(data: IForm) {
     if (confirm(`아카이브를 ${prevPost ? "수정" : "생성"}하시겠습니까?`)) {
       // 이미지인 경우
-      if (status.selectedTab) {
-        // 이미지를 올린 경우
-        if (watch("file").length !== 0) {
-          const formData = new FormData();
-          const config: AxiosRequestConfig<FormData> = {
-            headers: { "Content-Type": "multipart/form-data" },
-          };
-          formData.append("api_key", process.env.NEXT_PUBLIC_CD_API_KEY || "");
-          formData.append(
-            "upload_preset",
-            process.env.NEXT_PUBLIC_CD_UPLOADE_PRESET || ""
-          );
-          formData.append(`file`, data.file[0]);
-
-          const res = await axios.post(
-            `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CD_CLOUD_NAME}/image/upload`,
-            formData,
-            config
-          );
-          let pid;
-          // 이미지를 올렸으며 수정인 경우
-          if (prevPost) {
-            const deleteTags = await getEach<ITag>(
-              "tags",
-              prevPost.id as string
-            );
-            for (const tag of deleteTags) {
-              await deleteDoc(doc(db, "tags", tag.id as string));
-            }
-            await updateDoc(doc(db, "posts", prevPost.id as string), {
-              title: data.title,
-              txt: data.txt,
-              imgs: [res.data.url],
-              color: data.color,
-              tags,
-            });
-            pid = prevPost.id;
-          }
-          // 이미지를 올렸으며 등록인 경우
-          else {
-            const postRef = await addDoc(collection(db, "posts"), {
-              uid: curUser.id,
-              createdAt: serverTimestamp(),
-              title: data.title,
-              txt: data.txt,
-              imgs: [res.data.url],
-              color: data.color,
-              tags,
-            });
-            await updateDoc(postRef, { id: postRef.id });
-            pid = postRef.id;
-          }
-          for await (const tag of data.tags) {
-            const tempTag: ITag = {
-              uid: curUser.id,
-              pid,
-              name: tag,
-            };
-            const tagRef = await addDoc(collection(db, "tags"), tempTag);
-            await updateDoc(tagRef, { id: tagRef.id });
-          }
-        } else {
-          // 이미지를 올리지 않았으며 수정인 경우
-          if (prevPost) {
-            const deleteTags = await getEach<ITag>(
-              "tags",
-              prevPost.id as string
-            );
-            for (const tag of deleteTags) {
-              await deleteDoc(doc(db, "tags", tag.id as string));
-            }
-            await updateDoc(doc(db, "posts", prevPost.id as string), {
-              title: data.title,
-              txt: data.txt,
-              imgs: [...prevPost.imgs],
-              color: data.color,
-              tags,
-            });
-            for await (const tag of data.tags) {
-              const tempTag: ITag = {
-                uid: curUser.id,
-                pid: prevPost.id,
-                name: tag,
-              };
-              const tagRef = await addDoc(collection(db, "tags"), tempTag);
-              await updateDoc(tagRef, { id: tagRef.id });
-            }
-          }
-          // 이미지를 올리지 않았으며 등록인 경우
-          else {
-            // validation에서 필터해줌
-          }
-        }
-      }
+      if (status.selectedTab)
+        handleImage({ watch, prevPost, data, curUser, tags });
       // 색깔인 경우
-      else {
-        let pid;
-        // 색깔이며 수정인 경우
-        if (prevPost) {
-          const deleteTags = await getEach<ITag>("tags", prevPost.id as string);
-          for (const tag of deleteTags) {
-            await deleteDoc(doc(db, "tags", tag.id as string));
-          }
-          await updateDoc(doc(db, "posts", prevPost.id as string), {
-            title: data.title,
-            txt: data.txt,
-            imgs: [],
-            color: data.color,
-            tags,
-          });
-          pid = prevPost.id;
-        }
-        // 색깔이며 수정이 아닌 경우
-        else {
-          const postRef = await addDoc(collection(db, "posts"), {
-            uid: curUser.id,
-            createdAt: serverTimestamp(),
-            title: data.title,
-            txt: data.txt,
-            imgs: [],
-            color: data.color,
-            tags,
-          });
-          await updateDoc(postRef, { id: postRef.id });
-          pid = postRef.id;
-        }
-        for await (const tag of data.tags) {
-          const tempTag: ITag = {
-            uid: curUser.id,
-            pid: pid,
-            name: tag,
-          };
-          const tagRef = await addDoc(collection(db, "tags"), tempTag);
-          await updateDoc(tagRef, { id: tagRef.id });
-        }
-      }
+      else handleColor({ prevPost, data, curUser, tags });
       router.push({ pathname: "/", query: { refresh: true } });
     }
   }
+
   function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
     file.onChange(e);
     if (!e.target.files) {
@@ -392,24 +258,13 @@ export default function Add() {
           id="file"
           hidden
         />
-        <div className="inputForm">
-          <label className="inputForm_label">제목 *</label>
-          <div
-            className={
-              watch("title").length === 0
-                ? "inputForm_txt inputForm_txt-invalid "
-                : "inputForm_txt"
-            }
-          >{`${watch("title").length}/32`}</div>
-        </div>
-        <input
-          {...register("title", { required: true, maxLength: 32 })}
+        <FormInput
+          watch={watch}
+          register={register}
           type="text"
-          maxLength={32}
-          id="title"
-          className="inputForm_input"
+          name="title"
+          txt="제목"
         />
-
         <div className="inputForm">
           <div className="inputForm_left">
             <label className="mr-1 inputForm_label">태그</label>
@@ -452,8 +307,8 @@ export default function Add() {
           watch={watch}
           register={register}
           name="txt"
+          txt="내용"
           maxLength={2000}
-          minRows={10}
         />
         <button className="button-black" type="submit">
           {prevPost ? "완료" : "생성"}
