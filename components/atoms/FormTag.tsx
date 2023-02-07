@@ -8,6 +8,7 @@ interface IFormTag {
   onDelete: (e: React.MouseEvent<HTMLSpanElement, MouseEvent>) => void;
   includeLabel?: boolean;
   orderFirst?: "tag" | "input";
+  style?: string;
 }
 
 export default function FormTag({
@@ -18,6 +19,7 @@ export default function FormTag({
   onDelete,
   includeLabel = false,
   orderFirst = "tag",
+  style,
 }: IFormTag) {
   return (
     <>
@@ -40,52 +42,63 @@ export default function FormTag({
       )}
       {orderFirst === "tag" && (
         <>
-          <div className="flex flex-wrap">
-            {tags.map((each) => (
-              <span
-                className="flex my-1 mr-1 button-black w-fit hover:cursor-pointer"
-                key={"add_tag" + each}
-              >
-                <span className="mr-1">{each}</span>
-                <span className="text-white" id={each} onClick={onDelete}>
-                  <HiX />
+          <div className="w-full">
+            <div className="flex flex-wrap">
+              {tags.map((each) => (
+                <span
+                  className="flex my-1 mr-1 button-black w-fit hover:cursor-pointer"
+                  key={"add_tag" + each}
+                >
+                  <span className="mr-1">{each}</span>
+                  <span className="text-white" id={each} onClick={onDelete}>
+                    <HiX />
+                  </span>
                 </span>
-              </span>
-            ))}
+              ))}
+            </div>
+            <input
+              onChange={onChange}
+              value={tag}
+              maxLength={17}
+              id="tag"
+              className="inputForm_input"
+            />
           </div>
-          <input
-            onChange={onChange}
-            value={tag}
-            maxLength={17}
-            id="tag"
-            className="inputForm_input"
-          />
         </>
       )}
       {orderFirst === "input" && (
         <>
-          <input
-            onChange={onChange}
-            value={tag}
-            maxLength={17}
-            id="tag"
-            className="mx-4 mb-0 inputForm_input"
-          />
-          <div className="flex flex-wrap mx-4">
-            {tags.map((each) => (
-              <span
-                className="flex mt-1 mb-0 mr-1 button-black w-fit hover:cursor-pointer"
-                key={"add_tag" + each}
-              >
-                <span className="mr-1">{each}</span>
-                <span className="text-white" id={each} onClick={onDelete}>
-                  <HiX />
+          <div className="w-full">
+            <input
+              onChange={onChange}
+              value={tag}
+              maxLength={17}
+              id="tag"
+              className="mx-4 mb-0 inputForm_input"
+            />
+            <div className="flex flex-wrap">
+              {tags.map((each) => (
+                <span
+                  className="flex mt-1 mb-0 mr-1 button-black w-fit hover:cursor-pointer"
+                  key={"add_tag" + each}
+                >
+                  <span className="mr-1">{each}</span>
+                  <span className="text-white" id={each} onClick={onDelete}>
+                    <HiX />
+                  </span>
                 </span>
-              </span>
-            ))}
+              ))}
+            </div>
           </div>
         </>
       )}
+      <style jsx>
+        {`
+          #tag {
+            ${style}
+          }
+        `}
+      </style>
     </>
   );
 }

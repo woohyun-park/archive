@@ -1,11 +1,5 @@
 import { AnimatePresence, motion, Variants } from "framer-motion";
-import React, {
-  HTMLInputTypeAttribute,
-  MouseEvent,
-  MouseEventHandler,
-  Ref,
-  useRef,
-} from "react";
+import React, { HTMLInputTypeAttribute, MouseEvent, useRef } from "react";
 import { HiX } from "react-icons/hi";
 import { useOutsideClick } from "../../hooks/useOutsideClick";
 import { SIZE } from "../../libs/custom";
@@ -32,10 +26,7 @@ interface IIconInputProps {
 }
 
 export default function IconInput({
-  type,
   icon,
-  value,
-  placeholder,
   onChange,
   onFocus,
   onBlur,
@@ -57,20 +48,19 @@ export default function IconInput({
   useOutsideClick({
     ref: contRef,
     onClick: () => {
+      console.log("wtf");
       onBlur && onBlur();
-      console.log("outside!");
     },
   });
   return (
     <>
-      <div className="relative w-full">
+      <div className="relative w-full" ref={contRef}>
         <div
           className={
             isOpen
-              ? "absolute flex items-center w-full justify-between top-2"
+              ? "absolute flex items-center w-full justify-between top-1"
               : "relative flex items-center w-full"
           }
-          ref={contRef}
         >
           <AnimatePresence>
             <>
@@ -109,7 +99,7 @@ export default function IconInput({
             </>
           </AnimatePresence>
         </div>
-        <div className={isOpen ? "relative" : "absolute"}>
+        <div className={isOpen ? "relative -mt-1 -mb-1" : "absolute"}>
           <motion.input
             onChange={onChange}
             value={tag}
@@ -125,10 +115,13 @@ export default function IconInput({
               paddingRight: "0",
             }}
             animate={{
-              opacity: 0,
-              width: "0",
-              paddingLeft: "0",
-              paddingRight: "0",
+              width: "100%",
+              opacity: 1,
+              transition: {
+                duration: 0.3,
+              },
+              paddingLeft: "1.25rem",
+              paddingRight: "2.25rem",
             }}
             whileFocus={{
               width: "100%",

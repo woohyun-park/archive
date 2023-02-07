@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Loader from "../components/Loader";
-import { SIZE } from "../libs/custom";
+import { IUser, SIZE } from "../libs/custom";
 import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 import { useFeed } from "../stores/useFeed";
 import { AnimatePresence } from "framer-motion";
@@ -14,18 +14,34 @@ import IconInput from "../components/atoms/IconInput";
 import IconBtn from "../components/atoms/IconBtn";
 import { useTag } from "../hooks/useTag";
 import FormTag from "../components/atoms/FormTag";
+import { motion } from "framer-motion";
+import { fadeVariants } from "../libs/motionLib";
+import { db, getDataByRef } from "../apis/firebase";
+import {
+  collection,
+  doc,
+  DocumentData,
+  orderBy,
+  Query,
+  query,
+  where,
+} from "firebase/firestore";
+import { getPostsByQuery } from "../stores/useFeedHelper";
+import Tag from "./tag/[tag]";
 
 export default function Feed() {
   const { curUser } = useUser();
   const { posts, getPosts } = useFeed();
+  const [curPosts, setCurPosts] = useState(posts);
   const router = useRouter();
   const { scroll } = useScrollSave();
   const [refreshLoading, setRefreshLoading] = useState(false);
   const [resetRefresh, setResetRefresh] = useState<boolean | null>(null);
+  const [filterLoading, setFilterLoading] = useState(false);
 
   const { setLastIntersecting, loading } = useInfiniteScroll({
     handleIntersect: () => {
-      getPosts(curUser.id, "load");
+      tag.length === 0 && getPosts(curUser.id, "load");
     },
     handleChange: () => {},
     changeListener: posts,
@@ -41,6 +57,9 @@ export default function Feed() {
       }
     }, 10);
   }, []);
+  useEffect(() => {
+    setCurPosts(posts);
+  }, [posts]);
 
   useEffect(() => {
     if (resetRefresh === null) return;
@@ -51,9 +70,38 @@ export default function Feed() {
     setRefreshLoading(true);
     setResetRefresh(!resetRefresh);
   }
-  const [search, setSearch] = useState(false);
-  const [keyword, setKeyword] = useState("");
   const { tag, tags, error, onChange, onDelete } = useTag();
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    setFilterLoading(true);
+  }, [tag]);
+
+  useEffect(() => {
+    async function filterPosts() {
+      async function getFilteredPosts() {
+        const id = curUser.id;
+        const user = await getDataByRef<IUser>(doc(db, "users", id));
+        const q = query(
+          collection(db, "posts"),
+          where("uid", "in", [...user.followings, id]),
+          where("tags", "array-contains", tag),
+          orderBy("createdAt", "desc")
+        );
+        return await getPostsByQuery(q);
+      }
+      console.log(tag.length);
+      if (tag.length === 0) {
+        setCurPosts(posts);
+      } else {
+        const [snap, posts] = await getFilteredPosts();
+        setCurPosts(posts);
+      }
+      setFilterLoading(false);
+    }
+    filterPosts();
+  }, [filterLoading]);
 
   return (
     <>
@@ -66,40 +114,65 @@ export default function Feed() {
           </div>
         </div>
         <div className="relative flex items-center px-4 py-2 border-b-2 border-dotted border-gray-4f">
-          <IconInput
-            icon="filter"
-            value={keyword}
-            isOpen={search}
-            onFocus={() => setSearch(true)}
-            onBlur={() => {
-              setSearch(false);
-            }}
-            onChange={onChange}
-            size={SIZE.iconSm}
-            onCancelClick={() => {
-              setSearch(false);
-              setKeyword("");
-            }}
-            onRefreshClick={handleRefresh}
-            tag={tag}
-            tags={tags}
-            onDelete={onDelete}
-          />
+          <div
+            className={
+              isOpen
+                ? "z-10 scale-75 duration-100 ease-in-out absolute top-4"
+                : "z-10 duration-100 ease-in-out"
+            }
+          >
+            <IconBtn
+              icon="filter"
+              size={SIZE.iconSm}
+              onClick={() => setIsOpen(!isOpen)}
+            />
+          </div>
+          {isOpen ? (
+            <div
+              className="absolute z-10 top-4 right-6 hover:cursor-pointer"
+              onClick={() => setIsOpen(false)}
+            >
+              취소
+            </div>
+          ) : (
+            <IconBtn
+              icon="refresh"
+              size={SIZE.iconSm}
+              onClick={handleRefresh}
+            />
+          )}
+
+          {
+            <AnimatePresence>
+              {isOpen && (
+                <motion.div
+                  key="feed_input"
+                  className="top-0 z-0 w-full"
+                  variants={fadeVariants}
+                >
+                  <FormTag
+                    tag={tag}
+                    tags={tags}
+                    error={error}
+                    onChange={onChange}
+                    onDelete={onDelete}
+                    style="padding-left: 1.5rem; width: 100%; margin-left: 0;"
+                    orderFirst="input"
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          }
         </div>
-        {/* <FormTag
-          tag={tag}
-          tags={tags}
-          error={error}
-          onChange={onChange}
-          onDelete={onDelete}
-          orderFirst="input"
-        /> */}
-        <Loader isVisible={refreshLoading} />
+
+        <Loader isVisible={refreshLoading || filterLoading} />
         <AnimatePresence initial={false}>
-          {posts.map((e, i) => (
+          {curPosts.map((e, i) => (
             <>
               <FeedPost post={e} />
-              {i === posts.length - 1 && <div ref={setLastIntersecting}></div>}
+              {tag.length === 0 && i === curPosts.length - 1 && (
+                <div ref={setLastIntersecting}></div>
+              )}
               <hr className="w-full h-2 text-gray-4f bg-gray-4f" />
             </>
           ))}
