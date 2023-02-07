@@ -10,7 +10,6 @@ import {
 import React, { useRef, useState } from "react";
 import { db, getEach } from "../apis/firebase";
 import { COLOR, IPost, ITag, IDict } from "../libs/custom";
-import { useStore } from "../stores/useStore";
 import { useRouter } from "next/router";
 import { HiX } from "react-icons/hi";
 import { useForm } from "react-hook-form";
@@ -22,8 +21,10 @@ import Motion from "../motions/Motion";
 import IconBtn from "../components/atoms/IconBtn";
 import { useFeed } from "../stores/useFeed";
 import { useUser } from "../stores/useUser";
+import Input from "../components/atoms/Input";
+import FormInput from "../components/atoms/FormInput";
 
-interface IForm {
+export interface IForm {
   file: File[];
 
   title: string;
@@ -34,7 +35,6 @@ interface IForm {
 
 export default function Add() {
   const { curUser } = useUser();
-  const { getPosts } = useFeed();
   const router = useRouter();
   const [prevPost, setPrevPost] = useState(
     router.query.post
@@ -392,7 +392,6 @@ export default function Add() {
           id="file"
           hidden
         />
-
         <div className="inputForm">
           <label className="inputForm_label">제목 *</label>
           <div
@@ -448,24 +447,13 @@ export default function Add() {
           id="tag"
           className="inputForm_input"
         />
-
-        <div className="inputForm">
-          <label className="inputForm_label">내용 *</label>
-          <div
-            className={
-              watch("txt").length === 0
-                ? "inputForm_txt inputForm_txt-invalid "
-                : "inputForm_txt"
-            }
-          >{`${watch("txt").length}/2000`}</div>
-        </div>
-
-        <ReactTextareaAutosize
-          {...register("txt", { required: true, maxLength: 2000 })}
+        <FormInput
+          type="textarea"
+          watch={watch}
+          register={register}
+          name="txt"
           maxLength={2000}
           minRows={10}
-          id="txt"
-          className="h-32 resize-none inputForm_input"
         />
         <button className="button-black" type="submit">
           {prevPost ? "완료" : "생성"}
