@@ -3,20 +3,10 @@ import { useRouter } from "next/router";
 import {
   HiHome,
   HiOutlineHome,
-  HiMagnifyingGlass,
-  HiOutlineMagnifyingGlass,
   // HiSearch,
   // HiOutlineSearch,
   HiLightBulb,
   HiOutlineLightBulb,
-  HiPlus,
-  HiOutlinePlus,
-  HiPlusCircle,
-  HiSparkles,
-  HiOutlineSparkles,
-  HiOutlinePlusCircle,
-  HiUser,
-  HiOutlineUser,
 } from "react-icons/hi2";
 import { SIZE } from "../libs/custom";
 import WrapScroll from "./wrappers/WrapScroll";
