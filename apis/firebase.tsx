@@ -119,13 +119,6 @@ export async function updateFollow(
   }
 }
 
-export async function removeTags(pid: string | undefined) {
-  const deleteTags = await getEach<ITag>("tags", pid as string);
-  for (const tag of deleteTags) {
-    await deleteDoc(doc(db, "tags", tag.id as string));
-  }
-}
-
 export async function addTags(
   arr: string[],
   uid: string,
@@ -142,14 +135,14 @@ export async function addTags(
   }
 }
 
-export async function deletePost(id: string) {
-  async function deleteEach(datas: any[], type: string) {
-    for await (const data of datas) {
-      const id = data.id as string;
-      await deleteDoc(doc(db, type, id));
-    }
+export async function deleteEach(datas: any[], type: string) {
+  for await (const data of datas) {
+    const id = data.id as string;
+    await deleteDoc(doc(db, type, id));
   }
+}
 
+export async function deletePost(id: string) {
   const ref = doc(db, "posts", id);
   await deleteDoc(doc(db, "posts", id));
   const likes = await getEach<ILike>("likes", id);

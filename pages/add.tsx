@@ -1,14 +1,4 @@
-import axios, { AxiosRequestConfig } from "axios";
-import {
-  addDoc,
-  collection,
-  deleteDoc,
-  doc,
-  serverTimestamp,
-  updateDoc,
-} from "firebase/firestore";
 import React, { useRef, useState } from "react";
-import { db, getEach } from "../apis/firebase";
 import { COLOR, IPost, ITag, IDict } from "../libs/custom";
 import { useRouter } from "next/router";
 import { HiX } from "react-icons/hi";

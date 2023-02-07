@@ -1,14 +1,13 @@
-import axios, { AxiosRequestConfig } from "axios";
 import {
   addDoc,
   collection,
-  deleteDoc,
   doc,
   serverTimestamp,
   updateDoc,
 } from "firebase/firestore";
 import { UseFormWatch } from "react-hook-form";
-import { addTags, db, getEach, removeTags } from "../apis/firebase";
+import { uploadImage } from "../apis/fileApi";
+import { addTags, db, deleteEach, getEach } from "../apis/firebase";
 import { IForm } from "../pages/add";
 import { IPost, ITag, IUser } from "./custom";
 
@@ -37,35 +36,18 @@ export async function handleImage({
     color: data.color,
     tags,
   };
+  let pid = (prevPost && prevPost.id) || "";
   if (watch("file").length !== 0) {
-    const formData = new FormData();
-    const config: AxiosRequestConfig<FormData> = {
-      headers: { "Content-Type": "multipart/form-data" },
-    };
-    formData.append("api_key", process.env.NEXT_PUBLIC_CD_API_KEY || "");
-    formData.append(
-      "upload_preset",
-      process.env.NEXT_PUBLIC_CD_UPLOADE_PRESET || ""
-    );
-    formData.append(`file`, data.file[0]);
-
-    const res = await axios.post(
-      `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CD_CLOUD_NAME}/image/upload`,
-      formData,
-      config
-    );
-    let pid;
-    // 이미지를 올렸으며 수정인 경우
+    const res = await uploadImage(data.file);
     if (prevPost) {
-      removeTags(prevPost.id);
+      // 이미지를 올렸으며 수정인 경우
       await updateDoc(doc(db, "posts", prevPost.id as string), {
         ...post,
         imgs: [res.data.url],
       });
-      pid = prevPost.id;
-    }
-    // 이미지를 올렸으며 등록인 경우
-    else {
+      deleteAndAddTags(data.tags, pid, curUser.id);
+    } else {
+      // 이미지를 올렸으며 등록인 경우
       const postRef = await addDoc(collection(db, "posts"), {
         ...post,
         uid: curUser.id,
@@ -77,28 +59,15 @@ export async function handleImage({
     }
     addTags(data.tags, curUser.id, pid);
   } else {
-    // 이미지를 올리지 않았으며 수정인 경우
     if (prevPost) {
-      const deleteTags = await getEach<ITag>("tags", prevPost.id as string);
-      for (const tag of deleteTags) {
-        await deleteDoc(doc(db, "tags", tag.id as string));
-      }
-      await updateDoc(doc(db, "posts", prevPost.id as string), {
+      // 이미지를 올리지 않았으며 수정인 경우
+      await updateDoc(doc(db, "posts", pid as string), {
         ...post,
         imgs: [...prevPost.imgs],
       });
-      for await (const tag of data.tags) {
-        const tempTag: ITag = {
-          uid: curUser.id,
-          pid: prevPost.id,
-          name: tag,
-        };
-        const tagRef = await addDoc(collection(db, "tags"), tempTag);
-        await updateDoc(tagRef, { id: tagRef.id });
-      }
-    }
-    // 이미지를 올리지 않았으며 등록인 경우
-    else {
+      deleteAndAddTags(data.tags, pid, curUser.id);
+    } else {
+      // 이미지를 올리지 않았으며 등록인 경우
       // validation에서 필터해줌
     }
   }
@@ -110,43 +79,40 @@ export async function handleColor({
   tags,
   curUser,
 }: IHandleColor) {
-  let pid;
-  // 색깔이며 수정인 경우
+  const post = {
+    title: data.title,
+    txt: data.txt,
+    color: data.color,
+    imgs: [],
+    tags,
+  };
   if (prevPost) {
-    const deleteTags = await getEach<ITag>("tags", prevPost.id as string);
-    for (const tag of deleteTags) {
-      await deleteDoc(doc(db, "tags", tag.id as string));
-    }
-    await updateDoc(doc(db, "posts", prevPost.id as string), {
-      title: data.title,
-      txt: data.txt,
-      imgs: [],
-      color: data.color,
-      tags,
+    // 수정인 경우
+    if (!prevPost.id) return;
+    await updateDoc(doc(db, "posts", prevPost.id), {
+      ...post,
     });
-    pid = prevPost.id;
-  }
-  // 색깔이며 수정이 아닌 경우
-  else {
+    deleteAndAddTags(data.tags, prevPost.id, curUser.id);
+  } else {
+    // 신규인 경우
     const postRef = await addDoc(collection(db, "posts"), {
+      ...post,
       uid: curUser.id,
       createdAt: serverTimestamp(),
-      title: data.title,
-      txt: data.txt,
-      imgs: [],
-      color: data.color,
-      tags,
     });
-    await updateDoc(postRef, { id: postRef.id });
-    pid = postRef.id;
+    const pid = postRef.id;
+    await updateDoc(postRef, { id: pid });
+    addTags(data.tags, curUser.id, pid);
   }
-  for await (const tag of data.tags) {
-    const tempTag: ITag = {
-      uid: curUser.id,
-      pid: pid,
-      name: tag,
-    };
-    const tagRef = await addDoc(collection(db, "tags"), tempTag);
-    await updateDoc(tagRef, { id: tagRef.id });
-  }
+}
+
+async function deleteAndAddTags(
+  tags: string[],
+  pid: string | undefined,
+  uid: string | undefined
+) {
+  if (!pid || !uid) return;
+  const tagsToDelete = await getEach<ITag>("tags", pid);
+  deleteEach(tagsToDelete, "tags");
+  addTags(tags, uid, pid);
 }
