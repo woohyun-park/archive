@@ -12,6 +12,8 @@ import { HiOutlineBell } from "react-icons/hi2";
 import ProfileImg from "../components/atoms/ProfileImg";
 import IconInput from "../components/atoms/IconInput";
 import IconBtn from "../components/atoms/IconBtn";
+import { useTag } from "../hooks/useTag";
+import FormTag from "../components/atoms/FormTag";
 
 export default function Feed() {
   const { curUser } = useUser();
@@ -51,6 +53,7 @@ export default function Feed() {
   }
   const [search, setSearch] = useState(false);
   const [keyword, setKeyword] = useState("");
+  const { tag, tags, error, onChange, onDelete } = useTag();
 
   return (
     <>
@@ -71,15 +74,26 @@ export default function Feed() {
             onBlur={() => {
               setSearch(false);
             }}
-            onChange={(e) => setKeyword(e.target.value)}
+            onChange={onChange}
             size={SIZE.iconSm}
             onCancelClick={() => {
               setSearch(false);
               setKeyword("");
             }}
             onRefreshClick={handleRefresh}
+            tag={tag}
+            tags={tags}
+            onDelete={onDelete}
           />
         </div>
+        {/* <FormTag
+          tag={tag}
+          tags={tags}
+          error={error}
+          onChange={onChange}
+          onDelete={onDelete}
+          orderFirst="input"
+        /> */}
         <Loader isVisible={refreshLoading} />
         <AnimatePresence initial={false}>
           {posts.map((e, i) => (

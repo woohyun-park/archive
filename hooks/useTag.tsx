@@ -1,14 +1,10 @@
 import { useEffect, useState } from "react";
 
-interface ITag {
-  initTags: string[];
-}
-
-export const useTag = ({ initTags }: ITag) => {
+export const useTag = (initTags: string[] = []) => {
   const [tag, setTag] = useState("");
   const [tags, setTags] = useState<string[]>(initTags ? initTags : []);
   const [error, setError] = useState("");
-  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+  function onChange(e: React.ChangeEvent<HTMLInputElement>) {
     e.preventDefault();
     const newTag = e.target.value.split(" ")[0];
     if (newTag === " ") {
@@ -41,7 +37,7 @@ export const useTag = ({ initTags }: ITag) => {
     }
     setError("");
   }
-  function handleRemove(e: React.MouseEvent<HTMLSpanElement>) {
+  function onDelete(e: React.MouseEvent<HTMLSpanElement>) {
     const tag = e.currentTarget.id;
     const tagIndex = tags.findIndex((elem) => elem === tag);
     const tempTags = [
@@ -55,5 +51,5 @@ export const useTag = ({ initTags }: ITag) => {
       e.preventDefault();
   }
 
-  return { tag, tags, error, handleChange, handleRemove };
+  return { tag, tags, error, onChange, onDelete };
 };

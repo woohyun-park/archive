@@ -35,9 +35,9 @@ export default function Add() {
   const [preview, setPreview] = useState<string>(
     prevPost && prevPost.imgs.length !== 0 ? prevPost.imgs[0] : ""
   );
-  const { tag, tags, error, handleChange, handleRemove } = useTag({
-    initTags: prevPost ? prevPost.tags : [],
-  });
+  const { tag, tags, error, onChange, onDelete } = useTag(
+    prevPost ? prevPost.tags : []
+  );
   const {
     register,
     handleSubmit,
@@ -206,8 +206,9 @@ export default function Add() {
           tag={tag}
           tags={tags}
           error={error}
-          onChange={handleChange}
-          onDelete={handleRemove}
+          onChange={onChange}
+          onDelete={onDelete}
+          includeLabel={true}
         />
         <FormInput
           type="textarea"
