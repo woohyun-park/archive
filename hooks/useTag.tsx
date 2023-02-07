@@ -51,5 +51,5 @@ export const useTag = (initTags: string[] = []) => {
       e.preventDefault();
   }
 
-  return { tag, tags, error, onChange, onDelete };
+  return { tag, tags, error, onChange, onDelete, setTag };
 };

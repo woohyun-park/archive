@@ -70,7 +70,7 @@ export default function Feed() {
     setRefreshLoading(true);
     setResetRefresh(!resetRefresh);
   }
-  const { tag, tags, error, onChange, onDelete } = useTag();
+  const { tag, tags, error, onChange, onDelete, setTag } = useTag();
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -130,7 +130,10 @@ export default function Feed() {
           {isOpen ? (
             <div
               className="absolute z-10 top-4 right-6 hover:cursor-pointer"
-              onClick={() => setIsOpen(false)}
+              onClick={() => {
+                setIsOpen(false);
+                setTag("");
+              }}
             >
               취소
             </div>
