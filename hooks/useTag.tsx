@@ -2,13 +2,14 @@ import { useEffect, useState } from "react";
 
 interface ITag {
   initTags: string[];
-  onChange: () => void;
-  onRemove: () => void;
 }
 
-export const useTag = ({ initTags, onChange, onRemove }: ITag) => {
+export const useTag = ({ initTags }: ITag) => {
   const [tag, setTag] = useState("");
   const [tags, setTags] = useState<string[]>(initTags ? initTags : []);
+  const [errors, setErrors] = useState({
+    tags: "",
+  });
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     e.preventDefault();
     const newTag = e.target.value.split(" ")[0];
@@ -20,6 +21,13 @@ export const useTag = ({ initTags, onChange, onRemove }: ITag) => {
       }
       setTag(newTag);
     } else {
+      if (tags.length === 5) {
+        setErrors({
+          ...errors,
+          tags: "태그는 최대 5개까지 추가할 수 있습니다.",
+        });
+        return;
+      }
       let tempTags = [...tags];
       const tagIndex = tempTags.findIndex((tempTag) => {
         return tempTag === newTag;
@@ -36,9 +44,12 @@ export const useTag = ({ initTags, onChange, onRemove }: ITag) => {
       setTags(tempTags);
       setTag("");
     }
-    onChange();
+    setErrors({
+      ...errors,
+      tags: "",
+    });
   }
-  function handleTagRemove(e: React.MouseEvent<HTMLSpanElement>) {
+  function handleRemove(e: React.MouseEvent<HTMLSpanElement>) {
     const tag = e.currentTarget.id;
     const tagIndex = tags.findIndex((elem) => elem === tag);
     const tempTags = [
@@ -46,12 +57,11 @@ export const useTag = ({ initTags, onChange, onRemove }: ITag) => {
       ...[...tags].slice(tagIndex + 1, [...tags].length),
     ];
     setTags(tempTags);
-    onRemove();
   }
   function checkKeyDown(e: React.KeyboardEvent<HTMLFormElement>) {
     if (e.key === "Enter" && (e.target as HTMLElement).id !== "txt")
       e.preventDefault();
   }
 
-  return { tag, tags };
+  return { tag, tags, errors, handleChange, handleRemove };
 };

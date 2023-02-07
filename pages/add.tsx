@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { COLOR, IPost, ITag, IDict } from "../libs/custom";
+import { COLOR, IPost, IDict } from "../libs/custom";
 import { useRouter } from "next/router";
 import { HiX } from "react-icons/hi";
 import { useForm } from "react-hook-form";
@@ -11,6 +11,7 @@ import IconBtn from "../components/atoms/IconBtn";
 import { useUser } from "../stores/useUser";
 import FormInput from "../components/atoms/FormInput";
 import { handleColor, handleImage } from "../libs/formLib";
+import { useTag } from "../hooks/useTag";
 
 export interface IForm {
   file: File[];
@@ -23,11 +24,9 @@ export interface IForm {
 export default function Add() {
   const { curUser } = useUser();
   const router = useRouter();
-  const [prevPost, setPrevPost] = useState(
-    router.query.post
-      ? (JSON.parse(router.query.post as string) as IPost)
-      : undefined
-  );
+  const prevPost = router.query.post
+    ? (JSON.parse(router.query.post as string) as IPost)
+    : undefined;
   const [status, setStatus] = useState({
     selectedTab: prevPost ? (prevPost.imgs.length !== 0 ? true : false) : true,
     selectedColor: prevPost ? prevPost.color : COLOR.red,
@@ -35,10 +34,8 @@ export default function Add() {
   const [preview, setPreview] = useState<string>(
     prevPost && prevPost.imgs.length !== 0 ? prevPost.imgs[0] : ""
   );
-  const [tag, setTag] = useState("");
-  const [tags, setTags] = useState<string[]>(prevPost ? prevPost.tags : []);
-  const [errors, setErrors] = useState({
-    tags: "",
+  const { tag, tags, errors, handleChange, handleRemove } = useTag({
+    initTags: prevPost ? prevPost.tags : [],
   });
   const {
     register,
@@ -93,56 +90,6 @@ export default function Add() {
   function handleColorClick(color: string) {
     setValue("color", color);
     setStatus({ ...status, selectedColor: color });
-  }
-  function handleTagChange(e: React.ChangeEvent<HTMLInputElement>) {
-    e.preventDefault();
-    const newTag = e.target.value.split(" ")[0];
-    if (newTag === " ") {
-      setTag("");
-    } else if (e.target.value.split(" ").length === 1) {
-      if (newTag.length > 16) {
-        return;
-      }
-      setTag(newTag);
-    } else {
-      if (tags.length === 5) {
-        setErrors({
-          ...errors,
-          tags: "태그는 최대 5개까지 추가할 수 있습니다.",
-        });
-        return;
-      }
-      let tempTags = [...tags];
-      const tagIndex = tempTags.findIndex((tempTag) => {
-        return tempTag === newTag;
-      });
-      if (tagIndex === -1) {
-        tempTags.push(newTag);
-      } else {
-        tempTags = [
-          ...tempTags.slice(0, tagIndex),
-          ...tempTags.slice(tagIndex + 1, tempTags.length),
-        ];
-        tempTags.unshift(newTag);
-      }
-      setTags(tempTags);
-      setValue("tags", tempTags);
-      setTag("");
-    }
-    setErrors({
-      ...errors,
-      tags: "",
-    });
-  }
-  function handleTagRemove(e: React.MouseEvent<HTMLSpanElement>) {
-    const tag = e.currentTarget.id;
-    const tagIndex = tags.findIndex((elem) => elem === tag);
-    const tempTags = [
-      ...[...tags].slice(0, tagIndex),
-      ...[...tags].slice(tagIndex + 1, [...tags].length),
-    ];
-    setTags(tempTags);
-    setValue("tags", tempTags);
   }
   function checkKeyDown(e: React.KeyboardEvent<HTMLFormElement>) {
     if (e.key === "Enter" && (e.target as HTMLElement).id !== "txt")
@@ -273,20 +220,20 @@ export default function Add() {
           </div>
         </div>
         <div className="flex flex-wrap">
-          {watch("tags")?.map((each) => (
+          {tags.map((each) => (
             <span
               className="flex my-1 mr-1 button-black w-fit hover:cursor-pointer"
               key={"add_tag" + each}
             >
               <span className="mr-1">{each}</span>
-              <span className="text-white" id={each} onClick={handleTagRemove}>
+              <span className="text-white" id={each} onClick={handleRemove}>
                 <HiX />
               </span>
             </span>
           ))}
         </div>
         <input
-          onChange={handleTagChange}
+          onChange={handleChange}
           value={tag}
           maxLength={17}
           id="tag"
