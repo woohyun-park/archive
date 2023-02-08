@@ -18,12 +18,10 @@ import { db, getData, getEach } from "../apis/firebase";
 import { POST_PER_PAGE } from "./useStore";
 import { IFeedGetType } from "./useFeed";
 
-export let feedFirstVisible: QueryDocumentSnapshot<DocumentData>;
-export let feedLastVisible: QueryDocumentSnapshot<DocumentData>;
-
 export function getQueryByType(
   user: IUser,
-  type: IFeedGetType
+  type: IFeedGetType,
+  lastVisible: QueryDocumentSnapshot<DocumentData>
 ): Query<DocumentData> {
   const id = user.id;
   if (type === "init")
@@ -38,14 +36,14 @@ export function getQueryByType(
       collection(db, "posts"),
       where("uid", "in", [...user.followings, id]),
       orderBy("createdAt", "desc"),
-      startAfter(feedLastVisible),
+      startAfter(lastVisible),
       limit(POST_PER_PAGE.feed.post)
     );
   return query(
     collection(db, "posts"),
     where("uid", "in", [...user.followings, id]),
     orderBy("createdAt", "desc"),
-    endAt(feedLastVisible)
+    endAt(lastVisible)
   );
 }
 
@@ -85,16 +83,20 @@ export function combinePrevAndNewPosts(
 export function setCursorByType(
   snap: QuerySnapshot<DocumentData>,
   type: IFeedGetType
-) {
+): QueryDocumentSnapshot<DocumentData> {
   if (snap.docs.length !== 0) {
     if (type === "init") {
-      feedFirstVisible = snap.docs[0];
-      feedLastVisible = snap.docs[snap.docs.length - 1];
+      return snap.docs[snap.docs.length - 1];
+      // feedFirstVisible = snap.docs[0];
+      // feedLastVisible = snap.docs[snap.docs.length - 1];
     } else if (type === "load") {
-      feedLastVisible = snap.docs[snap.docs.length - 1];
-    } else if (type === "refresh") {
-      feedFirstVisible = snap.docs[0];
-      feedLastVisible = snap.docs[snap.docs.length - 1];
+      return snap.docs[snap.docs.length - 1];
+      // feedLastVisible = snap.docs[snap.docs.length - 1];
+    } else {
+      return snap.docs[snap.docs.length - 1];
+      // feedFirstVisible = snap.docs[0];
+      // feedLastVisible = snap.docs[snap.docs.length - 1];
     }
   }
+  return null;
 }

@@ -20,9 +20,7 @@ export default function Feed() {
   const { keywords, setKeywords } = useKeyword();
   const keyword = keywords[router.pathname] || "";
   const { setLastIntersecting, loading } = useInfiniteScroll({
-    handleIntersect: () => {
-      keyword.length === 0 && getPosts(curUser.id, "load");
-    },
+    handleIntersect: () => keyword.length === 0 && getPosts(curUser.id, "load"),
     handleChange: () => {},
     changeListener: posts,
   });

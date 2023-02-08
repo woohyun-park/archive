@@ -7,14 +7,21 @@ import Motion from "../motions/Motion";
 import Box from "../components/Box";
 import Loader from "../components/Loader";
 import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
+import { useSearch } from "../stores/useSearch";
+import { useKeyword } from "../stores/useKeyword";
+import { useEffect } from "react";
 
 export default function Search() {
   const { gSearch, gPage, gSetPage, gSetSearch } = useStore();
+  const { posts, getPosts } = useSearch();
   const { setLastIntersecting, loading } = useInfiniteScroll({
-    handleIntersect: () => gSetPage("search", "post", gPage.search.post + 1),
-    handleChange: () => gSetSearch("posts", gPage.search.post),
-    changeListener: gPage.search.post,
+    handleIntersect: () => getPosts("load"),
+    handleChange: () => {},
+    changeListener: posts,
   });
+  useEffect(() => {
+    getPosts("init");
+  }, []);
 
   return (
     <>
@@ -27,7 +34,7 @@ export default function Search() {
           </div>
         </Link>
         <div className="grid grid-cols-3 mt-4 mb-16 gap-y-2 gap-x-2">
-          {gSearch.posts.map((e, i) => (
+          {posts.map((e, i) => (
             <>
               <div>
                 <Box
@@ -37,9 +44,7 @@ export default function Search() {
                   includeTag={true}
                 ></Box>
               </div>
-              {i === gSearch.posts.length - 1 && (
-                <div ref={setLastIntersecting}></div>
-              )}
+              {i === posts.length - 1 && <div ref={setLastIntersecting}></div>}
             </>
           ))}
         </div>

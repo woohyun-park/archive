@@ -1,4 +1,12 @@
-import { collection, doc, orderBy, query, where } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  DocumentData,
+  orderBy,
+  query,
+  QueryDocumentSnapshot,
+  where,
+} from "firebase/firestore";
 import create from "zustand";
 import { devtools } from "zustand/middleware";
 import { db, getDataByRef } from "../apis/firebase";
@@ -19,25 +27,24 @@ interface IFeedStore {
 
   filteredPosts: IPost[];
   getFilteredPosts: (id: string, tag: string) => Promise<void>;
-
-  keyword: string;
-  setKeyword: (keyword: string) => void;
 }
+
+let feedLastVisible: QueryDocumentSnapshot<DocumentData>;
 
 export const useFeed = create<IFeedStore>()(
   devtools((set, get) => ({
     posts: [] as IPost[],
     filteredPosts: [] as IPost[],
-    keyword: "",
     getPosts: async (id: string, type: IFeedGetType) => {
       let posts: IPost[] = [];
       await Promise.all([
         (async () => {
           const user = await getDataByRef<IUser>(doc(db, "users", id));
-          const q = getQueryByType(user, type);
+          const q = getQueryByType(user, type, feedLastVisible);
           let [snap, posts] = await getPostsByQuery(q);
           posts = combinePrevAndNewPosts(get().posts, posts, type);
-          setCursorByType(snap, type);
+          const lastVisible = setCursorByType(snap, type);
+          if (lastVisible) feedLastVisible = lastVisible;
           return posts;
         })(),
         new Promise((resolve, reject) => {
@@ -76,14 +83,6 @@ export const useFeed = create<IFeedStore>()(
         return {
           ...state,
           posts,
-        };
-      });
-    },
-    setKeyword: (keyword: string) => {
-      set((state: IFeedStore) => {
-        return {
-          ...state,
-          keyword,
         };
       });
     },

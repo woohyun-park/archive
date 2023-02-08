@@ -8,6 +8,7 @@ import { useRouter } from "next/router";
 import Motion from "../motions/Motion";
 import { useOutsideClick } from "../hooks/useOutsideClick";
 import { useUser } from "../stores/useUser";
+import { useKeyword } from "../stores/useKeyword";
 
 interface ISearchState {
   isInitial: boolean;
@@ -16,14 +17,17 @@ interface ISearchState {
 
 export default function Search() {
   const { gSetSearch, gSearch, gStatus, gSetStatus, gPage } = useStore();
+  const router = useRouter();
   const { curUser } = useUser();
   const [state, setState] = useState<ISearchState>({
     isInitial: true,
     searchedKeyword: "",
   });
-  const [keyword, setKeyword] = useState(gStatus.keyword);
+
+  const { keywords, setKeywords } = useKeyword();
+  const keyword = keywords[router.pathname] || "";
+
   const [focus, setFocus] = useState(false);
-  const router = useRouter();
   const recentRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLInputElement>(null);
 
@@ -36,7 +40,7 @@ export default function Search() {
   });
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setKeyword(e.currentTarget.value);
+    setKeywords(router.pathname, e.currentTarget.value);
   }
 
   function updateHistory(keyword: string) {
@@ -73,7 +77,7 @@ export default function Search() {
       searchedKeyword: keyword,
     });
     setFocus(false);
-    setKeyword(keyword);
+    setKeywords(router.pathname, keyword);
   }
 
   // TODO: 한글을 치고 엔터를 누르면 블루갈롤 -> 블루갈롤롤과 같이 검색되는 현상이 있다.
@@ -82,7 +86,7 @@ export default function Search() {
     // if (state.keyword === "") return;
     if (e.key === "Enter") {
       e.currentTarget.blur();
-      handleClick(gStatus.keyword);
+      handleClick(keyword);
     }
   }
 
@@ -137,7 +141,7 @@ export default function Search() {
                 className="mx-1"
                 size={SIZE.iconSm}
                 onClick={() => {
-                  setKeyword("");
+                  setKeywords(router.pathname, "");
                   searchRef.current?.focus();
                 }}
               />
@@ -164,9 +168,7 @@ export default function Search() {
                 </div>
                 {[...(curUser.history || [])]
                   ?.filter(
-                    (each) =>
-                      gStatus.keyword === "" ||
-                      each.indexOf(gStatus.keyword) === 0
+                    (each) => keyword === "" || each.indexOf(keyword) === 0
                   )
                   .map((e, i) => (
                     <Motion type="float" key={e}>
