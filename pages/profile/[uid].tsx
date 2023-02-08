@@ -157,6 +157,7 @@ export default function Profile({
           route="profile"
         />
       </Motion>
+      <div className="mb-24"></div>
     </>
   );
 }

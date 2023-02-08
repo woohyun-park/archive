@@ -44,8 +44,9 @@ export default function Search() {
             </>
           ))}
         </div>
-        <div className="flex justify-center"> {loading && <Loader />}</div>
+        {/* <div className="flex justify-center"> {loading && <Loader />}</div> */}
       </Motion>
+      <div className="mb-24"></div>
     </>
   );
 }

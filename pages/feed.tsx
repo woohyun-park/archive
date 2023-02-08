@@ -13,6 +13,7 @@ import IconInput from "../components/atoms/IconInput";
 import { debounce } from "lodash";
 import { useKeyword } from "../stores/useKeyword";
 import PullToRefresh from "react-simple-pull-to-refresh";
+import PostBox from "../components/PostBox";
 
 export default function Feed() {
   const router = useRouter();
@@ -37,7 +38,6 @@ export default function Feed() {
       if (router.query.refresh) {
         window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
         setFilterLoading(true);
-        // handleRefresh();
       } else {
         window.scrollTo(0, scroll[router.pathname]);
       }
@@ -99,26 +99,16 @@ export default function Feed() {
         style="margin-left: 1rem; margin-right: 1rem;"
       />
       <Loader isVisible={filterLoading} />
-      <PullToRefresh
+      <PostBox
+        posts={curPosts}
+        onIntersect={() => keyword.length === 0 && getPosts(curUser.id, "load")}
+        onChange={() => {}}
         onRefresh={async () => {
           await getPosts(curUser.id, "refresh");
         }}
-        pullingContent={<></>}
-        refreshingContent={<Loader isVisible={true} />}
-      >
-        <AnimatePresence initial={false}>
-          {curPosts.map((e, i) => (
-            <>
-              <FeedPost post={e} />
-              {keyword.length === 0 && i === curPosts.length - 1 && (
-                <div ref={setLastIntersecting}></div>
-              )}
-              <hr className="w-full h-4 text-white bg-white" />
-            </>
-          ))}
-        </AnimatePresence>
-      </PullToRefresh>
-      <Loader isVisible={loading} scrollIntoView={true} />
+        changeListener={posts}
+        additionalRefCondition={keyword.length === 0}
+      />
       <div className="mb-24"></div>
     </div>
   );
