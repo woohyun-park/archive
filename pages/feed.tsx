@@ -12,6 +12,7 @@ import IconBtn from "../components/atoms/IconBtn";
 import FilterAndRefresh from "../components/FilterAndRefresh";
 import { debounce } from "lodash";
 import { useKeyword } from "../stores/useKeyword";
+import PullToRefresh from "react-simple-pull-to-refresh";
 
 export default function Feed() {
   const router = useRouter();
@@ -74,7 +75,7 @@ export default function Feed() {
     filterPosts();
   }, [filterLoading]);
 
-  function handleRefresh() {
+  async function handleRefresh() {
     setRefreshLoading(true);
     setResetRefresh(!resetRefresh);
   }
@@ -106,17 +107,20 @@ export default function Feed() {
         keyword={keyword}
       />
       <Loader isVisible={refreshLoading || filterLoading} />
-      <AnimatePresence initial={false}>
-        {curPosts.map((e, i) => (
-          <>
-            <FeedPost post={e} />
-            {keyword.length === 0 && i === curPosts.length - 1 && (
-              <div ref={setLastIntersecting}></div>
-            )}
-            <hr className="w-full h-4 text-white bg-white" />
-          </>
-        ))}
-      </AnimatePresence>
+      <PullToRefresh onRefresh={handleRefresh}>
+        <AnimatePresence initial={false}>
+          {curPosts.map((e, i) => (
+            <>
+              <FeedPost post={e} />
+              {keyword.length === 0 && i === curPosts.length - 1 && (
+                <div ref={setLastIntersecting}></div>
+              )}
+              <hr className="w-full h-4 text-white bg-white" />
+            </>
+          ))}
+        </AnimatePresence>
+      </PullToRefresh>
+
       <Loader isVisible={loading} scrollIntoView={true} />
       <div className="mb-24"></div>
     </div>
