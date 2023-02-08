@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import Loader from "../components/Loader";
 import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 import { useFeed } from "../stores/useFeed";
-import { AnimatePresence } from "framer-motion";
 import { useScrollSave } from "../stores/useScrollSave";
 import { useUser } from "../stores/useUser";
 import FeedPost from "../components/FeedPost";
@@ -12,7 +11,6 @@ import IconBtn from "../components/atoms/IconBtn";
 import IconInput from "../components/atoms/IconInput";
 import { debounce } from "lodash";
 import { useKeyword } from "../stores/useKeyword";
-import PullToRefresh from "react-simple-pull-to-refresh";
 import PostBox from "../components/PostBox";
 
 export default function Feed() {
@@ -107,7 +105,15 @@ export default function Feed() {
           await getPosts(curUser.id, "refresh");
         }}
         changeListener={posts}
-        additionalRefCondition={keyword.length === 0}
+        display={(e, i) => (
+          <>
+            <FeedPost post={e} />
+            {keyword.length === 0 && i === posts.length - 1 && (
+              <div ref={setLastIntersecting}></div>
+            )}
+            <hr className="w-full h-4 text-white bg-white" />
+          </>
+        )}
       />
       <div className="mb-24"></div>
     </div>

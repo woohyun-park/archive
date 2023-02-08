@@ -13,7 +13,7 @@ interface IPostBoxProps {
   onChange: () => void;
   onRefresh: () => Promise<void>;
   changeListener: any;
-  additionalRefCondition: boolean;
+  display: (e: IPost, i: number) => JSX.Element;
 }
 
 export default function PostBox({
@@ -22,7 +22,7 @@ export default function PostBox({
   onChange,
   onRefresh,
   changeListener,
-  additionalRefCondition,
+  display,
 }: IPostBoxProps) {
   const { setLastIntersecting, loading } = useInfiniteScroll({
     handleIntersect: onIntersect,
@@ -36,17 +36,7 @@ export default function PostBox({
         pullingContent={<></>}
         refreshingContent={<Loader isVisible={true} />}
       >
-        <AnimatePresence initial={false}>
-          {posts.map((e, i) => (
-            <>
-              <FeedPost post={e} />
-              {additionalRefCondition && i === posts.length - 1 && (
-                <div ref={setLastIntersecting}></div>
-              )}
-              <hr className="w-full h-4 text-white bg-white" />
-            </>
-          ))}
-        </AnimatePresence>
+        <AnimatePresence initial={false}>{posts.map(display)}</AnimatePresence>
       </PullToRefresh>
       <Loader isVisible={loading} scrollIntoView={true} />
     </>
