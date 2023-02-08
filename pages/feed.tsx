@@ -98,6 +98,7 @@ export default function Feed() {
       />
       <Loader isVisible={filterLoading} />
       <PostBox
+        type="feed"
         posts={curPosts}
         onIntersect={() => keyword.length === 0 && getPosts(curUser.id, "load")}
         onChange={() => {}}
@@ -105,15 +106,7 @@ export default function Feed() {
           await getPosts(curUser.id, "refresh");
         }}
         changeListener={posts}
-        display={(e, i) => (
-          <>
-            <FeedPost post={e} />
-            {keyword.length === 0 && i === posts.length - 1 && (
-              <div ref={setLastIntersecting}></div>
-            )}
-            <hr className="w-full h-4 text-white bg-white" />
-          </>
-        )}
+        additionalRefCondition={keyword.length === 0}
       />
       <div className="mb-24"></div>
     </div>

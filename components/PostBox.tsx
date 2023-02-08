@@ -4,25 +4,28 @@ import PullToRefresh from "react-simple-pull-to-refresh";
 import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 import { IPost } from "../libs/custom";
 import Motion from "../motions/Motion";
+import Box from "./Box";
 import FeedPost from "./FeedPost";
 import Loader from "./Loader";
 
 interface IPostBoxProps {
+  type: "feed" | "search";
   posts: IPost[];
   onIntersect: () => void;
   onChange: () => void;
   onRefresh: () => Promise<void>;
   changeListener: any;
-  display: (e: IPost, i: number) => JSX.Element;
+  additionalRefCondition?: boolean;
 }
 
 export default function PostBox({
+  type,
   posts,
   onIntersect,
   onChange,
   onRefresh,
   changeListener,
-  display,
+  additionalRefCondition,
 }: IPostBoxProps) {
   const { setLastIntersecting, loading } = useInfiniteScroll({
     handleIntersect: onIntersect,
@@ -36,7 +39,40 @@ export default function PostBox({
         pullingContent={<></>}
         refreshingContent={<Loader isVisible={true} />}
       >
-        <AnimatePresence initial={false}>{posts.map(display)}</AnimatePresence>
+        <>
+          {type === "feed" && (
+            <AnimatePresence initial={false}>
+              {posts.map((e, i) => (
+                <>
+                  <FeedPost post={e} />
+                  {additionalRefCondition && i === posts.length - 1 && (
+                    <div ref={setLastIntersecting}></div>
+                  )}
+                  <hr className="w-full h-4 text-white bg-white" />
+                </>
+              ))}
+            </AnimatePresence>
+          )}
+          {type === "search" && (
+            <div className="grid grid-cols-3 mt-4 mb-16 gap-y-2 gap-x-2">
+              {posts.map((e, i) => (
+                <>
+                  <div>
+                    <Box
+                      key={"search" + e.id}
+                      post={{ ...e, id: e.id }}
+                      includeTitle={true}
+                      includeTag={true}
+                    ></Box>
+                  </div>
+                  {i === posts.length - 1 && (
+                    <div ref={setLastIntersecting}></div>
+                  )}
+                </>
+              ))}
+            </div>
+          )}
+        </>
       </PullToRefresh>
       <Loader isVisible={loading} scrollIntoView={true} />
     </>
