@@ -11,10 +11,6 @@ interface ITextareaProps {
 
 export default forwardRef<HTMLTextAreaElement, ITextareaProps>(
   function Textarea({ value, placeholder, onChange, autoFocus, style }, ref) {
-    useEffect(() => {
-      document.querySelector("#textarea_t1")?.scrollIntoView();
-    }, [value]);
-
     return (
       <>
         <ReactTextareaAutosize
