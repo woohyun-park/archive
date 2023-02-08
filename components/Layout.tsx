@@ -17,6 +17,7 @@ import Btn from "../components/atoms/Btn";
 import { motion, Variants } from "framer-motion";
 import Image from "next/image";
 import Motion from "../motions/Motion";
+import { RiGoogleFill } from "react-icons/ri";
 
 interface ILayoutProps {
   children: React.ReactNode;

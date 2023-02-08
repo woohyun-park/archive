@@ -83,7 +83,7 @@ export function combinePrevAndNewPosts(
 export function setCursorByType(
   snap: QuerySnapshot<DocumentData>,
   type: IFeedGetType
-): QueryDocumentSnapshot<DocumentData> {
+): QueryDocumentSnapshot<DocumentData> | null {
   if (snap.docs.length !== 0) {
     if (type === "init") {
       return snap.docs[snap.docs.length - 1];
