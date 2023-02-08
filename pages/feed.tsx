@@ -9,7 +9,7 @@ import { useUser } from "../stores/useUser";
 import FeedPost from "../components/FeedPost";
 import ProfileImg from "../components/atoms/ProfileImg";
 import IconBtn from "../components/atoms/IconBtn";
-import FilterAndRefresh from "../components/FilterAndRefresh";
+import IconInput from "../components/atoms/IconInput";
 import { debounce } from "lodash";
 import { useKeyword } from "../stores/useKeyword";
 import PullToRefresh from "react-simple-pull-to-refresh";
@@ -29,8 +29,6 @@ export default function Feed() {
     filteredPosts.length === 0 ? posts : filteredPosts
   );
   const { scroll } = useScrollSave();
-  // const [refreshLoading, setRefreshLoading] = useState(false);
-  // const [resetRefresh, setResetRefresh] = useState<boolean | null>(null);
   const [filterLoading, setFilterLoading] = useState(false);
   const [resetFilter, setResetFilter] = useState<boolean | null>(null);
 
@@ -72,11 +70,6 @@ export default function Feed() {
     filterPosts();
   }, [filterLoading]);
 
-  // async function handleRefresh() {
-  //   setRefreshLoading(true);
-  //   setResetRefresh(!resetRefresh);
-  // }
-
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     e.preventDefault();
     if (e.target.value.slice(e.target.value.length - 1) !== " ") {
@@ -94,18 +87,16 @@ export default function Feed() {
           <ProfileImg user={curUser} />
         </div>
       </div>
-      <FilterAndRefresh
+      <IconInput
+        icon="filter"
         onChange={handleChange}
-        onCancel={() => {
-          setKeywords(router.pathname, "");
-          setResetFilter(!resetFilter);
-        }}
+        onDelete={() => setKeywords(router.pathname, "")}
         keyword={keyword}
+        placeholder={"찾고싶은 태그를 입력해보세요!"}
       />
       <Loader isVisible={filterLoading} />
       <PullToRefresh
         onRefresh={async () => {
-          // if (resetRefresh === null) return;
           await getPosts(curUser.id, "refresh");
         }}
         pullingContent={<></>}
