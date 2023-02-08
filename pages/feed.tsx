@@ -29,8 +29,8 @@ export default function Feed() {
     filteredPosts.length === 0 ? posts : filteredPosts
   );
   const { scroll } = useScrollSave();
-  const [refreshLoading, setRefreshLoading] = useState(false);
-  const [resetRefresh, setResetRefresh] = useState<boolean | null>(null);
+  // const [refreshLoading, setRefreshLoading] = useState(false);
+  // const [resetRefresh, setResetRefresh] = useState<boolean | null>(null);
   const [filterLoading, setFilterLoading] = useState(false);
   const [resetFilter, setResetFilter] = useState<boolean | null>(null);
 
@@ -38,7 +38,8 @@ export default function Feed() {
     setTimeout(() => {
       if (router.query.refresh) {
         window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
-        handleRefresh();
+        setFilterLoading(true);
+        // handleRefresh();
       } else {
         window.scrollTo(0, scroll[router.pathname]);
       }
@@ -52,11 +53,6 @@ export default function Feed() {
   }, [posts]);
 
   useEffect(() => {
-    if (resetRefresh === null) return;
-    getPosts(curUser.id, "refresh").then(() => setRefreshLoading(false));
-  }, [resetRefresh]);
-
-  useEffect(() => {
     debounce(() => {
       resetFilter !== null && setFilterLoading(true);
     }, 500)();
@@ -65,6 +61,7 @@ export default function Feed() {
   useEffect(() => {
     async function filterPosts() {
       if (keyword.length === 0) {
+        await getPosts(curUser.id, "refresh");
         setCurPosts(posts);
       } else {
         await getFilteredPosts(curUser.id, keyword);
@@ -75,10 +72,10 @@ export default function Feed() {
     filterPosts();
   }, [filterLoading]);
 
-  async function handleRefresh() {
-    setRefreshLoading(true);
-    setResetRefresh(!resetRefresh);
-  }
+  // async function handleRefresh() {
+  //   setRefreshLoading(true);
+  //   setResetRefresh(!resetRefresh);
+  // }
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     e.preventDefault();
@@ -98,7 +95,6 @@ export default function Feed() {
         </div>
       </div>
       <FilterAndRefresh
-        onRefresh={handleRefresh}
         onChange={handleChange}
         onCancel={() => {
           setKeywords(router.pathname, "");
@@ -106,8 +102,15 @@ export default function Feed() {
         }}
         keyword={keyword}
       />
-      <Loader isVisible={refreshLoading || filterLoading} />
-      <PullToRefresh onRefresh={handleRefresh}>
+      <Loader isVisible={filterLoading} />
+      <PullToRefresh
+        onRefresh={async () => {
+          // if (resetRefresh === null) return;
+          await getPosts(curUser.id, "refresh");
+        }}
+        pullingContent={<></>}
+        refreshingContent={<Loader isVisible={true} />}
+      >
         <AnimatePresence initial={false}>
           {curPosts.map((e, i) => (
             <>
@@ -120,7 +123,6 @@ export default function Feed() {
           ))}
         </AnimatePresence>
       </PullToRefresh>
-
       <Loader isVisible={loading} scrollIntoView={true} />
       <div className="mb-24"></div>
     </div>

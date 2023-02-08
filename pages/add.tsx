@@ -61,9 +61,9 @@ export default function Add() {
     if (confirm(`아카이브를 ${prevPost ? "수정" : "생성"}하시겠습니까?`)) {
       // 이미지인 경우
       if (status.selectedTab)
-        handleImage({ watch, prevPost, data, curUser, tags });
+        await handleImage({ watch, prevPost, data, curUser, tags });
       // 색깔인 경우
-      else handleColor({ prevPost, data, curUser, tags });
+      else await handleColor({ prevPost, data, curUser, tags });
       router.push({ pathname: "/", query: { refresh: true } });
     }
   }

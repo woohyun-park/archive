@@ -7,14 +7,12 @@ import IconBtn from "./atoms/IconBtn";
 import { ChangeEvent, useState } from "react";
 
 interface IFilterAndRefresh {
-  onRefresh: () => void;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
   onCancel: () => void;
   keyword: string;
 }
 
 export default function FilterAndRefresh({
-  onRefresh,
   onChange,
   onCancel,
   keyword,
@@ -40,7 +38,7 @@ export default function FilterAndRefresh({
             }}
           />
         </div>
-        {isOpen ? (
+        {isOpen && (
           <div
             className="absolute z-10 top-[1.125rem] right-6 hover:cursor-pointer"
             onClick={() => {
@@ -50,8 +48,6 @@ export default function FilterAndRefresh({
           >
             취소
           </div>
-        ) : (
-          <IconBtn icon="refresh" size={SIZE.iconSm} onClick={onRefresh} />
         )}
         <AnimatePresence>
           {isOpen && (
