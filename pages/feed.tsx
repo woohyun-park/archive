@@ -18,7 +18,7 @@ export default function Feed() {
   const { curUser } = useUser();
   const { posts, filteredPosts, getPosts, getFilteredPosts } = useFeed();
   const { keywords, setKeywords } = useKeyword();
-  const [keyword, setKeyword] = useState(keywords[router.pathname] || "");
+  const keyword = keywords[router.pathname] || "";
   const { setLastIntersecting, loading } = useInfiniteScroll({
     handleIntersect: () => {
       keyword.length === 0 && getPosts(curUser.id, "load");
@@ -34,10 +34,6 @@ export default function Feed() {
   const [resetRefresh, setResetRefresh] = useState<boolean | null>(null);
   const [filterLoading, setFilterLoading] = useState(false);
   const [resetFilter, setResetFilter] = useState<boolean | null>(null);
-
-  useEffect(() => {
-    setKeyword(keywords[router.pathname] || "");
-  }, [keywords[router.pathname]]);
 
   useEffect(() => {
     setTimeout(() => {
