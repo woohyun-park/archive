@@ -14,11 +14,13 @@ export type IFeedGetType = "init" | "load" | "refresh";
 
 interface IFeedStore {
   posts: IPost[];
-  filteredPosts: IPost[];
-  keyword: string;
   getPosts: (id: string, type: IFeedGetType) => Promise<void>;
-  getFilteredPosts: (id: string, tag: string) => Promise<void>;
   setPosts: (posts: IPost[]) => void;
+
+  filteredPosts: IPost[];
+  getFilteredPosts: (id: string, tag: string) => Promise<void>;
+
+  keyword: string;
   setKeyword: (keyword: string) => void;
 }
 

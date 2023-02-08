@@ -4,22 +4,23 @@ import { fadeVariants } from "../libs/motionLib";
 import Input from "./atoms/Input";
 import { motion } from "framer-motion";
 import IconBtn from "./atoms/IconBtn";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { useFeed } from "../stores/useFeed";
 
 interface IFilterAndRefresh {
   onRefresh: () => void;
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  onCancel: () => void;
+  keyword: string;
 }
 
-export default function FilterAndRefresh({ onRefresh }: IFilterAndRefresh) {
-  const { keyword, setKeyword } = useFeed();
+export default function FilterAndRefresh({
+  onRefresh,
+  onChange,
+  onCancel,
+  keyword,
+}: IFilterAndRefresh) {
   const [isOpen, setIsOpen] = useState(keyword.length === 0 ? false : true);
-
-  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    e.preventDefault();
-    if (e.target.value.slice(e.target.value.length - 1) !== " ")
-      setKeyword(e.target.value);
-  }
 
   const filter = (
     <div
@@ -50,7 +51,10 @@ export default function FilterAndRefresh({ onRefresh }: IFilterAndRefresh) {
           <IconBtn
             icon="filter"
             size={SIZE.iconSm}
-            onClick={() => setIsOpen(!isOpen)}
+            onClick={() => {
+              setIsOpen(!isOpen);
+              onCancel();
+            }}
           />
         </div>
         {isOpen ? (
@@ -58,7 +62,7 @@ export default function FilterAndRefresh({ onRefresh }: IFilterAndRefresh) {
             className="absolute z-10 top-[1.125rem] right-6 hover:cursor-pointer"
             onClick={() => {
               setIsOpen(false);
-              setKeyword("");
+              onCancel();
             }}
           >
             취소
@@ -76,7 +80,7 @@ export default function FilterAndRefresh({ onRefresh }: IFilterAndRefresh) {
               <Input
                 type="text"
                 value={keyword}
-                onChange={handleChange}
+                onChange={onChange}
                 style="padding-left: 1.5rem"
               />
             </motion.div>

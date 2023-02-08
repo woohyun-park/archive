@@ -24,13 +24,12 @@ export default function Feed() {
   } = useFeed();
   const { setLastIntersecting, loading } = useInfiniteScroll({
     handleIntersect: () => {
-      tag.length === 0 && getPosts(curUser.id, "load");
+      keyword.length === 0 && getPosts(curUser.id, "load");
     },
     handleChange: () => {},
     changeListener: posts,
   });
   const router = useRouter();
-  console.log("filteredPosts!", filteredPosts);
   const [curPosts, setCurPosts] = useState(
     filteredPosts.length === 0 ? posts : filteredPosts
   );
@@ -38,40 +37,52 @@ export default function Feed() {
   const [refreshLoading, setRefreshLoading] = useState(false);
   const [resetRefresh, setResetRefresh] = useState<boolean | null>(null);
   const [filterLoading, setFilterLoading] = useState(false);
+  const [resetFilter, setResetFilter] = useState<boolean | null>(null);
 
   useEffect(() => {
+    console.log("1");
     setTimeout(() => {
       if (router.query.refresh) {
+        console.log("1-1");
         window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
         handleRefresh();
       } else {
+        console.log("1-2");
         window.scrollTo(0, scroll[router.pathname]);
       }
     }, 10);
   }, []);
 
   useEffect(() => {
+    console.log("2");
     filteredPosts.length === 0
       ? setCurPosts(posts)
       : setCurPosts(filteredPosts);
   }, [posts]);
 
   useEffect(() => {
+    console.log("3");
     if (resetRefresh === null) return;
+    console.log("3-1");
     getPosts(curUser.id, "refresh").then(() => setRefreshLoading(false));
   }, [resetRefresh]);
 
   useEffect(() => {
+    console.log("4", keyword, filteredPosts, resetRefresh);
     debounce(() => {
-      setFilterLoading(true);
+      console.log("4-1");
+      resetFilter !== null && setFilterLoading(true);
     }, 500)();
   }, [keyword]);
 
   useEffect(() => {
+    console.log("5");
     async function filterPosts() {
       if (keyword.length === 0) {
+        console.log("5-1");
         setCurPosts(posts);
       } else {
+        console.log("5-2");
         await getFilteredPosts(curUser.id, keyword);
         setCurPosts(filteredPosts);
       }
@@ -84,6 +95,13 @@ export default function Feed() {
     setRefreshLoading(true);
     setResetRefresh(!resetRefresh);
   }
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    e.preventDefault();
+    if (e.target.value.slice(e.target.value.length - 1) !== " ") {
+      setKeyword(e.target.value);
+      setResetFilter(!resetFilter);
+    }
+  }
 
   return (
     <div className="flex flex-col">
@@ -94,7 +112,15 @@ export default function Feed() {
           <ProfileImg user={curUser} />
         </div>
       </div>
-      <FilterAndRefresh onRefresh={handleRefresh} />
+      <FilterAndRefresh
+        onRefresh={handleRefresh}
+        onChange={handleChange}
+        onCancel={() => {
+          setKeyword("");
+          setResetFilter(!resetFilter);
+        }}
+        keyword={keyword}
+      />
       <Loader isVisible={refreshLoading || filterLoading} />
       <AnimatePresence initial={false}>
         {curPosts.map((e, i) => (
