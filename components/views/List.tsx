@@ -109,7 +109,7 @@ export default function List({ data, type, route, handleChange }: IListProps) {
               <div></div>
               {(data as IDict<IPost[]>)[selected].map((e, i) => (
                 <>
-                  <Box post={{ ...e, id: e.id }} key={e.id}></Box>
+                  <Box key={e.id} post={{ ...e, id: e.id }} includeTitle></Box>
                   {i === (data as IDict<IPost[]>)[selected].length - 1 && (
                     <div ref={setLastIntersecting}></div>
                   )}

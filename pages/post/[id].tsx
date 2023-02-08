@@ -115,14 +115,10 @@ export default function Post({ initPost, initUser }: IPostProps) {
           <div>존재하지 않는 페이지입니다</div>
         ) : (
           <>
-            <div className="flex items-baseline justify-between">
-              <IconBtn
-                icon="back"
-                style="margin: 16px 0;"
-                onClick={router.back}
-              />
+            <div className="flex items-center justify-between mb-4">
+              <IconBtn icon="back" onClick={router.back} />
               {curUser.id === initUser.id && (
-                <div className="flex items-center pt-6 mt-12">
+                <div className="flex items-center">
                   <IconBtn
                     icon="modify"
                     onClick={handleModify}

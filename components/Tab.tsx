@@ -37,7 +37,11 @@ export default function Tab({ data, tab, route }: ITabProps) {
                 <div className="grid grid-cols-3 gap-x-2 gap-y-2">
                   {(data[key] as IPost[]).map((e) => (
                     <>
-                      <Box post={{ ...e, id: e.id }} key={e.id}></Box>
+                      <Box
+                        key={e.id}
+                        post={{ ...e, id: e.id }}
+                        includeTitle
+                      ></Box>
                     </>
                   ))}
                 </div>

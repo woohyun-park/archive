@@ -40,49 +40,38 @@ export default function Feed() {
   const [resetFilter, setResetFilter] = useState<boolean | null>(null);
 
   useEffect(() => {
-    console.log("1");
     setTimeout(() => {
       if (router.query.refresh) {
-        console.log("1-1");
         window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
         handleRefresh();
       } else {
-        console.log("1-2");
         window.scrollTo(0, scroll[router.pathname]);
       }
     }, 10);
   }, []);
 
   useEffect(() => {
-    console.log("2");
     filteredPosts.length === 0
       ? setCurPosts(posts)
       : setCurPosts(filteredPosts);
   }, [posts]);
 
   useEffect(() => {
-    console.log("3");
     if (resetRefresh === null) return;
-    console.log("3-1");
     getPosts(curUser.id, "refresh").then(() => setRefreshLoading(false));
   }, [resetRefresh]);
 
   useEffect(() => {
-    console.log("4", keyword, filteredPosts, resetRefresh);
     debounce(() => {
-      console.log("4-1");
       resetFilter !== null && setFilterLoading(true);
     }, 500)();
   }, [keyword]);
 
   useEffect(() => {
-    console.log("5");
     async function filterPosts() {
       if (keyword.length === 0) {
-        console.log("5-1");
         setCurPosts(posts);
       } else {
-        console.log("5-2");
         await getFilteredPosts(curUser.id, keyword);
         setCurPosts(filteredPosts);
       }
@@ -95,6 +84,7 @@ export default function Feed() {
     setRefreshLoading(true);
     setResetRefresh(!resetRefresh);
   }
+
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     e.preventDefault();
     if (e.target.value.slice(e.target.value.length - 1) !== " ") {
@@ -105,7 +95,7 @@ export default function Feed() {
 
   return (
     <div className="flex flex-col">
-      <div className="flex items-center justify-between px-4 pb-2 mt-16 border-b-8 border-gray-4f">
+      <div className="flex items-center justify-between px-4 pb-2">
         <h1 className="title-logo">archive</h1>
         <div className="flex items-center justify-center">
           <IconBtn icon="alarm" onClick={() => router.push("/alarm")} />
@@ -129,7 +119,7 @@ export default function Feed() {
             {keyword.length === 0 && i === curPosts.length - 1 && (
               <div ref={setLastIntersecting}></div>
             )}
-            <hr className="w-full h-2 text-gray-4f bg-gray-4f" />
+            <hr className="w-full h-4 text-white bg-white" />
           </>
         ))}
       </AnimatePresence>

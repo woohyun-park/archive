@@ -5,7 +5,6 @@ import Input from "./atoms/Input";
 import { motion } from "framer-motion";
 import IconBtn from "./atoms/IconBtn";
 import { ChangeEvent, useState } from "react";
-import { useFeed } from "../stores/useFeed";
 
 interface IFilterAndRefresh {
   onRefresh: () => void;
@@ -22,25 +21,9 @@ export default function FilterAndRefresh({
 }: IFilterAndRefresh) {
   const [isOpen, setIsOpen] = useState(keyword.length === 0 ? false : true);
 
-  const filter = (
-    <div
-      className={
-        isOpen
-          ? "z-10 left-[1.125rem] scale-75 duration-100 ease-in-out absolute top-[1.125rem]"
-          : "z-10 duration-100 ease-in-out"
-      }
-    >
-      <IconBtn
-        icon="filter"
-        size={SIZE.iconSm}
-        onClick={() => setIsOpen(!isOpen)}
-      />
-    </div>
-  );
-
   return (
     <>
-      <div className="relative flex items-center px-4 py-2 border-b-2 border-dotted border-gray-4f">
+      <div className="relative flex items-center px-4 py-2 mt-4">
         <div
           className={
             isOpen

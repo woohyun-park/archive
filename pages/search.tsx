@@ -19,7 +19,6 @@ export default function Search() {
   return (
     <>
       <Motion type="fade">
-        <h1 className="title-page">검색</h1>
         <Link href="/search-modal">
           <div className="flex">
             <div className="flex items-center w-full p-1 mb-1 rounded-md bg-gray-3 hover:cursor-pointer">
@@ -31,7 +30,12 @@ export default function Search() {
           {gSearch.posts.map((e, i) => (
             <>
               <div>
-                <Box post={{ ...e, id: e.id }} key={"search" + e.id}></Box>
+                <Box
+                  key={"search" + e.id}
+                  post={{ ...e, id: e.id }}
+                  includeTitle={true}
+                  includeTag={true}
+                ></Box>
               </div>
               {i === gSearch.posts.length - 1 && (
                 <div ref={setLastIntersecting}></div>
