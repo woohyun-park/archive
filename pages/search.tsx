@@ -1,18 +1,14 @@
-import List from "../components/views/List";
 import { SIZE } from "../libs/custom";
-import { HiSearch } from "react-icons/hi";
-import { useStore } from "../stores/useStore";
+import { HiMagnifyingGlass } from "react-icons/hi2";
 import Link from "next/link";
 import Motion from "../motions/Motion";
 import Box from "../components/Box";
 import Loader from "../components/Loader";
 import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 import { useSearch } from "../stores/useSearch";
-import { useKeyword } from "../stores/useKeyword";
 import { useEffect } from "react";
 
 export default function Search() {
-  const { gSearch, gPage, gSetPage, gSetSearch } = useStore();
   const { posts, getPosts } = useSearch();
   const { setLastIntersecting, loading } = useInfiniteScroll({
     handleIntersect: () => getPosts("load"),
@@ -29,7 +25,7 @@ export default function Search() {
         <Link href="/search-modal">
           <div className="flex">
             <div className="flex items-center w-full p-1 mb-1 rounded-md bg-gray-3 hover:cursor-pointer">
-              <HiSearch size={SIZE.iconSm} />
+              <HiMagnifyingGlass size={SIZE.iconSm} />
             </div>
           </div>
         </Link>

@@ -5,6 +5,7 @@ interface IInputProps {
   value?: string;
   placeholder?: string;
   onChange?: React.ChangeEventHandler<HTMLInputElement>;
+  onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>;
   ref?: React.LegacyRef<HTMLInputElement>;
   autoFocus?: boolean;
   style?: string;
@@ -15,6 +16,7 @@ export default function Input({
   value,
   placeholder,
   onChange,
+  onKeyDown,
   ref,
   autoFocus,
   style,
@@ -27,6 +29,7 @@ export default function Input({
         value={value}
         placeholder={placeholder}
         onChange={onChange}
+        onKeyDown={onKeyDown}
         ref={ref}
         autoFocus={autoFocus}
         id="input_i1"

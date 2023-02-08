@@ -9,6 +9,8 @@ import Motion from "../motions/Motion";
 import { useOutsideClick } from "../hooks/useOutsideClick";
 import { useUser } from "../stores/useUser";
 import { useKeyword } from "../stores/useKeyword";
+import IconInput from "../components/atoms/IconInput";
+import IconBtn from "../components/atoms/IconBtn";
 
 interface ISearchState {
   isInitial: boolean;
@@ -125,25 +127,18 @@ export default function Search() {
       )}
       <Motion type="fade">
         <div ref={recentRef}>
-          <div className="flex mb-4">
-            <div className="flex items-center w-full p-1 rounded-md bg-gray-3 hover:cursor-pointer">
-              <HiSearch size={SIZE.iconSm} />
-              <input
-                className="w-full m-1 bg-gray-3"
-                type="text"
+          <div className="flex w-full mb-4">
+            <div className="w-full">
+              <IconInput
+                icon="search"
+                keyword={keyword}
                 onChange={handleChange}
-                value={keyword}
-                onFocus={() => setFocus(true)}
-                onKeyDown={handleSearch}
-                ref={searchRef}
-              />
-              <HiX
-                className="mx-1"
-                size={SIZE.iconSm}
-                onClick={() => {
+                onDelete={() => {
                   setKeywords(router.pathname, "");
                   searchRef.current?.focus();
                 }}
+                onKeyDown={handleSearch}
+                style="margin: 0"
               />
             </div>
             <div

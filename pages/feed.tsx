@@ -93,6 +93,7 @@ export default function Feed() {
         onDelete={() => setKeywords(router.pathname, "")}
         keyword={keyword}
         placeholder={"찾고싶은 태그를 입력해보세요!"}
+        style="margin-left: 1rem; margin-right: 1rem;"
       />
       <Loader isVisible={filterLoading} />
       <PullToRefresh
