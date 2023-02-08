@@ -14,7 +14,14 @@ import { debounce } from "lodash";
 
 export default function Feed() {
   const { curUser } = useUser();
-  const { posts, filteredPosts, getPosts, getFilteredPosts } = useFeed();
+  const {
+    posts,
+    filteredPosts,
+    getPosts,
+    getFilteredPosts,
+    keyword,
+    setKeyword,
+  } = useFeed();
   const { setLastIntersecting, loading } = useInfiniteScroll({
     handleIntersect: () => {
       tag.length === 0 && getPosts(curUser.id, "load");
@@ -23,12 +30,14 @@ export default function Feed() {
     changeListener: posts,
   });
   const router = useRouter();
-  const [curPosts, setCurPosts] = useState(posts);
+  console.log("filteredPosts!", filteredPosts);
+  const [curPosts, setCurPosts] = useState(
+    filteredPosts.length === 0 ? posts : filteredPosts
+  );
   const { scroll } = useScrollSave();
   const [refreshLoading, setRefreshLoading] = useState(false);
   const [resetRefresh, setResetRefresh] = useState<boolean | null>(null);
   const [filterLoading, setFilterLoading] = useState(false);
-  const [tag, setTag] = useState("");
 
   useEffect(() => {
     setTimeout(() => {
@@ -42,7 +51,9 @@ export default function Feed() {
   }, []);
 
   useEffect(() => {
-    setCurPosts(posts);
+    filteredPosts.length === 0
+      ? setCurPosts(posts)
+      : setCurPosts(filteredPosts);
   }, [posts]);
 
   useEffect(() => {
@@ -54,14 +65,14 @@ export default function Feed() {
     debounce(() => {
       setFilterLoading(true);
     }, 500)();
-  }, [tag]);
+  }, [keyword]);
 
   useEffect(() => {
     async function filterPosts() {
-      if (tag.length === 0) {
+      if (keyword.length === 0) {
         setCurPosts(posts);
       } else {
-        await getFilteredPosts(curUser.id, tag);
+        await getFilteredPosts(curUser.id, keyword);
         setCurPosts(filteredPosts);
       }
       setFilterLoading(false);
@@ -83,13 +94,13 @@ export default function Feed() {
           <ProfileImg user={curUser} />
         </div>
       </div>
-      <FilterAndRefresh tag={tag} setTag={setTag} onRefresh={handleRefresh} />
+      <FilterAndRefresh onRefresh={handleRefresh} />
       <Loader isVisible={refreshLoading || filterLoading} />
       <AnimatePresence initial={false}>
         {curPosts.map((e, i) => (
           <>
             <FeedPost post={e} />
-            {tag.length === 0 && i === curPosts.length - 1 && (
+            {keyword.length === 0 && i === curPosts.length - 1 && (
               <div ref={setLastIntersecting}></div>
             )}
             <hr className="w-full h-2 text-gray-4f bg-gray-4f" />

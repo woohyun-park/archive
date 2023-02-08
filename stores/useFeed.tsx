@@ -15,15 +15,18 @@ export type IFeedGetType = "init" | "load" | "refresh";
 interface IFeedStore {
   posts: IPost[];
   filteredPosts: IPost[];
+  keyword: string;
   getPosts: (id: string, type: IFeedGetType) => Promise<void>;
   getFilteredPosts: (id: string, tag: string) => Promise<void>;
   setPosts: (posts: IPost[]) => void;
+  setKeyword: (keyword: string) => void;
 }
 
 export const useFeed = create<IFeedStore>()(
   devtools((set, get) => ({
     posts: [] as IPost[],
     filteredPosts: [] as IPost[],
+    keyword: "",
     getPosts: async (id: string, type: IFeedGetType) => {
       let posts: IPost[] = [];
       await Promise.all([
@@ -71,6 +74,14 @@ export const useFeed = create<IFeedStore>()(
         return {
           ...state,
           posts,
+        };
+      });
+    },
+    setKeyword: (keyword: string) => {
+      set((state: IFeedStore) => {
+        return {
+          ...state,
+          keyword,
         };
       });
     },

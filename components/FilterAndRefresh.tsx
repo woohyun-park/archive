@@ -5,24 +5,20 @@ import Input from "./atoms/Input";
 import { motion } from "framer-motion";
 import IconBtn from "./atoms/IconBtn";
 import { useState } from "react";
+import { useFeed } from "../stores/useFeed";
 
 interface IFilterAndRefresh {
-  tag: string;
-  setTag: React.Dispatch<React.SetStateAction<string>>;
   onRefresh: () => void;
 }
 
-export default function FilterAndRefresh({
-  tag,
-  setTag,
-  onRefresh,
-}: IFilterAndRefresh) {
-  const [isOpen, setIsOpen] = useState(false);
+export default function FilterAndRefresh({ onRefresh }: IFilterAndRefresh) {
+  const { keyword, setKeyword } = useFeed();
+  const [isOpen, setIsOpen] = useState(keyword.length === 0 ? false : true);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     e.preventDefault();
     if (e.target.value.slice(e.target.value.length - 1) !== " ")
-      setTag(e.target.value);
+      setKeyword(e.target.value);
   }
 
   const filter = (
@@ -62,7 +58,7 @@ export default function FilterAndRefresh({
             className="absolute z-10 top-[1.125rem] right-6 hover:cursor-pointer"
             onClick={() => {
               setIsOpen(false);
-              setTag("");
+              setKeyword("");
             }}
           >
             취소
@@ -79,7 +75,7 @@ export default function FilterAndRefresh({
             >
               <Input
                 type="text"
-                value={tag}
+                value={keyword}
                 onChange={handleChange}
                 style="padding-left: 1.5rem"
               />
