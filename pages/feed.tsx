@@ -75,31 +75,29 @@ export default function Feed() {
   }
 
   return (
-    <>
-      <div className="flex flex-col">
-        <div className="flex items-center justify-between px-4 pb-2 mt-16 border-b-8 border-gray-4f">
-          <h1 className="title-logo">archive</h1>
-          <div className="flex items-center justify-center">
-            <IconBtn icon="alarm" onClick={() => router.push("/alarm")} />
-            <ProfileImg user={curUser} />
-          </div>
+    <div className="flex flex-col">
+      <div className="flex items-center justify-between px-4 pb-2 mt-16 border-b-8 border-gray-4f">
+        <h1 className="title-logo">archive</h1>
+        <div className="flex items-center justify-center">
+          <IconBtn icon="alarm" onClick={() => router.push("/alarm")} />
+          <ProfileImg user={curUser} />
         </div>
-        <FilterAndRefresh tag={tag} setTag={setTag} onRefresh={handleRefresh} />
-        <Loader isVisible={refreshLoading || filterLoading} />
-        <AnimatePresence initial={false}>
-          {curPosts.map((e, i) => (
-            <>
-              <FeedPost post={e} />
-              {tag.length === 0 && i === curPosts.length - 1 && (
-                <div ref={setLastIntersecting}></div>
-              )}
-              <hr className="w-full h-2 text-gray-4f bg-gray-4f" />
-            </>
-          ))}
-        </AnimatePresence>
-        <Loader isVisible={loading} scrollIntoView={true} />
-        <div className="mb-24"></div>
       </div>
-    </>
+      <FilterAndRefresh tag={tag} setTag={setTag} onRefresh={handleRefresh} />
+      <Loader isVisible={refreshLoading || filterLoading} />
+      <AnimatePresence initial={false}>
+        {curPosts.map((e, i) => (
+          <>
+            <FeedPost post={e} />
+            {tag.length === 0 && i === curPosts.length - 1 && (
+              <div ref={setLastIntersecting}></div>
+            )}
+            <hr className="w-full h-2 text-gray-4f bg-gray-4f" />
+          </>
+        ))}
+      </AnimatePresence>
+      <Loader isVisible={loading} scrollIntoView={true} />
+      <div className="mb-24"></div>
+    </div>
   );
 }

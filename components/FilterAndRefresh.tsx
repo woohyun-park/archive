@@ -21,8 +21,25 @@ export default function FilterAndRefresh({
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     e.preventDefault();
-    setTag(e.target.value);
+    if (e.target.value.slice(e.target.value.length - 1) !== " ")
+      setTag(e.target.value);
   }
+
+  const filter = (
+    <div
+      className={
+        isOpen
+          ? "z-10 left-[1.125rem] scale-75 duration-100 ease-in-out absolute top-[1.125rem]"
+          : "z-10 duration-100 ease-in-out"
+      }
+    >
+      <IconBtn
+        icon="filter"
+        size={SIZE.iconSm}
+        onClick={() => setIsOpen(!isOpen)}
+      />
+    </div>
+  );
 
   return (
     <>

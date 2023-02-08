@@ -35,6 +35,22 @@ export const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 export const auth = getAuth(app);
 
+export async function addTags(
+  arr: string[],
+  uid: string,
+  pid: string | undefined
+) {
+  for await (const tag of arr) {
+    const tempTag: ITag = {
+      uid,
+      pid,
+      name: tag,
+    };
+    const tagRef = await addDoc(collection(db, "tags"), tempTag);
+    await updateDoc(tagRef, { id: tagRef.id });
+  }
+}
+
 export async function getData<T>(type: string, id: string): Promise<T> {
   const snap = await getDoc(doc(db, type, id));
   const data = snap.data() as IDict<any>;
@@ -116,22 +132,6 @@ export async function updateFollow(
     await updateDoc(userRef, {
       followers: arrayUnion(curUser.id),
     });
-  }
-}
-
-export async function addTags(
-  arr: string[],
-  uid: string,
-  pid: string | undefined
-) {
-  for await (const tag of arr) {
-    const tempTag: ITag = {
-      uid,
-      pid,
-      name: tag,
-    };
-    const tagRef = await addDoc(collection(db, "tags"), tempTag);
-    await updateDoc(tagRef, { id: tagRef.id });
   }
 }
 
