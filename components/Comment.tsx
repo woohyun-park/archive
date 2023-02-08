@@ -3,7 +3,6 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { HiX } from "react-icons/hi";
 import { db } from "../apis/firebase";
-import { useStore } from "../stores/useStore";
 import { IComment, IUser } from "../libs/custom";
 import Motion from "../motions/Motion";
 import { displayCreatedAt } from "../libs/timeLib";

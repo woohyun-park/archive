@@ -11,17 +11,14 @@ import ProfileImg from "../components/atoms/ProfileImg";
 import IconBtn from "../components/atoms/IconBtn";
 import FilterAndRefresh from "../components/FilterAndRefresh";
 import { debounce } from "lodash";
+import { useKeyword } from "../stores/useKeyword";
 
 export default function Feed() {
+  const router = useRouter();
   const { curUser } = useUser();
-  const {
-    posts,
-    filteredPosts,
-    getPosts,
-    getFilteredPosts,
-    keyword,
-    setKeyword,
-  } = useFeed();
+  const { posts, filteredPosts, getPosts, getFilteredPosts } = useFeed();
+  const { keywords, setKeywords } = useKeyword();
+  const [keyword, setKeyword] = useState(keywords[router.pathname] || "");
   const { setLastIntersecting, loading } = useInfiniteScroll({
     handleIntersect: () => {
       keyword.length === 0 && getPosts(curUser.id, "load");
@@ -29,7 +26,6 @@ export default function Feed() {
     handleChange: () => {},
     changeListener: posts,
   });
-  const router = useRouter();
   const [curPosts, setCurPosts] = useState(
     filteredPosts.length === 0 ? posts : filteredPosts
   );
@@ -38,6 +34,10 @@ export default function Feed() {
   const [resetRefresh, setResetRefresh] = useState<boolean | null>(null);
   const [filterLoading, setFilterLoading] = useState(false);
   const [resetFilter, setResetFilter] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    setKeyword(keywords[router.pathname] || "");
+  }, [keywords[router.pathname]]);
 
   useEffect(() => {
     setTimeout(() => {
@@ -88,7 +88,7 @@ export default function Feed() {
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     e.preventDefault();
     if (e.target.value.slice(e.target.value.length - 1) !== " ") {
-      setKeyword(e.target.value);
+      setKeywords(router.pathname, e.target.value);
       setResetFilter(!resetFilter);
     }
   }
@@ -106,7 +106,7 @@ export default function Feed() {
         onRefresh={handleRefresh}
         onChange={handleChange}
         onCancel={() => {
-          setKeyword("");
+          setKeywords(router.pathname, "");
           setResetFilter(!resetFilter);
         }}
         keyword={keyword}

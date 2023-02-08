@@ -7,24 +7,17 @@ import {
   getPath,
 } from "../../apis/firebase";
 import ProfileSmall from "../../components/ProfileSmall";
-import {
-  IComment,
-  IDict,
-  ILike,
-  IPost,
-  IScrap,
-  IUser,
-  SIZE,
-} from "../../libs/custom";
+import { IComment, ILike, IPost, IScrap, IUser, SIZE } from "../../libs/custom";
 import Image from "next/image";
 import { collection, orderBy, query, where } from "firebase/firestore";
-import React, { Ref, RefObject, useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import Btn from "../../components/atoms/Btn";
 import IconBtn from "../../components/atoms/IconBtn";
 import { useUser } from "../../stores/useUser";
 import Title from "../../components/atoms/Title";
 import CommentBox from "../../components/CommentBox";
 import Motion from "../../motions/Motion";
+import { useFeed } from "../../stores/useFeed";
 
 interface IPostProps {
   initPost: IPost;
@@ -33,6 +26,7 @@ interface IPostProps {
 
 export default function Post({ initPost, initUser }: IPostProps) {
   const { curUser } = useUser();
+  const { setPosts, posts } = useFeed();
   const router = useRouter();
   const [post, setPost] = useState<IPost>(initPost);
 
@@ -50,15 +44,15 @@ export default function Post({ initPost, initUser }: IPostProps) {
     if (confirm("정말 삭제하시겠습니까?")) {
       await deletePost(post?.id as string);
       alert("삭제되었습니다");
+      setTimeout(
+        () => setPosts([...posts].filter((e) => e.id !== post?.id)),
+        500
+      );
     } else {
       console.log(post);
     }
     router.push("/");
   }
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
 
   return (
     <>
