@@ -90,7 +90,10 @@ export default function Feed() {
       <IconInput
         icon="filter"
         onChange={handleChange}
-        onDelete={() => setKeywords(router.pathname, "")}
+        onDelete={() => {
+          setKeywords(router.pathname, "");
+          setResetFilter(!resetFilter);
+        }}
         keyword={keyword}
         placeholder={"찾고싶은 태그를 입력해보세요!"}
         style="margin-left: 1rem; margin-right: 1rem;"

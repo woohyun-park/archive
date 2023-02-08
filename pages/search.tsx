@@ -24,8 +24,8 @@ export default function Search() {
       <Motion type="fade">
         <Link href="/search-modal">
           <div className="flex">
-            <div className="flex items-center w-full p-1 mb-1 rounded-md bg-gray-3 hover:cursor-pointer">
-              <HiMagnifyingGlass size={SIZE.iconSm} />
+            <div className="flex items-center w-full px-[0.25rem] py-[0.375rem] my-[0.75rem] mb-1 rounded-md bg-gray-3 hover:cursor-pointer">
+              <HiMagnifyingGlass size={SIZE.iconSm} className="scale-75" />
             </div>
           </div>
         </Link>
