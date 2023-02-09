@@ -2,22 +2,20 @@ import { SIZE } from "../libs/custom";
 import { HiMagnifyingGlass } from "react-icons/hi2";
 import Link from "next/link";
 import Motion from "../motions/Motion";
-import Box from "../components/Box";
-import Loader from "../components/Loader";
-import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 import { useSearch } from "../stores/useSearch";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import PostBox from "../components/PostBox";
+import Loader from "../components/Loader";
 
 export default function Search() {
   const { posts, getPosts } = useSearch();
-  const { setLastIntersecting, loading } = useInfiniteScroll({
-    handleIntersect: () => getPosts("load"),
-    handleChange: () => {},
-    changeListener: posts,
-  });
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
-    getPosts("init");
+    async function init() {
+      await getPosts("init");
+      setLoading(false);
+    }
+    init();
   }, []);
 
   return (
@@ -30,6 +28,7 @@ export default function Search() {
             </div>
           </div>
         </Link>
+        <Loader isVisible={loading} />
         <PostBox
           type="search"
           posts={posts}

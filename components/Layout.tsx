@@ -18,6 +18,7 @@ import { motion, Variants } from "framer-motion";
 import Image from "next/image";
 import Motion from "../motions/Motion";
 import { RiGoogleFill } from "react-icons/ri";
+import ModalLoader from "./ModalLoader";
 
 interface ILayoutProps {
   children: React.ReactNode;

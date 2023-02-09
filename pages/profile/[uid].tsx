@@ -10,14 +10,13 @@ import {
 } from "../../apis/firebase";
 import Tab from "../../components/Tab";
 import { IDict, IPost, IScrap, ITag, IUser, SIZE } from "../../libs/custom";
-import { HiOutlineCog } from "react-icons/hi";
-import Link from "next/link";
 import { useState } from "react";
 import Image from "next/image";
 import Motion from "../../motions/Motion";
 import Btn from "../../components/atoms/Btn";
 import { useUser } from "../../stores/useUser";
 import IconBtn from "../../components/atoms/IconBtn";
+import { useRouter } from "next/router";
 
 interface IProfileProps {
   initUser: IUser;
@@ -56,19 +55,21 @@ export default function Profile({
     }
     setUser({ ...user, isFollowing: !user.isFollowing });
   }
+  const router = useRouter();
 
   return (
     <>
       <Motion type="fade">
-        {initUser.id === curUser.id && (
-          <div className="flex justify-end">
-            <Link href="/setting" legacyBehavior>
-              <div className="flex justify-end text-black">
-                <IconBtn icon="setting" />
-              </div>
-            </Link>
-          </div>
-        )}
+        <div className="flex justify-between">
+          {initUser.id === curUser.id ? (
+            <>
+              <IconBtn icon="back" onClick={() => router.back()} />
+              <IconBtn icon="setting" onClick={() => router.push("/setting")} />
+            </>
+          ) : (
+            <IconBtn icon="back" onClick={() => router.back()} />
+          )}
+        </div>
         <div className="flex items-start justify-between mt-8">
           <div className="w-2/3">
             <h1 className="text-xl font-bold break-all">

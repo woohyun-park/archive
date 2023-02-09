@@ -1,9 +1,7 @@
 import { AnimatePresence } from "framer-motion";
-import { useEffect, useRef } from "react";
 import PullToRefresh from "react-simple-pull-to-refresh";
 import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 import { IPost } from "../libs/custom";
-import Motion from "../motions/Motion";
 import Box from "./Box";
 import FeedPost from "./FeedPost";
 import Loader from "./Loader";

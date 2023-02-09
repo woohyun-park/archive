@@ -3,24 +3,20 @@ import { useRouter } from "next/router";
 import {
   HiHome,
   HiOutlineHome,
-  // HiSearch,
-  // HiOutlineSearch,
   HiLightBulb,
   HiOutlineLightBulb,
 } from "react-icons/hi2";
 import { SIZE } from "../libs/custom";
 import WrapScroll from "./wrappers/WrapScroll";
-import { useUser } from "../stores/useUser";
 
 export default function Nav() {
-  const { curUser } = useUser();
   const router = useRouter();
   const path = router.pathname;
 
   return (
     <>
       <WrapScroll>
-        <div className="box-border fixed bottom-0 grid grid-cols-3 justify-around w-full pt-1 pb-8 px-8 bg-white max-w-[480px]">
+        <div className="box-border fixed bottom-0 grid grid-cols-3 justify-around w-full pt-1 pb-8 px-8 bg-white max-w-[480px] z-10">
           {path !== "/" ? (
             <Link href="/" legacyBehavior>
               <div className="flex flex-col items-center align-center hover:cursor-pointer">
@@ -70,15 +66,6 @@ export default function Nav() {
               <div className="text-xs">둘러보기</div>
             </div>
           </Link>
-          {/* <Link href={`/profile/${curUser.id}`} legacyBehavior>
-            <a>
-              {router.query.uid === curUser.id ? (
-                <HiUser size={SIZE.icon} />
-              ) : (
-                <HiOutlineUser size={SIZE.icon} />
-              )}
-            </a>
-          </Link> */}
         </div>
       </WrapScroll>
     </>

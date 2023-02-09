@@ -1,17 +1,17 @@
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import Loader from "../components/Loader";
-import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 import { useFeed } from "../stores/useFeed";
 import { useScrollSave } from "../stores/useScrollSave";
 import { useUser } from "../stores/useUser";
-import FeedPost from "../components/FeedPost";
 import ProfileImg from "../components/atoms/ProfileImg";
 import IconBtn from "../components/atoms/IconBtn";
 import IconInput from "../components/atoms/IconInput";
 import { debounce } from "lodash";
 import { useKeyword } from "../stores/useKeyword";
 import PostBox from "../components/PostBox";
+import WrapScroll from "../components/wrappers/WrapScroll";
+import ModalLoader from "../components/ModalLoader";
 
 export default function Feed() {
   const router = useRouter();
@@ -19,17 +19,13 @@ export default function Feed() {
   const { posts, filteredPosts, getPosts, getFilteredPosts } = useFeed();
   const { keywords, setKeywords } = useKeyword();
   const keyword = keywords[router.pathname] || "";
-  const { setLastIntersecting, loading } = useInfiniteScroll({
-    handleIntersect: () => keyword.length === 0 && getPosts(curUser.id, "load"),
-    handleChange: () => {},
-    changeListener: posts,
-  });
   const [curPosts, setCurPosts] = useState(
     filteredPosts.length === 0 ? posts : filteredPosts
   );
   const { scroll } = useScrollSave();
   const [filterLoading, setFilterLoading] = useState(false);
   const [resetFilter, setResetFilter] = useState<boolean | null>(null);
+  const [modalLoading, setModalLoading] = useState(false);
 
   useEffect(() => {
     setTimeout(() => {
@@ -78,12 +74,26 @@ export default function Feed() {
 
   return (
     <div className="flex flex-col">
+      <ModalLoader show={modalLoading} />
       <div className="flex items-center justify-between px-4 pb-2">
-        <h1 className="title-logo">archive</h1>
-        <div className="flex items-center justify-center">
-          <IconBtn icon="alarm" onClick={() => router.push("/alarm")} />
-          <ProfileImg user={curUser} />
-        </div>
+        <h1
+          className="hover:cursor-pointer title-logo"
+          onClick={() => router.reload()}
+        >
+          archive
+        </h1>
+        <WrapScroll>
+          <div className="flex items-center justify-center">
+            <IconBtn
+              icon="alarm"
+              onClick={() => {
+                setModalLoading(true);
+                router.push("/alarm");
+              }}
+            />
+            <ProfileImg user={curUser} onClick={() => setModalLoading(true)} />
+          </div>
+        </WrapScroll>
       </div>
       <IconInput
         icon="filter"
