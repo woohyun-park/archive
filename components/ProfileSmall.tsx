@@ -65,7 +65,11 @@ export default function ProfileSmall({ user, post }: IProfileSmallProps) {
     <>
       <div className="flex items-center justify-between w-full mt-2 mb-2">
         <div className="flex items-center">
-          <ProfileImg user={user} />
+          <ProfileImg
+            size="sm"
+            photoURL={user.photoURL}
+            onClick={() => router.push(`/profile/${user.id}`)}
+          />
           <div>
             <Link href={`/profile/${user?.id}`} legacyBehavior>
               <a className="text-sm text-black">{user?.displayName}</a>

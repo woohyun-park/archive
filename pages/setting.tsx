@@ -1,7 +1,6 @@
 import axios, { AxiosRequestConfig } from "axios";
 import { useRouter } from "next/router";
 import React, { useRef, useState } from "react";
-import { useStore } from "../stores/useStore";
 import { useForm } from "react-hook-form";
 import Image from "next/image";
 import { updateUser } from "../apis/firebase";
@@ -10,6 +9,7 @@ import Btn from "../components/atoms/Btn";
 import IconBtn from "../components/atoms/IconBtn";
 import { useUser } from "../stores/useUser";
 import FormInput from "../components/atoms/FormInput";
+import ProfileImg from "../components/atoms/ProfileImg";
 
 interface IForm {
   file: File[];
@@ -71,6 +71,7 @@ export default function Setting() {
     }
     router.push(`/profile/${curUser.id}`);
   }
+
   function handleImageOnChange(e: React.ChangeEvent<HTMLInputElement>) {
     file.onChange(e);
     if (!e.target.files) {
@@ -83,6 +84,10 @@ export default function Setting() {
         setPreview(reader.result);
       }
     };
+  }
+
+  function handleFileClick() {
+    fileRef.current?.click();
   }
 
   return (
@@ -101,19 +106,26 @@ export default function Setting() {
             }}
           />
         </div>
-        <div className="flex justify-center">
-          <div className="relative object-cover w-24 h-24 overflow-hidden rounded-full">
+        <div className="flex flex-col items-center">
+          {/* <div className="relative object-cover w-24 h-24 overflow-hidden rounded-full">
             <Image
               src={preview}
-              onClick={() => fileRef.current?.click()}
+              onClick={handleFileClick}
               alt=""
               fill
               className="object-cover"
             />
+          </div> */}
+          <ProfileImg size="lg" photoURL={preview} onClick={handleFileClick} />
+          <div
+            className="mt-2 text-xs hover:cursor-pointer"
+            onClick={handleFileClick}
+          >
+            사진 수정
           </div>
         </div>
         <form
-          className="flex flex-col mt-9"
+          className="flex flex-col mt-4"
           onSubmit={handleSubmit((data) => onValid(data))}
         >
           <input

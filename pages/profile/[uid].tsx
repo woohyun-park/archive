@@ -17,6 +17,7 @@ import Btn from "../../components/atoms/Btn";
 import { useUser } from "../../stores/useUser";
 import IconBtn from "../../components/atoms/IconBtn";
 import { useRouter } from "next/router";
+import ProfileImg from "../../components/atoms/ProfileImg";
 
 interface IProfileProps {
   initUser: IUser;
@@ -108,9 +109,7 @@ export default function Profile({
               </div>
             </div>
           </div>
-          <div className="relative object-cover w-24 h-24 overflow-hidden rounded-full">
-            <Image src={initUser.photoURL} alt="" fill />
-          </div>
+          <ProfileImg size="lg" photoURL={initUser.photoURL} />
         </div>
 
         <div className="h-full py-4 break-all min-h-[96px]">{initUser.txt}</div>

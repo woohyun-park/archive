@@ -41,7 +41,7 @@ export default function IconBtn({
   fill = false,
   size = SIZE.icon,
   style,
-  onClick = () => {},
+  onClick,
 }: IIconBtnProps) {
   return (
     <>

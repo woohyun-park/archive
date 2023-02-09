@@ -1,17 +1,41 @@
 import Image from "next/image";
-import Link from "next/link";
-import { IUser } from "../../libs/custom";
 interface IProfileImgProps {
-  user: IUser;
+  size: "sm" | "lg";
+  photoURL: string;
   onClick?: () => void;
 }
 
-export default function ProfileImg({ user, onClick }: IProfileImgProps) {
+export default function ProfileImg({
+  size,
+  photoURL,
+  onClick,
+}: IProfileImgProps) {
   return (
-    <div className="mr-1 profileImg-small" onClick={onClick}>
-      <Link href={`/profile/${user?.id}`}>
-        <Image src={user.photoURL} alt="" fill />
-      </Link>
-    </div>
+    <>
+      {size === "sm" && (
+        <div
+          className={
+            onClick
+              ? "mr-1 profileImg-small cursor-pointer"
+              : "mr-1 profileImg-small"
+          }
+          onClick={onClick}
+        >
+          <Image src={photoURL} alt="" fill />
+        </div>
+      )}
+      {size === "lg" && (
+        <div
+          className={
+            onClick
+              ? "relative object-cover w-24 h-24 overflow-hidden rounded-full hover:cursor-pointer"
+              : "relative object-cover w-24 h-24 overflow-hidden rounded-full "
+          }
+          onClick={onClick}
+        >
+          <Image src={photoURL} alt="" fill className="object-cover" />
+        </div>
+      )}
+    </>
   );
 }
