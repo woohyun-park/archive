@@ -6,13 +6,21 @@ import { useSearch } from "../stores/useSearch";
 import { useEffect, useState } from "react";
 import PostBox from "../components/PostBox";
 import Loader from "../components/Loader";
+import { useVisit } from "../stores/useVisit";
+import { Router, useRouter } from "next/router";
 
 export default function Search() {
   const { posts, getPosts } = useSearch();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const { visit, setVisit } = useVisit();
+  const router = useRouter();
   useEffect(() => {
     async function init() {
-      await getPosts("init");
+      if (!visit[router.pathname]) {
+        setLoading(true);
+        await getPosts("init");
+        setVisit(router.pathname);
+      }
       setLoading(false);
     }
     init();
