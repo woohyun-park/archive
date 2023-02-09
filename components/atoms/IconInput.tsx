@@ -1,7 +1,6 @@
 import { AnimatePresence } from "framer-motion";
 import { SIZE } from "../../libs/custom";
 import { fadeVariants } from "../../libs/motionLib";
-import Input from "./Input";
 import { motion } from "framer-motion";
 import IconBtn from "./IconBtn";
 import { ChangeEvent, MouseEvent, useState } from "react";
@@ -43,13 +42,18 @@ export default function IconInput({
             className="top-0 z-0 w-full"
             variants={fadeVariants}
           >
-            <Input
+            <input
               type="text"
               placeholder={placeholder}
               value={keyword}
               onChange={onChange}
               onKeyDown={onKeyDown}
-              style="padding-left: 1.625rem; padding-right:1.625rem; font-size: 0.875rem;"
+              className="input"
+              style={{
+                paddingLeft: "1.625rem",
+                paddingRight: "1.625rem",
+                fontSize: "0.875rem",
+              }}
             />
           </motion.div>
         </AnimatePresence>

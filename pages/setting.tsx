@@ -107,16 +107,11 @@ export default function Setting() {
           />
         </div>
         <div className="flex flex-col items-center">
-          {/* <div className="relative object-cover w-24 h-24 overflow-hidden rounded-full">
-            <Image
-              src={preview}
-              onClick={handleFileClick}
-              alt=""
-              fill
-              className="object-cover"
-            />
-          </div> */}
-          <ProfileImg size="lg" photoURL={preview} onClick={handleFileClick} />
+          <ProfileImg
+            size="base"
+            photoURL={preview}
+            onClick={handleFileClick}
+          />
           <div
             className="mt-2 text-xs hover:cursor-pointer"
             onClick={handleFileClick}

@@ -49,6 +49,10 @@ body {
     @apply p-1 text-center text-black rounded-full bg-gray-3;
   }
 
+  .input {
+    @apply block w-full px-2 py-2 my-1 text-base font-normal transition ease-in-out border-2 border-solid rounded-lg text-gray-1 bg-gray-3 bg-clip-padding border-gray-3 focus:text-gray-1 focus:border-gray-3f focus:outline-none;
+  }
+
   .inputForm {
     @apply flex items-end justify-between;
   }

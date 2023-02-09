@@ -199,7 +199,7 @@ export default function Add() {
           register={register}
           type="text"
           name="title"
-          txt="제목"
+          label="제목"
         />
         <FormTag
           tag={tag}
@@ -214,7 +214,7 @@ export default function Add() {
           watch={watch}
           register={register}
           name="txt"
-          txt="내용"
+          label="내용"
           maxLength={2000}
         />
         <button className="button-black" type="submit">

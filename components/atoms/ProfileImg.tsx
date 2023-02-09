@@ -1,6 +1,6 @@
 import Image from "next/image";
 interface IProfileImgProps {
-  size: "sm" | "lg";
+  size: "sm" | "base";
   photoURL: string;
   onClick?: () => void;
 }
@@ -24,7 +24,7 @@ export default function ProfileImg({
           <Image src={photoURL} alt="" fill />
         </div>
       )}
-      {size === "lg" && (
+      {size === "base" && (
         <div
           className={
             onClick

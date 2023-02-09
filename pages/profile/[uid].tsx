@@ -109,7 +109,7 @@ export default function Profile({
               </div>
             </div>
           </div>
-          <ProfileImg size="lg" photoURL={initUser.photoURL} />
+          <ProfileImg size="base" photoURL={initUser.photoURL} />
         </div>
 
         <div className="h-full py-4 break-all min-h-[96px]">{initUser.txt}</div>
