@@ -35,8 +35,11 @@ body {
     @apply text-4xl;
   }
 
-  .profileImg-small {
+  .profileImg-sm {
     @apply relative w-8 h-8 overflow-hidden min-w-[2rem] rounded-2xl hover:cursor-pointer;
+  }
+  .profileImg-base {
+    @apply relative object-cover w-24 h-24 overflow-hidden rounded-full;
   }
 
   .button-black {

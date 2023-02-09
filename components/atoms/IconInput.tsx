@@ -3,7 +3,7 @@ import { SIZE } from "../../libs/custom";
 import { fadeVariants } from "../../libs/motionLib";
 import { motion } from "framer-motion";
 import IconBtn from "./IconBtn";
-import { ChangeEvent, MouseEvent, useState } from "react";
+import { ChangeEvent, MouseEvent } from "react";
 
 interface IIconInputProps {
   icon: "filter" | "search";

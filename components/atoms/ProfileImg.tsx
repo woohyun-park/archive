@@ -14,11 +14,7 @@ export default function ProfileImg({
     <>
       {size === "sm" && (
         <div
-          className={
-            onClick
-              ? "mr-1 profileImg-small cursor-pointer"
-              : "mr-1 profileImg-small"
-          }
+          className={onClick ? "profileImg-sm cursor-pointer" : "profileImg-sm"}
           onClick={onClick}
         >
           <Image src={photoURL} alt="" fill />
@@ -27,9 +23,7 @@ export default function ProfileImg({
       {size === "base" && (
         <div
           className={
-            onClick
-              ? "relative object-cover w-24 h-24 overflow-hidden rounded-full hover:cursor-pointer"
-              : "relative object-cover w-24 h-24 overflow-hidden rounded-full "
+            onClick ? "profileImg-base hover:cursor-pointer" : "profileImg-base"
           }
           onClick={onClick}
         >

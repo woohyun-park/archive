@@ -91,7 +91,14 @@ export default function Feed() {
                 router.push("/alarm");
               }}
             />
-            <ProfileImg user={curUser} onClick={() => setModalLoader(true)} />
+            <ProfileImg
+              size="sm"
+              photoURL={curUser.photoURL}
+              onClick={() => {
+                setModalLoader(true);
+                router.push(`/profile/${curUser.id}`);
+              }}
+            />
           </div>
         </WrapScroll>
       </div>

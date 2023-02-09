@@ -68,7 +68,7 @@ export default function ProfileSmall({ user, post }: IProfileSmallProps) {
             photoURL={user.photoURL}
             onClick={() => router.push(`/profile/${user.id}`)}
           />
-          <div>
+          <div className="ml-1">
             <Link href={`/profile/${user?.id}`} legacyBehavior>
               <a className="text-sm text-black">{user?.displayName}</a>
             </Link>
