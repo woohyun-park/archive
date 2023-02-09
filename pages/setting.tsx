@@ -9,6 +9,7 @@ import Motion from "../motions/Motion";
 import Btn from "../components/atoms/Btn";
 import IconBtn from "../components/atoms/IconBtn";
 import { useUser } from "../stores/useUser";
+import FormInput from "../components/atoms/FormInput";
 
 interface IForm {
   file: File[];
@@ -126,30 +127,22 @@ export default function Setting() {
             }}
             hidden
           />
-          <div className="inputForm">
-            <label className="inputForm_label">사용자 이름</label>
-            <div
-              className={
-                watch("displayName").length === 0
-                  ? "inputForm_txt inputForm_txt-invalid "
-                  : "inputForm_txt"
-              }
-            >{`${watch("displayName").length}/16`}</div>
-          </div>
-          <input
-            {...register("displayName", { required: true, maxLength: 16 })}
+          <FormInput
+            watch={watch}
+            register={register}
             type="text"
-            className="inputForm_input"
+            name="displayName"
+            label="사용자 이름"
             maxLength={16}
           />
-          <div className="inputForm">
-            <label className="inputForm_label">소개</label>
-            <div className="inputForm_txt">{`${watch("txt").length}/150`}</div>
-          </div>
-          <textarea
-            {...register("txt", { maxLength: 150 })}
+          <FormInput
+            watch={watch}
+            register={register}
+            type="textarea"
+            name="txt"
+            label="소개"
             maxLength={150}
-            className="h-16 resize-none inputForm_input"
+            minRows={4}
           />
           <Btn type="submit">변경</Btn>
         </form>

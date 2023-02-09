@@ -98,7 +98,6 @@ export default function Add() {
 
   return (
     <Motion type="fade">
-      <Modal show={isSubmitting} content={<></>} />
       <div className="flex">
         <IconBtn
           icon="back"

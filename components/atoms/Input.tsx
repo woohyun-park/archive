@@ -24,7 +24,7 @@ export default function Input({
   return (
     <>
       <input
-        type={type}
+        type="text"
         className="block w-full px-2 py-1 my-1 text-base font-normal transition ease-in-out border-2 border-solid rounded-lg form-control text-gray-1 bg-gray-3 bg-clip-padding border-gray-3 focus:text-gray-1 focus:border-gray-3f focus:outline-none"
         value={value}
         placeholder={placeholder}

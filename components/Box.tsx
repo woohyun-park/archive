@@ -7,16 +7,17 @@ interface IBoxProps {
   post: IPost;
   includeTitle?: boolean;
   includeTag?: boolean;
+  style?: string;
 }
 
 export default function Box({
   post,
   includeTitle = false,
   includeTag = false,
+  style = "",
 }: IBoxProps) {
   const router = useRouter();
   const route = getRoute(router);
-  console.log(post);
   return (
     <>
       <div className="pb-[100%] relative overflow-hidden rounded-lg w-full duration-500">
@@ -43,7 +44,7 @@ export default function Box({
           >
             <div
               className="absolute m-2 text-5xl font-bold break-words hover:cursor-pointer"
-              id={`box_d2-${route}`}
+              id="box_d2"
             >
               {post.title}
             </div>
@@ -67,17 +68,18 @@ export default function Box({
         #box_d1 {
           background-color: ${post.color};
         }
-        #box_d2-feed {
-          margin: 16px;
+        #box_d2 {
+          ${style}
         }
-        #box_d2-search {
-          font-size: 16px;
+         {
+          /* #box_d2-feed {
           margin: 16px;
         }
         #box_d2-profile {
           font-size: 24px;
           margin: 8px 4px;
           line-height: 20px;
+        } */
         }
       `}</style>
     </>

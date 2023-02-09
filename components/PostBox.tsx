@@ -61,6 +61,7 @@ export default function PostBox({
                       post={{ ...e, id: e.id }}
                       includeTitle={true}
                       includeTag={true}
+                      style="font-size: 1rem;"
                     ></Box>
                   </div>
                   {i === posts.length - 1 && (

@@ -6,7 +6,7 @@ interface IFormInput {
   register: UseFormRegister<any>;
   type: "text" | "textarea";
   name: string;
-  txt: string;
+  label: string;
   required?: boolean;
   maxLength?: number;
   minRows?: number;
@@ -17,7 +17,7 @@ export default function FormInput({
   register,
   type,
   name,
-  txt,
+  label,
   required = true,
   maxLength = 32,
   minRows = 10,
@@ -26,7 +26,7 @@ export default function FormInput({
     <>
       <div className="inputForm">
         <label className="inputForm_label">
-          {txt} {required && "*"}
+          {label} {required && "*"}
         </label>
         <div
           className={
