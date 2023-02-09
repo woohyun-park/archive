@@ -3,13 +3,13 @@ import ReactDOM from "react-dom";
 import Modal from "./Modal";
 
 interface IModalLoaderProps {
-  show: boolean;
+  isVisible: boolean;
 }
 
-export default function ModalLoader({ show }: IModalLoaderProps) {
+export default function ModalLoader({ isVisible }: IModalLoaderProps) {
   return (
     <Modal
-      show={show}
+      isVisible={isVisible}
       content={
         <div className="flex items-center justify-center w-full h-full bg-white">
           LOADING

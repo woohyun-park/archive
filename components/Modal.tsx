@@ -2,11 +2,11 @@ import React, { ReactNode, useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 
 interface IModal {
-  show: boolean;
+  isVisible: boolean;
   content: ReactNode;
 }
 
-export default function Modal({ show, content }: IModal) {
+export default function Modal({ isVisible, content }: IModal) {
   const [isBrowser, setIsBrowser] = useState(false);
 
   useEffect(() => {
@@ -14,7 +14,7 @@ export default function Modal({ show, content }: IModal) {
   }, []);
 
   if (isBrowser) {
-    if (show) {
+    if (isVisible) {
       document.body.style.overflow = "hidden";
       return ReactDOM.createPortal(
         <div className="top-0 left-0 w-[100vw] h-[100vh] fixed bg-black/50">

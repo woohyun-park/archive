@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import {
   HiHome,
   HiOutlineHome,
@@ -7,30 +8,45 @@ import {
   HiOutlineLightBulb,
 } from "react-icons/hi2";
 import { SIZE } from "../libs/custom";
+import { useModal } from "../stores/useModal";
+import ModalLoader from "./ModalLoader";
 import WrapScroll from "./wrappers/WrapScroll";
 
 export default function Nav() {
   const router = useRouter();
   const path = router.pathname;
+  // const [modalLoading, setModalLoading] = useState(false);
+  const { modalLoader, setModalLoader } = useModal();
+
+  useEffect(() => {
+    setModalLoader(false);
+  }, [router.pathname]);
 
   return (
     <>
+      <ModalLoader isVisible={modalLoader} />
       <WrapScroll>
         <div className="box-border fixed bottom-0 grid grid-cols-3 justify-around w-full pt-1 pb-8 px-8 bg-white max-w-[480px] z-10">
           {path !== "/" ? (
-            <Link href="/" legacyBehavior>
-              <div className="flex flex-col items-center align-center hover:cursor-pointer">
-                <div className="mb-1">
-                  {path === "/" ? (
-                    <HiHome size={SIZE.icon} />
-                  ) : (
-                    <HiOutlineHome size={SIZE.icon} />
-                  )}
-                </div>
-                <div className="text-xs">홈</div>
+            // <Link href="/" legacyBehavior onClick={() => setModalLoading(true)}>
+            <div
+              onClick={() => {
+                setModalLoader(true);
+                router.push("/");
+              }}
+              className="flex flex-col items-center align-center hover:cursor-pointer"
+            >
+              <div className="mb-1">
+                {path === "/" ? (
+                  <HiHome size={SIZE.icon} />
+                ) : (
+                  <HiOutlineHome size={SIZE.icon} />
+                )}
               </div>
-            </Link>
+              <div className="text-xs">홈</div>
+            </div>
           ) : (
+            // </Link>
             <div
               className="flex flex-col items-center align-center hover:cursor-pointer"
               onClick={() =>

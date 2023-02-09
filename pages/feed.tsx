@@ -12,6 +12,7 @@ import { useKeyword } from "../stores/useKeyword";
 import PostBox from "../components/PostBox";
 import WrapScroll from "../components/wrappers/WrapScroll";
 import ModalLoader from "../components/ModalLoader";
+import { useModal } from "../stores/useModal";
 
 export default function Feed() {
   const router = useRouter();
@@ -25,7 +26,7 @@ export default function Feed() {
   const { scroll } = useScrollSave();
   const [filterLoading, setFilterLoading] = useState(false);
   const [resetFilter, setResetFilter] = useState<boolean | null>(null);
-  const [modalLoading, setModalLoading] = useState(false);
+  const { modalLoader, setModalLoader } = useModal();
 
   useEffect(() => {
     setTimeout(() => {
@@ -74,7 +75,6 @@ export default function Feed() {
 
   return (
     <div className="flex flex-col">
-      <ModalLoader show={modalLoading} />
       <div className="flex items-center justify-between px-4 pb-2">
         <h1
           className="hover:cursor-pointer title-logo"
@@ -87,11 +87,11 @@ export default function Feed() {
             <IconBtn
               icon="alarm"
               onClick={() => {
-                setModalLoading(true);
+                setModalLoader(true);
                 router.push("/alarm");
               }}
             />
-            <ProfileImg user={curUser} onClick={() => setModalLoading(true)} />
+            <ProfileImg user={curUser} onClick={() => setModalLoader(true)} />
           </div>
         </WrapScroll>
       </div>
