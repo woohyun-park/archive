@@ -12,11 +12,10 @@ import { db, getDataByRef } from "../apis/firebase";
 import { IComment, IPost, IUser } from "../libs/custom";
 import Motion from "../motions/Motion";
 import Comment from "./Comment";
-import Textarea from "./atoms/Textarea";
 import { useRouter } from "next/router";
-import Btn from "./atoms/Btn";
 import Action from "./Action";
-import ReactTextareaAutosize from "react-textarea-autosize";
+import Textarea from "./atoms/Textarea";
+import Btn from "./atoms/Btn";
 
 type ICommentBoxProps = {
   post: IPost;
@@ -105,9 +104,7 @@ export default (function CommentBox({ post, user, setPost }: ICommentBoxProps) {
             marginRight: "0.5rem ",
           }}
         />
-        <button onClick={handleSubmit} className="button">
-          게시
-        </button>
+        <Btn label="게시" onClick={handleSubmit} />
       </div>
     </>
   );

@@ -7,6 +7,8 @@ import { IComment, IUser } from "../libs/custom";
 import Motion from "../motions/Motion";
 import { displayCreatedAt } from "../libs/timeLib";
 import { useUser } from "../stores/useUser";
+import ProfileImg from "./atoms/ProfileImg";
+import { useRouter } from "next/router";
 
 type ICommentProps = {
   comment: IComment;
@@ -14,8 +16,9 @@ type ICommentProps = {
 };
 
 export default function Comment({ comment, onClick }: ICommentProps) {
-  const [user, setUser] = useState<IUser | null>(null);
   const { curUser } = useUser();
+  const router = useRouter();
+  const [user, setUser] = useState<IUser | null>(null);
 
   useEffect(() => {
     async function init() {
@@ -32,10 +35,12 @@ export default function Comment({ comment, onClick }: ICommentProps) {
       <Motion type="float">
         <div className="flex items-end justify-between my-1">
           <div className="flex items-center mt-2 mb-1">
-            <div className="mt-1 mr-2 profileImg-small self-baseline">
-              <Image src={user?.photoURL || ""} alt="" fill />
-            </div>
-            <div>
+            <ProfileImg
+              size="sm"
+              photoURL={user?.photoURL || ""}
+              onClick={() => router.push(`/profile/${user?.id}`)}
+            />
+            <div className="ml-1">
               <div className="flex items-center">
                 <div className="mr-1 text-sm font-bold text-black hover:cursor-pointer">
                   {user?.displayName}
@@ -44,7 +49,7 @@ export default function Comment({ comment, onClick }: ICommentProps) {
                   {displayCreatedAt(comment.createdAt)}
                 </div>
               </div>
-              <div className="-mt-1 text-base leading-5 text-black break-all">
+              <div className="-mt-[0.125rem] text-base leading-5 text-black break-all">
                 {comment?.txt}
               </div>
             </div>

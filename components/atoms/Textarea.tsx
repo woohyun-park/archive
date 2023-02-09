@@ -20,7 +20,7 @@ export default forwardRef<HTMLTextAreaElement, ITextareaProps>(
           ref={ref}
           autoFocus={autoFocus}
           style={style}
-          className="textarea"
+          className="textarea-base"
         />
       </>
     );

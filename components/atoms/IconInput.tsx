@@ -48,7 +48,7 @@ export default function IconInput({
               value={keyword}
               onChange={onChange}
               onKeyDown={onKeyDown}
-              className="input"
+              className="input-base"
               style={{
                 paddingLeft: "1.625rem",
                 paddingRight: "1.625rem",
