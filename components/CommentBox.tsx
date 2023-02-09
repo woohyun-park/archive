@@ -16,6 +16,7 @@ import Textarea from "./atoms/Textarea";
 import { useRouter } from "next/router";
 import Btn from "./atoms/Btn";
 import Action from "./Action";
+import ReactTextareaAutosize from "react-textarea-autosize";
 
 type ICommentBoxProps = {
   post: IPost;
@@ -90,12 +91,12 @@ export default (function CommentBox({ post, user, setPost }: ICommentBoxProps) {
         </div>
       )}
       <div className="sticky bottom-0 flex items-center justify-between w-full py-4 bg-white">
-        <div className="profileImg-small">
+        <div className="profileImg-sm">
           <Image src={user.photoURL} alt="" fill />
         </div>
         <Textarea
-          placeholder={`${user.displayName}(으)로 댓글 달기...`}
           value={comment}
+          placeholder={`${user.displayName}(으)로 댓글 달기...`}
           onChange={handleChange}
           ref={commentRef}
           autoFocus={router.query.isCommentFocused ? true : false}
@@ -104,7 +105,9 @@ export default (function CommentBox({ post, user, setPost }: ICommentBoxProps) {
             marginRight: "0.5rem ",
           }}
         />
-        <Btn onClick={handleSubmit}>게시</Btn>
+        <button onClick={handleSubmit} className="button">
+          게시
+        </button>
       </div>
     </>
   );

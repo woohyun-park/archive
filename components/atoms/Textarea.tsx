@@ -19,9 +19,8 @@ export default forwardRef<HTMLTextAreaElement, ITextareaProps>(
           onChange={onChange}
           ref={ref}
           autoFocus={autoFocus}
-          id="textarea_t1"
           style={style}
-          className="block w-full px-2 py-1 text-base font-normal transition ease-in-out border-2 border-solid rounded-lg resize-none form-control text-gray-1 bg-gray-3 bg-clip-padding border-gray-3 focus:text-gray-1 focus:border-gray-3f focus:outline-none"
+          className="textarea"
         />
       </>
     );

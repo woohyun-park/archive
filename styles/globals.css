@@ -52,8 +52,16 @@ body {
     @apply p-1 text-center text-black rounded-full bg-gray-3;
   }
 
+  .button {
+    @apply inline-block h-10 px-4 py-2 text-base text-center text-white transition duration-150 ease-in-out bg-black rounded-lg hover:bg-black-f focus:bg-black-f focus:outline-none focus:ring-0 active:bg-black-f min-w-fit;
+  }
+
   .input {
-    @apply block w-full px-2 py-2 my-1 text-base font-normal transition ease-in-out border-2 border-solid rounded-lg text-gray-1 bg-gray-3 bg-clip-padding border-gray-3 focus:text-gray-1 focus:border-gray-3f focus:outline-none;
+    @apply block w-full h-10 px-2 py-2 text-base transition ease-in-out border-2 border-solid rounded-lg text-gray-1 bg-gray-3 bg-clip-padding border-gray-3 focus:text-gray-1 focus:border-gray-3f focus:outline-none;
+  }
+
+  .textarea {
+    @apply block w-full h-10 px-2 py-2 text-base leading-5 transition ease-in-out border-2 border-solid rounded-lg resize-none text-gray-1 bg-gray-3 bg-clip-padding border-gray-3 focus:text-gray-1 focus:border-gray-3f focus:outline-none;
   }
 
   .inputForm {
