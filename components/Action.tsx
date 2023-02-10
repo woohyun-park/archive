@@ -6,7 +6,6 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import React, { useEffect, useState, forwardRef } from "react";
-import { updateDo } from "typescript";
 import { db } from "../apis/firebase";
 import { IPost, IUser, IDict, IAlarm } from "../libs/custom";
 import IconBtn from "./atoms/IconBtn";
@@ -34,6 +33,7 @@ export default forwardRef<HTMLDivElement, IActionProps>(function Action(
     const scraps = curUser.scraps?.find((each) => each.pid === post.id);
     return {
       likes: likes ? (likes.id as string) : "",
+      likesAlarm: likes ? likes.aid : "",
       scraps: scraps ? (scraps.id as string) : "",
     };
   }
@@ -41,6 +41,9 @@ export default forwardRef<HTMLDivElement, IActionProps>(function Action(
   async function handleToggle(type: IActionType) {
     if (status[type]) {
       await deleteDoc(doc(db, type, status[type]));
+      if (type === "likes") {
+        await deleteDoc(doc(db, "alarms", status["likesAlarm"]));
+      }
     } else {
       const newData: IDict<string> = {
         uid: curUser.id,
@@ -58,6 +61,7 @@ export default forwardRef<HTMLDivElement, IActionProps>(function Action(
         };
         const ref = await addDoc(collection(db, "alarms"), newAlarm);
         await updateDoc(ref, { id: ref.id });
+        newData.aid = ref.id;
       }
       const ref = await addDoc(collection(db, type), newData);
       await updateDoc(ref, { id: ref.id });

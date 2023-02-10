@@ -124,6 +124,7 @@ export interface ILike {
   id?: string;
   uid: string;
   pid: string;
+  aid: string;
 
   isLoadedAt?: Date;
 }
