@@ -17,7 +17,14 @@ export default function ColorBox({
   return (
     <>
       {colors.map((arr, i) => (
-        <div className="flex justify-between my-2" key={i}>
+        <div
+          className={
+            i === colors.length - 1
+              ? "flex justify-between mb-4"
+              : "flex justify-between mb-2"
+          }
+          key={i}
+        >
           {arr.map((e) => (
             <div
               key={e}

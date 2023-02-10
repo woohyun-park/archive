@@ -150,7 +150,7 @@ export default function Add() {
         {status.selectedTab ? (
           preview === "" ? (
             <div
-              className="relative w-full pb-[100%] bg-gray-3 rounded-lg hover:cursor-pointer"
+              className="relative w-full pb-[100%] bg-gray-3 rounded-lg hover:cursor-pointer mb-4"
               onClick={handleImageClick}
               ref={imgRef}
               tabIndex={-1}
@@ -161,7 +161,7 @@ export default function Add() {
             </div>
           ) : (
             <div
-              className="relative w-full pb-[100%] overflow-hidden rounded-xl mb-2 hover:cursor-pointer"
+              className="relative w-full pb-[100%] overflow-hidden rounded-xl mb-4 hover:cursor-pointer"
               onClick={handleImageClick}
             >
               <Image src={preview} alt="" fill className="object-cover" />
@@ -200,7 +200,6 @@ export default function Add() {
           error={error}
           onChange={onChange}
           onDelete={onDelete}
-          includeLabel={true}
         />
         <FormInput
           type="textarea"

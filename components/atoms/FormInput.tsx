@@ -42,7 +42,7 @@ export default function FormInput({
           type="text"
           maxLength={32}
           id={name}
-          className="inputForm_input"
+          className="mb-4 input-base"
         />
       )}
       {type === "textarea" && (
@@ -54,7 +54,7 @@ export default function FormInput({
           maxLength={maxLength}
           minRows={minRows}
           id={name}
-          className="h-32 resize-none inputForm_input"
+          className="h-32 mb-4 resize-none textarea-base"
         />
       )}
     </>
