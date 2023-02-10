@@ -23,7 +23,7 @@ export default function Alarm() {
       );
       for await (const alarm of res) {
         if (alarm.type === "like") {
-          const author = await getData<IUser>("users", alarm.targetUid);
+          const author = await getData<IUser>("users", alarm.uid);
           const post = await getData<IPost>("posts", alarm.targetPid || "");
 
           alarm.author = author;
