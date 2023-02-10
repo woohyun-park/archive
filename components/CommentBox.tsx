@@ -9,7 +9,7 @@ import {
 import Image from "next/image";
 import { Children, useEffect, useRef, useState } from "react";
 import { db, getDataByRef } from "../apis/firebase";
-import { IComment, IPost, IUser } from "../libs/custom";
+import { IAlarm, IComment, IPost, IUser } from "../libs/custom";
 import Motion from "../motions/Motion";
 import Comment from "./Comment";
 import { useRouter } from "next/router";
@@ -40,9 +40,19 @@ export default (function CommentBox({ post, user, setPost }: ICommentBoxProps) {
     setComment(e.target.value);
   }
   async function handleSubmit(e: React.MouseEvent<HTMLButtonElement>) {
+    const newAlarm: IAlarm = {
+      uid: user.id,
+      type: "comment",
+      targetUid: post.uid,
+      targetPid: post.id,
+      createdAt: new Date(),
+    };
+    const alarmRef = await addDoc(collection(db, "alarms"), newAlarm);
+
     const tempComment: IComment = {
       uid: user.id,
       pid: post.id || "",
+      aid: alarmRef.id,
       txt: comment,
       createdAt: serverTimestamp(),
     };
@@ -50,6 +60,7 @@ export default (function CommentBox({ post, user, setPost }: ICommentBoxProps) {
     await updateDoc(ref, {
       id: ref.id,
     });
+    await updateDoc(alarmRef, { id: alarmRef.id, targetCid: ref.id });
     const newComment = await getDataByRef<IComment>(ref);
     setPost({
       ...post,
@@ -61,6 +72,13 @@ export default (function CommentBox({ post, user, setPost }: ICommentBoxProps) {
   async function handleDeleteComment(e: React.MouseEvent<HTMLDivElement>) {
     const id = e.currentTarget.id;
     await deleteDoc(doc(db, "comments", id));
+    await deleteDoc(
+      doc(
+        db,
+        "alarms",
+        post.comments?.find((comment) => comment.id === id)?.aid || ""
+      )
+    );
     setPost({
       ...post,
       comments: [...(post.comments as IComment[])].filter(

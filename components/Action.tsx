@@ -68,12 +68,19 @@ export default forwardRef<HTMLDivElement, IActionProps>(function Action(
     }
   }
 
-  function displayStatus(type: IActionType) {
-    const len = post[type]?.length;
+  function displayLikes() {
+    const len = post.likes?.length;
     if (len === undefined) return 0;
-    if (post[type]?.find((each) => each.uid === curUser.id))
-      return status[type] ? len : len - 1;
-    else return status[type] ? len + 1 : len;
+    if (post.likes?.find((each) => each.uid === curUser.id))
+      return status.likes ? len : len - 1;
+    else return status.likes ? len + 1 : len;
+  }
+  function displayScraps() {
+    const len = post.scraps?.length;
+    if (len === undefined) return 0;
+    if (post.scraps?.find((each) => each.uid === curUser.id))
+      return status.scraps ? len : len - 1;
+    else return status.scraps ? len + 1 : len;
   }
 
   return (
@@ -104,11 +111,11 @@ export default forwardRef<HTMLDivElement, IActionProps>(function Action(
         </div>
         <div className="flex justify-between mb-2 text-xs">
           <div>
-            {`좋아요 ${displayStatus("likes")}`}
+            {`좋아요 ${displayLikes()}`}
             &nbsp;&nbsp;
             {`댓글 ${post.comments?.length}`}
           </div>
-          <div>{`스크랩 ${displayStatus("scraps")}`}</div>
+          <div>{`스크랩 ${displayScraps()}`}</div>
         </div>
       </div>
     </>

@@ -4,10 +4,9 @@ import IconBtn from "../components/atoms/IconBtn";
 import { getDatasByQuery, db, getData } from "../apis/firebase";
 import { collection, orderBy, query, where } from "firebase/firestore";
 import { useUser } from "../stores/useUser";
-import { IAlarm, IPost, IUser } from "../libs/custom";
-import ProfileImg from "../components/atoms/ProfileImg";
-import { displayCreatedAt } from "../libs/timeLib";
-import Image from "next/image";
+import { IAlarm, IComment, IPost, IUser } from "../libs/custom";
+import AlarmLike from "../components/AlarmLike";
+import AlarmComment from "../components/AlarmComment";
 
 export default function Alarm() {
   const [alarms, setAlarms] = useState<IAlarm[]>([]);
@@ -28,6 +27,16 @@ export default function Alarm() {
 
           alarm.author = author;
           alarm.post = post;
+        } else if (alarm.type === "comment") {
+          const author = await getData<IUser>("users", alarm.uid);
+          const comment = await getData<IComment>(
+            "comments",
+            alarm.targetCid || ""
+          );
+          const post = await getData<IPost>("posts", alarm.targetPid || "");
+          alarm.author = author;
+          alarm.post = post;
+          alarm.comment = comment;
         }
       }
       setAlarms(res);
@@ -44,52 +53,8 @@ export default function Alarm() {
       <div className="mt-4">
         {alarms.map((e) => (
           <>
-            {e.type === "like" && (
-              <div className="flex justify-between my-2">
-                <div className="flex">
-                  <ProfileImg
-                    size="sm"
-                    photoURL={e.author?.photoURL || ""}
-                    onClick={() => router.push(`/profile/${e.author?.id}`)}
-                  />
-                  <div className="flex items-center min-h-[2rem] ml-1">
-                    <div className="text-sm leading-[0.875rem] mt-[0.25rem]">
-                      <span
-                        className="font-bold hover:cursor-pointer"
-                        onClick={() => router.push(`/profile/${e.author?.id}`)}
-                      >
-                        {e.author?.displayName}
-                      </span>
-                      <span className="mr-1">
-                        {"님이 회원님의 게시물을 좋아합니다"}
-                      </span>
-                      <span className="inline-block text-xs break-keep text-gray-2">
-                        {displayCreatedAt(e.createdAt)}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                {e.post?.imgs.length !== 0 ? (
-                  <div
-                    className="relative w-8 h-8 pb-8 overflow-hidden duration-500 rounded-sm min-w-[2rem] min-h-[2rem] hover:cursor-pointer"
-                    onClick={() => router.push(`/post/${e.post?.id}`)}
-                  >
-                    <Image
-                      className="object-cover bg-transparent"
-                      src={e.post?.imgs[0] || ""}
-                      alt=""
-                      fill
-                    />
-                  </div>
-                ) : (
-                  <div
-                    className="relative w-8 h-8 pb-8 overflow-hidden duration-500 rounded-sm min-w-[2rem] min-h-[2rem] hover:cursor-pointer"
-                    style={{ backgroundColor: e.post.color }}
-                    onClick={() => router.push(`/post/${e.post?.id}`)}
-                  ></div>
-                )}
-              </div>
-            )}
+            {e.type === "like" && <AlarmLike alarm={e} />}
+            {e.type === "comment" && <AlarmComment alarm={e} />}
           </>
         ))}
       </div>

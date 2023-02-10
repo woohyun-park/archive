@@ -105,6 +105,7 @@ export interface IComment {
   id?: string;
   uid: string;
   pid: string;
+  aid: string;
   createdAt: Date | FieldValue;
   txt: string;
 
@@ -149,6 +150,7 @@ export interface IAlarm {
 
   author?: IUser;
   post?: IPost;
+  comment?: IComment;
 }
 
 export function getRoute(router: NextRouter): IRoute {
