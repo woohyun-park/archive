@@ -1,26 +1,23 @@
-import { MouseEventHandler } from "react";
+import { ClassAttributes, CSSProperties, MouseEventHandler } from "react";
 
 interface IButtonProps {
   label: string;
   type?: "button" | "reset" | "submit" | undefined;
-  style?: string;
+  style?: CSSProperties;
   onClick?: MouseEventHandler<HTMLButtonElement>;
 }
 
 export default function Btn({ label, type, style, onClick }: IButtonProps) {
   return (
     <>
-      <button type={type} onClick={onClick} className="button-base">
+      <button
+        type={type}
+        onClick={onClick}
+        className="button-base"
+        style={style}
+      >
         {label}
       </button>
-
-      <style jsx>
-        {`
-          #btn_b1 {
-            ${style}
-          }
-        `}
-      </style>
     </>
   );
 }

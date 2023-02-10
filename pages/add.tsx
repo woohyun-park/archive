@@ -13,6 +13,7 @@ import FormInput from "../components/atoms/FormInput";
 import { handleColor, handleImage } from "../libs/formLib";
 import { useTag } from "../hooks/useTag";
 import FormTag from "../components/atoms/FormTag";
+import ColorBox from "../components/atoms/ColorBox";
 
 export interface IForm {
   file: File[];
@@ -167,18 +168,10 @@ export default function Add() {
             </div>
           )
         ) : (
-          <div className="flex justify-between my-2">
-            {["red", "orange", "yellow", "green", "blue", "navy", "purple"].map(
-              (e) => (
-                <Color
-                  color={COLOR[e]}
-                  onClick={() => handleColorClick(COLOR[e])}
-                  selected={status.selectedColor === COLOR[e]}
-                  key={"add_color" + e}
-                />
-              )
-            )}
-          </div>
+          <ColorBox
+            selectedColor={status.selectedColor}
+            setSelectedColor={(color: string) => handleColorClick(color)}
+          />
         )}
         <input
           {...register("file", {
