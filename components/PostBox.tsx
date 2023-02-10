@@ -1,4 +1,5 @@
 import { AnimatePresence } from "framer-motion";
+import { Children } from "react";
 import PullToRefresh from "react-simple-pull-to-refresh";
 import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 import { IPost } from "../libs/custom";
@@ -39,7 +40,7 @@ export default function PostBox({
       >
         <>
           {type === "feed" && (
-            <AnimatePresence initial={false}>
+            <AnimatePresence>
               {posts.map((e, i) => (
                 <>
                   <FeedPost post={e} />
@@ -53,22 +54,23 @@ export default function PostBox({
           )}
           {type === "search" && (
             <div className="grid grid-cols-3 mt-4 mb-16 gap-y-2 gap-x-2">
-              {posts.map((e, i) => (
-                <>
-                  <div>
-                    <Box
-                      key={"search" + e.id}
-                      post={{ ...e, id: e.id }}
-                      includeTitle={true}
-                      includeTag={true}
-                      style="font-size: 1rem;"
-                    ></Box>
-                  </div>
-                  {i === posts.length - 1 && (
-                    <div ref={setLastIntersecting}></div>
-                  )}
-                </>
-              ))}
+              {Children.toArray(
+                posts.map((e, i) => (
+                  <>
+                    <div>
+                      <Box
+                        post={{ ...e, id: e.id }}
+                        includeTitle={true}
+                        includeTag={true}
+                        style="font-size: 1rem;"
+                      ></Box>
+                    </div>
+                    {i === posts.length - 1 && (
+                      <div ref={setLastIntersecting}></div>
+                    )}
+                  </>
+                ))
+              )}
             </div>
           )}
         </>

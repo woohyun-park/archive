@@ -11,7 +11,6 @@ import { debounce } from "lodash";
 import { useKeyword } from "../stores/useKeyword";
 import PostBox from "../components/PostBox";
 import WrapScroll from "../components/wrappers/WrapScroll";
-import ModalLoader from "../components/ModalLoader";
 import { useModal } from "../stores/useModal";
 
 export default function Feed() {

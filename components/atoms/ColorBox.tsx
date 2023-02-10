@@ -1,3 +1,4 @@
+import { Children } from "react";
 import { HiCheck } from "react-icons/hi2";
 import { COLOR, SIZE } from "../../libs/custom";
 
@@ -16,34 +17,34 @@ export default function ColorBox({
   ];
   return (
     <>
-      {colors.map((arr, i) => (
-        <div
-          className={
-            i === colors.length - 1
-              ? "flex justify-between mb-4"
-              : "flex justify-between mb-2"
-          }
-          key={i}
-        >
-          {arr.map((e) => (
-            <div
-              key={e}
-              className="flex items-center justify-center w-12 h-12 rounded-lg hover:cursor-pointer"
-              style={{ backgroundColor: COLOR[e] }}
-              onClick={() => {
-                console.timeLog(COLOR[e]);
-                setSelectedColor(COLOR[e]);
-              }}
-            >
-              {selectedColor === COLOR[e] ? (
-                <HiCheck size={SIZE.icon} color={COLOR.white} />
-              ) : (
-                <></>
-              )}
-            </div>
-          ))}
-        </div>
-      ))}
+      {Children.toArray(
+        colors.map((arr, i) => (
+          <div
+            className={
+              i === colors.length - 1
+                ? "flex justify-between mb-4"
+                : "flex justify-between mb-2"
+            }
+          >
+            {arr.map((e) => (
+              <div
+                className="flex items-center justify-center w-12 h-12 rounded-lg hover:cursor-pointer"
+                style={{ backgroundColor: COLOR[e] }}
+                onClick={() => {
+                  console.timeLog(COLOR[e]);
+                  setSelectedColor(COLOR[e]);
+                }}
+              >
+                {selectedColor === COLOR[e] ? (
+                  <HiCheck size={SIZE.icon} color={COLOR.white} />
+                ) : (
+                  <></>
+                )}
+              </div>
+            ))}
+          </div>
+        ))
+      )}
     </>
   );
 }

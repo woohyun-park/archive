@@ -14,7 +14,7 @@ export default function App({ Component, pageProps }: AppProps) {
         스레드 참조: [BUG] Exit animation with Next.js #1375
         */}
         <AnimatePresence>
-          <Component {...pageProps} key={router.pathname} />
+          <Component {...pageProps} />
         </AnimatePresence>
       </Layout>
     </>

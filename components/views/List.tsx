@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Children, useState } from "react";
 import { RiHashtag } from "react-icons/ri";
 import { POST_PER_PAGE, useStore } from "../../stores/useStore";
 import { IRoute, IPost, IType, IDict, ITag, SIZE } from "../../libs/custom";
@@ -48,23 +48,25 @@ export default function List({ data, type, route, handleChange }: IListProps) {
       {route === "search" && type === "tag" && (
         <>
           <div className="grid mb-8">
-            {(data as ITag[]).map((e, i) => (
-              <>
-                <Motion type="float">
-                  <Link href={`tag/${e.name}`}>
-                    <div className="flex items-center my-2 hover:cursor-pointer">
-                      <div className="p-2 mr-2 rounded-full bg-gray-3 w-fit">
-                        <RiHashtag size={SIZE.iconSm} />
+            {Children.toArray(
+              (data as ITag[]).map((e, i) => (
+                <>
+                  <Motion type="float">
+                    <Link href={`tag/${e.name}`}>
+                      <div className="flex items-center my-2 hover:cursor-pointer">
+                        <div className="p-2 mr-2 rounded-full bg-gray-3 w-fit">
+                          <RiHashtag size={SIZE.iconSm} />
+                        </div>
+                        <div className="my-1 text-base text-left">{`#${e.name}`}</div>
                       </div>
-                      <div className="my-1 text-base text-left">{`#${e.name}`}</div>
-                    </div>
-                  </Link>
-                </Motion>
-                {i === (data as ITag[]).length - 1 && (
-                  <div ref={setLastIntersecting}></div>
-                )}
-              </>
-            ))}
+                    </Link>
+                  </Motion>
+                  {i === (data as ITag[]).length - 1 && (
+                    <div ref={setLastIntersecting}></div>
+                  )}
+                </>
+              ))
+            )}
           </div>
           <div className="flex justify-center"> {loading && <Loader />}</div>
         </>
@@ -107,14 +109,16 @@ export default function List({ data, type, route, handleChange }: IListProps) {
               />
               <div></div>
               <div></div>
-              {(data as IDict<IPost[]>)[selected].map((e, i) => (
-                <>
-                  <Box key={e.id} post={{ ...e, id: e.id }} includeTitle></Box>
-                  {i === (data as IDict<IPost[]>)[selected].length - 1 && (
-                    <div ref={setLastIntersecting}></div>
-                  )}
-                </>
-              ))}
+              {Children.toArray(
+                (data as IDict<IPost[]>)[selected].map((e, i) => (
+                  <>
+                    <Box post={{ ...e, id: e.id }} includeTitle></Box>
+                    {i === (data as IDict<IPost[]>)[selected].length - 1 && (
+                      <div ref={setLastIntersecting}></div>
+                    )}
+                  </>
+                ))
+              )}
               <div className="flex justify-center">{loading && <Loader />}</div>
             </div>
           </>

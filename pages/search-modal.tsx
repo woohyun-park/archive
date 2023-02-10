@@ -1,7 +1,7 @@
 import Tab from "../components/Tab";
 import { SIZE } from "../libs/custom";
 import { HiSearch, HiX } from "react-icons/hi";
-import React, { useEffect, useRef, useState } from "react";
+import React, { Children, useEffect, useRef, useState } from "react";
 import { useStore } from "../stores/useStore";
 import { updateUser } from "../apis/firebase";
 import { useRouter } from "next/router";
@@ -161,29 +161,31 @@ export default function Search() {
                     모두 삭제
                   </div>
                 </div>
-                {[...(curUser.history || [])]
-                  ?.filter(
-                    (each) => keyword === "" || each.indexOf(keyword) === 0
-                  )
-                  .map((e, i) => (
-                    <Motion type="float" key={e}>
-                      <div className="flex items-center justify-between my-4 text-sm text-gray-1">
-                        <div
-                          className="w-full hover:cursor-pointer"
-                          onClick={() => handleClick(e)}
-                        >
-                          {e}
+                {Children.toArray(
+                  [...(curUser.history || [])]
+                    ?.filter(
+                      (each) => keyword === "" || each.indexOf(keyword) === 0
+                    )
+                    .map((e, i) => (
+                      <Motion type="float">
+                        <div className="flex items-center justify-between my-4 text-sm text-gray-1">
+                          <div
+                            className="w-full hover:cursor-pointer"
+                            onClick={() => handleClick(e)}
+                          >
+                            {e}
+                          </div>
+                          <div
+                            className="flex items-center hover:cursor-pointer"
+                            id={String(i)}
+                            onClick={handleDelete}
+                          >
+                            <HiX size={SIZE.iconSm} />
+                          </div>
                         </div>
-                        <div
-                          className="flex items-center hover:cursor-pointer"
-                          id={String(i)}
-                          onClick={handleDelete}
-                        >
-                          <HiX size={SIZE.iconSm} />
-                        </div>
-                      </div>
-                    </Motion>
-                  ))}
+                      </Motion>
+                    ))
+                )}
               </div>
             </div>
           )}

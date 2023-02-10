@@ -30,7 +30,7 @@ export default function Loader({
         }
         ref={ref}
       >
-        <Motion type="float" key="refreshLoader" isVisible={isVisible}>
+        <Motion type="float" key="loader_m1" isVisible={isVisible}>
           <div className="lds-ellipsis">
             <div></div>
             <div></div>

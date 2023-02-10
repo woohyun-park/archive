@@ -5,7 +5,7 @@ import {
   signInWithPopup,
 } from "firebase/auth";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { Children, useEffect, useState } from "react";
 import { useStore } from "../stores/useStore";
 import { auth, db } from "../apis/firebase";
 import Nav from "./Nav";
@@ -14,11 +14,10 @@ import { COLOR, DEFAULT, IUser, SIZE } from "../libs/custom";
 import { useFeed } from "../stores/useFeed";
 import { useUser } from "../stores/useUser";
 import Btn from "../components/atoms/Btn";
-import { motion, Variants } from "framer-motion";
+import { motion } from "framer-motion";
 import Image from "next/image";
 import Motion from "../motions/Motion";
 import { RiGoogleFill } from "react-icons/ri";
-import ModalLoader from "./ModalLoader";
 
 interface ILayoutProps {
   children: React.ReactNode;
@@ -142,7 +141,6 @@ export default function Layout({ children }: ILayoutProps) {
     ],
   ];
 
-  console.log(router.pathname);
   return (
     <>
       {login.isLoggedIn === null ? (
@@ -167,43 +165,51 @@ export default function Layout({ children }: ILayoutProps) {
       ) : (
         <div className="flex flex-col w-full h-[100vh] p-4 justify-center">
           <div className="flex flex-col items-center mt-8 text-3xl">
-            {message.map((e, i) =>
-              i === page ? (
-                <Motion key={String(i)} type="float">
-                  <div className="mb-4 text-center">{e[0]}</div>
-                  <Image
-                    src={e[1]}
-                    alt=""
-                    className="mb-16 bg-white h-72 w-72"
-                  />
-                </Motion>
-              ) : (
-                <></>
+            {Children.toArray(
+              message.map((e, i) =>
+                i === page ? (
+                  <Motion type="float">
+                    <div className="mb-4 text-center">{e[0]}</div>
+                    <Image
+                      src={e[1]}
+                      alt=""
+                      className="mb-16 bg-white h-72 w-72"
+                    />
+                  </Motion>
+                ) : (
+                  <></>
+                )
               )
             )}
             <div className="flex justify-between w-20 m-auto mb-16">
-              {message.map((e, i) =>
-                i === page ? (
-                  <motion.div
-                    key={i}
-                    className="w-8 h-4 duration-300 ease-in-out rounded-full bg-gray-2f hover:cursor-pointer"
-                    onClick={() => setPage(i)}
-                  ></motion.div>
-                ) : (
-                  <motion.div
-                    key={i}
-                    className="w-4 h-4 duration-300 ease-in-out rounded-full bg-gray-3 hover:cursor-pointer"
-                    onClick={() => setPage(i)}
-                  ></motion.div>
+              {Children.toArray(
+                message.map((e, i) =>
+                  i === page ? (
+                    <motion.div
+                      className="w-8 h-4 duration-300 ease-in-out rounded-full bg-gray-2f hover:cursor-pointer"
+                      onClick={() => setPage(i)}
+                    ></motion.div>
+                  ) : (
+                    <motion.div
+                      className="w-4 h-4 duration-300 ease-in-out rounded-full bg-gray-3 hover:cursor-pointer"
+                      onClick={() => setPage(i)}
+                    ></motion.div>
+                  )
                 )
               )}
             </div>
           </div>
           <div>
-            <Btn style="width: 100%; background-color: #F3E366; color:black; margin-bottom: 0.5rem;">
-              카카오톡으로 로그인
-            </Btn>
-            <Btn style="width: 100%;">Apple로 로그인</Btn>
+            <Btn
+              label="카카오톡으로 로그인"
+              style={{
+                width: "100%",
+                backgroundColor: "#F3E366",
+                color: "black",
+                marginBottom: "0.5rem",
+              }}
+            />
+            <Btn label="Apple로 로그인" style={{ width: "100%" }} />
             <button
               className="p-1 m-2 text-white bg-black rounded-full"
               onClick={handleSocialLogin}

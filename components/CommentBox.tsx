@@ -7,7 +7,7 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { Children, useEffect, useRef, useState } from "react";
 import { db, getDataByRef } from "../apis/firebase";
 import { IComment, IPost, IUser } from "../libs/custom";
 import Motion from "../motions/Motion";
@@ -16,6 +16,7 @@ import { useRouter } from "next/router";
 import Action from "./Action";
 import Textarea from "./atoms/Textarea";
 import Btn from "./atoms/Btn";
+import { AnimatePresence } from "framer-motion";
 
 type ICommentBoxProps = {
   post: IPost;
@@ -78,12 +79,15 @@ export default (function CommentBox({ post, user, setPost }: ICommentBoxProps) {
         }}
         ref={actionRef}
       />
-      {post.comments &&
-        post.comments.slice(0, 10).map((e) => (
-          <Motion type="float" key={e.id}>
-            <Comment comment={e} onClick={handleDeleteComment} key={e.id} />
-          </Motion>
-        ))}
+      <AnimatePresence>
+        {post.comments &&
+          post.comments
+            .slice(0, 10)
+            .map((e, i) => (
+              <Comment comment={e} onClick={handleDeleteComment} key={e.id} />
+            ))}
+      </AnimatePresence>
+
       {post.comments && post.comments?.length > 10 && (
         <div className="mb-2 text-xs text-center hover:cursor-pointer">
           {"모두보기"}

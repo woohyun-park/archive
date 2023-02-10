@@ -1,3 +1,4 @@
+import { Children } from "react";
 import { HiX } from "react-icons/hi";
 
 interface IFormTag {
@@ -34,17 +35,16 @@ export default function FormTag({
         </div>
       </div>
       <div className="flex flex-wrap">
-        {tags.map((each) => (
-          <span
-            className="flex my-1 mr-1 button-black w-fit hover:cursor-pointer"
-            key={each}
-          >
-            <span className="mr-1">{each}</span>
-            <span className="text-white" id={each} onClick={onDelete}>
-              <HiX />
+        {Children.toArray(
+          tags.map((each) => (
+            <span className="flex my-1 mr-1 button-black w-fit hover:cursor-pointer">
+              <span className="mr-1">{each}</span>
+              <span className="text-white" id={each} onClick={onDelete}>
+                <HiX />
+              </span>
             </span>
-          </span>
-        ))}
+          ))
+        )}
       </div>
       <input
         onChange={onChange}

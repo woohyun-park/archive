@@ -32,7 +32,7 @@ export default function Comment({ comment, onClick }: ICommentProps) {
 
   return (
     <>
-      <Motion type="float">
+      <Motion type="float" key={comment.id}>
         <div className="flex items-end justify-between my-1">
           <div className="flex items-center mt-2 mb-1">
             <ProfileImg

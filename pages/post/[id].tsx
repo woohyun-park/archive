@@ -10,7 +10,7 @@ import ProfileSmall from "../../components/ProfileSmall";
 import { IComment, ILike, IPost, IScrap, IUser, SIZE } from "../../libs/custom";
 import Image from "next/image";
 import { collection, orderBy, query, where } from "firebase/firestore";
-import React, { useState } from "react";
+import React, { Children, useState } from "react";
 import Btn from "../../components/atoms/Btn";
 import IconBtn from "../../components/atoms/IconBtn";
 import { useUser } from "../../stores/useUser";
@@ -92,15 +92,19 @@ export default function Post({ initPost, initUser }: IPostProps) {
             <ProfileSmall post={post} user={initUser} type="post" />
             <Title post={post} />
             <div className="flex flex-wrap justify-end w-full mb-8">
-              {post.tags.map((tag, i) => (
-                <Btn
-                  key={i}
-                  onClick={() => router.push(`/tag/${tag}`)}
-                  style="margin: 0.125rem; padding-right: 0.5rem; padding-left: 0.5rem"
-                >
-                  {`#${tag}`}
-                </Btn>
-              ))}
+              {Children.toArray(
+                post.tags.map((tag, i) => (
+                  <Btn
+                    label={`#${tag}`}
+                    onClick={() => router.push(`/tag/${tag}`)}
+                    style={{
+                      margin: "0.125rem",
+                      paddingRight: "0.5rem",
+                      paddingLeft: "0.5rem",
+                    }}
+                  />
+                ))
+              )}
             </div>
             <div className="mt-1 mb-4 whitespace-pre-wrap">{post.txt}</div>
             <CommentBox post={post} user={curUser} setPost={setPost} />

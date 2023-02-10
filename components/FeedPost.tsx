@@ -10,6 +10,7 @@ import { motion } from "framer-motion";
 import { floatVariants } from "../libs/motionLib";
 import { useUser } from "../stores/useUser";
 import Title from "./atoms/Title";
+import { Children } from "react";
 
 interface IFeedPostProps {
   post: IPost;
@@ -36,15 +37,13 @@ export default function FeedPost({ post }: IFeedPostProps) {
           <Title post={post} />
           <div className="bottom-0 right-0 flex flex-row-reverse flex-wrap-reverse text-left ">
             {route === "feed" &&
-              [...post.tags]?.reverse().map((tag, i) => (
-                <Link
-                  key={post.id}
-                  href={{ pathname: `/tag/${tag}` }}
-                  legacyBehavior
-                >
-                  <button className="m-1 mb-0 button-black hover:cursor-pointer">{`#${tag}`}</button>
-                </Link>
-              ))}
+              Children.toArray(
+                [...post.tags]?.reverse().map((tag) => (
+                  <Link href={{ pathname: `/tag/${tag}` }} legacyBehavior>
+                    <button className="m-1 mb-0 button-black hover:cursor-pointer">{`#${tag}`}</button>
+                  </Link>
+                ))
+              )}
           </div>
           <Action
             post={post}

@@ -37,11 +37,7 @@ export default function IconInput({
           </div>
         )}
         <AnimatePresence>
-          <motion.div
-            key="feed_input"
-            className="top-0 z-0 w-full"
-            variants={fadeVariants}
-          >
+          <motion.div className="top-0 z-0 w-full" variants={fadeVariants}>
             <input
               type="text"
               placeholder={placeholder}

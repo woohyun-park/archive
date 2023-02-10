@@ -1,4 +1,5 @@
 import { useRouter } from "next/router";
+import { Children } from "react";
 import { getRoute, IPost, IType } from "../libs/custom";
 import ContImage from "./ContImage";
 
@@ -11,7 +12,6 @@ interface IImageProps {
 
 export default function Cont({ tag, posts, type, onClick }: IImageProps) {
   const router = useRouter();
-  const route = getRoute(router);
   return (
     <>
       {posts.length !== 0 && (
@@ -20,13 +20,17 @@ export default function Cont({ tag, posts, type, onClick }: IImageProps) {
             {posts.length >= 4 ? (
               <>
                 <div className="flex flex-wrap w-full h-full">
-                  {[...posts].slice(0, 4).map((e, i) => {
-                    if (e.imgs.length === 0) {
-                      return <ContImage post={e} type="color-4" key={e.id} />;
-                    } else {
-                      return <ContImage post={e} type="img-4" key={e.id} />;
-                    }
-                  })}
+                  {Children.toArray(
+                    [...posts]
+                      .slice(0, 4)
+                      .map((e) =>
+                        e.imgs.length === 0 ? (
+                          <ContImage post={e} type="color-4" />
+                        ) : (
+                          <ContImage post={e} type="img-4" />
+                        )
+                      )
+                  )}
                 </div>
               </>
             ) : posts[0].imgs?.length === 0 ? (
