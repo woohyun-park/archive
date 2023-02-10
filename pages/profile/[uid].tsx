@@ -109,15 +109,17 @@ export default function Profile({
               </div>
             </div>
           </div>
-          <ProfileImg size="base" photoURL={initUser.photoURL} />
+          <ProfileImg size="lg" photoURL={initUser.photoURL} />
         </div>
 
         <div className="h-full py-4 break-all min-h-[96px]">{initUser.txt}</div>
 
         {initUser.id === curUser.id ? (
-          <Btn onClick={() => signOut(auth)} style="width: 100%;">
-            로그아웃
-          </Btn>
+          <Btn
+            label="로그아웃"
+            onClick={() => signOut(auth)}
+            style={{ width: "100%" }}
+          />
         ) : (
           <>
             {(() => {

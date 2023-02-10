@@ -38,7 +38,8 @@ body {
   .profileImg-sm {
     @apply relative w-8 h-8 overflow-hidden min-w-[2rem] rounded-2xl hover:cursor-pointer;
   }
-  .profileImg-base {
+
+  .profileImg-lg {
     @apply relative object-cover w-24 h-24 overflow-hidden rounded-full;
   }
 

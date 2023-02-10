@@ -6,8 +6,9 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import React, { useEffect, useState, forwardRef } from "react";
+import { updateDo } from "typescript";
 import { db } from "../apis/firebase";
-import { IPost, IUser, IDict } from "../libs/custom";
+import { IPost, IUser, IDict, IAlarm } from "../libs/custom";
 import IconBtn from "./atoms/IconBtn";
 
 interface IActionProps {
@@ -45,7 +46,19 @@ export default forwardRef<HTMLDivElement, IActionProps>(function Action(
         uid: curUser.id,
         pid: post.id || "",
       };
-      type === "scraps" ? (newData.cont = "모든 스크랩") : void 0;
+      if (type === "scraps") {
+        newData.cont = "모든 스크랩";
+      } else if (type === "likes") {
+        const newAlarm: IAlarm = {
+          uid: curUser.id,
+          type: "like",
+          targetUid: post.uid,
+          targetPid: post.id || "",
+          createdAt: new Date(),
+        };
+        const ref = await addDoc(collection(db, "alarms"), newAlarm);
+        await updateDoc(ref, { id: ref.id });
+      }
       const ref = await addDoc(collection(db, type), newData);
       await updateDoc(ref, { id: ref.id });
     }

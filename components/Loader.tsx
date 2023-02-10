@@ -8,7 +8,7 @@ interface ILoaderProps {
 
 export default function Loader({
   isVisible = true,
-  scrollIntoView,
+  scrollIntoView = false,
 }: ILoaderProps) {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -18,7 +18,7 @@ export default function Loader({
         scrollIntoView &&
         ref.current?.scrollIntoView({ behavior: "smooth" });
     }, 300);
-  }, [isVisible]);
+  }, [isVisible, scrollIntoView]);
 
   return (
     <>
@@ -30,7 +30,7 @@ export default function Loader({
         }
         ref={ref}
       >
-        <Motion type="float" key="loader_m1" isVisible={isVisible}>
+        <Motion type="float" key="loader_m1">
           <div className="lds-ellipsis">
             <div></div>
             <div></div>

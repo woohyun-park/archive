@@ -1,6 +1,6 @@
 import Image from "next/image";
 interface IProfileImgProps {
-  size: "sm" | "base";
+  size: "sm" | "lg";
   photoURL: string;
   onClick?: () => void;
 }
@@ -12,24 +12,22 @@ export default function ProfileImg({
 }: IProfileImgProps) {
   return (
     <>
-      {size === "sm" && (
-        <div
-          className={onClick ? "profileImg-sm cursor-pointer" : "profileImg-sm"}
-          onClick={onClick}
-        >
-          <Image src={photoURL} alt="" fill />
-        </div>
-      )}
-      {size === "base" && (
-        <div
-          className={
-            onClick ? "profileImg-base hover:cursor-pointer" : "profileImg-base"
-          }
-          onClick={onClick}
-        >
-          <Image src={photoURL} alt="" fill className="object-cover" />
-        </div>
-      )}
+      <div
+        className={
+          size === "sm"
+            ? onClick
+              ? "profileImg-sm cursor-pointer"
+              : "profileImg-sm"
+            : size === "lg"
+            ? onClick
+              ? "profileImg-lg cursor-pointer"
+              : "profileImg-lg"
+            : ""
+        }
+        onClick={onClick}
+      >
+        <Image src={photoURL} alt="" fill className="object-cover" />
+      </div>
     </>
   );
 }

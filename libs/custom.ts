@@ -138,15 +138,16 @@ export interface IScrap {
 }
 
 export interface IAlarm {
-  id: string;
+  id?: string;
+  type: "like" | "comment" | "follow";
   uid: string;
-  photoURL: string;
   targetUid: string;
-  targetPid: string;
-  targetImg: string;
-  targetCid: string;
-  targetTxt: string;
+  targetPid?: string;
+  targetCid?: string;
   createdAt: Date;
+
+  author?: IUser;
+  post?: IPost;
 }
 
 export function getRoute(router: NextRouter): IRoute {

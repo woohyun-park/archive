@@ -25,7 +25,7 @@ export default function Feed() {
   const { scroll } = useScrollSave();
   const [filterLoading, setFilterLoading] = useState(false);
   const [resetFilter, setResetFilter] = useState<boolean | null>(null);
-  const { modalLoader, setModalLoader } = useModal();
+  const { setModalLoader } = useModal();
 
   useEffect(() => {
     setTimeout(() => {
