@@ -1,7 +1,22 @@
-import { arrayRemove, arrayUnion, doc, updateDoc } from "firebase/firestore";
+import {
+  addDoc,
+  arrayRemove,
+  arrayUnion,
+  collection,
+  doc,
+  updateDoc,
+} from "firebase/firestore";
 import Link from "next/link";
 import { db, deletePost, updateUser } from "../apis/firebase";
-import { getRoute, IPost, IRoute, IType, IUser, SIZE } from "../libs/custom";
+import {
+  getRoute,
+  IAlarm,
+  IPost,
+  IRoute,
+  IType,
+  IUser,
+  SIZE,
+} from "../libs/custom";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { displayCreatedAt } from "../libs/timeLib";
@@ -47,6 +62,14 @@ export default function ProfileSmall({ user, post }: IProfileSmallProps) {
       await updateDoc(userRef, {
         followers: arrayUnion(curUser.id),
       });
+      const newAlarm: IAlarm = {
+        uid: curUser.id,
+        type: "follow",
+        targetUid: user.id,
+        createdAt: new Date(),
+      };
+      const ref = await addDoc(collection(db, "alarms"), newAlarm);
+      await updateDoc(ref, { id: ref.id });
     }
     const tempFollowings = new Set(curUser.followings);
     if (isFollowing) {

@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import PostBox from "../components/PostBox";
 import Loader from "../components/Loader";
 import { useVisit } from "../stores/useVisit";
-import { Router, useRouter } from "next/router";
+import { useRouter } from "next/router";
 
 export default function Search() {
   const { posts, getPosts } = useSearch();
@@ -36,7 +36,7 @@ export default function Search() {
             </div>
           </div>
         </Link>
-        <Loader isVisible={loading} />
+        {/* <Loader isVisible={loading} /> */}
         <PostBox
           type="search"
           posts={posts}

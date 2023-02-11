@@ -35,8 +35,8 @@ export default function PostBox({
     <>
       <PullToRefresh
         onRefresh={onRefresh}
-        pullingContent={<></>}
-        refreshingContent={<Loader isVisible={true} />}
+        pullingContent={<Loader isVisible={true} />}
+        refreshingContent={<></>}
       >
         <>
           {type === "feed" && (
