@@ -5,15 +5,34 @@ interface IButtonProps {
   type?: "button" | "reset" | "submit" | undefined;
   style?: CSSProperties;
   onClick?: MouseEventHandler<HTMLButtonElement>;
+  isActive?: boolean;
+  size?: "sm" | "base";
 }
 
-export default function Btn({ label, type, style, onClick }: IButtonProps) {
+export default function Btn({
+  label,
+  type,
+  style,
+  onClick,
+  isActive = true,
+  size = "base",
+}: IButtonProps) {
   return (
     <>
       <button
         type={type}
         onClick={onClick}
-        className="button-base"
+        className={
+          size === "sm"
+            ? isActive
+              ? "button-sm"
+              : "button-sm-inactive"
+            : size === "base"
+            ? isActive
+              ? "button-base"
+              : "button-base-inactive"
+            : ""
+        }
         style={style}
       >
         {label}

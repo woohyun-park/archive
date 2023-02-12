@@ -127,7 +127,7 @@ export default function Search() {
       )}
       <Motion type="fade">
         <div ref={recentRef}>
-          <div className="flex w-full mb-4">
+          <div className="flex w-full">
             <div className="w-full">
               <IconInput
                 icon="search"
@@ -148,7 +148,6 @@ export default function Search() {
               취소
             </div>
           </div>
-
           {(state.isInitial || focus) && (
             <div className="relative">
               <div className="absolute z-10 w-full bg-white">

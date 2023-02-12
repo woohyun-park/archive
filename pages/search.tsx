@@ -11,17 +11,14 @@ import { useRouter } from "next/router";
 
 export default function Search() {
   const { posts, getPosts } = useSearch();
-  const [loading, setLoading] = useState(false);
   const { visit, setVisit } = useVisit();
   const router = useRouter();
   useEffect(() => {
     async function init() {
       if (!visit[router.pathname]) {
-        setLoading(true);
         await getPosts("init");
         setVisit(router.pathname);
       }
-      setLoading(false);
     }
     init();
   }, []);
@@ -36,7 +33,6 @@ export default function Search() {
             </div>
           </div>
         </Link>
-        {/* <Loader isVisible={loading} /> */}
         <PostBox
           type="search"
           posts={posts}

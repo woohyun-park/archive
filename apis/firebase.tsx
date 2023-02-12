@@ -16,7 +16,15 @@ import {
   where,
 } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
-import { IComment, IDict, ILike, IScrap, ITag, IUser } from "../libs/custom";
+import {
+  IAlarm,
+  IComment,
+  IDict,
+  ILike,
+  IScrap,
+  ITag,
+  IUser,
+} from "../libs/custom";
 
 interface IPathParams {
   params: { [param: string]: string };
@@ -54,7 +62,7 @@ export async function addTags(
 export async function getData<T>(type: string, id: string): Promise<T> {
   const snap = await getDoc(doc(db, type, id));
   const data = snap.data() as IDict<any>;
-
+  console.log(type, id, data);
   if (data.createdAt)
     return { ...(data as T), createdAt: data.createdAt.toDate() };
   return data as T;
@@ -125,6 +133,14 @@ export async function updateFollow(
     await updateDoc(userRef, {
       followers: arrayRemove(curUser.id),
     });
+    const alarmRes = await getDatasByQuery(
+      query(
+        collection(db, "alarms"),
+        where("uid", "==", curUser.id),
+        where("targetUid", "==", user.id)
+      )
+    );
+    await deleteEach(alarmRes, "alarms");
   } else {
     await updateDoc(curUserRef, {
       followings: arrayUnion(user.id),
@@ -132,6 +148,14 @@ export async function updateFollow(
     await updateDoc(userRef, {
       followers: arrayUnion(curUser.id),
     });
+    const newAlarm: IAlarm = {
+      uid: curUser.id,
+      type: "follow",
+      targetUid: user.id,
+      createdAt: new Date(),
+    };
+    const ref = await addDoc(collection(db, "alarms"), newAlarm);
+    await updateDoc(ref, { id: ref.id });
   }
 }
 

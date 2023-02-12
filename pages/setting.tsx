@@ -107,11 +107,7 @@ export default function Setting() {
           />
         </div>
         <div className="flex flex-col items-center">
-          <ProfileImg
-            size="base"
-            photoURL={preview}
-            onClick={handleFileClick}
-          />
+          <ProfileImg size="lg" photoURL={preview} onClick={handleFileClick} />
           <div
             className="mt-2 text-xs hover:cursor-pointer"
             onClick={handleFileClick}
@@ -151,7 +147,7 @@ export default function Setting() {
             maxLength={150}
             minRows={4}
           />
-          <Btn type="submit">변경</Btn>
+          <Btn label="변경" type="submit" />
         </form>
       </Motion>
     </>

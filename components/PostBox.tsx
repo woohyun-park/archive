@@ -53,7 +53,13 @@ export default function PostBox({
             </AnimatePresence>
           )}
           {type === "search" && (
-            <div className="grid grid-cols-3 mt-4 mb-16 gap-y-2 gap-x-2">
+            <div
+              className={
+                posts.length !== 0
+                  ? "grid grid-cols-3 mt-4 mb-4 gap-y-2 gap-x-2"
+                  : ""
+              }
+            >
               {Children.toArray(
                 posts.map((e, i) => (
                   <>

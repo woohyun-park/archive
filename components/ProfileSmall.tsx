@@ -3,11 +3,20 @@ import {
   arrayRemove,
   arrayUnion,
   collection,
+  deleteDoc,
   doc,
+  query,
   updateDoc,
+  where,
 } from "firebase/firestore";
 import Link from "next/link";
-import { db, deletePost, updateUser } from "../apis/firebase";
+import {
+  db,
+  deleteEach,
+  deletePost,
+  getDatasByQuery,
+  updateUser,
+} from "../apis/firebase";
 import {
   getRoute,
   IAlarm,
@@ -55,6 +64,14 @@ export default function ProfileSmall({ user, post }: IProfileSmallProps) {
       await updateDoc(userRef, {
         followers: arrayRemove(curUser.id),
       });
+      const alarmRes = await getDatasByQuery(
+        query(
+          collection(db, "alarms"),
+          where("uid", "==", curUser.id),
+          where("targetUid", "==", user.id)
+        )
+      );
+      await deleteEach(alarmRes, "alarms");
     } else {
       await updateDoc(curUserRef, {
         followings: arrayUnion(user.id),
