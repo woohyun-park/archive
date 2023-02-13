@@ -49,7 +49,6 @@ export default function AlarmFollow({ alarm }: IAlarmFollowProps) {
               </span>
             </div>
           </div>
-          {/* TODO: 팔로잉 버튼 */}
           <Btn
             label={isFollowing ? "팔로잉" : "팔로우"}
             onClick={handleToggleFollow}
