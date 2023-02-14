@@ -43,6 +43,7 @@ export default function PageInfinite({
         onRefresh={onRefresh}
         pullingContent={<Loader isVisible={true} />}
         refreshingContent={<Loader isVisible={true} />}
+        isPullable={page === "post" ? false : true}
       >
         <>
           {page === "feed" && (
