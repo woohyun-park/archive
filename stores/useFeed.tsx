@@ -12,7 +12,7 @@ import { devtools } from "zustand/middleware";
 import { db, getDataByRef } from "../apis/firebase";
 import { IPost, IUser } from "../libs/custom";
 import {
-  combinePrevAndNewPosts,
+  combinePrevAndNewData,
   getPostsByQuery,
   getQueryByType,
   setCursorByType,
@@ -42,7 +42,7 @@ export const useFeed = create<IFeedStore>()(
           const user = await getDataByRef<IUser>(doc(db, "users", id));
           const q = getQueryByType(user, type, feedLastVisible);
           let [snap, posts] = await getPostsByQuery(q);
-          posts = combinePrevAndNewPosts(get().posts, posts, type);
+          posts = combinePrevAndNewData(get().posts, posts, type);
           const lastVisible = setCursorByType(snap, type);
           if (lastVisible) feedLastVisible = lastVisible;
           return posts;

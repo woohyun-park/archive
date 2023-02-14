@@ -35,7 +35,7 @@ export default function Search() {
         </Link>
         <PostBox
           type="search"
-          posts={posts}
+          data={posts}
           onIntersect={() => getPosts("load")}
           onChange={() => {}}
           onRefresh={async () => await getPosts("refresh")}

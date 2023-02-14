@@ -115,7 +115,7 @@ export default function Feed() {
       <Loader isVisible={filterLoading} />
       <PostBox
         type="feed"
-        posts={curPosts}
+        data={curPosts}
         onIntersect={() => keyword.length === 0 && getPosts(curUser.id, "load")}
         onChange={() => {}}
         onRefresh={async () => {

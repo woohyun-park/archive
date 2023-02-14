@@ -62,7 +62,6 @@ export async function addTags(
 export async function getData<T>(type: string, id: string): Promise<T> {
   const snap = await getDoc(doc(db, type, id));
   const data = snap.data() as IDict<any>;
-  console.log(type, id, data);
   if (data.createdAt)
     return { ...(data as T), createdAt: data.createdAt.toDate() };
   return data as T;

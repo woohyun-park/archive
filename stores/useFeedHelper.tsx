@@ -70,14 +70,14 @@ export async function getPostsByQuery(
   return [snap, posts];
 }
 
-export function combinePrevAndNewPosts(
-  prevPosts: IPost[],
-  posts: IPost[],
+export function combinePrevAndNewData<T>(
+  prevData: T[],
+  data: T[],
   type: IFeedGetType
 ) {
-  if (type === "init") return [...posts];
-  else if (type === "load") return [...prevPosts, ...posts];
-  else return [...posts];
+  if (type === "init") return [...data];
+  else if (type === "load") return [...prevData, ...data];
+  else return [...data];
 }
 
 export function setCursorByType(

@@ -2,14 +2,17 @@ import { AnimatePresence } from "framer-motion";
 import { Children } from "react";
 import PullToRefresh from "react-simple-pull-to-refresh";
 import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
-import { IPost } from "../libs/custom";
+import { IAlarm, IPost } from "../libs/custom";
+import AlarmComment from "./AlarmComment";
+import AlarmFollow from "./AlarmFollow";
+import AlarmLike from "./AlarmLike";
 import Box from "./Box";
 import FeedPost from "./FeedPost";
 import Loader from "./Loader";
 
 interface IPostBoxProps {
-  type: "feed" | "search";
-  posts: IPost[];
+  type: "feed" | "search" | "alarm";
+  data: IPost[] | IAlarm[];
   onIntersect: () => void;
   onChange: () => void;
   onRefresh: () => Promise<void>;
@@ -19,7 +22,7 @@ interface IPostBoxProps {
 
 export default function PostBox({
   type,
-  posts,
+  data,
   onIntersect,
   onChange,
   onRefresh,
@@ -36,15 +39,34 @@ export default function PostBox({
       <PullToRefresh
         onRefresh={onRefresh}
         pullingContent={<Loader isVisible={true} />}
-        refreshingContent={<></>}
+        refreshingContent={
+          type === "alarm" ? <Loader isVisible={true} /> : <></>
+        }
       >
         <>
+          {type === "alarm" && (
+            <>
+              {data.map((e, i) => {
+                const alarm = e as IAlarm;
+                return (
+                  <>
+                    {alarm.type === "like" && <AlarmLike alarm={alarm} />}
+                    {alarm.type === "comment" && <AlarmComment alarm={alarm} />}
+                    {alarm.type === "follow" && <AlarmFollow alarm={alarm} />}
+                    {i === data.length - 1 && (
+                      <div ref={setLastIntersecting}></div>
+                    )}
+                  </>
+                );
+              })}
+            </>
+          )}
           {type === "feed" && (
             <AnimatePresence>
-              {posts.map((e, i) => (
+              {data.map((e, i) => (
                 <>
-                  <FeedPost post={e} />
-                  {additionalRefCondition && i === posts.length - 1 && (
+                  <FeedPost post={e as IPost} />
+                  {additionalRefCondition && i === data.length - 1 && (
                     <div ref={setLastIntersecting}></div>
                   )}
                   <hr className="w-full h-4 text-white bg-white" />
@@ -55,23 +77,23 @@ export default function PostBox({
           {type === "search" && (
             <div
               className={
-                posts.length !== 0
+                data.length !== 0
                   ? "grid grid-cols-3 mt-4 mb-4 gap-y-2 gap-x-2"
                   : ""
               }
             >
               {Children.toArray(
-                posts.map((e, i) => (
+                data.map((e, i) => (
                   <>
                     <div>
                       <Box
-                        post={{ ...e, id: e.id }}
+                        post={{ ...(e as IPost), id: e.id }}
                         includeTitle={true}
                         includeTag={true}
                         style="font-size: 1rem;"
                       ></Box>
                     </div>
-                    {i === posts.length - 1 && (
+                    {i === data.length - 1 && (
                       <div ref={setLastIntersecting}></div>
                     )}
                   </>
