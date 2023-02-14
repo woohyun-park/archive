@@ -20,9 +20,6 @@ export default function Feed() {
     useFeed();
   const { keywords, setKeywords } = useKeyword();
   const keyword = keywords[router.pathname] || "";
-  const [curPosts, setCurPosts] = useState(
-    filteredPosts.length === 0 ? posts : filteredPosts
-  );
   const { scroll } = useScrollSave();
   const [filterLoading, setFilterLoading] = useState(false);
   const [resetFilter, setResetFilter] = useState<boolean | null>(null);
@@ -39,12 +36,6 @@ export default function Feed() {
     }, 10);
   }, []);
 
-  // useEffect(() => {
-  //   filteredPosts.length === 0
-  //     ? setCurPosts(posts)
-  //     : setCurPosts(filteredPosts);
-  // }, [posts]);
-
   useEffect(() => {
     debounce(() => {
       resetFilter !== null && setFilterLoading(true);
@@ -55,10 +46,8 @@ export default function Feed() {
     async function filterPosts() {
       if (keyword.length === 0) {
         await getPosts(curUser.id, "refresh");
-        // setCurPosts(posts);
       } else {
         await getFilteredPosts(curUser.id, "init", keyword);
-        // setCurPosts(filteredPosts);
       }
       setFilterLoading(false);
     }
@@ -141,7 +130,6 @@ export default function Feed() {
           changeListener={filteredPosts}
         />
       )}
-
       <div className="mb-24"></div>
     </div>
   );

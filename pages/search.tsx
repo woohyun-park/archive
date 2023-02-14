@@ -5,19 +5,18 @@ import Motion from "../motions/Motion";
 import { useSearch } from "../stores/useSearch";
 import { useEffect, useState } from "react";
 import InfinitePage from "../components/InfinitePage";
-import Loader from "../components/Loader";
-import { useVisit } from "../stores/useVisit";
 import { useRouter } from "next/router";
+import { useScrollSave } from "../stores/useScrollSave";
 
 export default function Search() {
   const { posts, getPosts } = useSearch();
-  const { visit, setVisit } = useVisit();
+  const { scroll, setScroll } = useScrollSave();
   const router = useRouter();
   useEffect(() => {
     async function init() {
-      if (!visit[router.pathname]) {
+      if (!scroll[router.pathname]) {
         await getPosts("init");
-        setVisit(router.pathname);
+        setScroll(router.pathname, 0);
       }
     }
     init();
