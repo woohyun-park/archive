@@ -97,14 +97,12 @@ export default (function CommentBox({ post, user, setPost }: ICommentBoxProps) {
         }}
         ref={actionRef}
       />
-      <AnimatePresence>
-        {post.comments &&
-          post.comments
-            .slice(0, 10)
-            .map((e, i) => (
-              <Comment comment={e} onClick={handleDeleteComment} key={e.id} />
-            ))}
-      </AnimatePresence>
+      {post.comments &&
+        post.comments
+          .slice(0, 10)
+          .map((e, i) => (
+            <Comment comment={e} onClick={handleDeleteComment} key={e.id} />
+          ))}
 
       {post.comments && post.comments?.length > 10 && (
         <div className="mb-2 text-xs text-center hover:cursor-pointer">

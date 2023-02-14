@@ -6,6 +6,7 @@ import InfinitePage from "../components/InfinitePage";
 import { useAlarm } from "../stores/useAlarm";
 import { useModal } from "../stores/useModal";
 import { useScrollSave } from "../stores/useScrollSave";
+import ScrollTop from "../components/atoms/ScrollTop";
 
 export default function Alarm() {
   const { curUser } = useUser();
@@ -43,6 +44,7 @@ export default function Alarm() {
         changeListener={alarms}
       />
       <div className="mb-32"></div>
+      <ScrollTop />
     </>
   );
 }
