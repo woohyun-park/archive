@@ -121,7 +121,6 @@ export default function Feed() {
         />
       )}
       <div className="mb-24"></div>
-      <ScrollTop />
     </div>
   );
 }

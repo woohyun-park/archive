@@ -20,6 +20,7 @@ import Motion from "../motions/Motion";
 import { RiGoogleFill } from "react-icons/ri";
 import ModalLoader from "./ModalLoader";
 import { useModal } from "../stores/useModal";
+import ScrollTop from "./atoms/ScrollTop";
 
 interface ILayoutProps {
   children: React.ReactNode;
@@ -161,6 +162,8 @@ export default function Layout({ children }: ILayoutProps) {
           ) : (
             <div className="m-4 mb-16">{children}</div>
           )}
+          {router.pathname === "/" ||
+            (router.pathname === "/alarm" && <ScrollTop />)}
           <Nav />
         </>
       ) : (

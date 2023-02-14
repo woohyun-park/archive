@@ -44,7 +44,6 @@ export default function Alarm() {
         changeListener={alarms}
       />
       <div className="mb-32"></div>
-      <ScrollTop />
     </>
   );
 }

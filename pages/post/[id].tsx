@@ -37,17 +37,14 @@ export default function Post({ initPost, initUser }: IPostProps) {
   useEffect(() => {
     async function init() {
       new Promise((resolve, reject) => {
-        console.log("promise1");
         setModalLoader(true);
         resolve(0);
       }).then(async () => {
-        console.log("promise2");
         await getComments("init", post.id || "");
         setModalLoader(false);
       });
     }
-    setModalLoader(true);
-    // comments[post.id || ""] === undefined && init();
+    comments[post.id || ""] === undefined && init();
   }, []);
 
   function handleModify() {

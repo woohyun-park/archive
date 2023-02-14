@@ -15,12 +15,8 @@ import {
 import create from "zustand";
 import { devtools } from "zustand/middleware";
 import { db } from "../apis/firebase";
-import { IComment, IDict, IPost, ITag, IUser } from "../libs/custom";
-import {
-  combinePrevAndNewData,
-  getPostsByQuery,
-  setCursorByType,
-} from "./useFeedHelper";
+import { IComment, IDict } from "../libs/custom";
+import { combinePrevAndNewData, setCursorByType } from "./useFeedHelper";
 
 interface IPostStore {
   comments: IDict<IComment[]>;
