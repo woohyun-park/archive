@@ -10,7 +10,7 @@ import ProfileSmall from "../../components/ProfileSmall";
 import { IComment, ILike, IPost, IScrap, IUser, SIZE } from "../../libs/custom";
 import Image from "next/image";
 import { collection, orderBy, query, where } from "firebase/firestore";
-import React, { Children, useState } from "react";
+import React, { Children, useEffect, useState } from "react";
 import Btn from "../../components/atoms/Btn";
 import IconBtn from "../../components/atoms/IconBtn";
 import { useUser } from "../../stores/useUser";
@@ -18,6 +18,8 @@ import Title from "../../components/atoms/Title";
 import CommentBox from "../../components/CommentBox";
 import Motion from "../../motions/Motion";
 import { useFeed } from "../../stores/useFeed";
+import { usePost } from "../../stores/usePost";
+import { useModal } from "../../stores/useModal";
 
 interface IPostProps {
   initPost: IPost;
@@ -29,6 +31,24 @@ export default function Post({ initPost, initUser }: IPostProps) {
   const { setPosts, posts } = useFeed();
   const router = useRouter();
   const [post, setPost] = useState<IPost>(initPost);
+  const { comments, getComments } = usePost();
+  const { setModalLoader } = useModal();
+
+  useEffect(() => {
+    async function init() {
+      new Promise((resolve, reject) => {
+        console.log("promise1");
+        setModalLoader(true);
+        resolve(0);
+      }).then(async () => {
+        console.log("promise2");
+        await getComments("init", post.id || "");
+        setModalLoader(false);
+      });
+    }
+    setModalLoader(true);
+    // comments[post.id || ""] === undefined && init();
+  }, []);
 
   function handleModify() {
     router.push(

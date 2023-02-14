@@ -18,6 +18,8 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import Motion from "../motions/Motion";
 import { RiGoogleFill } from "react-icons/ri";
+import ModalLoader from "./ModalLoader";
+import { useModal } from "../stores/useModal";
 
 interface ILayoutProps {
   children: React.ReactNode;
@@ -140,7 +142,10 @@ export default function Layout({ children }: ILayoutProps) {
       "",
     ],
   ];
-
+  const { modalLoader, setModalLoader } = useModal();
+  useEffect(() => {
+    setModalLoader(false);
+  }, [router.pathname]);
   return (
     <>
       {login.isLoggedIn === null ? (
@@ -156,11 +161,7 @@ export default function Layout({ children }: ILayoutProps) {
           ) : (
             <div className="m-4 mb-16">{children}</div>
           )}
-          {!(
-            router.pathname === "/setting" ||
-            router.pathname === "/add" ||
-            router.pathname.split("/")[1] === "post"
-          ) && <Nav />}
+          <Nav />
         </>
       ) : (
         <div className="flex flex-col w-full h-[100vh] p-4 justify-center">

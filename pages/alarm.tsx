@@ -13,16 +13,16 @@ export default function Alarm() {
   const { alarms, getAlarms } = useAlarm();
   const { setModalLoader } = useModal();
   const { scroll } = useScrollSave();
-  async function init() {
-    new Promise((resolve, reject) => {
-      setModalLoader(true);
-      resolve(0);
-    }).then(async () => {
-      await getAlarms("init", curUser.id);
-      setModalLoader(false);
-    });
-  }
   useEffect(() => {
+    async function init() {
+      new Promise((resolve, reject) => {
+        setModalLoader(true);
+        resolve(0);
+      }).then(async () => {
+        await getAlarms("init", curUser.id);
+        setModalLoader(false);
+      });
+    }
     scroll["/alarm"] === undefined && init();
     scrollTo(0, 0);
   }, []);

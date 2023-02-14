@@ -1,21 +1,23 @@
 import { AnimatePresence } from "framer-motion";
-import { Children, useEffect } from "react";
+import React, { Children, useEffect } from "react";
 import PullToRefresh from "react-simple-pull-to-refresh";
 import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
-import { IAlarm, IPost } from "../libs/custom";
+import { IAlarm, IComment, IPost } from "../libs/custom";
 import AlarmComment from "./AlarmComment";
 import AlarmFollow from "./AlarmFollow";
 import AlarmLike from "./AlarmLike";
 import Box from "./Box";
+import Comment from "./Comment";
 import FeedPost from "./FeedPost";
 import Loader from "./Loader";
 
 interface IInfinitePageProps {
-  page: "feed" | "search" | "alarm";
-  data: IPost[] | IAlarm[];
+  page: "feed" | "search" | "alarm" | "post";
+  data: IPost[] | IAlarm[] | IComment[];
   onIntersect: () => void;
   onChange: () => void;
   onRefresh: () => Promise<void>;
+  onClick?: (e: React.MouseEvent<HTMLDivElement>) => void;
   changeListener: any;
   additionalCondition?: boolean;
 }
@@ -26,8 +28,8 @@ export default function InfinitePage({
   onIntersect,
   onChange,
   onRefresh,
+  onClick,
   changeListener,
-  additionalCondition,
 }: IInfinitePageProps) {
   useEffect(() => {
     document.querySelector(".ptr")?.setAttribute("style", "overflow:visible;");
@@ -96,6 +98,21 @@ export default function InfinitePage({
                     {alarm.type === "like" && <AlarmLike alarm={alarm} />}
                     {alarm.type === "comment" && <AlarmComment alarm={alarm} />}
                     {alarm.type === "follow" && <AlarmFollow alarm={alarm} />}
+                    {i === data.length - 1 && (
+                      <div ref={setLastIntersecting}></div>
+                    )}
+                  </>
+                );
+              })}
+            </>
+          )}
+          {page === "post" && (
+            <>
+              {data.map((e, i) => {
+                const comment = e as IComment;
+                return (
+                  <>
+                    <Comment comment={comment} onClick={onClick} key={e.id} />
                     {i === data.length - 1 && (
                       <div ref={setLastIntersecting}></div>
                     )}

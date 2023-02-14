@@ -7,16 +7,15 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import Image from "next/image";
-import { Children, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { db, getDataByRef } from "../apis/firebase";
 import { IAlarm, IComment, IPost, IUser } from "../libs/custom";
-import Motion from "../motions/Motion";
-import Comment from "./Comment";
 import { useRouter } from "next/router";
 import Action from "./Action";
 import Textarea from "./atoms/Textarea";
 import Btn from "./atoms/Btn";
-import { AnimatePresence } from "framer-motion";
+import InfinitePage from "./InfinitePage";
+import { usePost } from "../stores/usePost";
 
 type ICommentBoxProps = {
   post: IPost;
@@ -26,6 +25,7 @@ type ICommentBoxProps = {
 
 export default (function CommentBox({ post, user, setPost }: ICommentBoxProps) {
   const [comment, setComment] = useState("");
+  const { comments, getComments } = usePost();
   const router = useRouter();
   const commentRef = useRef<HTMLTextAreaElement>(null);
   const actionRef = useRef<HTMLDivElement>(null);
@@ -97,18 +97,17 @@ export default (function CommentBox({ post, user, setPost }: ICommentBoxProps) {
         }}
         ref={actionRef}
       />
-      {post.comments &&
-        post.comments
-          .slice(0, 10)
-          .map((e, i) => (
-            <Comment comment={e} onClick={handleDeleteComment} key={e.id} />
-          ))}
-
-      {post.comments && post.comments?.length > 10 && (
-        <div className="mb-2 text-xs text-center hover:cursor-pointer">
-          {"모두보기"}
-        </div>
-      )}
+      <InfinitePage
+        page="post"
+        data={comments[post.id || ""] || []}
+        onIntersect={() => getComments("load", post.id || "")}
+        onChange={() => {}}
+        onRefresh={async () => {
+          await getComments("refresh", post.id || "");
+        }}
+        onClick={handleDeleteComment}
+        changeListener={comments[post.id || ""]}
+      />
       <div className="sticky bottom-0 flex items-center justify-between w-full py-4 bg-white">
         <div className="profileImg-sm">
           <Image src={user.photoURL} alt="" fill />

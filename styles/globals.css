@@ -21,6 +21,7 @@
 body {
   font-family: "NanumSquare", sans-serif;
   cursor: default;
+  position: relative;
 }
 
 @layer components {

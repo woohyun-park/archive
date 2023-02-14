@@ -12,7 +12,7 @@ import { useRouter } from "next/router";
 
 type ICommentProps = {
   comment: IComment;
-  onClick: (e: React.MouseEvent<HTMLDivElement>) => void;
+  onClick?: (e: React.MouseEvent<HTMLDivElement>) => void;
 };
 
 export default function Comment({ comment, onClick }: ICommentProps) {
