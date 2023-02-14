@@ -222,66 +222,6 @@ export default function Layout({ children }: ILayoutProps) {
             </button>
           </div>
         </div>
-        /* <h1 className="-mb-2 text-5xl font-bold font-logo">archive</h1>
-          <div className="text-sm mb-36">archive your inspiration</div>
-          <form onSubmit={handleEmailLogin} className="flex flex-col w-80">
-            <input
-              type="text"
-              name="email"
-              placeholder="Email"
-              required
-              value={login.email}
-              onChange={handleChange}
-              className="my-1 button-gray"
-            />
-            <input
-              type="password"
-              name="password"
-              placeholder="Password"
-              required
-              value={login.password}
-              onChange={handleChange}
-              className="my-1 button-gray"
-            />
-            <input
-              type="submit"
-              value={login.isNewAccount ? "Create Account" : "Login"}
-              required
-              className="mt-2 button-black"
-            />
-          </form>
-          <button
-            onClick={() =>
-              setLogin({ ...login, isNewAccount: !login.isNewAccount })
-            }
-            className="block w-full my-1 text-right text-black"
-          >
-            {login.isNewAccount ? "Log In" : "Create Account"}
-          </button>
-          {!login.isNewAccount && (
-            <div>
-              <button
-                className="p-1 m-2 text-white bg-black rounded-full"
-                onClick={handleSocialLogin}
-              >
-                <RiGoogleFill size={SIZE.icon} />
-              </button>
-              <button
-                className="p-1 m-2 text-white rounded-full bg-gray-2"
-                onClick={handleSocialLogin}
-                disabled
-              >
-                <RiAppleFill size={SIZE.icon} />
-              </button>
-              <button
-                className="p-1 m-2 text-white rounded-full bg-gray-2"
-                onClick={handleSocialLogin}
-                disabled
-              >
-                <RiFacebookFill size={SIZE.icon} />
-              </button>
-            </div>
-          )} */
       )}
 
       <style jsx global>

@@ -74,16 +74,6 @@ export default function Box({
         #box_d2 {
           ${style}
         }
-         {
-          /* #box_d2-feed {
-          margin: 16px;
-        }
-        #box_d2-profile {
-          font-size: 24px;
-          margin: 8px 4px;
-          line-height: 20px;
-        } */
-        }
       `}</style>
     </>
   );

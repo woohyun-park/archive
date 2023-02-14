@@ -8,6 +8,7 @@ import {
 import React, { useEffect, useState, forwardRef } from "react";
 import { db } from "../apis/firebase";
 import { IPost, IUser, IDict, IAlarm } from "../libs/custom";
+import { usePost } from "../stores/usePost";
 import IconBtn from "./atoms/IconBtn";
 
 interface IActionProps {
@@ -23,6 +24,8 @@ export default forwardRef<HTMLDivElement, IActionProps>(function Action(
   ref
 ) {
   const [status, setStatus] = useState<IDict<string>>({ ...calcStatus() });
+  const { comments } = usePost();
+  const comment = comments[post.id || ""];
 
   useEffect(() => {
     setStatus({ ...calcStatus() });
@@ -113,7 +116,7 @@ export default forwardRef<HTMLDivElement, IActionProps>(function Action(
           <div>
             {`좋아요 ${displayLikes()}`}
             &nbsp;&nbsp;
-            {`댓글 ${post.comments?.length}`}
+            {`댓글 ${comment ? comment.length : 0}`}
           </div>
           <div>{`스크랩 ${displayScraps()}`}</div>
         </div>

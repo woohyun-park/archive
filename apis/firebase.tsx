@@ -12,6 +12,7 @@ import {
   getFirestore,
   Query,
   query,
+  serverTimestamp,
   updateDoc,
   where,
 } from "firebase/firestore";
@@ -57,6 +58,36 @@ export async function addTags(
     const tagRef = await addDoc(collection(db, "tags"), tempTag);
     await updateDoc(tagRef, { id: tagRef.id });
   }
+}
+
+export async function addComment(
+  uid: string,
+  targetUid: string,
+  targetPid: string,
+  txt: string
+) {
+  const newAlarm: IAlarm = {
+    uid,
+    type: "comment",
+    targetUid,
+    targetPid,
+    createdAt: new Date(),
+  };
+  const alarmRef = await addDoc(collection(db, "alarms"), newAlarm);
+
+  const tempComment: IComment = {
+    uid,
+    pid: targetPid,
+    aid: alarmRef.id,
+    txt,
+    createdAt: serverTimestamp(),
+  };
+  const ref = await addDoc(collection(db, "comments"), tempComment);
+  await updateDoc(ref, {
+    id: ref.id,
+  });
+  await updateDoc(alarmRef, { id: alarmRef.id, targetCid: ref.id });
+  return await getDataByRef<IComment>(ref);
 }
 
 export async function getData<T>(type: string, id: string): Promise<T> {

@@ -8,7 +8,7 @@ import {
 } from "firebase/firestore";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import { db, getDataByRef } from "../apis/firebase";
+import { addComment, db, getDataByRef } from "../apis/firebase";
 import { IAlarm, IComment, IPost, IUser } from "../libs/custom";
 import { useRouter } from "next/router";
 import Action from "./Action";
@@ -16,6 +16,8 @@ import Textarea from "./atoms/Textarea";
 import Btn from "./atoms/Btn";
 import InfinitePage from "./InfinitePage";
 import { usePost } from "../stores/usePost";
+import { User } from "firebase/auth";
+import { AnimatePresence } from "framer-motion";
 
 type ICommentBoxProps = {
   post: IPost;
@@ -25,48 +27,30 @@ type ICommentBoxProps = {
 
 export default (function CommentBox({ post, user, setPost }: ICommentBoxProps) {
   const [comment, setComment] = useState("");
-  const { comments, getComments } = usePost();
+  const { comments, getComments, setComments, isLasts } = usePost();
   const router = useRouter();
   const commentRef = useRef<HTMLTextAreaElement>(null);
   const actionRef = useRef<HTMLDivElement>(null);
+  const uid = user.id;
+  const targetUid = post.uid;
+  const targetPid = post.id || "";
 
   const [submitListener, setSubmitListener] = useState<boolean | null>(null);
   useEffect(() => {
     if (submitListener !== null)
       actionRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [submitListener]);
+  useEffect(() => {
+    !comments[targetPid] && getComments("init", targetPid);
+  }, []);
 
   function handleChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
     setComment(e.target.value);
   }
   async function handleSubmit(e: React.MouseEvent<HTMLButtonElement>) {
-    const newAlarm: IAlarm = {
-      uid: user.id,
-      type: "comment",
-      targetUid: post.uid,
-      targetPid: post.id,
-      createdAt: new Date(),
-    };
-    const alarmRef = await addDoc(collection(db, "alarms"), newAlarm);
-
-    const tempComment: IComment = {
-      uid: user.id,
-      pid: post.id || "",
-      aid: alarmRef.id,
-      txt: comment,
-      createdAt: serverTimestamp(),
-    };
-    const ref = await addDoc(collection(db, "comments"), tempComment);
-    await updateDoc(ref, {
-      id: ref.id,
-    });
-    await updateDoc(alarmRef, { id: alarmRef.id, targetCid: ref.id });
-    const newComment = await getDataByRef<IComment>(ref);
-    setPost({
-      ...post,
-      comments: [newComment, ...(post.comments as IComment[])],
-    });
+    const newComment = await addComment(uid, targetUid, targetPid, comment);
     setComment("");
+    setComments([newComment, ...comments[post.id || ""]], targetPid);
     setSubmitListener(!submitListener);
   }
   async function handleDeleteComment(e: React.MouseEvent<HTMLDivElement>) {
@@ -76,15 +60,13 @@ export default (function CommentBox({ post, user, setPost }: ICommentBoxProps) {
       doc(
         db,
         "alarms",
-        post.comments?.find((comment) => comment.id === id)?.aid || ""
+        comments[targetPid].find((comment) => comment.id === id)?.aid || ""
       )
     );
-    setPost({
-      ...post,
-      comments: [...(post.comments as IComment[])].filter(
-        (comment) => comment.id !== id
-      ),
-    });
+    setComments(
+      [...comments[targetPid]].filter((comment) => comment.id !== id),
+      targetPid
+    );
   }
   return (
     <>
@@ -99,15 +81,17 @@ export default (function CommentBox({ post, user, setPost }: ICommentBoxProps) {
       />
       <InfinitePage
         page="post"
-        data={comments[post.id || ""] || []}
-        onIntersect={() => getComments("load", post.id || "")}
+        data={comments[targetPid] || []}
+        onIntersect={() => getComments("load", targetPid)}
         onChange={() => {}}
         onRefresh={async () => {
-          await getComments("refresh", post.id || "");
+          await getComments("refresh", targetPid);
         }}
         onClick={handleDeleteComment}
-        changeListener={comments[post.id || ""]}
+        changeListener={comments[targetPid]}
+        isLast={isLasts[targetPid]}
       />
+
       <div className="sticky bottom-0 flex items-center justify-between w-full py-4 bg-white">
         <div className="profileImg-sm">
           <Image src={user.photoURL} alt="" fill />

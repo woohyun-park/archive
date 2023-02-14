@@ -3,6 +3,7 @@ import React, { Children, useEffect } from "react";
 import PullToRefresh from "react-simple-pull-to-refresh";
 import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 import { IAlarm, IComment, IPost } from "../libs/custom";
+import Motion from "../motions/Motion";
 import AlarmComment from "./AlarmComment";
 import AlarmFollow from "./AlarmFollow";
 import AlarmLike from "./AlarmLike";
@@ -19,7 +20,7 @@ interface IInfinitePageProps {
   onRefresh: () => Promise<void>;
   onClick?: (e: React.MouseEvent<HTMLDivElement>) => void;
   changeListener: any;
-  additionalCondition?: boolean;
+  isLast?: boolean;
 }
 
 export default function InfinitePage({
@@ -30,6 +31,7 @@ export default function InfinitePage({
   onRefresh,
   onClick,
   changeListener,
+  isLast,
 }: IInfinitePageProps) {
   useEffect(() => {
     document.querySelector(".ptr")?.setAttribute("style", "overflow:visible;");
@@ -107,19 +109,19 @@ export default function InfinitePage({
             </>
           )}
           {page === "post" && (
-            <>
+            <AnimatePresence>
               {data.map((e, i) => {
                 const comment = e as IComment;
                 return (
-                  <>
-                    <Comment comment={comment} onClick={onClick} key={e.id} />
-                    {i === data.length - 1 && (
+                  <div key={comment.id}>
+                    <Comment comment={comment} onClick={onClick} />
+                    {!isLast && i === data.length - 1 && (
                       <div ref={setLastIntersecting}></div>
                     )}
-                  </>
+                  </div>
                 );
               })}
-            </>
+            </AnimatePresence>
           )}
         </>
       </PullToRefresh>
