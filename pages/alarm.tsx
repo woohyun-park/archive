@@ -4,12 +4,26 @@ import IconBtn from "../components/atoms/IconBtn";
 import { useUser } from "../stores/useUser";
 import InfinitePage from "../components/InfinitePage";
 import { useAlarm } from "../stores/useAlarm";
+import { useModal } from "../stores/useModal";
+import { useScrollSave } from "../stores/useScrollSave";
 
 export default function Alarm() {
   const { curUser } = useUser();
   const { alarms, getAlarms } = useAlarm();
+  const { setModalLoader } = useModal();
+  const { scroll } = useScrollSave();
+  async function init() {
+    new Promise((resolve, reject) => {
+      setModalLoader(true);
+      resolve(0);
+    }).then(async () => {
+      await getAlarms("init", curUser.id);
+      setModalLoader(false);
+    });
+  }
   useEffect(() => {
-    getAlarms("init", curUser.id);
+    scroll["/alarm"] === undefined && init();
+    scrollTo(0, 0);
   }, []);
   const router = useRouter();
   return (

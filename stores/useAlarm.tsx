@@ -28,7 +28,7 @@ interface IUseAlarm {
 }
 type IAlarmGetType = "init" | "load" | "refresh";
 
-const LIMIT = 18;
+const LIMIT = 20;
 
 let lastVisible: QueryDocumentSnapshot<DocumentData>;
 

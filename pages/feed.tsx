@@ -12,6 +12,8 @@ import { useKeyword } from "../stores/useKeyword";
 import InfinitePage from "../components/InfinitePage";
 import WrapScroll from "../components/wrappers/WrapScroll";
 import { useModal } from "../stores/useModal";
+import { HiChevronDown, HiChevronUp } from "react-icons/hi2";
+import { SIZE } from "../libs/custom";
 
 export default function Feed() {
   const router = useRouter();
@@ -66,7 +68,7 @@ export default function Feed() {
   }
 
   return (
-    <div className="flex flex-col">
+    <div className="relative flex flex-col">
       <div className="flex items-center justify-between px-4 pb-2">
         <h1
           className="hover:cursor-pointer title-logo"
@@ -76,20 +78,11 @@ export default function Feed() {
         </h1>
         <WrapScroll>
           <div className="flex items-center justify-center">
-            <IconBtn
-              icon="alarm"
-              onClick={() => {
-                setModalLoader(true);
-                router.push("/alarm");
-              }}
-            />
+            <IconBtn icon="alarm" onClick={() => router.push("/alarm")} />
             <ProfileImg
               size="sm"
               photoURL={curUser.photoURL}
-              onClick={() => {
-                setModalLoader(true);
-                router.push(`/profile/${curUser.id}`);
-              }}
+              onClick={() => router.push(`/profile/${curUser.id}`)}
             />
           </div>
         </WrapScroll>
@@ -131,6 +124,22 @@ export default function Feed() {
         />
       )}
       <div className="mb-24"></div>
+      <div className="fixed opacity-75 bottom-[6.25rem] right-[3rem]">
+        <div>
+          <div
+            className="p-1 mb-2 bg-white rounded-full hover:cursor-pointer"
+            onClick={() => scrollTo({ top: 0, behavior: "smooth" })}
+          >
+            <HiChevronUp size={SIZE.icon} />
+          </div>
+          <div
+            className="p-1 bg-white rounded-full hover:cursor-pointer"
+            onClick={() => scrollTo({ top: 99999, behavior: "smooth" })}
+          >
+            <HiChevronDown size={SIZE.icon} />
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
