@@ -14,7 +14,7 @@ import { devtools } from "zustand/middleware";
 import { db } from "../apis/firebase";
 import { IPost, ITag, IUser } from "../libs/custom";
 import {
-  combinePrevAndNewPosts,
+  combinePrevAndNewData,
   getPostsByQuery,
   setCursorByType,
 } from "./useFeedHelper";
@@ -65,7 +65,7 @@ export const useSearch = create<ISearchStore>()(
         (async () => {
           const q = getQueryByType(type);
           let [snap, posts] = await getPostsByQuery(q);
-          posts = combinePrevAndNewPosts(get().posts, posts, type);
+          posts = combinePrevAndNewData(get().posts, posts, type);
           const lastVisible = setCursorByType(snap, type);
           if (lastVisible) searchLastVisible = lastVisible;
           return posts;

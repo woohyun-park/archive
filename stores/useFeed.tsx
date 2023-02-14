@@ -13,6 +13,7 @@ import { db, getDataByRef } from "../apis/firebase";
 import { IPost, IUser } from "../libs/custom";
 import {
   combinePrevAndNewData,
+  getFilteredQueryByType,
   getPostsByQuery,
   getQueryByType,
   setCursorByType,
@@ -26,10 +27,16 @@ interface IFeedStore {
   setPosts: (posts: IPost[]) => void;
 
   filteredPosts: IPost[];
-  getFilteredPosts: (id: string, tag: string) => Promise<void>;
+  getFilteredPosts: (
+    id: string,
+    type: IFeedGetType,
+    tag: string
+  ) => Promise<void>;
+  setFilteredPosts: (filteredPosts: IPost[]) => void;
 }
 
-let feedLastVisible: QueryDocumentSnapshot<DocumentData>;
+let lastVisible: QueryDocumentSnapshot<DocumentData>;
+let lastFilteredVisible: QueryDocumentSnapshot<DocumentData>;
 
 export const useFeed = create<IFeedStore>()(
   devtools((set, get) => ({
@@ -40,11 +47,11 @@ export const useFeed = create<IFeedStore>()(
       await Promise.all([
         (async () => {
           const user = await getDataByRef<IUser>(doc(db, "users", id));
-          const q = getQueryByType(user, type, feedLastVisible);
+          const q = getQueryByType(user, type, lastVisible);
           let [snap, posts] = await getPostsByQuery(q);
           posts = combinePrevAndNewData(get().posts, posts, type);
-          const lastVisible = setCursorByType(snap, type);
-          if (lastVisible) feedLastVisible = lastVisible;
+          const newLastVisible = setCursorByType(snap, type);
+          if (newLastVisible) lastVisible = newLastVisible;
           return posts;
         })(),
         new Promise((resolve, reject) => {
@@ -62,19 +69,40 @@ export const useFeed = create<IFeedStore>()(
         };
       });
     },
-    getFilteredPosts: async (id: string, tag: string) => {
-      const user = await getDataByRef<IUser>(doc(db, "users", id));
-      const q = query(
-        collection(db, "posts"),
-        where("uid", "in", [...user.followings, id]),
-        where("tags", "array-contains", tag),
-        orderBy("createdAt", "desc")
-      );
-      const [snap, posts] = await getPostsByQuery(q);
+    getFilteredPosts: async (id: string, type: IFeedGetType, tag: string) => {
+      let filteredPosts: IPost[] = [];
+      await Promise.all([
+        (async () => {
+          const user = await getDataByRef<IUser>(doc(db, "users", id));
+          const q = getFilteredQueryByType(
+            user,
+            type,
+            tag,
+            lastFilteredVisible
+          );
+          if (!q) return [];
+          let [snap, filteredPosts] = await getPostsByQuery(q);
+          filteredPosts = combinePrevAndNewData(
+            get().filteredPosts,
+            filteredPosts,
+            type
+          );
+          const newLastVisible = setCursorByType(snap, type);
+          if (newLastVisible) lastFilteredVisible = newLastVisible;
+          return filteredPosts;
+        })(),
+        new Promise((resolve, reject) => {
+          setTimeout(() => {
+            resolve(0);
+          }, 1000);
+        }),
+      ]).then((values) => {
+        filteredPosts = values[0];
+      });
       set((state: IFeedStore) => {
         return {
           ...state,
-          filteredPosts: posts,
+          filteredPosts,
         };
       });
     },
@@ -84,6 +112,11 @@ export const useFeed = create<IFeedStore>()(
           ...state,
           posts,
         };
+      });
+    },
+    setFilteredPosts: (filteredPosts: IPost[]) => {
+      set((state: IFeedStore) => {
+        return { ...state, filteredPosts };
       });
     },
   }))

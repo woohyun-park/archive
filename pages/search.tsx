@@ -4,7 +4,7 @@ import Link from "next/link";
 import Motion from "../motions/Motion";
 import { useSearch } from "../stores/useSearch";
 import { useEffect, useState } from "react";
-import PostBox from "../components/PostBox";
+import InfinitePage from "../components/InfinitePage";
 import Loader from "../components/Loader";
 import { useVisit } from "../stores/useVisit";
 import { useRouter } from "next/router";
@@ -33,8 +33,8 @@ export default function Search() {
             </div>
           </div>
         </Link>
-        <PostBox
-          type="search"
+        <InfinitePage
+          page="search"
           data={posts}
           onIntersect={() => getPosts("load")}
           onChange={() => {}}

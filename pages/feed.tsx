@@ -9,14 +9,15 @@ import IconBtn from "../components/atoms/IconBtn";
 import IconInput from "../components/atoms/IconInput";
 import { debounce } from "lodash";
 import { useKeyword } from "../stores/useKeyword";
-import PostBox from "../components/PostBox";
+import InfinitePage from "../components/InfinitePage";
 import WrapScroll from "../components/wrappers/WrapScroll";
 import { useModal } from "../stores/useModal";
 
 export default function Feed() {
   const router = useRouter();
   const { curUser } = useUser();
-  const { posts, filteredPosts, getPosts, getFilteredPosts } = useFeed();
+  const { posts, filteredPosts, getPosts, getFilteredPosts, setFilteredPosts } =
+    useFeed();
   const { keywords, setKeywords } = useKeyword();
   const keyword = keywords[router.pathname] || "";
   const [curPosts, setCurPosts] = useState(
@@ -38,11 +39,11 @@ export default function Feed() {
     }, 10);
   }, []);
 
-  useEffect(() => {
-    filteredPosts.length === 0
-      ? setCurPosts(posts)
-      : setCurPosts(filteredPosts);
-  }, [posts]);
+  // useEffect(() => {
+  //   filteredPosts.length === 0
+  //     ? setCurPosts(posts)
+  //     : setCurPosts(filteredPosts);
+  // }, [posts]);
 
   useEffect(() => {
     debounce(() => {
@@ -54,10 +55,10 @@ export default function Feed() {
     async function filterPosts() {
       if (keyword.length === 0) {
         await getPosts(curUser.id, "refresh");
-        setCurPosts(posts);
+        // setCurPosts(posts);
       } else {
-        await getFilteredPosts(curUser.id, keyword);
-        setCurPosts(filteredPosts);
+        await getFilteredPosts(curUser.id, "init", keyword);
+        // setCurPosts(filteredPosts);
       }
       setFilterLoading(false);
     }
@@ -69,6 +70,9 @@ export default function Feed() {
     if (e.target.value.slice(e.target.value.length - 1) !== " ") {
       setKeywords(router.pathname, e.target.value);
       setResetFilter(!resetFilter);
+    }
+    if (e.target.value === "") {
+      setFilteredPosts([]);
     }
   }
 
@@ -107,23 +111,37 @@ export default function Feed() {
         onDelete={() => {
           setKeywords(router.pathname, "");
           setResetFilter(!resetFilter);
+          setFilteredPosts([]);
         }}
         keyword={keyword}
         placeholder={"찾고싶은 태그를 입력해보세요!"}
         style="margin-left: 1rem; margin-right: 1rem;"
       />
       <Loader isVisible={filterLoading} />
-      <PostBox
-        type="feed"
-        data={curPosts}
-        onIntersect={() => keyword.length === 0 && getPosts(curUser.id, "load")}
-        onChange={() => {}}
-        onRefresh={async () => {
-          await getPosts(curUser.id, "refresh");
-        }}
-        changeListener={posts}
-        additionalRefCondition={keyword.length === 0}
-      />
+      {keyword.length === 0 ? (
+        <InfinitePage
+          page="feed"
+          data={posts}
+          onIntersect={() => getPosts(curUser.id, "load")}
+          onChange={() => {}}
+          onRefresh={async () => {
+            await getPosts(curUser.id, "refresh");
+          }}
+          changeListener={posts}
+        />
+      ) : (
+        <InfinitePage
+          page="feed"
+          data={filteredPosts}
+          onIntersect={() => getFilteredPosts(curUser.id, "load", keyword)}
+          onChange={() => {}}
+          onRefresh={async () => {
+            await getFilteredPosts(curUser.id, "refresh", keyword);
+          }}
+          changeListener={filteredPosts}
+        />
+      )}
+
       <div className="mb-24"></div>
     </div>
   );

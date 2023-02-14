@@ -47,6 +47,40 @@ export function getQueryByType(
   );
 }
 
+export function getFilteredQueryByType(
+  user: IUser,
+  type: IFeedGetType,
+  tag: string,
+  lastVisible: QueryDocumentSnapshot<DocumentData>
+): Query<DocumentData> {
+  const id = user.id;
+  console.log(user, type, tag, lastVisible);
+  if (type === "init")
+    return query(
+      collection(db, "posts"),
+      where("uid", "in", [...user.followings, id]),
+      where("tags", "array-contains", tag),
+      orderBy("createdAt", "desc"),
+      limit(POST_PER_PAGE.feed.post)
+    );
+  if (type === "load")
+    return query(
+      collection(db, "posts"),
+      where("uid", "in", [...user.followings, id]),
+      where("tags", "array-contains", tag),
+      orderBy("createdAt", "desc"),
+      startAfter(lastVisible),
+      limit(POST_PER_PAGE.feed.post)
+    );
+  return query(
+    collection(db, "posts"),
+    where("uid", "in", [...user.followings, id]),
+    where("tags", "array-contains", tag),
+    orderBy("createdAt", "desc"),
+    endAt(lastVisible)
+  );
+}
+
 export async function getPostsByQuery(
   q: Query
 ): Promise<[QuerySnapshot<DocumentData>, IPost[]]> {

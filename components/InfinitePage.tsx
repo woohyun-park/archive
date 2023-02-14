@@ -1,5 +1,5 @@
 import { AnimatePresence } from "framer-motion";
-import { Children } from "react";
+import { Children, useEffect } from "react";
 import PullToRefresh from "react-simple-pull-to-refresh";
 import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 import { IAlarm, IPost } from "../libs/custom";
@@ -10,25 +10,28 @@ import Box from "./Box";
 import FeedPost from "./FeedPost";
 import Loader from "./Loader";
 
-interface IPostBoxProps {
-  type: "feed" | "search" | "alarm";
+interface IInfinitePageProps {
+  page: "feed" | "search" | "alarm";
   data: IPost[] | IAlarm[];
   onIntersect: () => void;
   onChange: () => void;
   onRefresh: () => Promise<void>;
   changeListener: any;
-  additionalRefCondition?: boolean;
+  additionalCondition?: boolean;
 }
 
-export default function PostBox({
-  type,
+export default function InfinitePage({
+  page,
   data,
   onIntersect,
   onChange,
   onRefresh,
   changeListener,
-  additionalRefCondition,
-}: IPostBoxProps) {
+  additionalCondition,
+}: IInfinitePageProps) {
+  useEffect(() => {
+    document.querySelector(".ptr")?.setAttribute("style", "overflow:visible;");
+  }, []);
   const { setLastIntersecting, loading } = useInfiniteScroll({
     handleIntersect: onIntersect,
     handleChange: onChange,
@@ -39,42 +42,25 @@ export default function PostBox({
       <PullToRefresh
         onRefresh={onRefresh}
         pullingContent={<Loader isVisible={true} />}
-        refreshingContent={
-          type === "alarm" ? <Loader isVisible={true} /> : <></>
-        }
+        refreshingContent={<Loader isVisible={true} />}
       >
         <>
-          {type === "alarm" && (
-            <>
-              {data.map((e, i) => {
-                const alarm = e as IAlarm;
-                return (
+          {page === "feed" && (
+            <AnimatePresence>
+              <>
+                {data.map((e, i) => (
                   <>
-                    {alarm.type === "like" && <AlarmLike alarm={alarm} />}
-                    {alarm.type === "comment" && <AlarmComment alarm={alarm} />}
-                    {alarm.type === "follow" && <AlarmFollow alarm={alarm} />}
+                    <FeedPost post={e as IPost} />
                     {i === data.length - 1 && (
                       <div ref={setLastIntersecting}></div>
                     )}
+                    <hr className="w-full h-4 text-white bg-white" />
                   </>
-                );
-              })}
-            </>
-          )}
-          {type === "feed" && (
-            <AnimatePresence>
-              {data.map((e, i) => (
-                <>
-                  <FeedPost post={e as IPost} />
-                  {additionalRefCondition && i === data.length - 1 && (
-                    <div ref={setLastIntersecting}></div>
-                  )}
-                  <hr className="w-full h-4 text-white bg-white" />
-                </>
-              ))}
+                ))}
+              </>
             </AnimatePresence>
           )}
-          {type === "search" && (
+          {page === "search" && (
             <div
               className={
                 data.length !== 0
@@ -100,6 +86,23 @@ export default function PostBox({
                 ))
               )}
             </div>
+          )}
+          {page === "alarm" && (
+            <>
+              {data.map((e, i) => {
+                const alarm = e as IAlarm;
+                return (
+                  <>
+                    {alarm.type === "like" && <AlarmLike alarm={alarm} />}
+                    {alarm.type === "comment" && <AlarmComment alarm={alarm} />}
+                    {alarm.type === "follow" && <AlarmFollow alarm={alarm} />}
+                    {i === data.length - 1 && (
+                      <div ref={setLastIntersecting}></div>
+                    )}
+                  </>
+                );
+              })}
+            </>
           )}
         </>
       </PullToRefresh>
