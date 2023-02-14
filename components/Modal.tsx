@@ -17,7 +17,7 @@ export default function Modal({ isVisible, content }: IModal) {
     if (isVisible) {
       document.body.style.overflow = "hidden";
       return ReactDOM.createPortal(
-        <div className="top-0 left-0 w-[100%] h-[100vh] absolute bg-black/50">
+        <div className="top-0 w-[100%] h-[100vh] fixed max-w-[480px] bg-black/50">
           {content}
         </div>,
         document.getElementById("modal-root") as Element

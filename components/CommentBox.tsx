@@ -8,7 +8,6 @@ import Action from "./Action";
 import Textarea from "./atoms/Textarea";
 import Btn from "./atoms/Btn";
 import PageInfinite from "./PageInfinite";
-import { usePost } from "../stores/usePost";
 
 type ICommentBoxProps = {
   post: IPost;
@@ -20,7 +19,6 @@ const LIMIT = 16;
 
 export default (function CommentBox({ post, user, setPost }: ICommentBoxProps) {
   const [comment, setComment] = useState("");
-  // const { comments, getComments, setComments, isLasts } = usePost();
   const [page, setPage] = useState(LIMIT);
   console.log(page);
   const router = useRouter();
@@ -35,9 +33,6 @@ export default (function CommentBox({ post, user, setPost }: ICommentBoxProps) {
     if (submitListener !== null)
       actionRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [submitListener]);
-  // useEffect(() => {
-  //   !comments[targetPid] && getComments("init", targetPid);
-  // }, []);
 
   function handleChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
     setComment(e.target.value);
@@ -49,7 +44,6 @@ export default (function CommentBox({ post, user, setPost }: ICommentBoxProps) {
       ...post,
       comments: [newComment, ...(post.comments as IComment[])],
     });
-    // setComments([newComment, ...comments[post.id || ""]], targetPid);
     setSubmitListener(!submitListener);
     setPage(page + 1);
   }
@@ -61,14 +55,9 @@ export default (function CommentBox({ post, user, setPost }: ICommentBoxProps) {
         db,
         "alarms",
         post.comments?.find((comment) => comment.id === id)?.aid || ""
-        // comments[targetPid].find((comment) => comment.id === id)?.aid || ""
       )
     );
     setPage(page - 1);
-    // setComments(
-    //   [...comments[targetPid]].filter((comment) => comment.id !== id),
-    //   targetPid
-    // );
   }
   return (
     <>

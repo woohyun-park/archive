@@ -11,6 +11,7 @@ import { floatVariants } from "../libs/motionLib";
 import { useUser } from "../stores/useUser";
 import Title from "./atoms/Title";
 import { Children } from "react";
+import { useModal } from "../stores/useModal";
 
 interface IFeedPostProps {
   post: IPost;
@@ -20,6 +21,7 @@ export default function FeedPost({ post }: IFeedPostProps) {
   const router = useRouter();
   const route = getRoute(router);
   const { curUser } = useUser();
+  const { setModalLoader } = useModal();
   return (
     <>
       <motion.div
@@ -48,15 +50,16 @@ export default function FeedPost({ post }: IFeedPostProps) {
           <Action
             post={post}
             curUser={curUser}
-            onCommentClick={() =>
+            onCommentClick={() => {
+              setModalLoader(true);
               router.push(
                 {
                   pathname: `/post/${post.id}`,
                   query: { isCommentFocused: true },
                 },
                 `/post/${post.id}`
-              )
-            }
+              );
+            }}
           />
         </WrapScroll>
       </motion.div>

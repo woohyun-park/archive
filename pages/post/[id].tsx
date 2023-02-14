@@ -18,7 +18,6 @@ import Title from "../../components/atoms/Title";
 import CommentBox from "../../components/CommentBox";
 import Motion from "../../motions/Motion";
 import { useFeed } from "../../stores/useFeed";
-import { usePost } from "../../stores/usePost";
 import { useModal } from "../../stores/useModal";
 
 interface IPostProps {
@@ -31,20 +30,10 @@ export default function Post({ initPost, initUser }: IPostProps) {
   const { setPosts, posts } = useFeed();
   const router = useRouter();
   const [post, setPost] = useState<IPost>(initPost);
-  const { comments, getComments } = usePost();
   const { setModalLoader } = useModal();
 
   useEffect(() => {
-    async function init() {
-      new Promise((resolve, reject) => {
-        setModalLoader(true);
-        resolve(0);
-      }).then(async () => {
-        await getComments("init", post.id || "");
-        setModalLoader(false);
-      });
-    }
-    comments[post.id || ""] === undefined && init();
+    setModalLoader(false);
   }, []);
 
   function handleModify() {

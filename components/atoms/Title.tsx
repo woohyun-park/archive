@@ -1,23 +1,30 @@
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { IPost } from "../../libs/custom";
+import { useModal } from "../../stores/useModal";
 
 interface ITitle {
   post: IPost;
 }
 
 export default function PostTitle({ post }: ITitle) {
+  const router = useRouter();
+  const { setModalLoader } = useModal();
   return (
-    <Link
-      href={{
-        pathname: `/post/${post.id}`,
-        query: { post: JSON.stringify(post) },
+    <div
+      className="mt-4 mb-4 text-5xl font-bold break-words hover:cursor-pointer w-fit"
+      onClick={() => {
+        setModalLoader(true);
+        router.push(
+          {
+            pathname: `/post/${post.id}`,
+            query: { post: JSON.stringify(post) },
+          },
+          `/post/${post.id}`
+        );
       }}
-      as={`/post/${post.id}`}
-      legacyBehavior
     >
-      <div className="mt-4 mb-4 text-5xl font-bold break-words hover:cursor-pointer w-fit">
-        {post.title}
-      </div>
-    </Link>
+      {post.title}
+    </div>
   );
 }
