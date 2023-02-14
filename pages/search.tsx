@@ -4,7 +4,7 @@ import Link from "next/link";
 import Motion from "../motions/Motion";
 import { useSearch } from "../stores/useSearch";
 import { useEffect, useState } from "react";
-import InfinitePage from "../components/InfinitePage";
+import PageInfinite from "../components/PageInfinite";
 import { useRouter } from "next/router";
 import { useScrollSave } from "../stores/useScrollSave";
 
@@ -32,7 +32,7 @@ export default function Search() {
             </div>
           </div>
         </Link>
-        <InfinitePage
+        <PageInfinite
           page="search"
           data={posts}
           onIntersect={() => getPosts("load")}

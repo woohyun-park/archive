@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 import IconBtn from "../components/atoms/IconBtn";
 import { useUser } from "../stores/useUser";
-import InfinitePage from "../components/InfinitePage";
+import PageInfinite from "../components/PageInfinite";
 import { useAlarm } from "../stores/useAlarm";
 import { useModal } from "../stores/useModal";
 import { useScrollSave } from "../stores/useScrollSave";
@@ -33,7 +33,7 @@ export default function Alarm() {
         <IconBtn icon="back" onClick={() => router.back()} />
         <div className="title-page">알림</div>
       </div>
-      <InfinitePage
+      <PageInfinite
         page="alarm"
         data={alarms}
         onIntersect={() => getAlarms("load", curUser.id)}

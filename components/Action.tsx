@@ -116,7 +116,7 @@ export default forwardRef<HTMLDivElement, IActionProps>(function Action(
           <div>
             {`좋아요 ${displayLikes()}`}
             &nbsp;&nbsp;
-            {`댓글 ${comment ? comment.length : 0}`}
+            {`댓글 ${post.comments ? post.comments.length : 0}`}
           </div>
           <div>{`스크랩 ${displayScraps()}`}</div>
         </div>

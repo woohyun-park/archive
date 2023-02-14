@@ -1,23 +1,14 @@
-import {
-  addDoc,
-  collection,
-  deleteDoc,
-  doc,
-  serverTimestamp,
-  updateDoc,
-} from "firebase/firestore";
+import { deleteDoc, doc } from "firebase/firestore";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import { addComment, db, getDataByRef } from "../apis/firebase";
-import { IAlarm, IComment, IPost, IUser } from "../libs/custom";
+import { addComment, db } from "../apis/firebase";
+import { IPost, IUser } from "../libs/custom";
 import { useRouter } from "next/router";
 import Action from "./Action";
 import Textarea from "./atoms/Textarea";
 import Btn from "./atoms/Btn";
-import InfinitePage from "./InfinitePage";
+import PageInfinite from "./PageInfinite";
 import { usePost } from "../stores/usePost";
-import { User } from "firebase/auth";
-import { AnimatePresence } from "framer-motion";
 
 type ICommentBoxProps = {
   post: IPost;
@@ -50,6 +41,7 @@ export default (function CommentBox({ post, user, setPost }: ICommentBoxProps) {
   async function handleSubmit(e: React.MouseEvent<HTMLButtonElement>) {
     const newComment = await addComment(uid, targetUid, targetPid, comment);
     setComment("");
+    setPost({ ...post, comments: [newComment, ...comments[post.id || ""]] });
     setComments([newComment, ...comments[post.id || ""]], targetPid);
     setSubmitListener(!submitListener);
   }
@@ -74,12 +66,11 @@ export default (function CommentBox({ post, user, setPost }: ICommentBoxProps) {
         post={post}
         curUser={user}
         onCommentClick={() => {
-          commentRef.current?.scrollIntoView({ behavior: "smooth" });
-          setTimeout(() => commentRef.current?.focus({}), 500);
+          commentRef.current?.focus({});
         }}
         ref={actionRef}
       />
-      <InfinitePage
+      <PageInfinite
         page="post"
         data={comments[targetPid] || []}
         onIntersect={() => getComments("load", targetPid)}
