@@ -14,7 +14,7 @@ import React, { Children, useEffect, useState } from "react";
 import Btn from "../../components/atoms/Btn";
 import IconBtn from "../../components/atoms/IconBtn";
 import { useUser } from "../../stores/useUser";
-import Title from "../../components/atoms/Title";
+import PostTitle from "../../components/atoms/PostTitle";
 import CommentBox from "../../components/CommentBox";
 import Motion from "../../motions/Motion";
 import { useFeed } from "../../stores/useFeed";
@@ -96,7 +96,7 @@ export default function Post({ initPost, initUser }: IPostProps) {
               </div>
             )}
             <ProfileSmall post={post} user={initUser} type="post" />
-            <Title post={post} />
+            <PostTitle post={post} />
             <div className="flex flex-wrap justify-end w-full mb-8">
               {Children.toArray(
                 post.tags.map((tag, i) => (

@@ -28,13 +28,10 @@ export default function Alarm() {
         setModalLoader(false);
       });
     }
-    console.log("1", modalLoader);
     if (scroll["/alarm"] !== undefined) {
       scrollTo(0, scroll["/alarm"]);
     } else {
-      console.log("2", modalLoader);
       init();
-      console.log("3", modalLoader);
       scrollTo(0, 0);
     }
   }, []);
@@ -44,7 +41,7 @@ export default function Alarm() {
       {!modalLoader && (
         <>
           <div className="flex mt-2 mb-4">
-            <WrapScroll>
+            <WrapScroll className="flex">
               <IconBtn icon="back" onClick={() => router.back()} />
             </WrapScroll>
             <div className="title-page">알림</div>

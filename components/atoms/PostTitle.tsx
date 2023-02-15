@@ -2,11 +2,11 @@ import { useRouter } from "next/router";
 import { IPost } from "../../libs/custom";
 import { useModal } from "../../stores/useModal";
 
-interface ITitle {
+interface IPostTitle {
   post: IPost;
 }
 
-export default function PostTitle({ post }: ITitle) {
+export default function TitlePost({ post }: IPostTitle) {
   const router = useRouter();
   const { setModalLoader } = useModal();
   return (

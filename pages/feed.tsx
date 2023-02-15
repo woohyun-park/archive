@@ -12,7 +12,7 @@ import { useKeyword } from "../stores/useKeyword";
 import PageInfinite from "../components/PageInfinite";
 import WrapScroll from "../components/wrappers/WrapScroll";
 import { useModal } from "../stores/useModal";
-import WrapLink from "../components/wrappers/WrapLinkLoader";
+import WrapLink from "../components/wrappers/WrapLink";
 
 export default function Feed() {
   const { curUser } = useUser();

@@ -7,10 +7,10 @@ import Action from "../components/Action";
 import ProfileSmall from "../components/ProfileSmall";
 import { IUser } from "../libs/custom";
 import { useUser } from "../stores/useUser";
-import Title from "./atoms/Title";
 import { Children } from "react";
 import { useModal } from "../stores/useModal";
 import Motion from "../motions/Motion";
+import PostTitle from "./atoms/PostTitle";
 
 interface IFeedPostProps {
   post: IPost;
@@ -27,7 +27,7 @@ export default function FeedPost({ post }: IFeedPostProps) {
         <WrapScroll>
           <ProfileSmall post={post} user={post.author as IUser} type="post" />
           <Box post={post} />
-          <Title post={post} />
+          <PostTitle post={post} />
           <div className="bottom-0 right-0 flex flex-row-reverse flex-wrap-reverse text-left ">
             {route === "feed" &&
               Children.toArray(
