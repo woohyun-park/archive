@@ -6,12 +6,14 @@ import {
   collection,
   deleteDoc,
   doc,
+  DocumentData,
   DocumentReference,
   getDoc,
   getDocs,
   getFirestore,
   Query,
   query,
+  QuerySnapshot,
   serverTimestamp,
   updateDoc,
   where,
@@ -22,6 +24,7 @@ import {
   IComment,
   IDict,
   ILike,
+  IPost,
   IScrap,
   ITag,
   IUser,
@@ -127,6 +130,40 @@ export async function getDatasByQuery<T>(q: Query) {
     }
   });
   return datas;
+}
+
+export async function getAlarmsByQuery(
+  q: Query
+): Promise<[QuerySnapshot<DocumentData>, IAlarm[]]> {
+  const res: IAlarm[] = await getDatasByQuery(q);
+  const snap = await getDocs(q);
+  const alarms: IAlarm[] = [];
+
+  for await (const doc of snap.docs) {
+    const alarm: IDict<any> = doc.data();
+    if (alarm.type === "like") {
+      const author = await getData<IUser>("users", alarm.uid);
+      const post = await getData<IPost>("posts", alarm.targetPid || "");
+      alarm.author = author;
+      alarm.post = post;
+    } else if (alarm.type === "comment") {
+      const author = await getData<IUser>("users", alarm.uid);
+      const comment = await getData<IComment>(
+        "comments",
+        alarm.targetCid || ""
+      );
+      const post = await getData<IPost>("posts", alarm.targetPid || "");
+      alarm.author = author;
+      alarm.post = post;
+      alarm.comment = comment;
+    } else if (alarm.type === "follow") {
+      const author = await getData<IUser>("users", alarm.uid);
+      alarm.author = author;
+    }
+    alarm.createdAt = alarm.createdAt.toDate();
+    alarms.push(alarm as IAlarm);
+  }
+  return [snap, alarms];
 }
 
 export async function getEach<T>(type: string, id: string) {

@@ -15,18 +15,17 @@ export type IFeedGetType = "init" | "load" | "refresh";
 
 interface IFeedStore {
   posts: IPost[];
-  getPosts: (id: string, type: IFeedGetType) => Promise<void>;
-  setPosts: (posts: IPost[]) => void;
-
   filteredPosts: IPost[];
+  refresh: boolean;
+  isLast: boolean;
+  getPosts: (id: string, type: IFeedGetType) => Promise<void>;
   getFilteredPosts: (
     id: string,
     type: IFeedGetType,
     tag: string
   ) => Promise<void>;
+  setPosts: (posts: IPost[]) => void;
   setFilteredPosts: (filteredPosts: IPost[]) => void;
-
-  refresh: boolean;
   setRefresh: (refresh: boolean) => void;
 }
 
@@ -71,6 +70,7 @@ export const useFeed = create<IFeedStore>()(
     posts: [] as IPost[],
     filteredPosts: [] as IPost[],
     refresh: false,
+    isLast: false,
     getPosts: async (id: string, type: IFeedGetType) => {
       const posts = await getPostsHelper(id, type, get().posts);
       set((state: IFeedStore) => {

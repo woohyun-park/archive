@@ -9,10 +9,13 @@ import { useScrollSave } from "../stores/useScrollSave";
 import WrapScroll from "../components/wrappers/WrapScroll";
 
 export default function Alarm() {
+  const router = useRouter();
+
   const { curUser } = useUser();
   const { alarms, getAlarms, isLast } = useAlarm();
   const { setModalLoader } = useModal();
   const { scroll } = useScrollSave();
+
   useEffect(() => {
     async function init() {
       new Promise((resolve, reject) => {
@@ -30,7 +33,7 @@ export default function Alarm() {
       scrollTo(0, 0);
     }
   }, []);
-  const router = useRouter();
+
   return (
     <>
       <div className="flex mt-2 mb-4">
