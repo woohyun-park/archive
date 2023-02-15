@@ -3,6 +3,7 @@ import create from "zustand";
 import { devtools } from "zustand/middleware";
 import { db, getDataByRef } from "../apis/firebase";
 import { IPost, IUser } from "../libs/custom";
+import { wrapPromise } from "./libStores";
 import {
   combinePrevAndNewData,
   getFilteredQueryByType,
@@ -38,31 +39,20 @@ async function getPostsHelper(
   prevPosts: IPost[],
   tag?: string
 ) {
-  let posts: IPost[] = [];
-  await Promise.all([
-    (async () => {
-      const user = await getDataByRef<IUser>(doc(db, "users", id));
-      const q = tag
-        ? getFilteredQueryByType(user, type, tag, lastFilteredVisible)
-        : getQueryByType(user, type, lastVisible);
-      let [snap, posts] = await getPostsByQuery(q);
-      posts = combinePrevAndNewData(prevPosts, posts, type);
-      const newLastVisible = setCursorByType(snap, type);
-      if (newLastVisible)
-        tag
-          ? (lastFilteredVisible = newLastVisible)
-          : (lastVisible = newLastVisible);
-      return posts;
-    })(),
-    new Promise((resolve, reject) => {
-      setTimeout(() => {
-        resolve(0);
-      }, 1000);
-    }),
-  ]).then((values) => {
-    posts = values[0];
-  });
-  return posts;
+  return await wrapPromise(async () => {
+    const user = await getDataByRef<IUser>(doc(db, "users", id));
+    const q = tag
+      ? getFilteredQueryByType(user, type, tag, lastFilteredVisible)
+      : getQueryByType(user, type, lastVisible);
+    let [snap, posts] = await getPostsByQuery(q);
+    posts = combinePrevAndNewData(prevPosts, posts, type);
+    const newLastVisible = setCursorByType(snap, type);
+    if (newLastVisible)
+      tag
+        ? (lastFilteredVisible = newLastVisible)
+        : (lastVisible = newLastVisible);
+    return tag ? { filteredPosts: posts } : { posts };
+  }, 1000);
 }
 
 export const useFeed = create<IFeedStore>()(
@@ -72,7 +62,7 @@ export const useFeed = create<IFeedStore>()(
     refresh: false,
     isLast: false,
     getPosts: async (id: string, type: IFeedGetType) => {
-      const posts = await getPostsHelper(id, type, get().posts);
+      const { posts } = await getPostsHelper(id, type, get().posts);
       set((state: IFeedStore) => {
         return {
           ...state,
@@ -81,7 +71,7 @@ export const useFeed = create<IFeedStore>()(
       });
     },
     getFilteredPosts: async (id: string, type: IFeedGetType, tag: string) => {
-      const filteredPosts = await getPostsHelper(
+      const { filteredPosts } = await getPostsHelper(
         id,
         type,
         get().filteredPosts,
