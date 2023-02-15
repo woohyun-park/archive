@@ -1,6 +1,10 @@
+import {
+  DocumentData,
+  QueryDocumentSnapshot,
+  QuerySnapshot,
+} from "firebase/firestore";
 import { IDict } from "../libs/custom";
-
-export type IStoreGetType = "init" | "load" | "refresh";
+import { IFetchType } from "../libs/queryLib";
 
 export async function wrapPromise(
   callback: Function,
@@ -18,4 +22,26 @@ export async function wrapPromise(
     res = values[0];
   });
   return res;
+}
+
+export function combineData<T>(prevData: T[], data: T[], type: IFetchType) {
+  if (type === "init") return [...data];
+  else if (type === "load") return [...prevData, ...data];
+  else return [...data];
+}
+
+export function setCursor(
+  snap: QuerySnapshot<DocumentData>,
+  type: IQueryType
+): QueryDocumentSnapshot<DocumentData> | null {
+  if (snap.docs.length !== 0) {
+    if (type === "init") {
+      return snap.docs[snap.docs.length - 1];
+    } else if (type === "load") {
+      return snap.docs[snap.docs.length - 1];
+    } else {
+      return snap.docs[snap.docs.length - 1];
+    }
+  }
+  return null;
 }

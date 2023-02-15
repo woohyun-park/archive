@@ -15,6 +15,7 @@ import {
   query,
   QuerySnapshot,
   serverTimestamp,
+  Timestamp,
   updateDoc,
   where,
 } from "firebase/firestore";
@@ -130,6 +131,29 @@ export async function getDatasByQuery<T>(q: Query) {
     }
   });
   return datas;
+}
+
+export async function getPostsByQuery(
+  q: Query
+): Promise<[QuerySnapshot<DocumentData>, IPost[]]> {
+  const snap = await getDocs(q);
+  const posts: IPost[] = [];
+  for (const doc of snap.docs) {
+    const post: IPost = doc.data() as IPost;
+    const uid = post.uid;
+    const pid = post.id || "";
+    const author: IUser = await getData<IUser>("users", uid);
+    const likes = await getEach<ILike>("likes", pid);
+    const scraps = await getEach<IScrap>("scraps", pid);
+    const comments = await getEach<IComment>("comments", pid);
+    post.likes = likes ? likes : [];
+    post.scraps = scraps ? scraps : [];
+    post.comments = comments ? comments : [];
+    post.author = author;
+    post.createdAt = (post.createdAt as Timestamp).toDate();
+    posts.push(post);
+  }
+  return [snap, posts];
 }
 
 export async function getAlarmsByQuery(

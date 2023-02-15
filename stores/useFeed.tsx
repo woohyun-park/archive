@@ -1,28 +1,24 @@
 import { doc, DocumentData, QueryDocumentSnapshot } from "firebase/firestore";
 import create from "zustand";
 import { devtools } from "zustand/middleware";
-import { db, getDataByRef } from "../apis/firebase";
+import { db, getDataByRef, getPostsByQuery } from "../apis/firebase";
 import { IPost, IUser } from "../libs/custom";
-import { wrapPromise } from "./libStores";
 import {
-  combinePrevAndNewData,
-  getFilteredQueryByType,
-  getPostsByQuery,
-  getQueryByType,
-  setCursorByType,
-} from "./useFeedHelper";
-
-export type IFeedGetType = "init" | "load" | "refresh";
+  getFeedQuery,
+  getFilteredFeedQuery,
+  IFetchType,
+} from "../libs/queryLib";
+import { combineData, setCursor, wrapPromise } from "./libStores";
 
 interface IFeedStore {
   posts: IPost[];
   filteredPosts: IPost[];
   refresh: boolean;
   isLast: boolean;
-  getPosts: (id: string, type: IFeedGetType) => Promise<void>;
+  getPosts: (id: string, type: IFetchType) => Promise<void>;
   getFilteredPosts: (
     id: string,
-    type: IFeedGetType,
+    type: IFetchType,
     tag: string
   ) => Promise<void>;
   setPosts: (posts: IPost[]) => void;
@@ -35,18 +31,18 @@ let lastFilteredVisible: QueryDocumentSnapshot<DocumentData>;
 
 async function getPostsHelper(
   id: string,
-  type: IFeedGetType,
+  type: IFetchType,
   prevPosts: IPost[],
   tag?: string
 ) {
   return await wrapPromise(async () => {
     const user = await getDataByRef<IUser>(doc(db, "users", id));
     const q = tag
-      ? getFilteredQueryByType(user, type, tag, lastFilteredVisible)
-      : getQueryByType(user, type, lastVisible);
+      ? getFilteredFeedQuery(user, type, tag, lastFilteredVisible)
+      : getFeedQuery(user, type, lastVisible);
     let [snap, posts] = await getPostsByQuery(q);
-    posts = combinePrevAndNewData(prevPosts, posts, type);
-    const newLastVisible = setCursorByType(snap, type);
+    posts = combineData(prevPosts, posts, type);
+    const newLastVisible = setCursor(snap, type);
     if (newLastVisible)
       tag
         ? (lastFilteredVisible = newLastVisible)
@@ -61,7 +57,7 @@ export const useFeed = create<IFeedStore>()(
     filteredPosts: [] as IPost[],
     refresh: false,
     isLast: false,
-    getPosts: async (id: string, type: IFeedGetType) => {
+    getPosts: async (id: string, type: IFetchType) => {
       const { posts } = await getPostsHelper(id, type, get().posts);
       set((state: IFeedStore) => {
         return {
@@ -70,7 +66,7 @@ export const useFeed = create<IFeedStore>()(
         };
       });
     },
-    getFilteredPosts: async (id: string, type: IFeedGetType, tag: string) => {
+    getFilteredPosts: async (id: string, type: IFetchType, tag: string) => {
       const { filteredPosts } = await getPostsHelper(
         id,
         type,

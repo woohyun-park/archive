@@ -1,73 +1,33 @@
-import {
-  collection,
-  DocumentData,
-  endAt,
-  limit,
-  orderBy,
-  Query,
-  query,
-  QueryDocumentSnapshot,
-  startAfter,
-} from "firebase/firestore";
+import { DocumentData, QueryDocumentSnapshot } from "firebase/firestore";
 import create from "zustand";
 import { devtools } from "zustand/middleware";
-import { db } from "../apis/firebase";
+import { getPostsByQuery } from "../apis/firebase";
 import { IPost, ITag, IUser } from "../libs/custom";
-import {
-  combinePrevAndNewData,
-  getPostsByQuery,
-  setCursorByType,
-} from "./useFeedHelper";
+import { getSearchQueryByType, IFetchType } from "../libs/queryLib";
+import { combineData, setCursor } from "./libStores";
 
 interface ISearchStore {
   posts: IPost[];
-  getPosts: (type: ISearchGetType) => Promise<void>;
+  getPosts: (type: IFetchType) => Promise<void>;
 
   tags: ITag[];
   users: IUser[];
 }
 
-type ISearchGetType = "init" | "load" | "refresh";
-
-const LIMIT = {
-  posts: 18,
-};
-
-let searchLastVisible: QueryDocumentSnapshot<DocumentData>;
-
-function getQueryByType(type: ISearchGetType): Query<DocumentData> {
-  if (type === "init")
-    return query(
-      collection(db, "posts"),
-      orderBy("createdAt", "desc"),
-      limit(LIMIT.posts)
-    );
-  if (type === "load")
-    return query(
-      collection(db, "posts"),
-      orderBy("createdAt", "desc"),
-      startAfter(searchLastVisible),
-      limit(LIMIT.posts)
-    );
-  return query(
-    collection(db, "posts"),
-    orderBy("createdAt", "desc"),
-    endAt(searchLastVisible)
-  );
-}
+let lastVisible: QueryDocumentSnapshot<DocumentData>;
 
 export const useSearch = create<ISearchStore>()(
   devtools((set, get) => ({
     posts: [],
-    getPosts: async (type: ISearchGetType) => {
+    getPosts: async (type: IFetchType) => {
       let posts: IPost[] = [];
       await Promise.all([
         (async () => {
-          const q = getQueryByType(type);
+          const q = getSearchQueryByType(type, lastVisible);
           let [snap, posts] = await getPostsByQuery(q);
-          posts = combinePrevAndNewData(get().posts, posts, type);
-          const lastVisible = setCursorByType(snap, type);
-          if (lastVisible) searchLastVisible = lastVisible;
+          posts = combineData(get().posts, posts, type);
+          const newLastVisible = setCursor(snap, type);
+          if (newLastVisible) lastVisible = newLastVisible;
           return posts;
         })(),
         new Promise((resolve, reject) => {
