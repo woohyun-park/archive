@@ -1,5 +1,4 @@
 import { doc, getDoc } from "firebase/firestore";
-import Image from "next/image";
 import { useEffect, useState } from "react";
 import { HiX } from "react-icons/hi";
 import { db } from "../apis/firebase";

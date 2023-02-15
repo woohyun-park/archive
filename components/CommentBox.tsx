@@ -57,6 +57,12 @@ export default (function CommentBox({ post, user, setPost }: ICommentBoxProps) {
         post.comments?.find((comment) => comment.id === id)?.aid || ""
       )
     );
+    setPost({
+      ...post,
+      comments: [...(post.comments as IComment[])].filter(
+        (post) => post.id !== id
+      ),
+    });
     setPage(page - 1);
   }
   return (
