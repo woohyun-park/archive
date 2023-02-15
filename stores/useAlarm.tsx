@@ -15,15 +15,12 @@ import {
 import create from "zustand";
 import { devtools } from "zustand/middleware";
 import { db, getData, getDatasByQuery } from "../apis/firebase";
-import { IAlarm, IComment, IDict, IPost, ITag, IUser } from "../libs/custom";
-import {
-  combinePrevAndNewData,
-  getPostsByQuery,
-  setCursorByType,
-} from "./useFeedHelper";
+import { IAlarm, IComment, IDict, IPost, IUser } from "../libs/custom";
+import { combinePrevAndNewData, setCursorByType } from "./useFeedHelper";
 
 interface IUseAlarm {
   alarms: IAlarm[];
+  isLast: boolean;
   getAlarms: (type: IAlarmGetType, uid: string) => Promise<void>;
 }
 type IAlarmGetType = "init" | "load" | "refresh";
@@ -93,16 +90,19 @@ async function getAlarmsByQuery(
 export const useAlarm = create<IUseAlarm>()(
   devtools((set, get) => ({
     alarms: [],
+    isLast: false,
     getAlarms: async (type: IAlarmGetType, uid: string) => {
-      let alarms: IAlarm[] = [];
+      let alarms: IAlarm[];
+      let isLast: boolean;
       await Promise.all([
         (async () => {
           const q = getQueryByType(type, uid);
-          let [snap, alarms] = await getAlarmsByQuery(q);
-          alarms = combinePrevAndNewData(get().alarms, alarms, type);
+          let [snap, res] = await getAlarmsByQuery(q);
+          const isLast = res.length < LIMIT ? true : false;
+          alarms = combinePrevAndNewData(get().alarms, res, type);
           const newLastVisible = setCursorByType(snap, type);
           if (newLastVisible) lastVisible = newLastVisible;
-          return alarms;
+          return { alarms, isLast };
         })(),
         new Promise((resolve, reject) => {
           setTimeout(() => {
@@ -110,12 +110,14 @@ export const useAlarm = create<IUseAlarm>()(
           }, 1000);
         }),
       ]).then((values) => {
-        alarms = values[0];
+        alarms = values[0].alarms;
+        isLast = values[0].isLast;
       });
       set((state: IUseAlarm) => {
         return {
           ...state,
           alarms,
+          isLast,
         };
       });
     },

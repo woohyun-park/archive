@@ -61,6 +61,7 @@ export default function PageInfinite({
           {page === "alarm" && (
             <PageAlarm
               alarms={data as IAlarm[]}
+              isLast={isLast || false}
               setLastIntersecting={setLastIntersecting}
             />
           )}

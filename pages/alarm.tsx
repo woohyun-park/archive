@@ -6,11 +6,11 @@ import PageInfinite from "../components/PageInfinite";
 import { useAlarm } from "../stores/useAlarm";
 import { useModal } from "../stores/useModal";
 import { useScrollSave } from "../stores/useScrollSave";
-import ScrollTop from "../components/atoms/ScrollTop";
+import WrapScroll from "../components/wrappers/WrapScroll";
 
 export default function Alarm() {
   const { curUser } = useUser();
-  const { alarms, getAlarms } = useAlarm();
+  const { alarms, getAlarms, isLast } = useAlarm();
   const { setModalLoader } = useModal();
   const { scroll } = useScrollSave();
   useEffect(() => {
@@ -23,14 +23,20 @@ export default function Alarm() {
         setModalLoader(false);
       });
     }
-    scroll["/alarm"] === undefined && init();
-    scrollTo(0, 0);
+    if (scroll["/alarm"] !== undefined) {
+      scrollTo(0, scroll["/alarm"]);
+    } else {
+      init();
+      scrollTo(0, 0);
+    }
   }, []);
   const router = useRouter();
   return (
     <>
-      <div className="flex my-2">
-        <IconBtn icon="back" onClick={() => router.back()} />
+      <div className="flex mt-2 mb-4">
+        <WrapScroll>
+          <IconBtn icon="back" onClick={() => router.back()} />
+        </WrapScroll>
         <div className="title-page">알림</div>
       </div>
       <PageInfinite
@@ -42,6 +48,7 @@ export default function Alarm() {
           await getAlarms("refresh", curUser.id);
         }}
         changeListener={alarms}
+        isLast={isLast}
       />
       <div className="mb-32"></div>
     </>
