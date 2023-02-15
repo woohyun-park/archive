@@ -18,11 +18,6 @@ export default function Nav() {
   const router = useRouter();
   const path = router.pathname;
   const { modalLoader, setModalLoader } = useModal();
-  const { scroll } = useScrollSave();
-
-  useEffect(() => {
-    setModalLoader(false);
-  }, [router.pathname]);
 
   return (
     <>

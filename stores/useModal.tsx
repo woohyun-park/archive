@@ -8,7 +8,7 @@ interface IUseModal {
 
 export const useModal = create<IUseModal>()(
   devtools((set, get) => ({
-    modalLoader: false,
+    modalLoader: true,
     setModalLoader: (modalLoader: boolean) => {
       set((state: IUseModal) => {
         return {

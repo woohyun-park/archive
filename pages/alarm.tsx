@@ -7,13 +7,15 @@ import { useAlarm } from "../stores/useAlarm";
 import { useModal } from "../stores/useModal";
 import { useScrollSave } from "../stores/useScrollSave";
 import WrapScroll from "../components/wrappers/WrapScroll";
+import Motion from "../motions/Motion";
+import { wrapPromise } from "../stores/libStores";
 
 export default function Alarm() {
   const router = useRouter();
 
   const { curUser } = useUser();
   const { alarms, getAlarms, isLast } = useAlarm();
-  const { setModalLoader } = useModal();
+  const { setModalLoader, modalLoader } = useModal();
   const { scroll } = useScrollSave();
 
   useEffect(() => {
@@ -26,34 +28,41 @@ export default function Alarm() {
         setModalLoader(false);
       });
     }
+    console.log("1", modalLoader);
     if (scroll["/alarm"] !== undefined) {
       scrollTo(0, scroll["/alarm"]);
     } else {
+      console.log("2", modalLoader);
       init();
+      console.log("3", modalLoader);
       scrollTo(0, 0);
     }
   }, []);
 
   return (
-    <>
-      <div className="flex mt-2 mb-4">
-        <WrapScroll>
-          <IconBtn icon="back" onClick={() => router.back()} />
-        </WrapScroll>
-        <div className="title-page">알림</div>
-      </div>
-      <PageInfinite
-        page="alarm"
-        data={alarms}
-        onIntersect={() => getAlarms("load", curUser.id)}
-        onChange={() => {}}
-        onRefresh={async () => {
-          await getAlarms("refresh", curUser.id);
-        }}
-        changeListener={alarms}
-        isLast={isLast}
-      />
-      <div className="mb-32"></div>
-    </>
+    <Motion type="fade">
+      {!modalLoader && (
+        <>
+          <div className="flex mt-2 mb-4">
+            <WrapScroll>
+              <IconBtn icon="back" onClick={() => router.back()} />
+            </WrapScroll>
+            <div className="title-page">알림</div>
+          </div>
+          <PageInfinite
+            page="alarm"
+            data={alarms}
+            onIntersect={() => getAlarms("load", curUser.id)}
+            onChange={() => {}}
+            onRefresh={async () => {
+              await getAlarms("refresh", curUser.id);
+            }}
+            changeListener={alarms}
+            isLast={isLast}
+          />
+          <div className="mb-32"></div>
+        </>
+      )}
+    </Motion>
   );
 }

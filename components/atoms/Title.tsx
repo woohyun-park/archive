@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { IPost } from "../../libs/custom";
 import { useModal } from "../../stores/useModal";

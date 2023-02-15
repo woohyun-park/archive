@@ -12,7 +12,7 @@ import { useKeyword } from "../stores/useKeyword";
 import PageInfinite from "../components/PageInfinite";
 import WrapScroll from "../components/wrappers/WrapScroll";
 import { useModal } from "../stores/useModal";
-import { wrapPromise } from "../stores/libStores";
+import WrapLink from "../components/wrappers/WrapLinkLoader";
 
 export default function Feed() {
   const { curUser } = useUser();
@@ -36,6 +36,7 @@ export default function Feed() {
   const keyword = keywords[router.pathname] || "";
 
   useEffect(() => {
+    setModalLoader(false);
     setTimeout(() => {
       if (refresh) {
         window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
@@ -76,18 +77,12 @@ export default function Feed() {
         </h1>
         <WrapScroll>
           <div className="flex items-center justify-center">
-            <IconBtn
-              icon="alarm"
-              onClick={async () => {
-                await wrapPromise(() => setModalLoader(true), 1000);
-                router.push("/alarm");
-              }}
-            />
-            <ProfileImg
-              size="sm"
-              photoURL={curUser.photoURL}
-              onClick={() => router.push(`/profile/${curUser.id}`)}
-            />
+            <WrapLink href="/alarm" loader={true}>
+              <IconBtn icon="alarm" />
+            </WrapLink>
+            <WrapLink href={`/profile/${curUser.id}`} loader={true}>
+              <ProfileImg size="sm" photoURL={curUser.photoURL} />
+            </WrapLink>
           </div>
         </WrapScroll>
       </div>

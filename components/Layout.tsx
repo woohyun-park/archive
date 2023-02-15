@@ -142,10 +142,6 @@ export default function Layout({ children }: ILayoutProps) {
       "",
     ],
   ];
-  const { modalLoader, setModalLoader } = useModal();
-  useEffect(() => {
-    setModalLoader(false);
-  }, [router.pathname]);
   return (
     <>
       {login.isLoggedIn === null ? (
