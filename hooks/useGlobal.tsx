@@ -1,12 +1,10 @@
 import { useEffect, useState } from "react";
 import { IDict, IPost } from "../libs/custom";
 import { IFetchType } from "../libs/queryLib";
-import { wrapPromise } from "../stores/libStores";
 import { useCache } from "../stores/useCache";
 import { useFeed } from "../stores/useFeed";
 import { useSearch } from "../stores/useSearch";
 
-interface IUseGlobalType {}
 export const useGlobal = () => {
   const feed = useFeed();
   const search = useSearch();

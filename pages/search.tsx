@@ -1,7 +1,7 @@
 import { SIZE } from "../libs/custom";
 import { HiMagnifyingGlass } from "react-icons/hi2";
 import Link from "next/link";
-import Motion from "../motions/Motion";
+import WrapMotion from "../components/wrappers/WrapMotion";
 import { useSearch } from "../stores/useSearch";
 import { useEffect, useState } from "react";
 import PageInfinite from "../components/PageInfinite";
@@ -27,7 +27,7 @@ export default function Search() {
 
   return (
     <>
-      <Motion type="fade">
+      <WrapMotion type="fade">
         <Link href="/search-modal">
           <div className="flex">
             <div className="flex items-center w-full px-[0.25rem] py-[0.375rem] my-[0.75rem] mb-1 rounded-md bg-gray-3 hover:cursor-pointer">
@@ -48,7 +48,7 @@ export default function Search() {
           changeListener={posts}
           isLast={isLast}
         />
-      </Motion>
+      </WrapMotion>
       <div className="mb-24"></div>
     </>
   );

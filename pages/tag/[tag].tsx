@@ -5,7 +5,7 @@ import { getPostsByQuery } from "../../apis/firebase";
 import IconBtn from "../../components/atoms/IconBtn";
 import PageInfinite from "../../components/PageInfinite";
 import WrapScroll from "../../components/wrappers/WrapScroll";
-import Motion from "../../motions/Motion";
+import Motion from "../../components/wrappers/WrapMotion";
 import { useModal } from "../../stores/useModal";
 import { useTag } from "../../stores/useTag";
 

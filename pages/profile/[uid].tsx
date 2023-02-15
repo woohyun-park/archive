@@ -12,7 +12,7 @@ import Tab from "../../components/Tab";
 import { IDict, IPost, IScrap, ITag, IUser, SIZE } from "../../libs/custom";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import Motion from "../../motions/Motion";
+import Motion from "../../components/wrappers/WrapMotion";
 import Btn from "../../components/atoms/Btn";
 import { useUser } from "../../stores/useUser";
 import IconBtn from "../../components/atoms/IconBtn";

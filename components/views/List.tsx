@@ -3,7 +3,7 @@ import { RiHashtag } from "react-icons/ri";
 import { POST_PER_PAGE, useStore } from "../../stores/useStore";
 import { IRoute, IPost, IType, IDict, ITag, SIZE } from "../../libs/custom";
 import { useInfiniteScroll } from "../../hooks/useInfiniteScroll";
-import Motion from "../../motions/Motion";
+import WrapMotion from "../wrappers/WrapMotion";
 import Box from "../Box";
 import Loader from "../Loader";
 import Link from "next/link";
@@ -51,7 +51,7 @@ export default function List({ data, type, route, handleChange }: IListProps) {
             {Children.toArray(
               (data as ITag[]).map((e, i) => (
                 <>
-                  <Motion type="float">
+                  <WrapMotion type="float">
                     <Link href={`tag/${e.name}`}>
                       <div className="flex items-center my-2 hover:cursor-pointer">
                         <div className="p-2 mr-2 rounded-full bg-gray-3 w-fit">
@@ -60,7 +60,7 @@ export default function List({ data, type, route, handleChange }: IListProps) {
                         <div className="my-1 text-base text-left">{`#${e.name}`}</div>
                       </div>
                     </Link>
-                  </Motion>
+                  </WrapMotion>
                   {i === (data as ITag[]).length - 1 && (
                     <div ref={setLastIntersecting}></div>
                   )}

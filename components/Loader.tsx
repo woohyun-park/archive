@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import Motion from "../motions/Motion";
+import WrapMotion from "./wrappers/WrapMotion";
 
 interface ILoaderProps {
   isVisible?: boolean;
@@ -30,14 +30,14 @@ export default function Loader({
         }
         ref={ref}
       >
-        <Motion type="float" key="loader_m1">
+        <WrapMotion type="float" key="loader_m1">
           <div className="lds-ellipsis">
             <div></div>
             <div></div>
             <div></div>
             <div></div>
           </div>
-        </Motion>
+        </WrapMotion>
       </div>
 
       <style jsx>

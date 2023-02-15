@@ -11,7 +11,6 @@ export default function PageFeed({
   posts,
   setLastIntersecting,
 }: IPageFeedProps) {
-  console.log(posts);
   return (
     <>
       <AnimatePresence>

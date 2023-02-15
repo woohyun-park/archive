@@ -2,9 +2,8 @@ import axios, { AxiosRequestConfig } from "axios";
 import { useRouter } from "next/router";
 import React, { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import Image from "next/image";
 import { updateUser } from "../apis/firebase";
-import Motion from "../motions/Motion";
+import WrapMotion from "../components/wrappers/WrapMotion";
 import Btn from "../components/atoms/Btn";
 import IconBtn from "../components/atoms/IconBtn";
 import { useUser } from "../stores/useUser";
@@ -92,7 +91,7 @@ export default function Setting() {
 
   return (
     <>
-      <Motion type="fade">
+      <WrapMotion type="fade">
         {isSubmitting && (
           <div className="absolute top-0 left-0 z-10 w-full h-full bg-black/20"></div>
         )}
@@ -149,7 +148,7 @@ export default function Setting() {
           />
           <Btn label="변경" type="submit" />
         </form>
-      </Motion>
+      </WrapMotion>
     </>
   );
 }

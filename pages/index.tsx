@@ -1,10 +1,10 @@
-import Motion from "../motions/Motion";
+import WrapMotion from "../components/wrappers/WrapMotion";
 import Feed from "./feed";
 
 export default function Index() {
   return (
-    <Motion type="fade">
+    <WrapMotion type="fade">
       <Feed />
-    </Motion>
+    </WrapMotion>
   );
 }

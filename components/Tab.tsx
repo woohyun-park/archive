@@ -1,7 +1,7 @@
 import { Children, useState } from "react";
 import Box from "./Box";
 import { IPost, IUser, IDict, ITag, IRoute, getRoute } from "../libs/custom";
-import Motion from "../motions/Motion";
+import WrapMotion from "./wrappers/WrapMotion";
 import ProfileSmall from "./ProfileSmall";
 import List from "./views/List";
 
@@ -76,9 +76,9 @@ export default function Tab({ data, tab, route }: ITabProps) {
               return (
                 <>
                   {(data[key] as IUser[]).map((user) => (
-                    <Motion type="float">
+                    <WrapMotion type="float">
                       <ProfileSmall user={user} type="post" />
-                    </Motion>
+                    </WrapMotion>
                   ))}
                 </>
               );

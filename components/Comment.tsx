@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { HiX } from "react-icons/hi";
 import { db } from "../apis/firebase";
 import { IComment, IUser } from "../libs/custom";
-import Motion from "../motions/Motion";
+import WrapMotion from "./wrappers/WrapMotion";
 import { displayCreatedAt } from "../libs/timeLib";
 import { useUser } from "../stores/useUser";
 import ProfileImg from "./atoms/ProfileImg";
@@ -31,7 +31,7 @@ export default function Comment({ comment, onClick }: ICommentProps) {
 
   return (
     <>
-      <Motion type="float">
+      <WrapMotion type="float">
         <div className="flex items-end justify-between my-1">
           <div className="flex items-center mt-2 mb-1">
             <ProfileImg
@@ -65,7 +65,7 @@ export default function Comment({ comment, onClick }: ICommentProps) {
             <></>
           )}
         </div>
-      </Motion>
+      </WrapMotion>
     </>
   );
 }

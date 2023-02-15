@@ -1,7 +1,7 @@
 import { AnimatePresence } from "framer-motion";
 import React, { ReactNode, useEffect, useState } from "react";
 import ReactDOM from "react-dom";
-import Motion from "../motions/Motion";
+import WrapMotion from "./wrappers/WrapMotion";
 
 interface IModal {
   isVisible: boolean;
@@ -24,11 +24,11 @@ export default function Modal({ isVisible, content }: IModal) {
     return ReactDOM.createPortal(
       <AnimatePresence>
         {isVisible && (
-          <Motion type="fade" key={"modal"}>
+          <WrapMotion type="fade" key={"modal"}>
             <div className="top-0 w-[100%] h-[100vh] fixed max-w-[480px] bg-black/50">
               {content}
             </div>
-          </Motion>
+          </WrapMotion>
         )}
       </AnimatePresence>,
       document.getElementById("modal-root") as Element

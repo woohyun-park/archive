@@ -5,7 +5,7 @@ import React, { Children, useEffect, useRef, useState } from "react";
 import { useStore } from "../stores/useStore";
 import { updateUser } from "../apis/firebase";
 import { useRouter } from "next/router";
-import Motion from "../motions/Motion";
+import WrapMotion from "../components/wrappers/WrapMotion";
 import { useOutsideClick } from "../hooks/useOutsideClick";
 import { useUser } from "../stores/useUser";
 import { useKeyword } from "../stores/useKeyword";
@@ -119,13 +119,13 @@ export default function Search() {
         // key에 변수를 넣어서 강제로 리렌더링!
         // 왜냐하면 그냥 {resultTitle}에 대한 검색결과에만 변수를 넣으면
         // 해당부분만 리렌더링되므로 애니메이션이 트리거되지 않기때문
-        <Motion type="float" key={state.searchedKeyword}>
+        <WrapMotion type="float" key={state.searchedKeyword}>
           <h1 className="mt-8 mb-2 text-lg font-bold">
             {state.searchedKeyword}에 대한 검색결과
           </h1>
-        </Motion>
+        </WrapMotion>
       )}
-      <Motion type="fade">
+      <WrapMotion type="fade">
         <div ref={recentRef}>
           <div className="flex w-full">
             <div className="w-full">
@@ -166,7 +166,7 @@ export default function Search() {
                       (each) => keyword === "" || each.indexOf(keyword) === 0
                     )
                     .map((e, i) => (
-                      <Motion type="float">
+                      <WrapMotion type="float">
                         <div className="flex items-center justify-between my-4 text-sm text-gray-1">
                           <div
                             className="w-full hover:cursor-pointer"
@@ -182,7 +182,7 @@ export default function Search() {
                             <HiX size={SIZE.iconSm} />
                           </div>
                         </div>
-                      </Motion>
+                      </WrapMotion>
                     ))
                 )}
               </div>
@@ -202,7 +202,7 @@ export default function Search() {
             route="search"
           />
         )}
-      </Motion>
+      </WrapMotion>
     </>
   );
 }

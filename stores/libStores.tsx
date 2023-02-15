@@ -32,7 +32,7 @@ export function combineData<T>(prevData: T[], data: T[], type: IFetchType) {
 
 export function setCursor(
   snap: QuerySnapshot<DocumentData>,
-  type: IQueryType
+  type: IFetchType
 ): QueryDocumentSnapshot<DocumentData> | null {
   if (snap.docs.length !== 0) {
     if (type === "init") {

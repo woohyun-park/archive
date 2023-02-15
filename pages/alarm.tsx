@@ -7,8 +7,7 @@ import { useAlarm } from "../stores/useAlarm";
 import { useModal } from "../stores/useModal";
 import { useStatus } from "../stores/useStatus";
 import WrapScroll from "../components/wrappers/WrapScroll";
-import Motion from "../motions/Motion";
-import { wrapPromise } from "../stores/libStores";
+import Motion from "../components/wrappers/WrapMotion";
 
 export default function Alarm() {
   const router = useRouter();

@@ -1,20 +1,20 @@
-import { AnimatePresence, motion, Variants } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 
-type IMotion = {
+type IWrapMotion = {
   children: React.ReactNode;
-  type: IMotionType;
+  type: IWrapMotionType;
   duration?: number;
   className?: string;
 };
 
-export type IMotionType = "float" | "fade";
+export type IWrapMotionType = "float" | "fade";
 
-export default function Motion({
+export default function WrapMotion({
   children,
   type,
   duration = 0.33,
   className,
-}: IMotion) {
+}: IWrapMotion) {
   return (
     <>
       <motion.div

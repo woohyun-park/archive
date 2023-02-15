@@ -9,7 +9,7 @@ import { IUser } from "../libs/custom";
 import { useUser } from "../stores/useUser";
 import { Children } from "react";
 import { useModal } from "../stores/useModal";
-import Motion from "../motions/Motion";
+import WrapMotion from "./wrappers/WrapMotion";
 import PostTitle from "./atoms/PostTitle";
 
 interface IFeedPostProps {
@@ -23,7 +23,7 @@ export default function FeedPost({ post }: IFeedPostProps) {
   const { setModalLoader } = useModal();
   return (
     <>
-      <Motion type="float" className="px-4 py-1 bg-white">
+      <WrapMotion type="float" className="px-4 py-1 bg-white">
         <WrapScroll>
           <ProfileSmall post={post} user={post.author as IUser} type="post" />
           <Box post={post} />
@@ -53,7 +53,7 @@ export default function FeedPost({ post }: IFeedPostProps) {
             }}
           />
         </WrapScroll>
-      </Motion>
+      </WrapMotion>
     </>
   );
 }

@@ -16,7 +16,7 @@ import { useUser } from "../stores/useUser";
 import Btn from "../components/atoms/Btn";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import Motion from "../motions/Motion";
+import WrapMotion from "./wrappers/WrapMotion";
 import { RiGoogleFill } from "react-icons/ri";
 import { useModal } from "../stores/useModal";
 import ScrollTop from "./atoms/ScrollTop";
@@ -169,14 +169,14 @@ export default function Layout({ children }: ILayoutProps) {
             {Children.toArray(
               message.map((e, i) =>
                 i === page ? (
-                  <Motion type="float">
+                  <WrapMotion type="float">
                     <div className="mb-4 text-center">{e[0]}</div>
                     <Image
                       src={e[1]}
                       alt=""
                       className="mb-16 bg-white h-72 w-72"
                     />
-                  </Motion>
+                  </WrapMotion>
                 ) : (
                   <></>
                 )

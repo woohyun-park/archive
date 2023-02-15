@@ -30,8 +30,6 @@ export default function Feed() {
 
   const keyword = keywords[router.pathname] || "";
 
-  console.log("feed", posts);
-
   useEffect(() => {
     setModalLoader(false);
     setTimeout(() => {

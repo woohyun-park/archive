@@ -16,7 +16,7 @@ import IconBtn from "../../components/atoms/IconBtn";
 import { useUser } from "../../stores/useUser";
 import PostTitle from "../../components/atoms/PostTitle";
 import CommentBox from "../../components/CommentBox";
-import Motion from "../../motions/Motion";
+import Motion from "../../components/wrappers/WrapMotion";
 import { useFeed } from "../../stores/useFeed";
 import { useModal } from "../../stores/useModal";
 
