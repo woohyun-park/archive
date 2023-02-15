@@ -7,6 +7,7 @@ import {
   HiOutlineLightBulb,
 } from "react-icons/hi2";
 import { SIZE } from "../libs/custom";
+import Motion from "../motions/Motion";
 import { useModal } from "../stores/useModal";
 import { useScrollSave } from "../stores/useScrollSave";
 import ScrollTop from "./atoms/ScrollTop";

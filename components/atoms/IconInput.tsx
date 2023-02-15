@@ -1,9 +1,9 @@
 import { AnimatePresence } from "framer-motion";
 import { SIZE } from "../../libs/custom";
-import { fadeVariants } from "../../libs/motionLib";
 import { motion } from "framer-motion";
 import IconBtn from "./IconBtn";
 import { ChangeEvent, MouseEvent } from "react";
+import Motion from "../../motions/Motion";
 
 interface IIconInputProps {
   icon: "filter" | "search";
@@ -37,7 +37,7 @@ export default function IconInput({
           </div>
         )}
         <AnimatePresence>
-          <motion.div className="top-0 z-0 w-full" variants={fadeVariants}>
+          <Motion type="fade" className="top-0 z-0 w-full">
             <input
               type="text"
               placeholder={placeholder}
@@ -51,7 +51,7 @@ export default function IconInput({
                 fontSize: "0.875rem",
               }}
             />
-          </motion.div>
+          </Motion>
         </AnimatePresence>
       </div>
       <style jsx>

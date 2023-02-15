@@ -1,5 +1,4 @@
 import React, { ReactNode, useEffect, useState } from "react";
-import ReactDOM from "react-dom";
 import Modal from "./Modal";
 
 interface IModalLoaderProps {

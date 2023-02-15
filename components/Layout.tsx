@@ -18,7 +18,6 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import Motion from "../motions/Motion";
 import { RiGoogleFill } from "react-icons/ri";
-import ModalLoader from "./ModalLoader";
 import { useModal } from "../stores/useModal";
 import ScrollTop from "./atoms/ScrollTop";
 

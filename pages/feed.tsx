@@ -11,6 +11,8 @@ import { debounce } from "lodash";
 import { useKeyword } from "../stores/useKeyword";
 import PageInfinite from "../components/PageInfinite";
 import WrapScroll from "../components/wrappers/WrapScroll";
+import { useModal } from "../stores/useModal";
+import { wrapPromise } from "../stores/libStores";
 
 export default function Feed() {
   const { curUser } = useUser();
@@ -25,6 +27,7 @@ export default function Feed() {
   } = useFeed();
   const { keywords, setKeywords } = useKeyword();
   const { scroll } = useScrollSave();
+  const { setModalLoader } = useModal();
 
   const router = useRouter();
   const [filterLoading, setFilterLoading] = useState(false);
@@ -73,7 +76,13 @@ export default function Feed() {
         </h1>
         <WrapScroll>
           <div className="flex items-center justify-center">
-            <IconBtn icon="alarm" onClick={() => router.push("/alarm")} />
+            <IconBtn
+              icon="alarm"
+              onClick={async () => {
+                await wrapPromise(() => setModalLoader(true), 1000);
+                router.push("/alarm");
+              }}
+            />
             <ProfileImg
               size="sm"
               photoURL={curUser.photoURL}

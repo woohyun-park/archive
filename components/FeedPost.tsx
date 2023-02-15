@@ -6,12 +6,11 @@ import WrapScroll from "../components/wrappers/WrapScroll";
 import Action from "../components/Action";
 import ProfileSmall from "../components/ProfileSmall";
 import { IUser } from "../libs/custom";
-import { motion } from "framer-motion";
-import { floatVariants } from "../libs/motionLib";
 import { useUser } from "../stores/useUser";
 import Title from "./atoms/Title";
 import { Children } from "react";
 import { useModal } from "../stores/useModal";
+import Motion from "../motions/Motion";
 
 interface IFeedPostProps {
   post: IPost;
@@ -24,15 +23,7 @@ export default function FeedPost({ post }: IFeedPostProps) {
   const { setModalLoader } = useModal();
   return (
     <>
-      <motion.div
-        key={post.id}
-        initial="initial"
-        animate="animate"
-        exit="exit"
-        viewport={{ once: true, amount: 0.1 }}
-        variants={floatVariants}
-        className="px-4 py-1 bg-white "
-      >
+      <Motion type="float" className="px-4 py-1 bg-white">
         <WrapScroll>
           <ProfileSmall post={post} user={post.author as IUser} type="post" />
           <Box post={post} />
@@ -62,7 +53,7 @@ export default function FeedPost({ post }: IFeedPostProps) {
             }}
           />
         </WrapScroll>
-      </motion.div>
+      </Motion>
     </>
   );
 }
