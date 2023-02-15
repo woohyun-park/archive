@@ -7,15 +7,18 @@ import { useEffect, useState } from "react";
 import PageInfinite from "../components/PageInfinite";
 import { useRouter } from "next/router";
 import { useScrollSave } from "../stores/useScrollSave";
+import { useGlobal } from "../hooks/useGlobal";
 
 export default function Search() {
-  const { posts, getPosts } = useSearch();
+  const { posts, getPosts, setPosts } = useSearch();
   const { scroll, setScroll } = useScrollSave();
+  const { getSearch } = useGlobal();
+
   const router = useRouter();
   useEffect(() => {
     async function init() {
-      if (!scroll[router.pathname]) {
-        await getPosts("init");
+      if (scroll[router.pathname] === undefined) {
+        await getSearch("init");
         setScroll(router.pathname, 0);
       }
     }
@@ -35,10 +38,14 @@ export default function Search() {
         <PageInfinite
           page="search"
           data={posts}
-          onIntersect={() => getPosts("load")}
+          onIntersect={async () => {
+            await getSearch("load");
+          }}
           onChange={() => {}}
-          onRefresh={async () => await getPosts("refresh")}
-          changeListener={posts}
+          onRefresh={async () => {
+            await getSearch("refresh");
+          }}
+          changeListener={true}
         />
       </Motion>
       <div className="mb-24"></div>

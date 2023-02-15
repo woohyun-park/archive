@@ -13,18 +13,13 @@ import PageInfinite from "../components/PageInfinite";
 import WrapScroll from "../components/wrappers/WrapScroll";
 import { useModal } from "../stores/useModal";
 import WrapLink from "../components/wrappers/WrapLink";
+import { useGlobal } from "../hooks/useGlobal";
 
 export default function Feed() {
   const { curUser } = useUser();
-  const {
-    posts,
-    filteredPosts,
-    refresh,
-    getPosts,
-    getFilteredPosts,
-    setFilteredPosts,
-    setRefresh,
-  } = useFeed();
+  const { getFeed, getFilteredFeed } = useGlobal();
+  const { posts, filteredPosts, refresh, setFilteredPosts, setRefresh } =
+    useFeed();
   const { keywords, setKeywords } = useKeyword();
   const { scroll } = useScrollSave();
   const { setModalLoader } = useModal();
@@ -34,6 +29,8 @@ export default function Feed() {
   const [resetFilter, setResetFilter] = useState<boolean | null>(null);
 
   const keyword = keywords[router.pathname] || "";
+
+  console.log("feed", posts);
 
   useEffect(() => {
     setModalLoader(false);
@@ -57,9 +54,9 @@ export default function Feed() {
   useEffect(() => {
     async function filterPosts() {
       if (keyword.length === 0) {
-        await getPosts(curUser.id, "refresh");
+        await getFeed("refresh", curUser.id);
       } else {
-        await getFilteredPosts(curUser.id, "init", keyword);
+        await getFilteredFeed("init", curUser.id, keyword);
       }
       setFilterLoading(false);
     }
@@ -112,10 +109,10 @@ export default function Feed() {
         <PageInfinite
           page="feed"
           data={posts}
-          onIntersect={() => getPosts(curUser.id, "load")}
+          onIntersect={() => getFeed("load", curUser.id)}
           onChange={() => {}}
           onRefresh={async () => {
-            await getPosts(curUser.id, "refresh");
+            await getFeed("refresh", curUser.id);
           }}
           changeListener={posts}
         />
@@ -123,10 +120,10 @@ export default function Feed() {
         <PageInfinite
           page="feed"
           data={filteredPosts}
-          onIntersect={() => getFilteredPosts(curUser.id, "load", keyword)}
+          onIntersect={() => getFilteredFeed("load", curUser.id, keyword)}
           onChange={() => {}}
           onRefresh={async () => {
-            await getFilteredPosts(curUser.id, "refresh", keyword);
+            await getFilteredFeed("refresh", curUser.id, keyword);
           }}
           changeListener={filteredPosts}
         />

@@ -23,8 +23,8 @@ export const FETCH_LIMIT = {
 };
 
 export function getFeedQuery(
-  user: IUser,
   type: IFetchType,
+  user: IUser,
   lastVisible: QueryDocumentSnapshot<DocumentData>
 ): Query<DocumentData> {
   const id = user.id;
@@ -52,8 +52,8 @@ export function getFeedQuery(
 }
 
 export function getFilteredFeedQuery(
-  user: IUser,
   type: IFetchType,
+  user: IUser,
   tag: string,
   lastVisible: QueryDocumentSnapshot<DocumentData>
 ): Query<DocumentData> {

@@ -8,7 +8,8 @@ import { combineData, setCursor } from "./libStores";
 
 interface ISearchStore {
   posts: IPost[];
-  getPosts: (type: IFetchType) => Promise<void>;
+  getPosts: (type: IFetchType) => Promise<IPost[]>;
+  setPosts: (posts: IPost[]) => void;
 
   tags: ITag[];
   users: IUser[];
@@ -38,6 +39,15 @@ export const useSearch = create<ISearchStore>()(
       ]).then((values) => {
         posts = values[0];
       });
+      set((state: ISearchStore) => {
+        return {
+          ...state,
+          posts,
+        };
+      });
+      return posts;
+    },
+    setPosts: (posts: IPost[]) => {
       set((state: ISearchStore) => {
         return {
           ...state,

@@ -1,11 +1,8 @@
 import React, { useRef, useState } from "react";
 import { COLOR, IPost, IDict } from "../libs/custom";
 import { useRouter } from "next/router";
-import { HiX } from "react-icons/hi";
 import { useForm } from "react-hook-form";
-import Color from "../components/atoms/Color";
 import Image from "next/image";
-import Modal from "../components/Modal";
 import Motion from "../motions/Motion";
 import IconBtn from "../components/atoms/IconBtn";
 import { useUser } from "../stores/useUser";

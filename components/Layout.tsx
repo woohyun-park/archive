@@ -10,7 +10,7 @@ import { useStore } from "../stores/useStore";
 import { auth, db } from "../apis/firebase";
 import Nav from "./Nav";
 import { doc, getDoc, setDoc } from "firebase/firestore";
-import { COLOR, DEFAULT, IUser, SIZE } from "../libs/custom";
+import { COLOR, DEFAULT, IDict, IPost, IUser, SIZE } from "../libs/custom";
 import { useFeed } from "../stores/useFeed";
 import { useUser } from "../stores/useUser";
 import Btn from "../components/atoms/Btn";
@@ -20,6 +20,8 @@ import Motion from "../motions/Motion";
 import { RiGoogleFill } from "react-icons/ri";
 import { useModal } from "../stores/useModal";
 import ScrollTop from "./atoms/ScrollTop";
+import { useCache } from "../stores/useCache";
+import { useGlobal } from "../hooks/useGlobal";
 
 interface ILayoutProps {
   children: React.ReactNode;
@@ -38,7 +40,6 @@ export default function Layout({ children }: ILayoutProps) {
   const router = useRouter();
   const { gInit } = useStore();
   const { getCurUser } = useUser();
-  const { getPosts } = useFeed();
   const [login, setLogin] = useState<ILogin>({
     email: "",
     password: "",
@@ -46,13 +47,14 @@ export default function Layout({ children }: ILayoutProps) {
     isLoggedIn: null,
     error: "",
   });
+  const { getFeed } = useGlobal();
 
   useEffect(() => {
     auth.onAuthStateChanged(async (authState) => {
       if (authState) {
         await gInit(authState.uid);
         await getCurUser(authState.uid);
-        await getPosts(authState.uid, "init");
+        await getFeed("init", authState.uid);
         setLogin({ ...login, isLoggedIn: true });
       } else {
         setLogin({ ...login, isLoggedIn: false });

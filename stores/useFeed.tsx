@@ -15,12 +15,12 @@ interface IFeedStore {
   filteredPosts: IPost[];
   refresh: boolean;
   isLast: boolean;
-  getPosts: (id: string, type: IFetchType) => Promise<void>;
+  getPosts: (type: IFetchType, id: string) => Promise<IPost[]>;
   getFilteredPosts: (
-    id: string,
     type: IFetchType,
+    id: string,
     tag: string
-  ) => Promise<void>;
+  ) => Promise<IPost[]>;
   setPosts: (posts: IPost[]) => void;
   setFilteredPosts: (filteredPosts: IPost[]) => void;
   setRefresh: (refresh: boolean) => void;
@@ -38,8 +38,8 @@ async function getPostsHelper(
   return await wrapPromise(async () => {
     const user = await getDataByRef<IUser>(doc(db, "users", id));
     const q = tag
-      ? getFilteredFeedQuery(user, type, tag, lastFilteredVisible)
-      : getFeedQuery(user, type, lastVisible);
+      ? getFilteredFeedQuery(type, user, tag, lastFilteredVisible)
+      : getFeedQuery(type, user, lastVisible);
     let [snap, posts] = await getPostsByQuery(q);
     posts = combineData(prevPosts, posts, type);
     const newLastVisible = setCursor(snap, type);
@@ -57,7 +57,7 @@ export const useFeed = create<IFeedStore>()(
     filteredPosts: [] as IPost[],
     refresh: false,
     isLast: false,
-    getPosts: async (id: string, type: IFetchType) => {
+    getPosts: async (type: IFetchType, id: string) => {
       const { posts } = await getPostsHelper(id, type, get().posts);
       set((state: IFeedStore) => {
         return {
@@ -65,8 +65,9 @@ export const useFeed = create<IFeedStore>()(
           posts,
         };
       });
+      return posts;
     },
-    getFilteredPosts: async (id: string, type: IFetchType, tag: string) => {
+    getFilteredPosts: async (type: IFetchType, id: string, tag: string) => {
       const { filteredPosts } = await getPostsHelper(
         id,
         type,
@@ -79,6 +80,7 @@ export const useFeed = create<IFeedStore>()(
           filteredPosts,
         };
       });
+      return filteredPosts;
     },
     setPosts: (posts: IPost[]) => {
       set((state: IFeedStore) => {
