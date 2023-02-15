@@ -30,10 +30,15 @@ body {
     letter-spacing: -0.1rem;
     @apply text-4xl font-bold -translate-y-1;
   }
-  .title-page {
+  .title-page-base {
     font-family: "LINESeedKR-Rg", sans-serif;
     letter-spacing: -0.1rem;
     @apply text-4xl;
+  }
+  .title-page-sm {
+    font-family: "LINESeedKR-Rg", sans-serif;
+    letter-spacing: -0.1rem;
+    @apply text-3xl;
   }
 
   .profileImg-sm {

@@ -2,32 +2,29 @@ import { DocumentData, QueryDocumentSnapshot } from "firebase/firestore";
 import create from "zustand";
 import { devtools } from "zustand/middleware";
 import { getPostsByQuery } from "../apis/firebase";
-import { IPost, ITag, IUser } from "../libs/custom";
-import { getSearchQueryByType, IFetchType } from "../libs/queryLib";
+import { IDict, IPost, ITag, IUser } from "../libs/custom";
+import { getTagQuery, IFetchType } from "../libs/queryLib";
 import { combineData, setCursor } from "./libStores";
 
-interface ISearchStore {
-  posts: IPost[];
-  getPosts: (type: IFetchType) => Promise<void>;
-
-  tags: ITag[];
-  users: IUser[];
+interface IUseTag {
+  dictPosts: IDict<IPost[]>;
+  getPosts: (type: IFetchType, tag: string) => Promise<void>;
 }
 
-let lastVisible: QueryDocumentSnapshot<DocumentData>;
+const dictLastVisible: IDict<QueryDocumentSnapshot<DocumentData>> = {};
 
-export const useSearch = create<ISearchStore>()(
+export const useTag = create<IUseTag>()(
   devtools((set, get) => ({
-    posts: [],
-    getPosts: async (type: IFetchType) => {
+    dictPosts: {},
+    getPosts: async (type: IFetchType, tag: string) => {
       let posts: IPost[] = [];
       await Promise.all([
         (async () => {
-          const q = getSearchQueryByType(type, lastVisible);
+          const q = getTagQuery(type, tag, dictLastVisible[tag]);
           let [snap, posts] = await getPostsByQuery(q);
-          posts = combineData(get().posts, posts, type);
+          posts = combineData(get().dictPosts[tag], posts, type);
           const newLastVisible = setCursor(snap, type);
-          if (newLastVisible) lastVisible = newLastVisible;
+          if (newLastVisible) dictLastVisible[tag] = newLastVisible;
           return posts;
         })(),
         new Promise((resolve, reject) => {
@@ -38,14 +35,12 @@ export const useSearch = create<ISearchStore>()(
       ]).then((values) => {
         posts = values[0];
       });
-      set((state: ISearchStore) => {
+      set((state: IUseTag) => {
+        state.dictPosts[tag] = posts;
         return {
           ...state,
-          posts,
         };
       });
     },
-    tags: [],
-    users: [],
   }))
 );

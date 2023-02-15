@@ -135,3 +135,31 @@ export function getAlarmQuery(
     endAt(lastVisible)
   );
 }
+
+export function getTagQuery(
+  type: IFetchType,
+  tag: string,
+  lastVisible: QueryDocumentSnapshot<DocumentData>
+): Query<DocumentData> {
+  if (type === "init")
+    return query(
+      collection(db, "posts"),
+      where("tags", "array-contains", tag),
+      orderBy("createdAt", "desc"),
+      limit(FETCH_LIMIT.post1)
+    );
+  if (type === "load")
+    return query(
+      collection(db, "posts"),
+      where("tags", "array-contains", tag),
+      orderBy("createdAt", "desc"),
+      startAfter(lastVisible),
+      limit(FETCH_LIMIT.post1)
+    );
+  return query(
+    collection(db, "posts"),
+    where("tags", "array-contains", tag),
+    orderBy("createdAt", "desc"),
+    endAt(lastVisible)
+  );
+}

@@ -44,7 +44,7 @@ export default function Alarm() {
             <WrapScroll className="flex">
               <IconBtn icon="back" onClick={() => router.back()} />
             </WrapScroll>
-            <div className="title-page">알림</div>
+            <div className="title-page-base">알림</div>
           </div>
           <PageInfinite
             page="alarm"
