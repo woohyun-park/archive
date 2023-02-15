@@ -9,7 +9,7 @@ import {
 import { SIZE } from "../libs/custom";
 import Motion from "../motions/Motion";
 import { useModal } from "../stores/useModal";
-import { useScrollSave } from "../stores/useScrollSave";
+import { useScrollSave } from "../stores/useStatus";
 import ScrollTop from "./atoms/ScrollTop";
 import ModalLoader from "./ModalLoader";
 import WrapScroll from "./wrappers/WrapScroll";

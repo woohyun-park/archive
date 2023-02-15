@@ -6,12 +6,12 @@ import { useSearch } from "../stores/useSearch";
 import { useEffect, useState } from "react";
 import PageInfinite from "../components/PageInfinite";
 import { useRouter } from "next/router";
-import { useScrollSave } from "../stores/useScrollSave";
+import { useStatus } from "../stores/useStatus";
 import { useGlobal } from "../hooks/useGlobal";
 
 export default function Search() {
   const { posts, isLast } = useSearch();
-  const { scroll, setScroll } = useScrollSave();
+  const { scroll, setScroll } = useStatus();
   const { getSearch } = useGlobal();
 
   const router = useRouter();

@@ -5,7 +5,7 @@ import { useUser } from "../stores/useUser";
 import PageInfinite from "../components/PageInfinite";
 import { useAlarm } from "../stores/useAlarm";
 import { useModal } from "../stores/useModal";
-import { useScrollSave } from "../stores/useScrollSave";
+import { useStatus } from "../stores/useStatus";
 import WrapScroll from "../components/wrappers/WrapScroll";
 import Motion from "../motions/Motion";
 import { wrapPromise } from "../stores/libStores";
@@ -16,7 +16,7 @@ export default function Alarm() {
   const { curUser } = useUser();
   const { alarms, getAlarms, isLast } = useAlarm();
   const { setModalLoader, modalLoader } = useModal();
-  const { scroll } = useScrollSave();
+  const { scroll } = useStatus();
 
   useEffect(() => {
     async function init() {

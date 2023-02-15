@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import React from "react";
 import { wrapPromise } from "../../stores/libStores";
 import { useModal } from "../../stores/useModal";
-import { useScrollSave } from "../../stores/useScrollSave";
+import { useStatus } from "../../stores/useStatus";
 
 interface IWrapLink {
   children: React.ReactNode;
@@ -15,7 +15,7 @@ export default function WrapLink({
   href,
   loader = false,
 }: IWrapLink) {
-  const { scroll } = useScrollSave();
+  const { scroll } = useStatus();
   const { setModalLoader } = useModal();
   const router = useRouter();
 

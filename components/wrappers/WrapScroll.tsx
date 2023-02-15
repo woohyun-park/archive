@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import React from "react";
-import { useScrollSave } from "../../stores/useScrollSave";
+import { useStatus } from "../../stores/useStatus";
 
 interface IWrapScroll {
   children: React.ReactNode;
@@ -8,7 +8,7 @@ interface IWrapScroll {
 }
 
 export default function WrapScroll({ children, className }: IWrapScroll) {
-  const { setScroll } = useScrollSave();
+  const { setScroll } = useStatus();
   const router = useRouter();
   function onClick(e: React.MouseEvent<HTMLElement>) {
     e.preventDefault;

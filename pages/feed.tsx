@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import Loader from "../components/Loader";
 import { useFeed } from "../stores/useFeed";
-import { useScrollSave } from "../stores/useScrollSave";
+import { useStatus } from "../stores/useStatus";
 import { useUser } from "../stores/useUser";
 import ProfileImg from "../components/atoms/ProfileImg";
 import IconBtn from "../components/atoms/IconBtn";
@@ -21,7 +21,7 @@ export default function Feed() {
   const { posts, filteredPosts, refresh, setFilteredPosts, setRefresh } =
     useFeed();
   const { keywords, setKeywords } = useKeyword();
-  const { scroll } = useScrollSave();
+  const { scroll, setScroll } = useStatus();
   const { setModalLoader } = useModal();
 
   const router = useRouter();
