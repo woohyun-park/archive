@@ -4,11 +4,13 @@ import Box from "./Box";
 
 interface IPageSearchProps {
   posts: IPost[];
+  isLast: boolean;
   setLastIntersecting: React.Dispatch<React.SetStateAction<HTMLElement | null>>;
 }
 
 export default function PageSearch({
   posts,
+  isLast,
   setLastIntersecting,
 }: IPageSearchProps) {
   return (
@@ -29,7 +31,9 @@ export default function PageSearch({
                   style="font-size: 1rem;"
                 ></Box>
               </div>
-              {i === posts.length - 1 && <div ref={setLastIntersecting}></div>}
+              {!isLast && i === posts.length - 1 && (
+                <div ref={setLastIntersecting}></div>
+              )}
             </>
           ))
         )}

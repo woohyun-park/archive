@@ -55,6 +55,7 @@ export default function PageInfinite({
           {page === "search" && (
             <PageSearch
               posts={data as IPost[]}
+              isLast={isLast || false}
               setLastIntersecting={setLastIntersecting}
             />
           )}

@@ -10,7 +10,7 @@ import { useScrollSave } from "../stores/useScrollSave";
 import { useGlobal } from "../hooks/useGlobal";
 
 export default function Search() {
-  const { posts, getPosts, setPosts } = useSearch();
+  const { posts, isLast } = useSearch();
   const { scroll, setScroll } = useScrollSave();
   const { getSearch } = useGlobal();
 
@@ -45,7 +45,8 @@ export default function Search() {
           onRefresh={async () => {
             await getSearch("refresh");
           }}
-          changeListener={true}
+          changeListener={posts}
+          isLast={isLast}
         />
       </Motion>
       <div className="mb-24"></div>
