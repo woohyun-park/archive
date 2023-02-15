@@ -11,24 +11,33 @@ import { debounce } from "lodash";
 import { useKeyword } from "../stores/useKeyword";
 import PageInfinite from "../components/PageInfinite";
 import WrapScroll from "../components/wrappers/WrapScroll";
-import ScrollTop from "../components/atoms/ScrollTop";
 
 export default function Feed() {
-  const router = useRouter();
   const { curUser } = useUser();
-  const { posts, filteredPosts, getPosts, getFilteredPosts, setFilteredPosts } =
-    useFeed();
+  const {
+    posts,
+    filteredPosts,
+    refresh,
+    getPosts,
+    getFilteredPosts,
+    setFilteredPosts,
+    setRefresh,
+  } = useFeed();
   const { keywords, setKeywords } = useKeyword();
-  const keyword = keywords[router.pathname] || "";
   const { scroll } = useScrollSave();
+
+  const router = useRouter();
   const [filterLoading, setFilterLoading] = useState(false);
   const [resetFilter, setResetFilter] = useState<boolean | null>(null);
 
+  const keyword = keywords[router.pathname] || "";
+
   useEffect(() => {
     setTimeout(() => {
-      if (router.query.refresh) {
+      if (refresh) {
         window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
         setFilterLoading(true);
+        setRefresh(false);
       } else {
         window.scrollTo(0, scroll[router.pathname]);
       }
@@ -53,17 +62,6 @@ export default function Feed() {
     filterPosts();
   }, [filterLoading]);
 
-  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    e.preventDefault();
-    if (e.target.value.slice(e.target.value.length - 1) !== " ") {
-      setKeywords(router.pathname, e.target.value);
-      setResetFilter(!resetFilter);
-    }
-    if (e.target.value === "") {
-      setFilteredPosts([]);
-    }
-  }
-
   return (
     <div className="relative flex flex-col">
       <div className="flex items-center justify-between px-4 pb-2">
@@ -86,7 +84,16 @@ export default function Feed() {
       </div>
       <IconInput
         icon="filter"
-        onChange={handleChange}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+          e.preventDefault();
+          const keyword = e.target.value;
+          if (keyword === "") {
+            setFilteredPosts([]);
+          } else if (keyword.slice(keyword.length - 1) !== " ") {
+            setKeywords(router.pathname, keyword);
+            setResetFilter(!resetFilter);
+          }
+        }}
         onDelete={() => {
           setKeywords(router.pathname, "");
           setResetFilter(!resetFilter);
@@ -109,7 +116,7 @@ export default function Feed() {
           changeListener={posts}
         />
       ) : (
-        <InfinitePage
+        <PageInfinite
           page="feed"
           data={filteredPosts}
           onIntersect={() => getFilteredPosts(curUser.id, "load", keyword)}

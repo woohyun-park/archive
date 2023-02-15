@@ -25,6 +25,9 @@ interface IFeedStore {
     tag: string
   ) => Promise<void>;
   setFilteredPosts: (filteredPosts: IPost[]) => void;
+
+  refresh: boolean;
+  setRefresh: (refresh: boolean) => void;
 }
 
 let lastVisible: QueryDocumentSnapshot<DocumentData>;
@@ -67,6 +70,7 @@ export const useFeed = create<IFeedStore>()(
   devtools((set, get) => ({
     posts: [] as IPost[],
     filteredPosts: [] as IPost[],
+    refresh: false,
     getPosts: async (id: string, type: IFeedGetType) => {
       const posts = await getPostsHelper(id, type, get().posts);
       set((state: IFeedStore) => {
@@ -101,6 +105,11 @@ export const useFeed = create<IFeedStore>()(
     setFilteredPosts: (filteredPosts: IPost[]) => {
       set((state: IFeedStore) => {
         return { ...state, filteredPosts };
+      });
+    },
+    setRefresh: (refresh: boolean) => {
+      set((state: IFeedStore) => {
+        return { ...state, refresh };
       });
     },
   }))
