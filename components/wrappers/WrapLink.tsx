@@ -8,12 +8,14 @@ interface IWrapLink {
   children: React.ReactNode;
   href: string;
   loader?: boolean;
+  className?: string;
 }
 
 export default function WrapLink({
   children,
   href,
   loader = false,
+  className,
 }: IWrapLink) {
   const { scroll } = useStatus();
   const { setModalLoader } = useModal();
@@ -25,5 +27,9 @@ export default function WrapLink({
       (await wrapPromise(() => setModalLoader(true), 500));
     router.push(href);
   }
-  return <div onClick={onClick}>{children}</div>;
+  return (
+    <div onClick={onClick} className={className}>
+      {children}
+    </div>
+  );
 }

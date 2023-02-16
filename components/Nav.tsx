@@ -8,6 +8,7 @@ import {
 import { SIZE } from "../libs/custom";
 import { useModal } from "../stores/useModal";
 import ModalLoader from "./ModalLoader";
+import WrapLink from "./wrappers/WrapLink";
 import WrapScroll from "./wrappers/WrapScroll";
 
 export default function Nav() {
@@ -64,9 +65,10 @@ export default function Nav() {
                 +
               </div>
             </div>
-            <div
+            <WrapLink
+              href="/search"
+              loader={true}
               className="flex flex-col items-center align-center hover:cursor-pointer"
-              onClick={() => router.push("/search")}
             >
               <div className="mb-1">
                 {path === "/search" || path === "/search-modal" ? (
@@ -76,7 +78,7 @@ export default function Nav() {
                 )}
               </div>
               <div className="text-xs">둘러보기</div>
-            </div>
+            </WrapLink>
           </div>
         </WrapScroll>
       )}

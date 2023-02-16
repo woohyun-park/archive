@@ -1,5 +1,4 @@
 import { useRouter } from "next/router";
-import { getPost } from "../../apis/firebase";
 import { IPost } from "../../libs/custom";
 import React, { useEffect, useState } from "react";
 import BtnIcon from "../../components/atoms/BtnIcon";
@@ -10,10 +9,12 @@ import { useModal } from "../../stores/useModal";
 import { wrapPromise } from "../../stores/libStores";
 import ModifyAndDelete from "../../components/ModifyAndDelete";
 import Post from "../../components/Post";
+import { useGlobal } from "../../hooks/useGlobal";
 
 export default function PostPage() {
   const { curUser } = useUser();
   const { setModalLoader } = useModal();
+  const { getPost, updatePosts } = useGlobal();
 
   const router = useRouter();
   const [post, setPost] = useState<IPost | null | undefined>(undefined);
@@ -30,6 +31,10 @@ export default function PostPage() {
       setModalLoader(false);
     }, 1000);
   }, []);
+
+  useEffect(() => {
+    post && updatePosts([post]);
+  }, [post]);
 
   return (
     <>

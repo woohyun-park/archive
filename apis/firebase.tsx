@@ -11,6 +11,7 @@ import {
   getDoc,
   getDocs,
   getFirestore,
+  orderBy,
   Query,
   query,
   QuerySnapshot,
@@ -235,7 +236,8 @@ export async function getEach<T>(type: string, id: string) {
   return (await getDatasByQuery<T>(
     query(
       collection(db, type),
-      where(type === "alarms" ? "targetPid" : "pid", "==", id)
+      where(type === "alarms" ? "targetPid" : "pid", "==", id),
+      orderBy("createdAt", "desc")
     )
   )) as T[];
 }
@@ -306,15 +308,14 @@ export async function deletePost(id: string) {
   await deleteDoc(doc(db, "posts", id));
   const likes = await getEach<ILike>("likes", id);
   const scraps = await getEach<IScrap>("scraps", id);
-  const tags = await getEach<ITag>("tags", id);
   const comments = await getEach<IComment>("comments", id);
+  const tags = await getEach<ITag>("tags", id);
   const alarms = await getEach<IAlarm>("alarms", id);
   deleteEach(likes, "likes");
   deleteEach(scraps, "scraps");
   deleteEach(comments, "comments");
   deleteEach(tags, "tags");
   deleteEach(alarms, "alarms");
-
   return ref;
 }
 

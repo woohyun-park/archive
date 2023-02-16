@@ -8,18 +8,23 @@ import Page from "../components/Page";
 import { useRouter } from "next/router";
 import { useStatus } from "../stores/useStatus";
 import { useGlobal } from "../hooks/useGlobal";
+import { useModal } from "../stores/useModal";
 
 export default function Search() {
   const { posts, isLast } = useSearch();
   const { scroll, setScroll } = useStatus();
   const { getSearch } = useGlobal();
+  const { setModalLoader } = useModal();
 
   const router = useRouter();
   useEffect(() => {
     async function init() {
       if (scroll[router.pathname] === undefined) {
         await getSearch("init");
-        setScroll(router.pathname, 0);
+        setModalLoader(false);
+        scrollTo(0, 0);
+      } else {
+        scrollTo(0, scroll[router.pathname]);
       }
     }
     init();

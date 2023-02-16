@@ -15,7 +15,7 @@ export const useStatus = create<IUseStatus>()(
       set((state: IUseStatus) => {
         return {
           ...state,
-          scroll: { ...state.scroll, pathname: scroll },
+          scroll: { ...state.scroll, [pathname]: scroll },
         };
       });
     },

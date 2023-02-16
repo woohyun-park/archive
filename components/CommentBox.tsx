@@ -8,6 +8,7 @@ import Action from "./Action";
 import Textarea from "./atoms/Textarea";
 import Btn from "./atoms/Btn";
 import Page from "./Page";
+import { FETCH_LIMIT } from "../libs/queryLib";
 
 type ICommentBoxProps = {
   post: IPost;
@@ -15,19 +16,18 @@ type ICommentBoxProps = {
   setPost: React.Dispatch<React.SetStateAction<IPost | null | undefined>>;
 };
 
-const LIMIT = 16;
-
 export default (function CommentBox({ post, user, setPost }: ICommentBoxProps) {
   const [comment, setComment] = useState("");
-  const [page, setPage] = useState(LIMIT);
+  const [page, setPage] = useState(FETCH_LIMIT.comment);
+  const [submitListener, setSubmitListener] = useState<boolean | null>(null);
   const router = useRouter();
   const commentRef = useRef<HTMLTextAreaElement>(null);
   const actionRef = useRef<HTMLDivElement>(null);
+
   const uid = user.id;
   const targetUid = post.uid;
   const targetPid = post.id || "";
 
-  const [submitListener, setSubmitListener] = useState<boolean | null>(null);
   useEffect(() => {
     if (submitListener !== null)
       actionRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -36,6 +36,7 @@ export default (function CommentBox({ post, user, setPost }: ICommentBoxProps) {
   function handleChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
     setComment(e.target.value);
   }
+
   async function handleSubmit(e: React.MouseEvent<HTMLButtonElement>) {
     const newComment = await addComment(uid, targetUid, targetPid, comment);
     setComment("");
@@ -46,6 +47,7 @@ export default (function CommentBox({ post, user, setPost }: ICommentBoxProps) {
     setSubmitListener(!submitListener);
     setPage(page + 1);
   }
+
   async function handleDeleteComment(e: React.MouseEvent<HTMLDivElement>) {
     const id = e.currentTarget.id;
     await deleteDoc(doc(db, "comments", id));
@@ -64,6 +66,7 @@ export default (function CommentBox({ post, user, setPost }: ICommentBoxProps) {
     });
     setPage(page - 1);
   }
+
   return (
     <>
       <Action
@@ -77,7 +80,9 @@ export default (function CommentBox({ post, user, setPost }: ICommentBoxProps) {
       <Page
         page="post"
         data={post.comments?.slice(0, page) || []}
-        onIntersect={() => setTimeout(() => setPage(page + LIMIT), 500)}
+        onIntersect={() =>
+          setTimeout(() => setPage(page + FETCH_LIMIT.comment), 500)
+        }
         onChange={() => {}}
         onRefresh={async () => {}}
         onClick={handleDeleteComment}

@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
-import { deletePost as deletePostFb } from "../apis/firebase";
+import {
+  deletePost as deletePostFb,
+  getPost as getPostFb,
+} from "../apis/firebase";
 import { IDict, IPost } from "../libs/custom";
 import { IFetchType } from "../libs/queryLib";
 import { useCache } from "../stores/useCache";
@@ -51,10 +54,26 @@ export const useGlobal = () => {
     setCachedPosts(updatedPosts);
   }
 
+  async function getPost(pid: string) {
+    const post = await getPostFb(pid);
+    if (post) {
+      updatePosts([post]);
+      return post;
+    }
+    return null;
+  }
+
   async function deletePost(pid: string, timeout: number = 0) {
     await deletePostFb(pid);
     deleteCachedPosts(pid);
   }
 
-  return { getFeed, getFilteredFeed, getSearch, deletePost };
+  return {
+    getPost,
+    getFeed,
+    getFilteredFeed,
+    getSearch,
+    updatePosts,
+    deletePost,
+  };
 };
