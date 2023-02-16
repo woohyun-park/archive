@@ -8,7 +8,7 @@ import PageSearch from "./PageSearch";
 import PageAlarm from "./PageAlarm";
 import PagePost from "./PagePost";
 
-interface IPageInfiniteProps {
+interface IPageProps {
   page: "feed" | "search" | "alarm" | "post";
   data: IPost[] | IAlarm[] | IComment[];
   onIntersect: () => void;
@@ -19,7 +19,7 @@ interface IPageInfiniteProps {
   isLast?: boolean;
 }
 
-export default function PageInfinite({
+export default function Page({
   page,
   data,
   onIntersect,
@@ -28,7 +28,7 @@ export default function PageInfinite({
   onClick,
   changeListener,
   isLast,
-}: IPageInfiniteProps) {
+}: IPageProps) {
   useEffect(() => {
     document.querySelector(".ptr")?.setAttribute("style", "overflow:visible;");
   }, []);

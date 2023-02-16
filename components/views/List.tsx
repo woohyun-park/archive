@@ -4,7 +4,7 @@ import { POST_PER_PAGE, useStore } from "../../stores/useStore";
 import { IRoute, IPost, IType, IDict, ITag, SIZE } from "../../libs/custom";
 import { useInfiniteScroll } from "../../hooks/useInfiniteScroll";
 import WrapMotion from "../wrappers/WrapMotion";
-import Box from "../Box";
+import PostBox from "../PostBox";
 import Loader from "../Loader";
 import Link from "next/link";
 import Cont from "../Cont";
@@ -112,7 +112,7 @@ export default function List({ data, type, route, handleChange }: IListProps) {
               {Children.toArray(
                 (data as IDict<IPost[]>)[selected].map((e, i) => (
                   <>
-                    <Box post={{ ...e, id: e.id }} includeTitle></Box>
+                    <PostBox post={{ ...e, id: e.id }} includeTitle></PostBox>
                     {i === (data as IDict<IPost[]>)[selected].length - 1 && (
                       <div ref={setLastIntersecting}></div>
                     )}

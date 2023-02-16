@@ -3,12 +3,15 @@ import { useGlobal } from "../hooks/useGlobal";
 import { IPost, SIZE } from "../libs/custom";
 import IconBtn from "./atoms/IconBtn";
 
-interface IActionAuthorProps {
+interface IModifyAndDeleteProps {
   post: IPost | null | undefined;
   redirect?: string;
 }
 
-export default function ActionAuthor({ post, redirect }: IActionAuthorProps) {
+export default function ModifyAndDelete({
+  post,
+  redirect,
+}: IModifyAndDeleteProps) {
   const router = useRouter();
   const { deletePost } = useGlobal();
   return post ? (

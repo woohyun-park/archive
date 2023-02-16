@@ -1,5 +1,5 @@
 import { Children, useState } from "react";
-import Box from "./Box";
+import PostBox from "./PostBox";
 import { IPost, IUser, IDict, ITag, IRoute, getRoute } from "../libs/custom";
 import WrapMotion from "./wrappers/WrapMotion";
 import ProfileSmall from "./ProfileSmall";
@@ -39,7 +39,10 @@ export default function Tab({ data, tab, route }: ITabProps) {
                   <div className="grid grid-cols-3 gap-x-2 gap-y-2">
                     {(data[key] as IPost[]).map((e) => (
                       <>
-                        <Box post={{ ...e, id: e.id }} includeTitle></Box>
+                        <PostBox
+                          post={{ ...e, id: e.id }}
+                          includeTitle
+                        ></PostBox>
                       </>
                     ))}
                   </div>

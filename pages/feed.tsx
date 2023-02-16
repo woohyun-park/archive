@@ -9,7 +9,7 @@ import IconBtn from "../components/atoms/IconBtn";
 import IconInput from "../components/atoms/IconInput";
 import { debounce } from "lodash";
 import { useKeyword } from "../stores/useKeyword";
-import PageInfinite from "../components/PageInfinite";
+import Page from "../components/Page";
 import WrapScroll from "../components/wrappers/WrapScroll";
 import { useModal } from "../stores/useModal";
 import WrapLink from "../components/wrappers/WrapLink";
@@ -104,7 +104,7 @@ export default function Feed() {
       />
       <Loader isVisible={filterLoading} />
       {keyword.length === 0 ? (
-        <PageInfinite
+        <Page
           page="feed"
           data={posts}
           onIntersect={() => getFeed("load", curUser.id)}
@@ -115,7 +115,7 @@ export default function Feed() {
           changeListener={posts}
         />
       ) : (
-        <PageInfinite
+        <Page
           page="feed"
           data={filteredPosts}
           onIntersect={() => getFilteredFeed("load", curUser.id, keyword)}

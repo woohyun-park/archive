@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 import Action from "./Action";
 import Textarea from "./atoms/Textarea";
 import Btn from "./atoms/Btn";
-import PageInfinite from "./PageInfinite";
+import Page from "./Page";
 
 type ICommentBoxProps = {
   post: IPost;
@@ -74,7 +74,7 @@ export default (function CommentBox({ post, user, setPost }: ICommentBoxProps) {
         }}
         ref={actionRef}
       />
-      <PageInfinite
+      <Page
         page="post"
         data={post.comments?.slice(0, page) || []}
         onIntersect={() => setTimeout(() => setPage(page + LIMIT), 500)}

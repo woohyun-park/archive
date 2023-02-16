@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 import IconBtn from "../components/atoms/IconBtn";
 import { useUser } from "../stores/useUser";
-import PageInfinite from "../components/PageInfinite";
+import Page from "../components/Page";
 import { useAlarm } from "../stores/useAlarm";
 import { useModal } from "../stores/useModal";
 import { useStatus } from "../stores/useStatus";
@@ -45,7 +45,7 @@ export default function Alarm() {
             </WrapScroll>
             <div className="title-page-base">알림</div>
           </div>
-          <PageInfinite
+          <Page
             page="alarm"
             data={alarms}
             onIntersect={() => getAlarms("load", curUser.id)}

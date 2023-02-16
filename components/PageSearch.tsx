@@ -1,6 +1,6 @@
 import { Children } from "react";
 import { IPost } from "../libs/custom";
-import Box from "./Box";
+import PostBox from "./PostBox";
 
 interface IPageSearchProps {
   posts: IPost[];
@@ -24,12 +24,12 @@ export default function PageSearch({
           posts.map((post, i) => (
             <>
               <div>
-                <Box
+                <PostBox
                   post={{ ...post, id: post.id }}
                   includeTitle={true}
                   includeTag={true}
                   style="font-size: 1rem;"
-                ></Box>
+                ></PostBox>
               </div>
               {!isLast && i === posts.length - 1 && (
                 <div ref={setLastIntersecting}></div>

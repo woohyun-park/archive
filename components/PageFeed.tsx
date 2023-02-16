@@ -1,6 +1,6 @@
 import { AnimatePresence } from "framer-motion";
 import { IPost } from "../libs/custom";
-import FeedPost from "./FeedPost";
+import Post from "./Post";
 
 interface IPageFeedProps {
   posts: IPost[];
@@ -16,7 +16,7 @@ export default function PageFeed({
       <AnimatePresence>
         {posts.map((e, i) => (
           <div key={e.id}>
-            <FeedPost post={e as IPost} />
+            <Post type="feed" post={e as IPost} />
             {i === posts.length - 1 && <div ref={setLastIntersecting}></div>}
             <hr className="w-full h-4 text-white bg-white" />
           </div>

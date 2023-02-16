@@ -1,12 +1,12 @@
 import { useRouter } from "next/router";
 import { Children } from "react";
-import Btn from "./Btn";
+import Btn from "./atoms/Btn";
 
-interface IPostTagsProps {
+interface IPostTagProps {
   tags: string[];
 }
 
-export default function PostTags({ tags }: IPostTagsProps) {
+export default function PostTag({ tags }: IPostTagProps) {
   const router = useRouter();
   return (
     <div className="flex flex-wrap justify-end w-full mb-8">

@@ -4,7 +4,7 @@ import Link from "next/link";
 import WrapMotion from "../components/wrappers/WrapMotion";
 import { useSearch } from "../stores/useSearch";
 import { useEffect, useState } from "react";
-import PageInfinite from "../components/PageInfinite";
+import Page from "../components/Page";
 import { useRouter } from "next/router";
 import { useStatus } from "../stores/useStatus";
 import { useGlobal } from "../hooks/useGlobal";
@@ -35,7 +35,7 @@ export default function Search() {
             </div>
           </div>
         </Link>
-        <PageInfinite
+        <Page
           page="search"
           data={posts}
           onIntersect={async () => {

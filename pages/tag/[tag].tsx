@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { getPostsByQuery } from "../../apis/firebase";
 import IconBtn from "../../components/atoms/IconBtn";
-import PageInfinite from "../../components/PageInfinite";
+import Page from "../../components/Page";
 import WrapScroll from "../../components/wrappers/WrapScroll";
 import Motion from "../../components/wrappers/WrapMotion";
 import { useModal } from "../../stores/useModal";
@@ -35,7 +35,7 @@ export default function Tag({}) {
             <div className="title-page-sm">#{tag}</div>
           </div>
           {dictPosts[tag] && (
-            <PageInfinite
+            <Page
               page="feed"
               data={dictPosts[tag]}
               onIntersect={() => getPosts("load", tag)}

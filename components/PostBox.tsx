@@ -4,19 +4,19 @@ import { useRouter } from "next/router";
 import { Children } from "react";
 import { COLOR, getRoute, IPost } from "../libs/custom";
 
-interface IBoxProps {
+interface IPostBoxProps {
   post: IPost;
   includeTitle?: boolean;
   includeTag?: boolean;
   style?: string;
 }
 
-export default function Box({
+export default function PostBox({
   post,
   includeTitle = false,
   includeTag = false,
   style = "",
-}: IBoxProps) {
+}: IPostBoxProps) {
   const router = useRouter();
   const route = getRoute(router);
   return (

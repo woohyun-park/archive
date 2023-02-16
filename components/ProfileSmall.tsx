@@ -17,7 +17,7 @@ import { displayCreatedAt } from "../libs/timeLib";
 import { useUser } from "../stores/useUser";
 import ProfileImg from "./atoms/ProfileImg";
 import { useGlobal } from "../hooks/useGlobal";
-import ActionAuthor from "./ActionAuthor";
+import ModifyAndDelete from "./ModifyAndDelete";
 
 type IProfileSmallProps = {
   user: IUser;
@@ -133,7 +133,7 @@ export default function ProfileSmall({ user, post }: IProfileSmallProps) {
               );
             }
           } else if (user.id === curUser.id) {
-            return <ActionAuthor post={post} />;
+            return <ModifyAndDelete post={post} />;
           } else {
             return <div></div>;
           }
