@@ -8,19 +8,18 @@ interface IPostTitle {
 
 export default function PostTitle({ post }: IPostTitle) {
   const router = useRouter();
+
+  const storage = globalThis?.sessionStorage;
+  const prevPath = storage.getItem("prevPath");
+  const currentPath = storage.getItem("currentPath");
+
   const { setModalLoader } = useModal();
   return (
     <div
       className="mt-4 mb-4 text-5xl font-bold break-words hover:cursor-pointer w-fit"
       onClick={() => {
-        setModalLoader(true);
-        router.push(
-          {
-            pathname: `/post/${post.id}`,
-            query: { post: JSON.stringify(post) },
-          },
-          `/post/${post.id}`
-        );
+        prevPath !== currentPath && setModalLoader(true);
+        router.push(`/post/${post.id}`);
       }}
     >
       {post.title}

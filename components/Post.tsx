@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { Children } from "react";
-import { IPost, IUser } from "../libs/custom";
+import { IPost } from "../libs/custom";
 import { useModal } from "../stores/useModal";
 import { useUser } from "../stores/useUser";
 import Action from "./Action";
