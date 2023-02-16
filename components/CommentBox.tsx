@@ -83,8 +83,9 @@ export default (function CommentBox({ post, user, setPost }: ICommentBoxProps) {
         onClick={handleDeleteComment}
         changeListener={page}
         isLast={post.comments?.length === page}
+        minHeight=""
       />
-      <div className="sticky bottom-0 flex items-center justify-between w-full py-4 bg-white">
+      <div className="fixed bottom-0 flex items-center justify-between py-4 bg-white w-[calc(100vw_-_2rem)] max-w-[calc(480px_-_2rem)]">
         <div className="profileImg-sm">
           <Image src={user.photoURL} alt="" fill />
         </div>

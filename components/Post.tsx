@@ -26,62 +26,70 @@ export default function Post({ type, post }: IPostProps) {
 
   return (
     <>
-      {post.author ? (
-        type === "feed" ? (
-          <>
-            <WrapMotion type="float" className="px-4 py-1 bg-white">
-              <WrapScroll>
-                <Profile post={post} user={post.author as IUser} info="time" />
-                <PostBox post={post} />
-                <PostTitle post={post} />
-                <div className="bottom-0 right-0 flex flex-row-reverse flex-wrap-reverse text-left ">
-                  {Children.toArray(
-                    [...post.tags]?.reverse().map((tag) => (
-                      <Link href={{ pathname: `/tag/${tag}` }} legacyBehavior>
-                        <button className="m-1 mb-0 button-black hover:cursor-pointer">{`#${tag}`}</button>
-                      </Link>
-                    ))
+      {post.author && (
+        <>
+          {type === "feed" && (
+            <>
+              <WrapMotion type="float" className="px-4 py-1 bg-white">
+                <WrapScroll>
+                  {curUser.id === post.uid ? (
+                    <Profile
+                      post={post}
+                      user={post.author}
+                      info="time"
+                      action="modifyAndDelete"
+                    />
+                  ) : (
+                    <Profile post={post} user={post.author} info="time" />
                   )}
-                </div>
-                <Action
+                  <PostBox post={post} />
+                  <PostTitle post={post} />
+                  <div className="bottom-0 right-0 flex flex-row-reverse flex-wrap-reverse text-left ">
+                    {Children.toArray(
+                      [...post.tags]?.reverse().map((tag) => (
+                        <Link href={{ pathname: `/tag/${tag}` }} legacyBehavior>
+                          <button className="m-1 mb-0 button-black hover:cursor-pointer">{`#${tag}`}</button>
+                        </Link>
+                      ))
+                    )}
+                  </div>
+                  <Action
+                    post={post}
+                    curUser={curUser}
+                    onCommentClick={() => {
+                      setModalLoader(true);
+                      router.push(
+                        {
+                          pathname: `/post/${post.id}`,
+                          query: { isCommentFocused: true },
+                        },
+                        `/post/${post.id}`
+                      );
+                    }}
+                  />
+                </WrapScroll>
+              </WrapMotion>
+            </>
+          )}
+          {type === "post" && (
+            <>
+              <PostImg imgs={post.imgs} color={post.color} />
+              {curUser.id === post.uid ? (
+                <Profile post={post} user={post.author} info="time" />
+              ) : (
+                <Profile
                   post={post}
-                  curUser={curUser}
-                  onCommentClick={() => {
-                    setModalLoader(true);
-                    router.push(
-                      {
-                        pathname: `/post/${post.id}`,
-                        query: { isCommentFocused: true },
-                      },
-                      `/post/${post.id}`
-                    );
-                  }}
+                  user={post.author}
+                  info="time"
+                  action="follow"
                 />
-              </WrapScroll>
-            </WrapMotion>
-          </>
-        ) : type === "post" ? (
-          <>
-            <PostImg imgs={post.imgs} color={post.color} />
-            {curUser.id === post.uid ? (
-              <Profile post={post} user={post.author} info="time" />
-            ) : (
-              <Profile
-                post={post}
-                user={post.author}
-                info="time"
-                action="follow"
-              />
-            )}
-            <PostTitle post={post} />
-            <PostTag tags={post.tags} />
-            <div className="mt-1 mb-4 whitespace-pre-wrap">{post.txt}</div>
-          </>
-        ) : (
-          <></>
-        )
-      ) : (
-        <></>
+              )}
+              <PostTitle post={post} />
+              <PostTag tags={post.tags} />
+              <div className="mt-1 mb-4 whitespace-pre-wrap">{post.txt}</div>
+            </>
+          )}
+        </>
       )}
     </>
   );

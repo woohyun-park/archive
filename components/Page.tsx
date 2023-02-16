@@ -17,6 +17,7 @@ interface IPageProps {
   onClick?: (e: React.MouseEvent<HTMLDivElement>) => void;
   changeListener: any;
   isLast?: boolean;
+  minHeight?: string;
 }
 
 export default function Page({
@@ -28,6 +29,7 @@ export default function Page({
   onClick,
   changeListener,
   isLast,
+  minHeight = "50vh",
 }: IPageProps) {
   useEffect(() => {
     document.querySelector(".ptr")?.setAttribute("style", "overflow:visible;");
@@ -45,7 +47,7 @@ export default function Page({
         refreshingContent={<Loader isVisible={true} />}
         isPullable={page === "post" ? false : true}
       >
-        <div className="min-h-[50vh]">
+        <div className={`min-h-[${minHeight}]`}>
           {page === "feed" && (
             <PageFeed
               posts={data as IPost[]}
