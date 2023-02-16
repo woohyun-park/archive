@@ -63,7 +63,7 @@ export const useGlobal = () => {
     return null;
   }
 
-  async function deletePost(pid: string, timeout: number = 0) {
+  async function deletePost(pid: string) {
     await deletePostFb(pid);
     deleteCachedPosts(pid);
   }
