@@ -1,4 +1,4 @@
-import { useEffect, forwardRef } from "react";
+import { forwardRef } from "react";
 import ReactTextareaAutosize from "react-textarea-autosize";
 import { IDict } from "../../libs/custom";
 interface ITextareaProps {

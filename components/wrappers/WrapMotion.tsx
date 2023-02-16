@@ -1,4 +1,4 @@
-import { motion, Variants } from "framer-motion";
+import { motion } from "framer-motion";
 
 type IWrapMotion = {
   children: React.ReactNode;

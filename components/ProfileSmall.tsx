@@ -3,7 +3,6 @@ import {
   arrayRemove,
   arrayUnion,
   collection,
-  deleteDoc,
   doc,
   query,
   updateDoc,
@@ -11,20 +10,11 @@ import {
 } from "firebase/firestore";
 import Link from "next/link";
 import { db, deleteEach, getDatasByQuery, updateUser } from "../apis/firebase";
-import {
-  getRoute,
-  IAlarm,
-  IPost,
-  IRoute,
-  IType,
-  IUser,
-  SIZE,
-} from "../libs/custom";
+import { getRoute, IAlarm, IPost, IType, IUser, SIZE } from "../libs/custom";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { displayCreatedAt } from "../libs/timeLib";
 import IconBtn from "./atoms/IconBtn";
-import { useFeed } from "../stores/useFeed";
 import { useUser } from "../stores/useUser";
 import ProfileImg from "./atoms/ProfileImg";
 import { useGlobal } from "../hooks/useGlobal";
@@ -43,8 +33,7 @@ export default function ProfileSmall({ user, post }: IProfileSmallProps) {
   const router = useRouter();
   const route = getRoute(router);
 
-  const { posts } = useFeed();
-  const { getFeed, deletePost } = useGlobal();
+  const { deletePost } = useGlobal();
 
   useEffect(() => {
     setIsFollowing(
@@ -166,9 +155,6 @@ export default function ProfileSmall({ user, post }: IProfileSmallProps) {
                     onClick={async () => {
                       if (confirm("정말 삭제하시겠습니까?")) {
                         deletePost(post?.id || "");
-                        // const ref = await deletePost(post?.id || "");
-                        // deleteCachedPost(post?.id || "");
-                        // getFeed([...posts].filter((e) => e.id !== post?.id));
                         alert("삭제되었습니다");
                       } else {
                         console.log(post?.id);

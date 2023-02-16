@@ -1,4 +1,5 @@
 import Image from "next/image";
+
 interface IProfileImgProps {
   size: "sm" | "lg";
   photoURL: string;

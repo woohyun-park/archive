@@ -1,11 +1,5 @@
 import { useRouter } from "next/router";
-import {
-  db,
-  deletePost,
-  getData,
-  getDatasByQuery,
-  getPath,
-} from "../../apis/firebase";
+import { db, getData, getDatasByQuery, getPath } from "../../apis/firebase";
 import ProfileSmall from "../../components/ProfileSmall";
 import { IComment, ILike, IPost, IScrap, IUser, SIZE } from "../../libs/custom";
 import Image from "next/image";
@@ -19,6 +13,7 @@ import CommentBox from "../../components/CommentBox";
 import Motion from "../../components/wrappers/WrapMotion";
 import { useFeed } from "../../stores/useFeed";
 import { useModal } from "../../stores/useModal";
+import { useGlobal } from "../../hooks/useGlobal";
 
 interface IPostProps {
   initPost: IPost;
@@ -31,6 +26,7 @@ export default function Post({ initPost, initUser }: IPostProps) {
   const router = useRouter();
   const [post, setPost] = useState<IPost>(initPost);
   const { setModalLoader } = useModal();
+  const { deletePost } = useGlobal();
 
   useEffect(() => {
     setModalLoader(false);
@@ -48,12 +44,8 @@ export default function Post({ initPost, initUser }: IPostProps) {
 
   async function handleDelete() {
     if (confirm("정말 삭제하시겠습니까?")) {
-      await deletePost(post?.id as string);
+      deletePost(post?.id as string);
       alert("삭제되었습니다");
-      setTimeout(
-        () => setPosts([...posts].filter((e) => e.id !== post?.id)),
-        500
-      );
     } else {
       console.log(post);
     }

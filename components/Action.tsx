@@ -1,13 +1,6 @@
-import {
-  addDoc,
-  collection,
-  deleteDoc,
-  doc,
-  updateDoc,
-} from "firebase/firestore";
-import React, { useEffect, useState, forwardRef } from "react";
-import { db } from "../apis/firebase";
-import { IPost, IUser, IDict, IAlarm } from "../libs/custom";
+import React, { forwardRef } from "react";
+import { addLike, addScrap, deleteLike, deleteScrap } from "../apis/firebase";
+import { IPost, IUser } from "../libs/custom";
 import IconBtn from "./atoms/IconBtn";
 
 interface IActionProps {
@@ -16,71 +9,44 @@ interface IActionProps {
   onCommentClick?: () => void;
 }
 
-type IActionType = "likes" | "scraps";
-
 export default forwardRef<HTMLDivElement, IActionProps>(function Action(
   { post, curUser, onCommentClick },
   ref
 ) {
-  const [status, setStatus] = useState<IDict<string>>({ ...calcStatus() });
+  const lid = curUser.likes?.find((each) => each.pid === post.id)?.id || "";
+  const aid = curUser.likes?.find((each) => each.pid === post.id)?.aid || "";
+  const sid = curUser.scraps?.find((each) => each.pid === post.id)?.id || "";
 
-  useEffect(() => {
-    setStatus({ ...calcStatus() });
-  }, [curUser.likes, curUser.scraps]);
-
-  function calcStatus() {
-    const likes = curUser.likes?.find((each) => each.pid === post.id);
-    const scraps = curUser.scraps?.find((each) => each.pid === post.id);
-    return {
-      likes: likes ? (likes.id as string) : "",
-      likesAlarm: likes ? likes.aid : "",
-      scraps: scraps ? (scraps.id as string) : "",
-    };
-  }
-
-  async function handleToggle(type: IActionType) {
-    if (status[type]) {
-      await deleteDoc(doc(db, type, status[type]));
-      if (type === "likes") {
-        await deleteDoc(doc(db, "alarms", status["likesAlarm"]));
-      }
+  async function toggleLike() {
+    if (lid === "") {
+      addLike(curUser.id, post.uid, post.id || "");
     } else {
-      const newData: IDict<string> = {
-        uid: curUser.id,
-        pid: post.id || "",
-      };
-      if (type === "scraps") {
-        newData.cont = "모든 스크랩";
-      } else if (type === "likes") {
-        const newAlarm: IAlarm = {
-          uid: curUser.id,
-          type: "like",
-          targetUid: post.uid,
-          targetPid: post.id || "",
-          createdAt: new Date(),
-        };
-        const ref = await addDoc(collection(db, "alarms"), newAlarm);
-        await updateDoc(ref, { id: ref.id });
-        newData.aid = ref.id;
-      }
-      const ref = await addDoc(collection(db, type), newData);
-      await updateDoc(ref, { id: ref.id });
+      deleteLike(lid, aid);
     }
   }
 
-  function displayLikes() {
+  async function toggleScrap() {
+    if (sid === "") {
+      addScrap(curUser.id, post.id || "");
+    } else {
+      deleteScrap(sid);
+    }
+  }
+
+  function displayLike() {
     const len = post.likes?.length;
     if (len === undefined) return 0;
     if (post.likes?.find((each) => each.uid === curUser.id))
-      return status.likes ? len : len - 1;
-    else return status.likes ? len + 1 : len;
+      return lid ? len : len - 1;
+    else return lid ? len + 1 : len;
   }
-  function displayScraps() {
+
+  function displayScrap() {
     const len = post.scraps?.length;
     if (len === undefined) return 0;
     if (post.scraps?.find((each) => each.uid === curUser.id))
-      return status.scraps ? len : len - 1;
-    else return status.scraps ? len + 1 : len;
+      return sid ? len : len - 1;
+    else return sid ? len + 1 : len;
   }
 
   return (
@@ -91,8 +57,8 @@ export default forwardRef<HTMLDivElement, IActionProps>(function Action(
             <span className="mr-2 hover:cursor-pointer">
               <IconBtn
                 icon="like"
-                fill={status.likes !== "" ? true : false}
-                onClick={() => handleToggle("likes")}
+                fill={lid !== "" ? true : false}
+                onClick={() => toggleLike()}
               />
             </span>
             <span className="hover:cursor-pointer">
@@ -103,19 +69,19 @@ export default forwardRef<HTMLDivElement, IActionProps>(function Action(
             <span className="hover:cursor-pointer">
               <IconBtn
                 icon="scrap"
-                fill={status.scraps !== "" ? true : false}
-                onClick={() => handleToggle("scraps")}
+                fill={sid !== "" ? true : false}
+                onClick={() => toggleScrap()}
               />
             </span>
           </div>
         </div>
         <div className="flex justify-between mb-2 text-xs">
           <div>
-            {`좋아요 ${displayLikes()}`}
+            {`좋아요 ${displayLike()}`}
             &nbsp;&nbsp;
             {`댓글 ${post.comments ? post.comments.length : 0}`}
           </div>
-          <div>{`스크랩 ${displayScraps()}`}</div>
+          <div>{`스크랩 ${displayScrap()}`}</div>
         </div>
       </div>
     </>

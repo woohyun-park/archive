@@ -94,6 +94,39 @@ export async function addComment(
   return await getDataByRef<IComment>(ref);
 }
 
+export async function addLike(
+  uid: string,
+  targetUid: string,
+  targetPid: string
+) {
+  const newData: IDict<string> = {
+    uid,
+    pid: targetPid,
+  };
+  const newAlarm: IAlarm = {
+    uid,
+    type: "like",
+    targetUid,
+    targetPid,
+    createdAt: new Date(),
+  };
+  const refAlarm = await addDoc(collection(db, "alarms"), newAlarm);
+  await updateDoc(refAlarm, { id: refAlarm.id });
+  newData.aid = refAlarm.id;
+  const ref = await addDoc(collection(db, "likes"), newData);
+  await updateDoc(ref, { id: ref.id });
+}
+
+export async function addScrap(uid: string, pid: string) {
+  const newData: IDict<string> = {
+    uid,
+    pid,
+    cont: "모든 스크랩",
+  };
+  const ref = await addDoc(collection(db, "scraps"), newData);
+  await updateDoc(ref, { id: ref.id });
+}
+
 export async function getData<T>(type: string, id: string): Promise<T> {
   const snap = await getDoc(doc(db, type, id));
   const data = snap.data() as IDict<any>;
@@ -270,4 +303,13 @@ export async function deletePost(id: string) {
   deleteEach(tags, "tags");
 
   return ref;
+}
+
+export async function deleteLike(id: string, aid: string) {
+  await deleteDoc(doc(db, "likes", id));
+  await deleteDoc(doc(db, "alarms", aid));
+}
+
+export async function deleteScrap(id: string) {
+  await deleteDoc(doc(db, "scraps", id));
 }

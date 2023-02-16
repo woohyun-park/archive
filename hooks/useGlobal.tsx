@@ -51,7 +51,7 @@ export const useGlobal = () => {
     setCachedPosts(updatedPosts);
   }
 
-  async function deletePost(pid: string) {
+  async function deletePost(pid: string, timeout: number = 0) {
     await deletePostFb(pid);
     deleteCachedPosts(pid);
   }

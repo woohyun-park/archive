@@ -1,4 +1,4 @@
-import { ClassAttributes, CSSProperties, MouseEventHandler } from "react";
+import { CSSProperties, MouseEventHandler } from "react";
 
 interface IButtonProps {
   label: string;
