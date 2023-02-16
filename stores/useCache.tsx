@@ -25,9 +25,11 @@ export const useCache = create<IUseCache>()(
 
     deleteCachedPosts: (pid: string) => {
       set((state: IUseCache) => {
-        delete state.cachedPosts[pid];
+        const cachedPosts = { ...state.cachedPosts };
+        delete cachedPosts[pid];
         return {
           ...state,
+          cachedPosts,
         };
       });
     },
