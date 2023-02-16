@@ -2,7 +2,7 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { IAlarm } from "../libs/custom";
 import { displayCreatedAt } from "../libs/timeLib";
-import ProfileImg from "./atoms/ProfileImg";
+import ProfileImg from "./ProfileImg";
 
 type IAlarmLikeProps = {
   alarm: IAlarm;

@@ -1,6 +1,6 @@
 import Tab from "../components/Tab";
 import { SIZE } from "../libs/custom";
-import { HiSearch, HiX } from "react-icons/hi";
+import { HiX } from "react-icons/hi";
 import React, { Children, useEffect, useRef, useState } from "react";
 import { useStore } from "../stores/useStore";
 import { updateUser } from "../apis/firebase";
@@ -9,8 +9,7 @@ import WrapMotion from "../components/wrappers/WrapMotion";
 import { useOutsideClick } from "../hooks/useOutsideClick";
 import { useUser } from "../stores/useUser";
 import { useKeyword } from "../stores/useKeyword";
-import IconInput from "../components/atoms/IconInput";
-import IconBtn from "../components/atoms/IconBtn";
+import IconInput from "../components/atoms/InputIcon";
 
 interface ISearchState {
   isInitial: boolean;

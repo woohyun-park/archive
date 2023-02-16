@@ -15,9 +15,9 @@ import Image from "next/image";
 import Motion from "../../components/wrappers/WrapMotion";
 import Btn from "../../components/atoms/Btn";
 import { useUser } from "../../stores/useUser";
-import IconBtn from "../../components/atoms/IconBtn";
+import BtnIcon from "../../components/atoms/BtnIcon";
 import { useRouter } from "next/router";
-import ProfileImg from "../../components/atoms/ProfileImg";
+import ProfileImg from "../../components/ProfileImg";
 import { useModal } from "../../stores/useModal";
 
 interface IProfileProps {
@@ -71,11 +71,11 @@ export default function Profile({
         <div className="flex justify-between">
           {initUser.id === curUser.id ? (
             <>
-              <IconBtn icon="back" onClick={() => router.back()} />
-              <IconBtn icon="setting" onClick={() => router.push("/setting")} />
+              <BtnIcon icon="back" onClick={() => router.back()} />
+              <BtnIcon icon="setting" onClick={() => router.push("/setting")} />
             </>
           ) : (
-            <IconBtn icon="back" onClick={() => router.back()} />
+            <BtnIcon icon="back" onClick={() => router.back()} />
           )}
         </div>
         <div className="flex items-start justify-between mt-8">

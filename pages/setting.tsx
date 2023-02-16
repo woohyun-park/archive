@@ -5,10 +5,10 @@ import { useForm } from "react-hook-form";
 import { updateUser } from "../apis/firebase";
 import WrapMotion from "../components/wrappers/WrapMotion";
 import Btn from "../components/atoms/Btn";
-import IconBtn from "../components/atoms/IconBtn";
+import BtnIcon from "../components/atoms/BtnIcon";
 import { useUser } from "../stores/useUser";
 import FormInput from "../components/atoms/FormInput";
-import ProfileImg from "../components/atoms/ProfileImg";
+import ProfileImg from "../components/ProfileImg";
 
 interface IForm {
   file: File[];
@@ -96,7 +96,7 @@ export default function Setting() {
           <div className="absolute top-0 left-0 z-10 w-full h-full bg-black/20"></div>
         )}
         <div className="flex mb-4">
-          <IconBtn
+          <BtnIcon
             icon="back"
             onClick={() => {
               if (isDirty) {

@@ -45,7 +45,7 @@ export default function Page({
         refreshingContent={<Loader isVisible={true} />}
         isPullable={page === "post" ? false : true}
       >
-        <>
+        <div className="min-h-[50vh]">
           {page === "feed" && (
             <PageFeed
               posts={data as IPost[]}
@@ -76,7 +76,7 @@ export default function Page({
               setLastIntersecting={setLastIntersecting}
             />
           )}
-        </>
+        </div>
       </PullToRefresh>
       <Loader isVisible={loading} scrollIntoView={true} />
     </>

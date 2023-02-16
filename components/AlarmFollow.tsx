@@ -5,7 +5,7 @@ import { IAlarm } from "../libs/custom";
 import { displayCreatedAt } from "../libs/timeLib";
 import { useUser } from "../stores/useUser";
 import Btn from "./atoms/Btn";
-import ProfileImg from "./atoms/ProfileImg";
+import ProfileImg from "./ProfileImg";
 
 type IAlarmFollowProps = {
   alarm: IAlarm;

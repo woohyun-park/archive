@@ -15,7 +15,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { displayCreatedAt } from "../libs/timeLib";
 import { useUser } from "../stores/useUser";
-import ProfileImg from "./atoms/ProfileImg";
+import ProfileImg from "./ProfileImg";
 import ModifyAndDelete from "./ModifyAndDelete";
 import Btn from "./atoms/Btn";
 

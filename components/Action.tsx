@@ -1,7 +1,7 @@
 import React, { forwardRef } from "react";
 import { addLike, addScrap, deleteLike, deleteScrap } from "../apis/firebase";
 import { IPost, IUser } from "../libs/custom";
-import IconBtn from "./atoms/IconBtn";
+import BtnIcon from "./atoms/BtnIcon";
 
 interface IActionProps {
   post: IPost;
@@ -55,19 +55,19 @@ export default forwardRef<HTMLDivElement, IActionProps>(function Action(
         <div className="flex justify-between pt-4 mb-2" ref={ref}>
           <div className="flex">
             <span className="mr-2 hover:cursor-pointer">
-              <IconBtn
+              <BtnIcon
                 icon="like"
                 fill={lid !== "" ? true : false}
                 onClick={() => toggleLike()}
               />
             </span>
             <span className="hover:cursor-pointer">
-              <IconBtn icon="comment" onClick={onCommentClick} />
+              <BtnIcon icon="comment" onClick={onCommentClick} />
             </span>
           </div>
           <div>
             <span className="hover:cursor-pointer">
-              <IconBtn
+              <BtnIcon
                 icon="scrap"
                 fill={sid !== "" ? true : false}
                 onClick={() => toggleScrap()}

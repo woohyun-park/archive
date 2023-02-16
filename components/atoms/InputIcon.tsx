@@ -1,10 +1,10 @@
 import { AnimatePresence } from "framer-motion";
 import { SIZE } from "../../libs/custom";
-import IconBtn from "./IconBtn";
+import BtnIcon from "./BtnIcon";
 import { ChangeEvent, MouseEvent } from "react";
 import WrapMotion from "../wrappers/WrapMotion";
 
-interface IIconInputProps {
+interface IInputIconProps {
   icon: "filter" | "search";
   keyword: string;
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
@@ -15,7 +15,7 @@ interface IIconInputProps {
   style?: string;
 }
 
-export default function IconInput({
+export default function InputIcon({
   icon,
   onChange,
   onDelete,
@@ -23,16 +23,16 @@ export default function IconInput({
   keyword,
   placeholder,
   style,
-}: IIconInputProps) {
+}: IInputIconProps) {
   return (
     <>
       <div className="relative flex items-center py-2 mt-4" id="iconInput_d1">
         <div className="absolute z-10 scale-75 left-1">
-          <IconBtn icon={icon} size={SIZE.iconSm} />
+          <BtnIcon icon={icon} size={SIZE.iconSm} />
         </div>
         {keyword && keyword.length !== 0 && (
           <div className="absolute z-10 scale-75 right-1" onClick={onDelete}>
-            <IconBtn icon={"delete"} size={SIZE.iconSm} />
+            <BtnIcon icon={"delete"} size={SIZE.iconSm} />
           </div>
         )}
         <AnimatePresence>

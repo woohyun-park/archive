@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { useEffect } from "react";
-import IconBtn from "../components/atoms/IconBtn";
+import BtnIcon from "../components/atoms/BtnIcon";
 import { useUser } from "../stores/useUser";
 import Page from "../components/Page";
 import { useAlarm } from "../stores/useAlarm";
@@ -41,7 +41,7 @@ export default function Alarm() {
         <>
           <div className="flex mt-2 mb-4">
             <WrapScroll className="flex">
-              <IconBtn icon="back" onClick={() => router.back()} />
+              <BtnIcon icon="back" onClick={() => router.back()} />
             </WrapScroll>
             <div className="title-page-base">알림</div>
           </div>

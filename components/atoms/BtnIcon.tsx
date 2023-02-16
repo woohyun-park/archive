@@ -28,7 +28,7 @@ export type IIcon =
   | "filter"
   | "setting";
 
-interface IIconBtnProps {
+interface IBtnIconProps {
   icon: IIcon;
   fill?: boolean;
   size?: string;
@@ -36,13 +36,13 @@ interface IIconBtnProps {
   onClick?: () => void;
 }
 
-export default function IconBtn({
+export default function BtnIcon({
   icon,
   fill = false,
   size = SIZE.icon,
   style,
   onClick,
-}: IIconBtnProps) {
+}: IBtnIconProps) {
   return (
     <>
       <div

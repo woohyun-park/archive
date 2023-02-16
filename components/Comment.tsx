@@ -6,7 +6,7 @@ import { IComment, IUser } from "../libs/custom";
 import WrapMotion from "./wrappers/WrapMotion";
 import { displayCreatedAt } from "../libs/timeLib";
 import { useUser } from "../stores/useUser";
-import ProfileImg from "./atoms/ProfileImg";
+import ProfileImg from "./ProfileImg";
 import { useRouter } from "next/router";
 
 type ICommentProps = {

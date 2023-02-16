@@ -4,9 +4,9 @@ import Loader from "../components/Loader";
 import { useFeed } from "../stores/useFeed";
 import { useStatus } from "../stores/useStatus";
 import { useUser } from "../stores/useUser";
-import ProfileImg from "../components/atoms/ProfileImg";
-import IconBtn from "../components/atoms/IconBtn";
-import IconInput from "../components/atoms/IconInput";
+import ProfileImg from "../components/ProfileImg";
+import BtnIcon from "../components/atoms/BtnIcon";
+import InputIcon from "../components/atoms/InputIcon";
 import { debounce } from "lodash";
 import { useKeyword } from "../stores/useKeyword";
 import Page from "../components/Page";
@@ -73,7 +73,7 @@ export default function Feed() {
         <WrapScroll>
           <div className="flex items-center justify-center">
             <WrapLink href="/alarm" loader={true}>
-              <IconBtn icon="alarm" />
+              <BtnIcon icon="alarm" />
             </WrapLink>
             <WrapLink href={`/profile/${curUser.id}`} loader={true}>
               <ProfileImg size="sm" photoURL={curUser.photoURL} />
@@ -81,7 +81,7 @@ export default function Feed() {
           </div>
         </WrapScroll>
       </div>
-      <IconInput
+      <InputIcon
         icon="filter"
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
           e.preventDefault();

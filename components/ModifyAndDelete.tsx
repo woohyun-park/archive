@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { useGlobal } from "../hooks/useGlobal";
 import { IPost, SIZE } from "../libs/custom";
-import IconBtn from "./atoms/IconBtn";
+import BtnIcon from "./atoms/BtnIcon";
 
 interface IModifyAndDeleteProps {
   post: IPost | null | undefined;
@@ -17,7 +17,7 @@ export default function ModifyAndDelete({
   return post ? (
     <div>
       <div className="flex">
-        <IconBtn
+        <BtnIcon
           icon="modify"
           size={SIZE.iconSm}
           onClick={() => {
@@ -30,7 +30,7 @@ export default function ModifyAndDelete({
             );
           }}
         />
-        <IconBtn
+        <BtnIcon
           icon="delete"
           size={SIZE.icon}
           onClick={async () => {

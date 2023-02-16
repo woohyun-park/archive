@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import { getPost } from "../../apis/firebase";
 import { IPost } from "../../libs/custom";
 import React, { useEffect, useState } from "react";
-import IconBtn from "../../components/atoms/IconBtn";
+import BtnIcon from "../../components/atoms/BtnIcon";
 import { useUser } from "../../stores/useUser";
 import CommentBox from "../../components/CommentBox";
 import Motion from "../../components/wrappers/WrapMotion";
@@ -37,7 +37,7 @@ export default function PostPage() {
         {post === null ? (
           <>
             <div className="flex">
-              <IconBtn icon="back" onClick={router.back} />
+              <BtnIcon icon="back" onClick={router.back} />
             </div>
             <div className="absolute top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2">
               존재하지 않는 페이지입니다
@@ -49,7 +49,7 @@ export default function PostPage() {
           post.author !== undefined && (
             <>
               <div className="flex items-center justify-between mb-4">
-                <IconBtn icon="back" onClick={router.back} />
+                <BtnIcon icon="back" onClick={router.back} />
                 {curUser.id === post.author?.id && (
                   <ModifyAndDelete post={post} redirect="/" />
                 )}

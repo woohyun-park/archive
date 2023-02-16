@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import Image from "next/image";
 import WrapMotion from "../components/wrappers/WrapMotion";
-import IconBtn from "../components/atoms/IconBtn";
+import BtnIcon from "../components/atoms/BtnIcon";
 import { useUser } from "../stores/useUser";
 import FormInput from "../components/atoms/FormInput";
 import { handleColor, handleImage } from "../libs/formLib";
@@ -100,7 +100,7 @@ export default function Add() {
   return (
     <WrapMotion type="fade">
       <div className="flex">
-        <IconBtn
+        <BtnIcon
           icon="back"
           onClick={() => {
             if (
