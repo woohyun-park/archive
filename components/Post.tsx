@@ -9,7 +9,7 @@ import PostBox from "./PostBox";
 import PostImg from "./PostImg";
 import PostTag from "./PostTag";
 import PostTitle from "./PostTitle";
-import ProfileSmall from "./ProfileSmall";
+import Profile from "./Profile";
 import WrapMotion from "./wrappers/WrapMotion";
 import WrapScroll from "./wrappers/WrapScroll";
 
@@ -31,11 +31,7 @@ export default function Post({ type, post }: IPostProps) {
           <>
             <WrapMotion type="float" className="px-4 py-1 bg-white">
               <WrapScroll>
-                <ProfileSmall
-                  post={post}
-                  user={post.author as IUser}
-                  type="post"
-                />
+                <Profile post={post} user={post.author as IUser} info="time" />
                 <PostBox post={post} />
                 <PostTitle post={post} />
                 <div className="bottom-0 right-0 flex flex-row-reverse flex-wrap-reverse text-left ">
@@ -67,7 +63,16 @@ export default function Post({ type, post }: IPostProps) {
         ) : type === "post" ? (
           <>
             <PostImg imgs={post.imgs} color={post.color} />
-            <ProfileSmall post={post} user={post.author} type="post" />
+            {curUser.id === post.uid ? (
+              <Profile post={post} user={post.author} info="time" />
+            ) : (
+              <Profile
+                post={post}
+                user={post.author}
+                info="time"
+                action="follow"
+              />
+            )}
             <PostTitle post={post} />
             <PostTag tags={post.tags} />
             <div className="mt-1 mb-4 whitespace-pre-wrap">{post.txt}</div>

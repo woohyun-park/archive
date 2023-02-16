@@ -2,7 +2,7 @@ import { Children, useState } from "react";
 import PostBox from "./PostBox";
 import { IPost, IUser, IDict, ITag, IRoute, getRoute } from "../libs/custom";
 import WrapMotion from "./wrappers/WrapMotion";
-import ProfileSmall from "./ProfileSmall";
+import ProfileSmall from "./Profile";
 import List from "./views/List";
 
 interface ITabProps {
@@ -80,7 +80,7 @@ export default function Tab({ data, tab, route }: ITabProps) {
                 <>
                   {(data[key] as IUser[]).map((user) => (
                     <WrapMotion type="float">
-                      <ProfileSmall user={user} type="post" />
+                      <ProfileSmall user={user} info="intro" />
                     </WrapMotion>
                   ))}
                 </>

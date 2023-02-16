@@ -7,7 +7,6 @@ import { useUser } from "../../stores/useUser";
 import CommentBox from "../../components/CommentBox";
 import Motion from "../../components/wrappers/WrapMotion";
 import { useModal } from "../../stores/useModal";
-import { useGlobal } from "../../hooks/useGlobal";
 import { wrapPromise } from "../../stores/libStores";
 import ModifyAndDelete from "../../components/ModifyAndDelete";
 import Post from "../../components/Post";

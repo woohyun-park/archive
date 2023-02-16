@@ -10,30 +10,28 @@ import {
 } from "firebase/firestore";
 import Link from "next/link";
 import { db, deleteEach, getDatasByQuery, updateUser } from "../apis/firebase";
-import { getRoute, IAlarm, IPost, IType, IUser, SIZE } from "../libs/custom";
+import { IAlarm, IPost, IUser } from "../libs/custom";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { displayCreatedAt } from "../libs/timeLib";
 import { useUser } from "../stores/useUser";
 import ProfileImg from "./atoms/ProfileImg";
-import { useGlobal } from "../hooks/useGlobal";
 import ModifyAndDelete from "./ModifyAndDelete";
+import Btn from "./atoms/Btn";
 
-type IProfileSmallProps = {
+type IProfileProps = {
   user: IUser;
+  info?: "time" | "intro";
+  action?: "follow" | "modifyAndDelete";
   post?: IPost;
-  type: IType;
 };
 
-export default function ProfileSmall({ user, post }: IProfileSmallProps) {
+export default function Profile({ user, post, info, action }: IProfileProps) {
   const { curUser } = useUser();
   const [isFollowing, setIsFollowing] = useState(() =>
     curUser.followings.find((elem: string) => elem === user.id) ? true : false
   );
   const router = useRouter();
-  const route = getRoute(router);
-
-  const { deletePost } = useGlobal();
 
   useEffect(() => {
     setIsFollowing(
@@ -97,47 +95,30 @@ export default function ProfileSmall({ user, post }: IProfileSmallProps) {
             <Link href={`/profile/${user?.id}`} legacyBehavior>
               <a className="text-sm text-black">{user?.displayName}</a>
             </Link>
-            {route === "feed" || route === "post" ? (
-              <div className="text-xs text-gray-1 -mt-[1px]">
+            {info === "time" && (
+              <div className="text-xs -translate-y-[2px] text-gray-1">
                 {displayCreatedAt(post?.createdAt)}
               </div>
-            ) : (
-              <div className="w-full overflow-hidden text-xs whitespace-pre-wrap text-gray-1 text-ellipsis">
+            )}
+            {info === "intro" && (
+              <div className="w-full overflow-hidden text-xs whitespace-pre-wrap -translate-y-[2px] text-gray-1 text-ellipsis">
                 {user.txt}
               </div>
             )}
           </div>
         </div>
-        {(() => {
-          // TODO: 분기 확인해서 변경할것
-          if (route === "post" || route === "search") {
-            if (curUser.id === user.id) {
-              return <></>;
-            } else if (isFollowing) {
-              return (
-                <div
-                  className="flex justify-center w-8 align-center"
-                  onClick={handleToggleFollow}
-                >
-                  팔로잉
-                </div>
-              );
-            } else {
-              return (
-                <div
-                  className="flex justify-center w-8 text-white align-center bg-gray2"
-                  onClick={handleToggleFollow}
-                >
-                  팔로우
-                </div>
-              );
-            }
-          } else if (user.id === curUser.id) {
-            return <ModifyAndDelete post={post} />;
-          } else {
-            return <div></div>;
-          }
-        })()}
+        {action === "follow" &&
+          (isFollowing ? (
+            <Btn
+              label="팔로잉"
+              onClick={handleToggleFollow}
+              isActive={false}
+              size="sm"
+            />
+          ) : (
+            <Btn label="팔로우" onClick={handleToggleFollow} size="sm" />
+          ))}
+        {action === "modifyAndDelete" && <ModifyAndDelete post={post} />}
       </div>
     </>
   );
