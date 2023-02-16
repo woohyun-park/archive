@@ -127,9 +127,10 @@ export async function addScrap(uid: string, pid: string) {
   await updateDoc(ref, { id: ref.id });
 }
 
-export async function getData<T>(type: string, id: string): Promise<T> {
+export async function getData<T>(type: string, id: string): Promise<T | null> {
   const snap = await getDoc(doc(db, type, id));
   const data = snap.data() as IDict<any>;
+  if (data === undefined) return null;
   if (data.createdAt)
     return { ...(data as T), createdAt: data.createdAt.toDate() };
   return data as T;
@@ -166,24 +167,31 @@ export async function getDatasByQuery<T>(q: Query) {
   return datas;
 }
 
+export async function getPost(id: string) {
+  const post = await getData<IPost>("posts", id);
+  if (post === null) return null;
+  const uid = post.uid;
+  const pid = post.id || "";
+  const author = await getData<IUser>("users", uid);
+  if (author === null) return null;
+  const likes = await getEach<ILike>("likes", pid);
+  const scraps = await getEach<IScrap>("scraps", pid);
+  const comments = await getEach<IComment>("comments", pid);
+  post.likes = likes ? likes : [];
+  post.scraps = scraps ? scraps : [];
+  post.comments = comments ? comments : [];
+  post.author = author;
+  return post;
+}
+
 export async function getPostsByQuery(
   q: Query
 ): Promise<[QuerySnapshot<DocumentData>, IPost[]]> {
   const snap = await getDocs(q);
   const posts: IPost[] = [];
   for (const doc of snap.docs) {
-    const post: IPost = doc.data() as IPost;
-    const uid = post.uid;
-    const pid = post.id || "";
-    const author: IUser = await getData<IUser>("users", uid);
-    const likes = await getEach<ILike>("likes", pid);
-    const scraps = await getEach<IScrap>("scraps", pid);
-    const comments = await getEach<IComment>("comments", pid);
-    post.likes = likes ? likes : [];
-    post.scraps = scraps ? scraps : [];
-    post.comments = comments ? comments : [];
-    post.author = author;
-    post.createdAt = (post.createdAt as Timestamp).toDate();
+    const post = await getPost(doc.data().id);
+    if (!post) continue;
     posts.push(post);
   }
   return [snap, posts];

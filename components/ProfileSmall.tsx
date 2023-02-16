@@ -14,10 +14,10 @@ import { getRoute, IAlarm, IPost, IType, IUser, SIZE } from "../libs/custom";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { displayCreatedAt } from "../libs/timeLib";
-import IconBtn from "./atoms/IconBtn";
 import { useUser } from "../stores/useUser";
 import ProfileImg from "./atoms/ProfileImg";
 import { useGlobal } from "../hooks/useGlobal";
+import ActionAuthor from "./ActionAuthor";
 
 type IProfileSmallProps = {
   user: IUser;
@@ -133,37 +133,7 @@ export default function ProfileSmall({ user, post }: IProfileSmallProps) {
               );
             }
           } else if (user.id === curUser.id) {
-            return (
-              <>
-                <div className="flex">
-                  <IconBtn
-                    icon="modify"
-                    size={SIZE.iconSm}
-                    onClick={() => {
-                      router.push(
-                        {
-                          pathname: "/add",
-                          query: { post: JSON.stringify(post) },
-                        },
-                        "/modify"
-                      );
-                    }}
-                  />
-                  <IconBtn
-                    icon="delete"
-                    size={SIZE.icon}
-                    onClick={async () => {
-                      if (confirm("정말 삭제하시겠습니까?")) {
-                        deletePost(post?.id || "");
-                        alert("삭제되었습니다");
-                      } else {
-                        console.log(post?.id);
-                      }
-                    }}
-                  />
-                </div>
-              </>
-            );
+            return <ActionAuthor post={post} />;
           } else {
             return <div></div>;
           }

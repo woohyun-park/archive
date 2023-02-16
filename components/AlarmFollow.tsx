@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { updateFollow } from "../apis/firebase";

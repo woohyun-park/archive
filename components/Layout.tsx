@@ -238,7 +238,9 @@ export default function Layout({ children }: ILayoutProps) {
             max-width: 480px;
             min-height: ${!login.isLoggedIn
               ? "100vh"
-              : router.pathname === "/setting" || router.pathname === "/add"
+              : router.pathname === "/setting" ||
+                router.pathname === "/add" ||
+                router.pathname === "/post/[id]"
               ? "100vh"
               : "calc(100vh - 72px)"};
             max-height: ${router.pathname === "/setting" ? "100vh" : ""};

@@ -12,7 +12,7 @@ import PageInfinite from "./PageInfinite";
 type ICommentBoxProps = {
   post: IPost;
   user: IUser;
-  setPost: React.Dispatch<React.SetStateAction<IPost>>;
+  setPost: React.Dispatch<React.SetStateAction<IPost | null | undefined>>;
 };
 
 const LIMIT = 16;
@@ -20,7 +20,6 @@ const LIMIT = 16;
 export default (function CommentBox({ post, user, setPost }: ICommentBoxProps) {
   const [comment, setComment] = useState("");
   const [page, setPage] = useState(LIMIT);
-  console.log(page);
   const router = useRouter();
   const commentRef = useRef<HTMLTextAreaElement>(null);
   const actionRef = useRef<HTMLDivElement>(null);
