@@ -45,7 +45,7 @@ export async function handleImage({
         ...post,
         imgs: [res.data.url],
       });
-      deleteAndAddTags(data.tags, pid, curUser.id);
+      deleteAndAddTags(tags, pid, curUser.id);
     } else {
       // 이미지를 올렸으며 등록인 경우
       const postRef = await addDoc(collection(db, "posts"), {
@@ -57,7 +57,7 @@ export async function handleImage({
       await updateDoc(postRef, { id: postRef.id });
       pid = postRef.id;
     }
-    addTags(data.tags, curUser.id, pid);
+    addTags(tags, curUser.id, pid);
   } else {
     if (prevPost) {
       // 이미지를 올리지 않았으며 수정인 경우
@@ -65,7 +65,7 @@ export async function handleImage({
         ...post,
         imgs: [...prevPost.imgs],
       });
-      deleteAndAddTags(data.tags, pid, curUser.id);
+      deleteAndAddTags(tags, pid, curUser.id);
     } else {
       // 이미지를 올리지 않았으며 등록인 경우
       // validation에서 필터해줌
@@ -92,7 +92,7 @@ export async function handleColor({
     await updateDoc(doc(db, "posts", prevPost.id), {
       ...post,
     });
-    deleteAndAddTags(data.tags, prevPost.id, curUser.id);
+    deleteAndAddTags(tags, prevPost.id, curUser.id);
   } else {
     // 신규인 경우
     const postRef = await addDoc(collection(db, "posts"), {
@@ -102,7 +102,7 @@ export async function handleColor({
     });
     const pid = postRef.id;
     await updateDoc(postRef, { id: pid });
-    addTags(data.tags, curUser.id, pid);
+    addTags(tags, curUser.id, pid);
   }
 }
 

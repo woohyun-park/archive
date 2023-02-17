@@ -54,6 +54,7 @@ export async function addTags(
   uid: string,
   pid: string | undefined
 ) {
+  console.log("addTags", arr);
   for await (const tag of arr) {
     const tempTag: ITag = {
       uid,

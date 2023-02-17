@@ -4,8 +4,10 @@ import { IDict, IPost, IUser } from "../libs/custom";
 
 interface IUseCache {
   cachedPosts: IDict<IPost>;
+  cachedUsers: IDict<IUser>;
 
   setCachedPosts: (posts: IDict<IPost>) => void;
+  setCachedUsers: (users: IDict<IUser>) => void;
 
   deleteCachedPosts: (pid: string) => void;
 }
@@ -13,12 +15,21 @@ interface IUseCache {
 export const useCache = create<IUseCache>()(
   devtools((set, get) => ({
     cachedPosts: {},
+    cachedUsers: {},
 
     setCachedPosts: (posts: IDict<IPost>) => {
       set((state: IUseCache) => {
         return {
           ...state,
           cachedPosts: { ...state.cachedPosts, ...posts },
+        };
+      });
+    },
+    setCachedUsers: (users: IDict<IUser>) => {
+      set((state: IUseCache) => {
+        return {
+          ...state,
+          cachedUsers: { ...state.cachedUsers, ...users },
         };
       });
     },

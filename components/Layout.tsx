@@ -156,8 +156,7 @@ export default function Layout({ children }: ILayoutProps) {
           ) : (
             <div className="m-4 mb-16">{children}</div>
           )}
-          {router.pathname === "/" ||
-            (router.pathname === "/alarm" && <ScrollTop />)}
+          {router.pathname === "/" && <ScrollTop />}
           <Nav />
         </>
       ) : (

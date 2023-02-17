@@ -8,7 +8,7 @@ import BtnIcon from "../components/atoms/BtnIcon";
 import { useUser } from "../stores/useUser";
 import FormInput from "../components/atoms/FormInput";
 import { handleColor, handleImage } from "../libs/formLib";
-import { useTag } from "../hooks/useTag";
+import { useFormTag } from "../hooks/useFormTag";
 import FormTag from "../components/atoms/FormTag";
 import ColorBox from "../components/atoms/ColorBox";
 import { useFeed } from "../stores/useFeed";
@@ -34,7 +34,7 @@ export default function Add() {
   const [preview, setPreview] = useState<string>(
     prevPost && prevPost.imgs.length !== 0 ? prevPost.imgs[0] : ""
   );
-  const { tag, tags, error, onChange, onDelete } = useTag(
+  const { tag, tags, error, onChange, onDelete } = useFormTag(
     prevPost ? prevPost.tags : []
   );
   const {
@@ -49,7 +49,6 @@ export default function Add() {
       title: prevPost ? prevPost.title : "",
       txt: prevPost ? prevPost.txt : "",
       color: prevPost ? prevPost.color : COLOR.red,
-      tags: prevPost ? prevPost.tags : [],
     },
   });
   const file = register("file");

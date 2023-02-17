@@ -1,17 +1,22 @@
-import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import {
   deletePost as deletePostFb,
   getPost as getPostFb,
 } from "../apis/firebase";
-import { IDict, IPost } from "../libs/custom";
+import { IDict, IPost, IUser } from "../libs/custom";
 import { IFetchType } from "../libs/queryLib";
 import { useCache } from "../stores/useCache";
 import { useFeed } from "../stores/useFeed";
 import { useSearch } from "../stores/useSearch";
 
 export const useGlobal = () => {
-  const { cachedPosts, setCachedPosts, deleteCachedPosts } = useCache();
+  const {
+    cachedPosts,
+    cachedUsers,
+    setCachedPosts,
+    setCachedUsers,
+    deleteCachedPosts,
+  } = useCache();
   const feed = useFeed();
   const search = useSearch();
 
@@ -50,8 +55,14 @@ export const useGlobal = () => {
 
   function updatePosts(posts: IPost[]) {
     const updatedPosts: IDict<IPost> = { ...cachedPosts };
-    posts.forEach((post) => (updatedPosts[post.id || ""] = post));
+    const updatedUsers: IDict<IUser> = { ...cachedUsers };
+    posts.forEach((post) => {
+      const user = post.author;
+      updatedPosts[post.id || ""] = post;
+      if (user) updatedUsers[user.id] = user;
+    });
     setCachedPosts(updatedPosts);
+    setCachedUsers(updatedUsers);
   }
 
   async function getPost(pid: string) {
