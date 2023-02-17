@@ -47,7 +47,7 @@ export default function Page({
         refreshingContent={<Loader isVisible={true} />}
         isPullable={page === "post" ? false : true}
       >
-        <div className={`min-h-[${minHeight}]`}>
+        <div id="page_d1">
           {page === "feed" && (
             <PageFeed
               posts={data as IPost[]}
@@ -81,6 +81,13 @@ export default function Page({
         </div>
       </PullToRefresh>
       <Loader isVisible={loading} scrollIntoView={true} />
+      <style jsx>
+        {`
+          #page_d1 {
+            min-height: ${minHeight};
+          }
+        `}
+      </style>
     </>
   );
 }

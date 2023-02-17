@@ -1,7 +1,9 @@
+import { AnimatePresence } from "framer-motion";
 import { IAlarm } from "../libs/custom";
 import AlarmComment from "./AlarmComment";
 import AlarmFollow from "./AlarmFollow";
 import AlarmLike from "./AlarmLike";
+import WrapMotion from "./wrappers/WrapMotion";
 
 interface IPageAlarmProps {
   alarms: IAlarm[];
@@ -16,18 +18,22 @@ export default function PageAlarm({
 }: IPageAlarmProps) {
   return (
     <>
-      {alarms.map((alarm, i) => {
-        return (
-          <>
-            {alarm.type === "like" && <AlarmLike alarm={alarm} />}
-            {alarm.type === "comment" && <AlarmComment alarm={alarm} />}
-            {alarm.type === "follow" && <AlarmFollow alarm={alarm} />}
-            {!isLast && i === alarms.length - 1 && (
-              <div ref={setLastIntersecting}></div>
-            )}
-          </>
-        );
-      })}
+      <AnimatePresence>
+        {alarms.map((alarm, i) => {
+          return (
+            <WrapMotion type="float" key={alarm.id}>
+              <>
+                {alarm.type === "like" && <AlarmLike alarm={alarm} />}
+                {alarm.type === "comment" && <AlarmComment alarm={alarm} />}
+                {alarm.type === "follow" && <AlarmFollow alarm={alarm} />}
+                {!isLast && i === alarms.length - 1 && (
+                  <div ref={setLastIntersecting}></div>
+                )}
+              </>
+            </WrapMotion>
+          );
+        })}
+      </AnimatePresence>
     </>
   );
 }

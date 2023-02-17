@@ -50,6 +50,7 @@ export default function Alarm() {
             }}
             changeListener={alarms}
             isLast={isLast}
+            minHeight="50vh"
           />
           <div className="mb-32"></div>
         </>

@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 type IWrapMotion = {
   children: React.ReactNode;
   type: IWrapMotionType;
+  key?: string;
   duration?: number;
   className?: string;
 };
@@ -12,12 +13,14 @@ export type IWrapMotionType = "float" | "fade";
 export default function WrapMotion({
   children,
   type,
+  key,
   duration = 0.33,
   className,
 }: IWrapMotion) {
   return (
     <>
       <motion.div
+        key={key}
         className={className}
         initial="initial"
         animate="animate"

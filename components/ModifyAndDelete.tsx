@@ -1,10 +1,9 @@
 import { useRouter } from "next/router";
 import { deletePost } from "../apis/firebase";
-import { useGlobal } from "../hooks/useGlobal";
-// import { deletePost } from "../apis/firebase";
 import { IPost, SIZE } from "../libs/custom";
 import { useCache } from "../stores/useCache";
 import BtnIcon from "./atoms/BtnIcon";
+// import { deletePost } from "../apis/firebase";
 
 interface IModifyAndDeleteProps {
   post: IPost | null | undefined;

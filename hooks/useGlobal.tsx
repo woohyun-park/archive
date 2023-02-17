@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import {
   deletePost as deletePostFb,
@@ -10,10 +11,9 @@ import { useFeed } from "../stores/useFeed";
 import { useSearch } from "../stores/useSearch";
 
 export const useGlobal = () => {
+  const { cachedPosts, setCachedPosts, deleteCachedPosts } = useCache();
   const feed = useFeed();
   const search = useSearch();
-
-  const { cachedPosts, setCachedPosts, deleteCachedPosts } = useCache();
 
   useEffect(() => {
     feed.setPosts(
