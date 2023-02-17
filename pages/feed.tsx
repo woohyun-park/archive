@@ -14,6 +14,7 @@ import WrapScroll from "../components/wrappers/WrapScroll";
 import { useModal } from "../stores/useModal";
 import WrapLink from "../components/wrappers/WrapLink";
 import { useGlobal } from "../hooks/useGlobal";
+import { useStack } from "../stores/useStack";
 
 export default function Feed() {
   const { curUser } = useUser();
@@ -61,6 +62,8 @@ export default function Feed() {
     filterPosts();
   }, [filterLoading]);
 
+  const { setStack } = useStack();
+
   return (
     <div className="relative flex flex-col">
       <div className="flex items-center justify-between px-4 pb-2">
@@ -75,7 +78,11 @@ export default function Feed() {
             <WrapLink href="/alarm" loader={true}>
               <BtnIcon icon="alarm" />
             </WrapLink>
-            <WrapLink href={`/profile/${curUser.id}`} loader={true}>
+            <WrapLink
+              href={`/profile/${curUser.id}`}
+              loader={true}
+              onClickAdditional={() => setStack("profile")}
+            >
               <ProfileImg size="sm" photoURL={curUser.photoURL} />
             </WrapLink>
           </div>

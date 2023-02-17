@@ -7,6 +7,7 @@ import { useStatus } from "../../stores/useStatus";
 interface IWrapLink {
   children: React.ReactNode;
   href: string;
+  onClickAdditional?: () => void;
   loader?: boolean;
   className?: string;
 }
@@ -14,6 +15,7 @@ interface IWrapLink {
 export default function WrapLink({
   children,
   href,
+  onClickAdditional,
   loader = false,
   className,
 }: IWrapLink) {
@@ -22,6 +24,7 @@ export default function WrapLink({
   const router = useRouter();
 
   async function onClick(e: React.MouseEvent<HTMLElement>) {
+    onClickAdditional && onClickAdditional();
     loader &&
       scroll[href] === undefined &&
       (await wrapPromise(() => setModalLoader(true), 500));

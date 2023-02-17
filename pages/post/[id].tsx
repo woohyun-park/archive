@@ -10,12 +10,12 @@ import { wrapPromise } from "../../stores/libStores";
 import ModifyAndDelete from "../../components/ModifyAndDelete";
 import Post from "../../components/Post";
 import { useGlobal } from "../../hooks/useGlobal";
+import { useStack } from "../../stores/useStack";
 
 export default function PostPage() {
   const { curUser } = useUser();
   const { setModalLoader } = useModal();
   const { getPost, updatePosts } = useGlobal();
-
   const router = useRouter();
   const [post, setPost] = useState<IPost | null | undefined>(undefined);
 
