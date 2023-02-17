@@ -42,15 +42,7 @@ export default function Post({ type, post }: IPostProps) {
                 />
                 <PostBox post={post} />
                 <PostTitle post={post} />
-                <div className="bottom-0 right-0 flex flex-row-reverse flex-wrap-reverse text-left ">
-                  {Children.toArray(
-                    [...post.tags]?.reverse().map((tag) => (
-                      <Link href={{ pathname: `/tag/${tag}` }} legacyBehavior>
-                        <button className="m-1 mb-0 button-black hover:cursor-pointer">{`#${tag}`}</button>
-                      </Link>
-                    ))
-                  )}
-                </div>
+                <PostTag tags={post.tags} />
                 <Action
                   post={post}
                   curUser={curUser}
@@ -82,7 +74,7 @@ export default function Post({ type, post }: IPostProps) {
               />
             )}
             <PostTitle post={post} />
-            <PostTag tags={post.tags} />
+            <PostTag tags={post.tags} style={{ marginBottom: "2rem" }} />
             <div className="mt-1 mb-4 whitespace-pre-wrap">{post.txt}</div>
           </>
         ) : (

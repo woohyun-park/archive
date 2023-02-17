@@ -154,7 +154,7 @@ export default function Layout({ children }: ILayoutProps) {
         <>
           {router.pathname === "/" ? (
             <div className="my-4">{children}</div>
-          ) : router.pathname.split("/")[1] === "post" ? (
+          ) : router.pathname === "/post/[id]" ? (
             <div className="m-4 mb-4">{children}</div>
           ) : (
             <div className="m-4 mb-16">{children}</div>

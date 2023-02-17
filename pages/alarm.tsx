@@ -19,12 +19,12 @@ export default function Alarm() {
 
   useEffect(() => {
     async function init() {
-      if (scroll[router.pathname] === undefined) {
+      if (scroll[router.asPath] === undefined) {
         await getAlarms("init", curUser.id);
         setModalLoader(false);
         scrollTo(0, 0);
       } else {
-        scrollTo(0, scroll[router.pathname]);
+        scrollTo(0, scroll[router.asPath]);
       }
     }
     init();

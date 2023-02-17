@@ -12,7 +12,7 @@ export default function WrapScroll({ children, className }: IWrapScroll) {
   const router = useRouter();
   function onClick(e: React.MouseEvent<HTMLElement>) {
     e.preventDefault;
-    setScroll(router.pathname, window.scrollY);
+    setScroll(router.asPath, window.scrollY);
   }
   return (
     <div onClick={onClick} className={className}>

@@ -2,7 +2,7 @@ import { DocumentData, QueryDocumentSnapshot } from "firebase/firestore";
 import create from "zustand";
 import { devtools } from "zustand/middleware";
 import { getPostsByQuery } from "../apis/firebase";
-import { IDict, IPost, ITag, IUser } from "../libs/custom";
+import { IDict, IPost } from "../libs/custom";
 import { getTagQuery, IFetchType } from "../libs/queryLib";
 import { combineData, setCursor } from "./libStores";
 

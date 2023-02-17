@@ -22,7 +22,7 @@ export default function Nav() {
       {!(
         router.pathname === "/setting" ||
         router.pathname === "/add" ||
-        router.pathname.split("/")[1] === "post"
+        router.pathname === "/post/[id]"
       ) && (
         <WrapScroll>
           <div className="box-border fixed bottom-0 grid grid-cols-3 justify-around w-full pt-1 pb-8 px-8 bg-white max-w-[480px] z-10">

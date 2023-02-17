@@ -28,7 +28,7 @@ export default function Feed() {
   const [filterLoading, setFilterLoading] = useState(false);
   const [resetFilter, setResetFilter] = useState<boolean | null>(null);
 
-  const keyword = keywords[router.pathname] || "";
+  const keyword = keywords[router.asPath] || "";
 
   useEffect(() => {
     setModalLoader(false);
@@ -38,7 +38,7 @@ export default function Feed() {
         setFilterLoading(true);
         setRefresh(false);
       } else {
-        window.scrollTo(0, scroll[router.pathname]);
+        window.scrollTo(0, scroll[router.asPath]);
       }
     }, 10);
   }, []);
@@ -89,12 +89,12 @@ export default function Feed() {
           if (keyword === "") {
             setFilteredPosts([]);
           } else if (keyword.slice(keyword.length - 1) !== " ") {
-            setKeywords(router.pathname, keyword);
+            setKeywords(router.asPath, keyword);
             setResetFilter(!resetFilter);
           }
         }}
         onDelete={() => {
-          setKeywords(router.pathname, "");
+          setKeywords(router.asPath, "");
           setResetFilter(!resetFilter);
           setFilteredPosts([]);
         }}

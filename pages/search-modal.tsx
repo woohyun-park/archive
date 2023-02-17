@@ -26,7 +26,7 @@ export default function Search() {
   });
 
   const { keywords, setKeywords } = useKeyword();
-  const keyword = keywords[router.pathname] || "";
+  const keyword = keywords[router.asPath] || "";
 
   const [focus, setFocus] = useState(false);
   const recentRef = useRef<HTMLDivElement>(null);
@@ -41,7 +41,7 @@ export default function Search() {
   });
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setKeywords(router.pathname, e.currentTarget.value);
+    setKeywords(router.asPath, e.currentTarget.value);
   }
 
   function updateHistory(keyword: string) {
@@ -78,7 +78,7 @@ export default function Search() {
       searchedKeyword: keyword,
     });
     setFocus(false);
-    setKeywords(router.pathname, keyword);
+    setKeywords(router.asPath, keyword);
   }
 
   // TODO: 한글을 치고 엔터를 누르면 블루갈롤 -> 블루갈롤롤과 같이 검색되는 현상이 있다.
@@ -133,7 +133,7 @@ export default function Search() {
                 keyword={keyword}
                 onChange={handleChange}
                 onDelete={() => {
-                  setKeywords(router.pathname, "");
+                  setKeywords(router.asPath, "");
                   searchRef.current?.focus();
                 }}
                 onKeyDown={handleSearch}

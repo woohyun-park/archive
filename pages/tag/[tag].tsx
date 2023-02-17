@@ -6,9 +6,11 @@ import WrapScroll from "../../components/wrappers/WrapScroll";
 import Motion from "../../components/wrappers/WrapMotion";
 import { useModal } from "../../stores/useModal";
 import { useTag } from "../../stores/useTag";
+import { useStatus } from "../../stores/useStatus";
 
 export default function Tag({}) {
-  const { modalLoader } = useModal();
+  const { setModalLoader, modalLoader } = useModal();
+  const { scroll } = useStatus();
   const { dictPosts, getPosts } = useTag();
 
   const router = useRouter();
@@ -17,7 +19,15 @@ export default function Tag({}) {
 
   useEffect(() => {
     async function init() {
-      getPosts("init", tag);
+      if (scroll[router.asPath] === undefined) {
+        console.log("1");
+        await getPosts("init", tag);
+        setModalLoader(false);
+        scrollTo(0, 0);
+      } else {
+        console.log("2");
+        scrollTo(0, scroll[router.asPath]);
+      }
     }
     init();
   }, []);

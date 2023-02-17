@@ -3,7 +3,7 @@ import { HiMagnifyingGlass } from "react-icons/hi2";
 import Link from "next/link";
 import WrapMotion from "../components/wrappers/WrapMotion";
 import { useSearch } from "../stores/useSearch";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Page from "../components/Page";
 import { useRouter } from "next/router";
 import { useStatus } from "../stores/useStatus";
@@ -19,12 +19,12 @@ export default function Search() {
   const router = useRouter();
   useEffect(() => {
     async function init() {
-      if (scroll[router.pathname] === undefined) {
+      if (scroll[router.asPath] === undefined) {
         await getSearch("init");
         setModalLoader(false);
         scrollTo(0, 0);
       } else {
-        scrollTo(0, scroll[router.pathname]);
+        scrollTo(0, scroll[router.asPath]);
       }
     }
     init();
