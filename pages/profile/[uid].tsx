@@ -1,7 +1,6 @@
 import { signOut } from "firebase/auth";
 import { collection, query, where } from "firebase/firestore";
 import { auth, db } from "../../apis/firebase";
-import Tab from "../../components/Tab";
 import { IDict, IPost, IScrap, ITag, IUser, SIZE } from "../../libs/custom";
 import { useEffect, useState } from "react";
 import Motion from "../../components/wrappers/WrapMotion";
@@ -12,6 +11,7 @@ import { useRouter } from "next/router";
 import ProfileImg from "../../components/ProfileImg";
 import { readData, readDatasByQuery, readPost } from "../../apis/fbRead";
 import { useStatus } from "../../stores/useStatus";
+import { updateFollow } from "../../apis/fbUpdate";
 
 export default function Profile() {
   const [initUser, setInitUser] = useState<IUser | undefined>(undefined);
@@ -198,7 +198,7 @@ export default function Profile() {
                 })()}
               </>
             )}
-            <Tab
+            {/* <Tab
               data={{ grid: posts, tag: tags, scrap: scraps }}
               tab={[
                 ["grid", "post"],
@@ -206,7 +206,7 @@ export default function Profile() {
                 ["scrap", "cont"],
               ]}
               route="profile"
-            />
+            /> */}
           </Motion>
           <div className="mb-24"></div>
         </>

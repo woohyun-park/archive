@@ -6,7 +6,6 @@ import {
 } from "firebase/auth";
 import { useRouter } from "next/router";
 import React, { Children, useEffect, useState } from "react";
-import { useStore } from "../stores/useStore";
 import { auth, db } from "../apis/firebase";
 import Nav from "./Nav";
 import { doc, getDoc, setDoc } from "firebase/firestore";
@@ -35,7 +34,6 @@ interface ILogin {
 export default function Layout({ children }: ILayoutProps) {
   const provider = new GoogleAuthProvider();
   const router = useRouter();
-  const { gInit } = useStore();
   const { getCurUser } = useUser();
   const { getPosts } = useFeed();
   const [login, setLogin] = useState<ILogin>({
@@ -49,7 +47,6 @@ export default function Layout({ children }: ILayoutProps) {
   useEffect(() => {
     auth.onAuthStateChanged(async (authState) => {
       if (authState) {
-        await gInit(authState.uid);
         const user = await getCurUser(authState.uid);
         console.log(user);
         await getPosts("init", authState.uid);

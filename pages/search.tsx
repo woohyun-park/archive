@@ -18,6 +18,7 @@ export default function Search() {
   const cache = caches[path];
   const posts = cache ? (cache.data as IPost[]) : [];
   const isLast = cache ? cache.isLast : false;
+  console.log(cache);
 
   useEffect(() => {
     async function init() {

@@ -1,7 +1,7 @@
 import { AnimatePresence } from "framer-motion";
 import { SIZE } from "../../libs/custom";
 import BtnIcon from "./BtnIcon";
-import { ChangeEvent, MouseEvent } from "react";
+import { ChangeEvent, forwardRef, MouseEvent } from "react";
 import WrapMotion from "../wrappers/WrapMotion";
 
 interface IInputIconProps {
@@ -15,15 +15,10 @@ interface IInputIconProps {
   style?: string;
 }
 
-export default function InputIcon({
-  icon,
-  onChange,
-  onDelete,
-  onKeyDown,
-  keyword,
-  placeholder,
-  style,
-}: IInputIconProps) {
+export default forwardRef<HTMLInputElement, IInputIconProps>(function InputIcon(
+  { icon, onChange, onDelete, onKeyDown, keyword, placeholder, style },
+  ref
+) {
   return (
     <>
       <div className="relative flex items-center py-2 mt-4" id="iconInput_d1">
@@ -49,6 +44,7 @@ export default function InputIcon({
                 paddingRight: "1.625rem",
                 fontSize: "0.875rem",
               }}
+              ref={ref}
             />
           </WrapMotion>
         </AnimatePresence>
@@ -62,4 +58,4 @@ export default function InputIcon({
       </style>
     </>
   );
-}
+});
