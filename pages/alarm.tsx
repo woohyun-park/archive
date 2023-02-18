@@ -14,18 +14,18 @@ export default function Alarm() {
   const router = useRouter();
 
   const { curUser } = useUser();
-  const { caches, setCaches, getCaches } = useCache();
+  const { caches, getCaches } = useCache();
+  const { setModalLoader, modalLoader } = useModal();
+  const { scroll } = useStatus();
+
   const cache = caches[router.pathname];
   const alarms = cache ? (cache.data as IAlarm[]) : [];
   const isLast = cache ? cache.isLast : false;
 
-  const { setModalLoader, modalLoader } = useModal();
-  const { scroll } = useStatus();
-
   useEffect(() => {
     async function init() {
       if (scroll[router.asPath] === undefined) {
-        await getCaches("init", router.pathname, curUser.id);
+        await getCaches("alarms", "init", router.pathname, curUser.id);
         setModalLoader(false);
         scrollTo(0, 0);
       } else {

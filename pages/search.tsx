@@ -1,25 +1,29 @@
-import { SIZE } from "../libs/custom";
+import { IPost, SIZE } from "../libs/custom";
 import { HiMagnifyingGlass } from "react-icons/hi2";
 import Link from "next/link";
 import WrapMotion from "../components/wrappers/WrapMotion";
-import { useSearch } from "../stores/useSearch";
 import { useEffect } from "react";
 import Page from "../components/Page";
 import { useRouter } from "next/router";
 import { useStatus } from "../stores/useStatus";
 import { useModal } from "../stores/useModal";
+import { useCache } from "../stores/useCache";
 
 export default function Search() {
-  const { posts, isLast } = useSearch();
-  const { scroll, setScroll } = useStatus();
-  const { setModalLoader } = useModal();
-  const { getPosts } = useSearch();
-
   const router = useRouter();
+
+  const { scroll } = useStatus();
+  const { setModalLoader } = useModal();
+  const { caches, getCaches } = useCache();
+
+  const cache = caches[router.pathname];
+  const posts = cache ? (cache.data as IPost[]) : [];
+  const isLast = cache ? cache.isLast : false;
+
   useEffect(() => {
     async function init() {
       if (scroll[router.asPath] === undefined) {
-        await getPosts("init");
+        await getCaches("posts", "init", router.pathname);
         setModalLoader(false);
         scrollTo(0, 0);
       } else {
@@ -43,11 +47,11 @@ export default function Search() {
           page="search"
           data={posts}
           onIntersect={async () => {
-            await getPosts("load");
+            await getCaches("posts", "load", router.pathname);
           }}
           onChange={() => {}}
           onRefresh={async () => {
-            await getPosts("refresh");
+            await getCaches("posts", "refresh", router.pathname);
           }}
           changeListener={posts}
           isLast={isLast}
