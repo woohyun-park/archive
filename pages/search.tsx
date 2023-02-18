@@ -6,14 +6,12 @@ import { useEffect } from "react";
 import Page from "../components/Page";
 import { useRouter } from "next/router";
 import { useStatus } from "../stores/useStatus";
-import { useModal } from "../stores/useModal";
 import { useCache } from "../stores/useCache";
 
 export default function Search() {
   const router = useRouter();
 
-  const { scroll } = useStatus();
-  const { setModalLoader } = useModal();
+  const { scroll, setModalLoader } = useStatus();
   const { caches, fetchSearchPage } = useCache();
 
   const path = router.asPath;

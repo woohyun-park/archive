@@ -3,7 +3,6 @@ import { useEffect } from "react";
 import BtnIcon from "../components/atoms/BtnIcon";
 import { useUser } from "../stores/useUser";
 import Page from "../components/Page";
-import { useModal } from "../stores/useModal";
 import { useStatus } from "../stores/useStatus";
 import WrapScroll from "../components/wrappers/WrapScroll";
 import Motion from "../components/wrappers/WrapMotion";
@@ -15,7 +14,7 @@ export default function Alarm() {
 
   const { curUser } = useUser();
   const { caches, fetchAlarmPage } = useCache();
-  const { setModalLoader, modalLoader } = useModal();
+  const { setModalLoader, modalLoader } = useStatus();
   const { scroll } = useStatus();
 
   const path = router.asPath;

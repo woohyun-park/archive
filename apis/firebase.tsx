@@ -1,9 +1,5 @@
 import { initializeApp } from "firebase/app";
-import {
-  FieldValue,
-  getFirestore,
-  Timestamp,
-} from "firebase/firestore";
+import { FieldValue, getFirestore, Timestamp } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import {
   IAlarm,
@@ -27,16 +23,6 @@ const firebaseConfig = {
 export const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 export const auth = getAuth(app);
-
-export type IData = IUser | IPost | ITag | IAlarm | ILike | IComment | IScrap;
-export type IDataType =
-  | "users"
-  | "posts"
-  | "tags"
-  | "alarms"
-  | "likes"
-  | "comments"
-  | "scraps";
 
 export function convertCreatedAt(createdAt: Date | FieldValue) {
   return (createdAt as Timestamp).toDate();

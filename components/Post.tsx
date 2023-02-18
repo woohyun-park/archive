@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { IPost, IUser } from "../libs/custom";
-import { useModal } from "../stores/useModal";
+import { useStatus } from "../stores/useStatus";
 import { useUser } from "../stores/useUser";
 import Action from "./Action";
 import PostBox from "./PostBox";
@@ -18,7 +18,7 @@ interface IPostProps {
 
 export default function Post({ type, post }: IPostProps) {
   const { curUser } = useUser();
-  const { setModalLoader } = useModal();
+  const { setModalLoader } = useStatus();
 
   const router = useRouter();
 

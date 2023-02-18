@@ -10,7 +10,6 @@ import InputIcon from "../components/atoms/InputIcon";
 import { debounce } from "lodash";
 import Page from "../components/Page";
 import WrapScroll from "../components/wrappers/WrapScroll";
-import { useModal } from "../stores/useModal";
 import WrapLink from "../components/wrappers/WrapLink";
 
 export default function Feed() {
@@ -24,8 +23,8 @@ export default function Feed() {
     setFilteredPosts,
     setRefresh,
   } = useFeed();
-  const { scroll, keywords, setScroll, setKeywords } = useStatus();
-  const { setModalLoader } = useModal();
+  const { scroll, keywords, setScroll, setKeywords, setModalLoader } =
+    useStatus();
 
   const router = useRouter();
   const [filterLoading, setFilterLoading] = useState(false);

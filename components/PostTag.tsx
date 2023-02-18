@@ -1,6 +1,5 @@
 import { useRouter } from "next/router";
 import { Children, CSSProperties } from "react";
-import { useModal } from "../stores/useModal";
 import Btn from "./atoms/Btn";
 import WrapLink from "./wrappers/WrapLink";
 

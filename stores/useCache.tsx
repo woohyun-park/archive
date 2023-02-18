@@ -5,7 +5,7 @@ import {
 } from "firebase/firestore";
 import create from "zustand";
 import { devtools } from "zustand/middleware";
-import { IAlarm, IDict, IPageType, IPost, ITag } from "../libs/custom";
+import { IAlarm, IDict, IPost } from "../libs/custom";
 import {
   FETCH_LIMIT,
   getAlarmQuery,
@@ -29,12 +29,6 @@ interface IUseCache {
     pathname: string,
     tag: string
   ) => Promise<void>;
-  // getCaches: (
-  //   pageType: IPageType,
-  //   fetchType: IFetchType,
-  //   pathname: string,
-  //   uid?: string
-  // ) => Promise<void>;
 }
 
 interface ICache {
@@ -141,31 +135,5 @@ export const useCache = create<IUseCache>()(
         return newState;
       });
     },
-
-    // getCaches: async (
-    //   pageType: IPageType,
-    //   fetchType: IFetchType,
-    //   pathname: string,
-    //   uid?: string,
-    //   tag?: string
-    // ) => {
-    //   let cache: ICache;
-    //   const prevCache = { ...get().caches[pathname] };
-    //   if (pageType === "alarm" && uid)
-    //     cache = await getAlarmPage(fetchType, prevCache, uid);
-    //   if (pageType === "search")
-    //     cache = await getSearchPage(fetchType, prevCache);
-    //   if (pageType === "tag")
-    //     cache = await getTagPage(fetchType, prevCache, tag);
-    //   set((state: IUseCache) => {
-    //     return {
-    //       ...state,
-    //       caches: {
-    //         ...state.caches,
-    //         [pathname]: cache,
-    //       },
-    //     };
-    //   });
-    // },
   }))
 );

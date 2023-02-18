@@ -5,15 +5,15 @@ import BtnIcon from "../../components/atoms/BtnIcon";
 import { useUser } from "../../stores/useUser";
 import CommentBox from "../../components/CommentBox";
 import Motion from "../../components/wrappers/WrapMotion";
-import { useModal } from "../../stores/useModal";
 import { wrapPromise } from "../../stores/libStores";
 import ModifyAndDelete from "../../components/ModifyAndDelete";
 import Post from "../../components/Post";
 import { readPost } from "../../apis/fbRead";
+import { useStatus } from "../../stores/useStatus";
 
 export default function PostPage() {
   const { curUser } = useUser();
-  const { setModalLoader } = useModal();
+  const { setModalLoader } = useStatus();
   const router = useRouter();
   const [post, setPost] = useState<IPost | null | undefined>(undefined);
 

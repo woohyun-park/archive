@@ -1,5 +1,4 @@
 import { FieldValue } from "firebase/firestore";
-import { NextRouter } from "next/router";
 const colors = require("tailwindcss/colors");
 
 interface IDefault {
@@ -60,6 +59,17 @@ Object.freeze(DEFAULT);
 Object.freeze(SIZE);
 Object.freeze(COLOR);
 
+export type IData = IUser | IPost | ITag | IAlarm | ILike | IComment | IScrap;
+
+export type IDataType =
+  | "users"
+  | "posts"
+  | "tags"
+  | "alarms"
+  | "likes"
+  | "comments"
+  | "scraps";
+
 export type IPageType =
   | "feed"
   | "search"
@@ -67,7 +77,6 @@ export type IPageType =
   | "alarm"
   | "profile"
   | "post";
-export type IType = "user" | "post" | "comment" | "tag" | "like" | "scrap";
 
 export interface IDict<T> {
   [key: string]: T;
@@ -87,8 +96,6 @@ export interface IUser {
   scraps?: IScrap[];
   history?: string[];
   alarms?: IAlarm[];
-  // posts: string[];
-  // tags: string[];
 }
 
 export interface IPost {
@@ -105,7 +112,6 @@ export interface IPost {
   scraps?: IScrap[];
   comments?: IComment[];
   author?: IUser;
-  // isDeleted: boolean;
 }
 
 export interface IComment {

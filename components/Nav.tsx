@@ -6,7 +6,7 @@ import {
   HiOutlineLightBulb,
 } from "react-icons/hi2";
 import { SIZE } from "../libs/custom";
-import { useModal } from "../stores/useModal";
+import { useStatus } from "../stores/useStatus";
 import ModalLoader from "./ModalLoader";
 import WrapLink from "./wrappers/WrapLink";
 import WrapScroll from "./wrappers/WrapScroll";
@@ -14,7 +14,7 @@ import WrapScroll from "./wrappers/WrapScroll";
 export default function Nav() {
   const router = useRouter();
   const path = router.pathname;
-  const { modalLoader, setModalLoader } = useModal();
+  const { modalLoader } = useStatus();
 
   return (
     <>

@@ -1,6 +1,6 @@
 import { signOut } from "firebase/auth";
 import { collection, query, where } from "firebase/firestore";
-import { auth, db, updateFollow } from "../../apis/firebase";
+import { auth, db } from "../../apis/firebase";
 import Tab from "../../components/Tab";
 import { IDict, IPost, IScrap, ITag, IUser, SIZE } from "../../libs/custom";
 import { useEffect, useState } from "react";
@@ -10,8 +10,8 @@ import { useUser } from "../../stores/useUser";
 import BtnIcon from "../../components/atoms/BtnIcon";
 import { useRouter } from "next/router";
 import ProfileImg from "../../components/ProfileImg";
-import { useModal } from "../../stores/useModal";
 import { readData, readDatasByQuery, readPost } from "../../apis/fbRead";
+import { useStatus } from "../../stores/useStatus";
 
 export default function Profile() {
   const [initUser, setInitUser] = useState<IUser | undefined>(undefined);
@@ -66,7 +66,7 @@ export default function Profile() {
   }, []);
 
   const { curUser } = useUser();
-  const { setModalLoader } = useModal();
+  const { setModalLoader } = useStatus();
 
   const router = useRouter();
   const [user, setUser] = useState({

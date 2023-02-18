@@ -4,7 +4,6 @@ import BtnIcon from "../../components/atoms/BtnIcon";
 import Page from "../../components/Page";
 import WrapScroll from "../../components/wrappers/WrapScroll";
 import Motion from "../../components/wrappers/WrapMotion";
-import { useModal } from "../../stores/useModal";
 import { useStatus } from "../../stores/useStatus";
 import { useCache } from "../../stores/useCache";
 import { IPost } from "../../libs/custom";
@@ -12,8 +11,7 @@ import { IPost } from "../../libs/custom";
 export default function Tag({}) {
   const router = useRouter();
 
-  const { setModalLoader, modalLoader } = useModal();
-  const { scroll } = useStatus();
+  const { scroll, setModalLoader, modalLoader } = useStatus();
   const { caches, fetchTagPage } = useCache();
 
   const path = router.asPath;
