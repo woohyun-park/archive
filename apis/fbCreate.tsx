@@ -10,7 +10,7 @@ import { db } from "./firebase";
 // ALERT:한개의 데이터를 추가하는 create 함수들은 ref를 반환하고,
 // 여러개의 데이터를 추가하는 create 함수들은 void를 반환한다
 
-async function createDoc(
+export async function createDoc(
   type: "tags" | "likes" | "alarms" | "comments" | "scraps",
   data: ITag | ILike | IAlarm | IComment | IScrap
 ) {

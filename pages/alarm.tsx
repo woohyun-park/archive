@@ -3,43 +3,32 @@ import { useEffect } from "react";
 import BtnIcon from "../components/atoms/BtnIcon";
 import { useUser } from "../stores/useUser";
 import Page from "../components/Page";
-import { useAlarm } from "../stores/useAlarm";
 import { useModal } from "../stores/useModal";
 import { useStatus } from "../stores/useStatus";
 import WrapScroll from "../components/wrappers/WrapScroll";
 import Motion from "../components/wrappers/WrapMotion";
 import { IAlarm } from "../libs/custom";
-import { readAlarm } from "../apis/fbRead";
+import { useCache } from "../stores/useCache";
 
 export default function Alarm() {
   const router = useRouter();
 
   const { curUser } = useUser();
-  const { alarms, isLast, getAlarms, setAlarms } = useAlarm();
+  const { caches, setCaches, getCaches } = useCache();
+  const cache = caches[router.pathname];
+  const alarms = cache ? (cache.data as IAlarm[]) : [];
+  const isLast = cache ? cache.isLast : false;
+
   const { setModalLoader, modalLoader } = useModal();
   const { scroll } = useStatus();
 
   useEffect(() => {
     async function init() {
       if (scroll[router.asPath] === undefined) {
-        await getAlarms("init", curUser.id);
+        await getCaches("init", router.pathname, curUser.id);
         setModalLoader(false);
         scrollTo(0, 0);
       } else {
-        if (!curUser.alarms) return;
-        const tempAlarms = [...curUser.alarms].filter(
-          (e1) =>
-            !alarms.find((e2) => {
-              return e1.id === e2.id;
-            })
-        );
-        const newAlarms: IAlarm[] = [];
-        for await (const tempAlarm of tempAlarms) {
-          const alarm = await readAlarm(tempAlarm.id);
-          alarm && newAlarms.push(alarm);
-        }
-        console.log(newAlarms, alarms);
-        setAlarms([...newAlarms, ...alarms]);
         scrollTo(0, scroll[router.asPath]);
       }
     }
@@ -59,10 +48,10 @@ export default function Alarm() {
           <Page
             page="alarm"
             data={alarms}
-            onIntersect={() => getAlarms("load", curUser.id)}
+            onIntersect={() => getCaches("load", router.pathname, curUser.id)}
             onChange={() => {}}
             onRefresh={async () => {
-              await getAlarms("refresh", curUser.id);
+              await getCaches("refresh", router.pathname, curUser.id);
             }}
             changeListener={alarms}
             isLast={isLast}
