@@ -8,12 +8,10 @@ import ProfileImg from "../components/ProfileImg";
 import BtnIcon from "../components/atoms/BtnIcon";
 import InputIcon from "../components/atoms/InputIcon";
 import { debounce } from "lodash";
-import { useKeyword } from "../stores/useKeyword";
 import Page from "../components/Page";
 import WrapScroll from "../components/wrappers/WrapScroll";
 import { useModal } from "../stores/useModal";
 import WrapLink from "../components/wrappers/WrapLink";
-import { useStack } from "../stores/useStack";
 
 export default function Feed() {
   const { curUser } = useUser();
@@ -26,8 +24,7 @@ export default function Feed() {
     setFilteredPosts,
     setRefresh,
   } = useFeed();
-  const { keywords, setKeywords } = useKeyword();
-  const { scroll, setScroll } = useStatus();
+  const { scroll, keywords, setScroll, setKeywords } = useStatus();
   const { setModalLoader } = useModal();
 
   const router = useRouter();
@@ -67,8 +64,6 @@ export default function Feed() {
     filterPosts();
   }, [filterLoading]);
 
-  const { setStack } = useStack();
-
   return (
     <div className="relative flex flex-col">
       <div className="flex items-center justify-between px-4 pb-2">
@@ -83,11 +78,7 @@ export default function Feed() {
             <WrapLink href="/alarm" loader={true}>
               <BtnIcon icon="alarm" />
             </WrapLink>
-            <WrapLink
-              href={`/profile/${curUser.id}`}
-              loader={true}
-              onClickAdditional={() => setStack("profile")}
-            >
+            <WrapLink href={`/profile/${curUser.id}`} loader={true}>
               <ProfileImg size="sm" photoURL={curUser.photoURL} />
             </WrapLink>
           </div>

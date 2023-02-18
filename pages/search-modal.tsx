@@ -3,13 +3,12 @@ import { SIZE } from "../libs/custom";
 import { HiX } from "react-icons/hi";
 import React, { Children, useEffect, useRef, useState } from "react";
 import { useStore } from "../stores/useStore";
-import { updateUser } from "../apis/firebase";
 import { useRouter } from "next/router";
 import WrapMotion from "../components/wrappers/WrapMotion";
 import { useOutsideClick } from "../hooks/useOutsideClick";
 import { useUser } from "../stores/useUser";
-import { useKeyword } from "../stores/useKeyword";
 import IconInput from "../components/atoms/InputIcon";
+import { useStatus } from "../stores/useStatus";
 
 interface ISearchState {
   isInitial: boolean;
@@ -17,20 +16,20 @@ interface ISearchState {
 }
 
 export default function Search() {
-  const { gSetSearch, gSearch, gStatus, gSetStatus, gPage } = useStore();
   const router = useRouter();
-  const { curUser } = useUser();
   const [state, setState] = useState<ISearchState>({
     isInitial: true,
     searchedKeyword: "",
   });
-
-  const { keywords, setKeywords } = useKeyword();
-  const keyword = keywords[router.asPath] || "";
-
   const [focus, setFocus] = useState(false);
   const recentRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLInputElement>(null);
+
+  const { gSetSearch, gSearch, gStatus, gSetStatus, gPage } = useStore();
+  const { curUser } = useUser();
+  const { keywords, setKeywords } = useStatus();
+
+  const keyword = keywords[router.asPath] || "";
 
   useEffect(() => {
     gSetStatus({ ...gStatus, keyword });

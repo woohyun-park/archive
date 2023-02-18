@@ -12,7 +12,7 @@ import {
   getSearchQueryByType,
   IFetchType,
 } from "../apis/fbQuery";
-import { combineData, setCursor, wrapPromise } from "./libStores";
+import { combineData, setCursor } from "./libStores";
 import { readAlarm, readPost } from "../apis/fbRead";
 import { IDataType } from "../apis/firebase";
 
@@ -24,7 +24,6 @@ interface IUseCache {
     pathname: string,
     uid?: string
   ) => Promise<void>;
-  // setCaches: (pathname: string, data: IDict<any>[]) => void;
 }
 
 interface ICache {
@@ -87,15 +86,5 @@ export const useCache = create<IUseCache>()(
         };
       });
     },
-    // setCaches: (pathname: string, data: IDict<any>[]) => {
-    //   set((state: IUseCache) => {
-    //     const cache = state.caches[pathname];
-    //     const newData = { ...state.caches, [pathname]: { ...cache, data } };
-    //     return {
-    //       ...state,
-    //       cache: newData,
-    //     };
-    //   });
-    // },
   }))
 );

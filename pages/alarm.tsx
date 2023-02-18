@@ -48,10 +48,12 @@ export default function Alarm() {
           <Page
             page="alarm"
             data={alarms}
-            onIntersect={() => getCaches("load", router.pathname, curUser.id)}
+            onIntersect={() =>
+              getCaches("alarms", "load", router.pathname, curUser.id)
+            }
             onChange={() => {}}
             onRefresh={async () => {
-              await getCaches("refresh", router.pathname, curUser.id);
+              await getCaches("alarms", "refresh", router.pathname, curUser.id);
             }}
             changeListener={alarms}
             isLast={isLast}
