@@ -1,32 +1,35 @@
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import BtnIcon from "../../components/atoms/BtnIcon";
 import Page from "../../components/Page";
 import WrapScroll from "../../components/wrappers/WrapScroll";
 import Motion from "../../components/wrappers/WrapMotion";
 import { useModal } from "../../stores/useModal";
-import { useTag } from "../../stores/useTag";
 import { useStatus } from "../../stores/useStatus";
+import { useCache } from "../../stores/useCache";
+import { IPost } from "../../libs/custom";
 
 export default function Tag({}) {
-  const { setModalLoader, modalLoader } = useModal();
-  const { scroll } = useStatus();
-  const { dictPosts, getPosts } = useTag();
-
   const router = useRouter();
 
+  const { setModalLoader, modalLoader } = useModal();
+  const { scroll } = useStatus();
+  const { caches, fetchTagPage } = useCache();
+
+  const path = router.asPath;
   const tag = router.query.tag as string;
+  const cache = caches[path];
+  const posts = cache && (cache.data as IPost[]);
 
   useEffect(() => {
     async function init() {
-      if (scroll[router.asPath] === undefined) {
-        console.log("1");
-        await getPosts("init", tag);
+      if (scroll[path] === undefined) {
+        await fetchTagPage("init", path, tag);
         setModalLoader(false);
         scrollTo(0, 0);
       } else {
         console.log("2");
-        scrollTo(0, scroll[router.asPath]);
+        scrollTo(0, scroll[path]);
       }
     }
     init();
@@ -42,18 +45,16 @@ export default function Tag({}) {
             </WrapScroll>
             <div className="title-page-sm">#{tag}</div>
           </div>
-          {dictPosts[tag] && (
-            <Page
-              page="feed"
-              data={dictPosts[tag]}
-              onIntersect={() => getPosts("load", tag)}
-              onChange={() => {}}
-              onRefresh={async () => {
-                await getPosts("refresh", tag);
-              }}
-              changeListener={dictPosts[tag]}
-            />
-          )}
+          <Page
+            page="feed"
+            data={posts}
+            onIntersect={() => fetchTagPage("load", path, tag)}
+            onChange={() => {}}
+            onRefresh={async () => {
+              await fetchTagPage("refresh", path, tag);
+            }}
+            changeListener={posts}
+          />
         </>
       )}
     </Motion>

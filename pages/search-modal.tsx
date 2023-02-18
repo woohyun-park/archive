@@ -9,6 +9,7 @@ import { useOutsideClick } from "../hooks/useOutsideClick";
 import { useUser } from "../stores/useUser";
 import IconInput from "../components/atoms/InputIcon";
 import { useStatus } from "../stores/useStatus";
+import { updateUser } from "../apis/fbUpdate";
 
 interface ISearchState {
   isInitial: boolean;

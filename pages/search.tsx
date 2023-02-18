@@ -14,20 +14,21 @@ export default function Search() {
 
   const { scroll } = useStatus();
   const { setModalLoader } = useModal();
-  const { caches, getCaches } = useCache();
+  const { caches, fetchSearchPage } = useCache();
 
-  const cache = caches[router.pathname];
+  const path = router.asPath;
+  const cache = caches[path];
   const posts = cache ? (cache.data as IPost[]) : [];
   const isLast = cache ? cache.isLast : false;
 
   useEffect(() => {
     async function init() {
-      if (scroll[router.asPath] === undefined) {
-        await getCaches("posts", "init", router.pathname);
+      if (scroll[path] === undefined) {
+        await fetchSearchPage("init", path);
         setModalLoader(false);
         scrollTo(0, 0);
       } else {
-        scrollTo(0, scroll[router.asPath]);
+        scrollTo(0, scroll[path]);
       }
     }
     init();
@@ -47,11 +48,11 @@ export default function Search() {
           page="search"
           data={posts}
           onIntersect={async () => {
-            await getCaches("posts", "load", router.pathname);
+            await fetchSearchPage("load", path);
           }}
           onChange={() => {}}
           onRefresh={async () => {
-            await getCaches("posts", "refresh", router.pathname);
+            await fetchSearchPage("refresh", path);
           }}
           changeListener={posts}
           isLast={isLast}

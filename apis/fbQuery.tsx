@@ -110,8 +110,8 @@ export function getSearchQueryByType(
 
 export function getAlarmQuery(
   type: IFetchType,
-  lastVisible: QueryDocumentSnapshot<DocumentData>,
-  uid: string
+  uid: string,
+  lastVisible: QueryDocumentSnapshot<DocumentData>
 ): Query<DocumentData> {
   if (type === "init")
     return query(

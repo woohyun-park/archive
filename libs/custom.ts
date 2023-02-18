@@ -60,7 +60,13 @@ Object.freeze(DEFAULT);
 Object.freeze(SIZE);
 Object.freeze(COLOR);
 
-export type IRoute = "feed" | "search" | "add" | "alarm" | "profile" | "post";
+export type IPageType =
+  | "feed"
+  | "search"
+  | "add"
+  | "alarm"
+  | "profile"
+  | "post";
 export type IType = "user" | "post" | "comment" | "tag" | "like" | "scrap";
 
 export interface IDict<T> {

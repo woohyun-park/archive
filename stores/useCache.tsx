@@ -5,25 +5,36 @@ import {
 } from "firebase/firestore";
 import create from "zustand";
 import { devtools } from "zustand/middleware";
-import { IAlarm, IDict, IPost } from "../libs/custom";
+import { IAlarm, IDict, IPageType, IPost, ITag } from "../libs/custom";
 import {
   FETCH_LIMIT,
   getAlarmQuery,
   getSearchQueryByType,
+  getTagQuery,
   IFetchType,
 } from "../apis/fbQuery";
 import { combineData, setCursor } from "./libStores";
 import { readAlarm, readPost } from "../apis/fbRead";
-import { IDataType } from "../apis/firebase";
 
 interface IUseCache {
   caches: IDict<ICache>;
-  getCaches: (
-    dataType: IDataType,
+  fetchAlarmPage: (
     fetchType: IFetchType,
     pathname: string,
-    uid?: string
+    uid: string
   ) => Promise<void>;
+  fetchSearchPage: (fetchType: IFetchType, pathname: string) => Promise<void>;
+  fetchTagPage: (
+    fetchType: IFetchType,
+    pathname: string,
+    tag: string
+  ) => Promise<void>;
+  // getCaches: (
+  //   pageType: IPageType,
+  //   fetchType: IFetchType,
+  //   pathname: string,
+  //   uid?: string
+  // ) => Promise<void>;
 }
 
 interface ICache {
@@ -32,8 +43,12 @@ interface ICache {
   lastVisible: QueryDocumentSnapshot<DocumentData>;
 }
 
-async function getAlarms(fetchType: IFetchType, cache: ICache, uid: string) {
-  const snap = await getDocs(getAlarmQuery(fetchType, cache.lastVisible, uid));
+async function readAlarmPage(
+  fetchType: IFetchType,
+  cache: ICache,
+  uid: string
+) {
+  const snap = await getDocs(getAlarmQuery(fetchType, uid, cache.lastVisible));
   const resAlarms: IAlarm[] = [];
   for await (const doc of snap.docs) {
     const alarm = await readAlarm(doc.data().id);
@@ -46,7 +61,7 @@ async function getAlarms(fetchType: IFetchType, cache: ICache, uid: string) {
   return cache;
 }
 
-async function getPosts(fetchType: IFetchType, cache: ICache) {
+async function readSearchPage(fetchType: IFetchType, cache: ICache) {
   const snap = await getDocs(
     getSearchQueryByType(fetchType, cache.lastVisible)
   );
@@ -62,29 +77,95 @@ async function getPosts(fetchType: IFetchType, cache: ICache) {
   return cache;
 }
 
+async function readTagPage(fetchType: IFetchType, cache: ICache, tag: string) {
+  const snap = await getDocs(getTagQuery(fetchType, tag, cache.lastVisible));
+  const resPosts: IPost[] = [];
+  for await (const doc of snap.docs) {
+    const post = await readPost(doc.data().id);
+    resPosts.push(post);
+  }
+  cache.data = combineData(cache.data, resPosts, fetchType);
+  cache.isLast = resPosts.length < FETCH_LIMIT.post1 ? true : false;
+  const newLastVisible = setCursor(snap, fetchType);
+  if (newLastVisible) cache.lastVisible = newLastVisible;
+  return cache;
+}
+
 export const useCache = create<IUseCache>()(
   devtools((set, get) => ({
     caches: {},
-    getCaches: async (
-      dataType: IDataType,
+
+    fetchAlarmPage: async (
       fetchType: IFetchType,
       pathname: string,
-      uid?: string
+      uid: string
     ) => {
-      let cache: ICache;
-      const prevCache = { ...get().caches[pathname] };
-      if (dataType === "alarms" && uid)
-        cache = await getAlarms(fetchType, prevCache, uid);
-      if (dataType === "posts") cache = await getPosts(fetchType, prevCache);
+      const cache = await readAlarmPage(
+        fetchType,
+        { ...get().caches[pathname] },
+        uid
+      );
       set((state: IUseCache) => {
-        return {
-          ...state,
-          caches: {
-            ...state.caches,
-            [pathname]: cache,
-          },
-        };
+        const newState = { ...state };
+        newState.caches[pathname] = cache;
+        return newState;
       });
     },
+
+    fetchSearchPage: async (fetchType: IFetchType, pathname: string) => {
+      const cache = await readSearchPage(fetchType, {
+        ...get().caches[pathname],
+      });
+      set((state: IUseCache) => {
+        const newState = { ...state };
+        newState.caches[pathname] = cache;
+        return newState;
+      });
+    },
+
+    fetchTagPage: async (
+      fetchType: IFetchType,
+      pathname: string,
+      tag: string
+    ) => {
+      const cache = await readTagPage(
+        fetchType,
+        {
+          ...get().caches[pathname],
+        },
+        tag
+      );
+      set((state: IUseCache) => {
+        const newState = { ...state };
+        newState.caches[pathname] = cache;
+        return newState;
+      });
+    },
+
+    // getCaches: async (
+    //   pageType: IPageType,
+    //   fetchType: IFetchType,
+    //   pathname: string,
+    //   uid?: string,
+    //   tag?: string
+    // ) => {
+    //   let cache: ICache;
+    //   const prevCache = { ...get().caches[pathname] };
+    //   if (pageType === "alarm" && uid)
+    //     cache = await getAlarmPage(fetchType, prevCache, uid);
+    //   if (pageType === "search")
+    //     cache = await getSearchPage(fetchType, prevCache);
+    //   if (pageType === "tag")
+    //     cache = await getTagPage(fetchType, prevCache, tag);
+    //   set((state: IUseCache) => {
+    //     return {
+    //       ...state,
+    //       caches: {
+    //         ...state.caches,
+    //         [pathname]: cache,
+    //       },
+    //     };
+    //   });
+    // },
   }))
 );

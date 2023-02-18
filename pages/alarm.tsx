@@ -14,22 +14,23 @@ export default function Alarm() {
   const router = useRouter();
 
   const { curUser } = useUser();
-  const { caches, getCaches } = useCache();
+  const { caches, fetchAlarmPage } = useCache();
   const { setModalLoader, modalLoader } = useModal();
   const { scroll } = useStatus();
 
-  const cache = caches[router.pathname];
+  const path = router.asPath;
+  const cache = caches[path];
   const alarms = cache ? (cache.data as IAlarm[]) : [];
   const isLast = cache ? cache.isLast : false;
 
   useEffect(() => {
     async function init() {
-      if (scroll[router.asPath] === undefined) {
-        await getCaches("alarms", "init", router.pathname, curUser.id);
+      if (scroll[path] === undefined) {
+        await fetchAlarmPage("init", path, curUser.id);
         setModalLoader(false);
         scrollTo(0, 0);
       } else {
-        scrollTo(0, scroll[router.asPath]);
+        scrollTo(0, scroll[path]);
       }
     }
     init();
@@ -48,12 +49,10 @@ export default function Alarm() {
           <Page
             page="alarm"
             data={alarms}
-            onIntersect={() =>
-              getCaches("alarms", "load", router.pathname, curUser.id)
-            }
+            onIntersect={() => fetchAlarmPage("load", path, curUser.id)}
             onChange={() => {}}
             onRefresh={async () => {
-              await getCaches("alarms", "refresh", router.pathname, curUser.id);
+              await fetchAlarmPage("refresh", path, curUser.id);
             }}
             changeListener={alarms}
             isLast={isLast}
