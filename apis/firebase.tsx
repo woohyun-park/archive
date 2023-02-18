@@ -15,7 +15,6 @@ import {
   Query,
   query,
   QuerySnapshot,
-  serverTimestamp,
   Timestamp,
   updateDoc,
   where,
@@ -31,8 +30,13 @@ import {
   ITag,
   IUser,
 } from "../libs/custom";
-import { inRange } from "lodash";
-import { readLikes } from "./fbRead";
+import { deleteAll } from "./fbDelete";
+import {
+  readData,
+  readDatasbyQuery,
+  readLikesOfPost,
+  readPost,
+} from "./fbRead";
 
 interface IPathParams {
   params: { [param: string]: string };
@@ -51,24 +55,24 @@ export const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 export const auth = getAuth(app);
 
-export async function addScrap(uid: string, pid: string) {
-  const newData: IDict<string> = {
-    uid,
-    pid,
-    cont: "모든 스크랩",
-  };
-  const ref = await addDoc(collection(db, "scraps"), newData);
-  await updateDoc(ref, { id: ref.id });
-}
+export type IData = IUser | IPost | ITag | IAlarm | ILike | IComment | IScrap;
+export type IDataType =
+  | "users"
+  | "posts"
+  | "tags"
+  | "alarms"
+  | "likes"
+  | "comments"
+  | "scraps";
 
-export async function getData<T>(type: string, id: string): Promise<T | null> {
-  const snap = await getDoc(doc(db, type, id));
-  const data = snap.data() as IDict<any>;
-  if (data === undefined) return null;
-  if (data.createdAt)
-    return { ...(data as T), createdAt: data.createdAt.toDate() };
-  return data as T;
-}
+// export async function getData<T>(type: string, id: string): Promise<T | null> {
+//   const snap = await getDoc(doc(db, type, id));
+//   const data = snap.data() as IDict<any>;
+//   if (data === undefined) return null;
+//   if (data.createdAt)
+//     return { ...(data as T), createdAt: data.createdAt.toDate() };
+//   return data as T;
+// }
 
 export async function getDataByRef<T>(ref: DocumentReference) {
   const snap = await getDoc(ref);
@@ -82,51 +86,13 @@ export async function getDataByRef<T>(ref: DocumentReference) {
   return data as T;
 }
 
-export async function getDatasByQuery<T>(q: Query) {
-  const snap = await getDocs(q);
-  const datas: T[] = [];
-  snap.forEach((doc) => {
-    const data = doc.data();
-    if (data.createdAt) {
-      datas.push({
-        ...(data as T),
-        createdAt: data.createdAt.toDate(),
-      });
-    } else {
-      datas.push({
-        ...(data as T),
-      });
-    }
-  });
-  return datas;
-}
-
-export async function getPost(id: string) {
-  const post = await getData<IPost>("posts", id);
-  if (post === null) return null;
-  const uid = post.uid;
-  const pid = post.id || "";
-  const author = await getData<IUser>("users", uid);
-  if (author === null) return null;
-  // const likes = await getEach<ILike>("likes", pid);
-  const likes = await readLikes(pid);
-  console.log(pid, likes);
-  const scraps = await getEach<IScrap>("scraps", pid);
-  const comments = await getEach<IComment>("comments", pid);
-  post.likes = likes ? likes : [];
-  post.scraps = scraps ? scraps : [];
-  post.comments = comments ? comments : [];
-  post.author = author;
-  return post;
-}
-
 export async function getPostsByQuery(
   q: Query
 ): Promise<[QuerySnapshot<DocumentData>, IPost[]]> {
   const snap = await getDocs(q);
   const posts: IPost[] = [];
   for (const doc of snap.docs) {
-    const post = await getPost(doc.data().id);
+    const post = await readPost(doc.data().id);
     if (!post) continue;
     posts.push(post);
   }
@@ -136,22 +102,22 @@ export async function getPostsByQuery(
 export async function getAlarm(id: string, ref?: IDict<any>) {
   const alarm: IDict<any> | null = ref
     ? ref
-    : await getData<IAlarm>("alarms", id);
+    : await readData<IAlarm>("alarms", id);
   if (!alarm) return null;
   if (alarm.type === "like") {
-    const author = await getData<IUser>("users", alarm.uid);
-    const post = await getData<IPost>("posts", alarm.pid || "");
+    const author = await readData<IUser>("users", alarm.uid);
+    const post = await readData<IPost>("posts", alarm.pid || "");
     alarm.author = author;
     alarm.post = post;
   } else if (alarm.type === "comment") {
-    const author = await getData<IUser>("users", alarm.uid);
-    const comment = await getData<IComment>("comments", alarm.cid || "");
-    const post = await getData<IPost>("posts", alarm.pid || "");
+    const author = await readData<IUser>("users", alarm.uid);
+    const comment = await readData<IComment>("comments", alarm.cid || "");
+    const post = await readData<IPost>("posts", alarm.pid || "");
     alarm.author = author;
     alarm.post = post;
     alarm.comment = comment;
   } else if (alarm.type === "follow") {
-    const author = await getData<IUser>("users", alarm.uid);
+    const author = await readData<IUser>("users", alarm.uid);
     alarm.author = author;
   }
   alarm.createdAt = (alarm.createdAt as Timestamp).toDate();
@@ -161,7 +127,7 @@ export async function getAlarm(id: string, ref?: IDict<any>) {
 export async function getAlarmsByQuery(
   q: Query
 ): Promise<[QuerySnapshot<DocumentData>, IAlarm[]]> {
-  const res: IAlarm[] = await getDatasByQuery(q);
+  const res: IAlarm[] = await readDatasbyQuery(q);
   const snap = await getDocs(q);
   const alarms: IAlarm[] = [];
 
@@ -178,7 +144,7 @@ export async function getEach<T>(type: string, id: string) {
     type,
     type === "alarms" ? "targetUid" : type === "comments" ? "pid" : "uid"
   );
-  return (await getDatasByQuery<T>(
+  return (await readDatasbyQuery<T>(
     query(
       collection(db, type),
       where(
@@ -219,14 +185,14 @@ export async function updateFollow(
     await updateDoc(userRef, {
       followers: arrayRemove(curUser.id),
     });
-    const alarmRes = await getDatasByQuery(
+    const alarmRes = await readDatasbyQuery<IAlarm>(
       query(
         collection(db, "alarms"),
         where("uid", "==", curUser.id),
         where("targetUid", "==", user.id)
       )
     );
-    await deleteEach(alarmRes, "alarms");
+    await deleteAll(alarmRes, "alarms");
   } else {
     await updateDoc(curUserRef, {
       followings: arrayUnion(user.id),
@@ -244,36 +210,4 @@ export async function updateFollow(
     const ref = await addDoc(collection(db, "alarms"), newAlarm);
     await updateDoc(ref, { id: ref.id });
   }
-}
-
-export async function deleteEach(datas: any[], type: string) {
-  for await (const data of datas) {
-    const id = data.id as string;
-    await deleteDoc(doc(db, type, id));
-  }
-}
-
-export async function deletePost(id: string) {
-  const ref = doc(db, "posts", id);
-  await deleteDoc(doc(db, "posts", id));
-  const likes = await getEach<ILike>("likes", id);
-  const scraps = await getEach<IScrap>("scraps", id);
-  const comments = await getEach<IComment>("comments", id);
-  const tags = await getEach<ITag>("tags", id);
-  const alarms = await getEach<IAlarm>("alarms", id);
-  deleteEach(likes, "likes");
-  deleteEach(scraps, "scraps");
-  deleteEach(comments, "comments");
-  deleteEach(tags, "tags");
-  deleteEach(alarms, "alarms");
-  return ref;
-}
-
-export async function deleteLike(id: string, aid: string) {
-  await deleteDoc(doc(db, "likes", id));
-  await deleteDoc(doc(db, "alarms", aid));
-}
-
-export async function deleteScrap(id: string) {
-  await deleteDoc(doc(db, "scraps", id));
 }

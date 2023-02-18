@@ -1,8 +1,9 @@
 import dayjs from "dayjs";
+import { FieldValue } from "firebase/firestore";
 
-export function displayCreatedAt(createdAt: Date) {
+export function displayCreatedAt(createdAt: Date | FieldValue) {
   const curDate = dayjs(new Date());
-  const postDate = dayjs(createdAt);
+  const postDate = dayjs(createdAt as Date);
   if (curDate.diff(postDate) < 0) return "0초 전";
   if (curDate.diff(postDate) < 60000)
     return `${curDate.diff(postDate, "s")}초 전`;

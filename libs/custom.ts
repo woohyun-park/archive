@@ -16,6 +16,7 @@ export const DEFAULT: IDefault = {
     txt: "",
     followers: [],
     followings: [],
+    createdAt: new Date(),
   },
 };
 
@@ -74,6 +75,7 @@ export interface IUser {
   txt: string;
   followers: string[];
   followings: string[];
+  createdAt: Date | FieldValue;
 
   likes?: ILike[];
   scraps?: IScrap[];
@@ -114,6 +116,7 @@ export interface ITag {
   pid?: string;
   uid: string;
   name: string;
+  createdAt: Date | FieldValue;
 
   post?: IPost;
 }
@@ -122,8 +125,8 @@ export interface ILike {
   id: string;
   uid: string;
   pid: string;
-  createdAt: Date | FieldValue;
   aid?: string;
+  createdAt: Date | FieldValue;
 }
 
 export interface IScrap {
@@ -146,12 +149,4 @@ export interface IAlarm {
   author?: IUser;
   post?: IPost;
   comment?: IComment;
-}
-
-export function getRoute(router: NextRouter): IRoute {
-  return router.pathname === "/"
-    ? "feed"
-    : router.pathname === "/search-modal"
-    ? "search"
-    : (router.pathname.split("/")[1] as IRoute);
 }

@@ -7,8 +7,9 @@ import {
 } from "firebase/firestore";
 import { UseFormWatch } from "react-hook-form";
 import { createTags } from "../apis/fbCreate";
+import { deleteAll } from "../apis/fbDelete";
 import { uploadImage } from "../apis/fileApi";
-import { db, deleteEach, getEach } from "../apis/firebase";
+import { db, getEach } from "../apis/firebase";
 import { IForm } from "../pages/add";
 import { IPost, ITag, IUser } from "./custom";
 
@@ -58,7 +59,6 @@ export async function handleImage({
       await updateDoc(postRef, { id: postRef.id });
       pid = postRef.id;
     }
-    // addTags(tags, curUser.id, pid);
     createTags(tags, curUser.id, pid);
   } else {
     if (prevPost) {
@@ -104,7 +104,6 @@ export async function handleColor({
     });
     const pid = postRef.id;
     await updateDoc(postRef, { id: pid });
-    // addTags(tags, curUser.id, pid);
     createTags(tags, curUser.id, pid);
   }
 }
@@ -116,7 +115,6 @@ async function deleteAndAddTags(
 ) {
   if (!pid || !uid) return;
   const tagsToDelete = await getEach<ITag>("tags", pid);
-  deleteEach(tagsToDelete, "tags");
-  // addTags(tags, uid, pid);
+  deleteAll(tagsToDelete, "tags");
   createTags(tags, uid, pid);
 }

@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { Children } from "react";
-import { COLOR, getRoute, IPost } from "../libs/custom";
+import { COLOR, IPost } from "../libs/custom";
 
 interface IPostBoxProps {
   post: IPost;
@@ -18,7 +18,6 @@ export default function PostBox({
   style = "",
 }: IPostBoxProps) {
   const router = useRouter();
-  const route = getRoute(router);
   return (
     <>
       <div className="pb-[100%] relative overflow-hidden rounded-lg w-full duration-500">
@@ -53,7 +52,7 @@ export default function PostBox({
         )}
         {includeTag && (
           <div className="absolute bottom-0 right-0 flex flex-row-reverse flex-wrap-reverse w-2/3 m-4 text-right">
-            {route === "feed" &&
+            {router.pathname === "/" &&
               Children.toArray(
                 [...post.tags]?.reverse().map((tag) => (
                   <Link href={{ pathname: `/tag/${tag}` }} legacyBehavior>

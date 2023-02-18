@@ -4,18 +4,60 @@ import {
   serverTimestamp,
   updateDoc,
 } from "firebase/firestore";
-import { IAlarm, IComment, ILike, ITag } from "../libs/custom";
-import { db, getDataByRef } from "./firebase";
+import { IAlarm, IComment, ILike, IScrap, ITag } from "../libs/custom";
+import { db } from "./firebase";
 
 // ALERT:한개의 데이터를 추가하는 create 함수들은 ref를 반환하고,
 // 여러개의 데이터를 추가하는 create 함수들은 void를 반환한다
 
 async function createDoc(
-  type: "tags" | "likes" | "alarms" | "comments",
-  data: ITag | ILike | IAlarm | IComment
+  type: "tags" | "likes" | "alarms" | "comments" | "scraps",
+  data: ITag | ILike | IAlarm | IComment | IScrap
 ) {
   const ref = await addDoc(collection(db, type), data);
   await updateDoc(ref, { id: ref.id });
+  return ref;
+}
+
+export async function createTag(tag: string, uid: string, pid: string) {
+  const newTag: ITag = {
+    id: "",
+    uid,
+    pid,
+    name: tag,
+    createdAt: serverTimestamp(),
+  };
+  return await createDoc("tags", newTag);
+}
+
+export async function createTags(tags: string[], uid: string, pid: string) {
+  for await (const tag of tags) {
+    createTag(tag, uid, pid);
+  }
+}
+
+// uid와 targetUid가 같을때는 like만 생성
+// uid와 targetUid가 다를때는 like와 alarm을 모두 생성
+export async function createLike(uid: string, targetUid: string, pid: string) {
+  const newLike: ILike = {
+    id: "",
+    uid,
+    pid,
+    createdAt: serverTimestamp(),
+  };
+  const ref = await createDoc("likes", newLike);
+  if (uid === targetUid) return ref;
+  const newAlarm: IAlarm = {
+    id: "",
+    uid,
+    type: "like",
+    targetUid,
+    pid,
+    createdAt: serverTimestamp(),
+  };
+  const alarmRef = await createDoc("alarms", newAlarm);
+  await updateDoc(ref, { aid: alarmRef.id });
+  await updateDoc(alarmRef, { lid: ref.id });
   return ref;
 }
 
@@ -27,7 +69,6 @@ export async function createComment(
   pid: string,
   txt: string
 ) {
-  let ref;
   const newComment: IComment = {
     id: "",
     uid,
@@ -35,51 +76,29 @@ export async function createComment(
     txt,
     createdAt: serverTimestamp(),
   };
-  if (uid === targetUid) {
-    ref = await createDoc("comments", newComment);
-  } else {
-    const newAlarm: IAlarm = {
-      id: "",
-      uid,
-      type: "comment",
-      targetUid,
-      pid,
-      createdAt: serverTimestamp(),
-    };
-    ref = await createDoc("comments", newComment);
-    const alarmRef = await createDoc("alarms", newAlarm);
-    await updateDoc(alarmRef, { cid: ref.id });
-  }
-  return ref;
-}
-
-export async function createLike(uid: string, targetUid: string, pid: string) {
+  const ref = await createDoc("comments", newComment);
+  if (uid === targetUid) return ref;
   const newAlarm: IAlarm = {
     id: "",
     uid,
-    type: "like",
+    type: "comment",
     targetUid,
     pid,
     createdAt: serverTimestamp(),
   };
-  const refAlarm = await createDoc("alarms", newAlarm);
-  const newLike: ILike = {
+  const alarmRef = await createDoc("alarms", newAlarm);
+  await updateDoc(ref, { aid: alarmRef.id });
+  await updateDoc(alarmRef, { cid: ref.id });
+  return ref;
+}
+
+export async function createScrap(uid: string, pid: string) {
+  const newScrap: IScrap = {
     id: "",
     uid,
     pid,
-    aid: refAlarm.id,
+    cont: "모든 스크랩",
     createdAt: serverTimestamp(),
   };
-  return await createDoc("likes", newLike);
-}
-
-export async function createTags(
-  tags: string[],
-  uid: string,
-  pid: string | undefined
-) {
-  for await (const tag of tags) {
-    const newTag: ITag = { id: "", uid, pid, name: tag };
-    await createDoc("tags", newTag);
-  }
+  return await createDoc("scraps", newScrap);
 }

@@ -1,8 +1,7 @@
 import React, { forwardRef } from "react";
-import { createLike } from "../apis/fbCreate";
-import { addScrap, deleteLike, deleteScrap } from "../apis/firebase";
+import { createLike, createScrap } from "../apis/fbCreate";
+import { deleteLike, deleteScrap } from "../apis/fbDelete";
 import { IPost, IUser } from "../libs/custom";
-import { useAlarm } from "../stores/useAlarm";
 import BtnIcon from "./atoms/BtnIcon";
 
 interface IActionProps {
@@ -15,25 +14,20 @@ export default forwardRef<HTMLDivElement, IActionProps>(function Action(
   { post, curUser, onCommentClick },
   ref
 ) {
-  const lid = curUser.likes?.find((each) => each.pid === post.id)?.id || "";
-  const aid = curUser.likes?.find((each) => each.pid === post.id)?.aid || "";
-  const sid = curUser.scraps?.find((each) => each.pid === post.id)?.id || "";
-  const { addAlarm, deleteAlarm } = useAlarm();
+  const like = curUser.likes?.find((each) => each.pid === post.id);
+  const scrap = curUser.scraps?.find((each) => each.pid === post.id);
+  const lid = like?.id || "";
+  const aid = like?.aid || "";
+  const sid = scrap?.id || "";
 
   async function toggleLike() {
-    if (lid === "") {
-      createLike(curUser.id, post.uid, post.id || "");
-    } else {
-      deleteLike(lid, aid);
-    }
+    if (lid === "") createLike(curUser.id, post.uid, post.id || "");
+    else deleteLike(lid, aid);
   }
 
   async function toggleScrap() {
-    if (sid === "") {
-      addScrap(curUser.id, post.id || "");
-    } else {
-      deleteScrap(sid);
-    }
+    if (sid === "") createScrap(curUser.id, post.id || "");
+    else deleteScrap(sid);
   }
 
   function displayLike() {

@@ -5,11 +5,12 @@ import {
   collection,
   doc,
   query,
+  Timestamp,
   updateDoc,
   where,
 } from "firebase/firestore";
 import Link from "next/link";
-import { db, deleteEach, getDatasByQuery, updateUser } from "../apis/firebase";
+import { db, updateUser } from "../apis/firebase";
 import { IAlarm, IPost, IUser } from "../libs/custom";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
@@ -18,6 +19,8 @@ import { useUser } from "../stores/useUser";
 import ProfileImg from "./ProfileImg";
 import ModifyAndDelete from "./ModifyAndDelete";
 import Btn from "./atoms/Btn";
+import { readDatasbyQuery } from "../apis/fbRead";
+import { deleteAll } from "../apis/fbDelete";
 
 type IProfileProps = {
   user: IUser;
@@ -47,14 +50,14 @@ export default function Profile({ user, post, info, action }: IProfileProps) {
       await updateDoc(userRef, {
         followers: arrayRemove(curUser.id),
       });
-      const alarmRes = await getDatasByQuery(
+      const alarmRes = await readDatasbyQuery<IAlarm>(
         query(
           collection(db, "alarms"),
           where("uid", "==", curUser.id),
           where("targetUid", "==", user.id)
         )
       );
-      await deleteEach(alarmRes, "alarms");
+      await deleteAll(alarmRes, "alarms");
     } else {
       await updateDoc(curUserRef, {
         followings: arrayUnion(user.id),
@@ -63,6 +66,7 @@ export default function Profile({ user, post, info, action }: IProfileProps) {
         followers: arrayUnion(curUser.id),
       });
       const newAlarm: IAlarm = {
+        id: "",
         uid: curUser.id,
         type: "follow",
         targetUid: user.id,
@@ -97,7 +101,7 @@ export default function Profile({ user, post, info, action }: IProfileProps) {
             </Link>
             {info === "time" && (
               <div className="text-xs -translate-y-[2px] text-gray-1">
-                {displayCreatedAt(post?.createdAt)}
+                {post && displayCreatedAt(post?.createdAt)}
               </div>
             )}
             {info === "intro" && (
