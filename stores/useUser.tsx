@@ -1,6 +1,6 @@
 import create from "zustand";
 import { devtools } from "zustand/middleware";
-import { IAlarm, ILike, IScrap, IUser } from "../libs/custom";
+import { ILike, IScrap, IUser } from "../libs/custom";
 import {
   collection,
   doc,
@@ -9,7 +9,7 @@ import {
   query,
   where,
 } from "firebase/firestore";
-import { db, getEach } from "../apis/firebase";
+import { db } from "../apis/firebase";
 
 interface IState {
   curUser: IUser;
@@ -27,6 +27,7 @@ export const useUser = create<IState>()(
       txt: "",
       followers: [],
       followings: [],
+      createdAt: new Date(),
     },
     getCurUser: async (id: string) => {
       const user = await getDoc(doc(db, "users", id));
@@ -72,21 +73,6 @@ export const useUser = create<IState>()(
             return {
               ...state,
               curUser: { ...state.curUser, scraps: datas },
-            };
-          });
-        }
-      );
-      const unsubscribeAlarms = onSnapshot(
-        query(collection(db, "alarms"), where("targetUid", "==", id)),
-        (snap) => {
-          const datas: IAlarm[] = [];
-          snap.forEach((doc) => {
-            datas.push({ ...(doc.data() as IAlarm) });
-          });
-          set((state: IState) => {
-            return {
-              ...state,
-              curUser: { ...state.curUser, alarms: datas },
             };
           });
         }

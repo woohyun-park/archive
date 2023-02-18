@@ -9,8 +9,8 @@ import {
   query,
   startAt,
 } from "firebase/firestore";
-import { db, getEach } from "../apis/firebase";
-import { readDatasbyQuery } from "../apis/fbRead";
+import { db } from "../apis/firebase";
+import { readDatasByQuery } from "../apis/fbRead";
 
 interface IState {
   gSearch: {
@@ -59,7 +59,7 @@ async function loadSearch<T>(
   keyword?: string
 ): Promise<T[]> {
   if (type === "sPost") {
-    return await readDatasbyQuery<T>(
+    return await readDatasByQuery<T>(
       query(
         collection(db, "posts"),
         orderBy("createdAt", "desc"),
@@ -67,7 +67,7 @@ async function loadSearch<T>(
       )
     );
   } else if (type === "sTag") {
-    return await readDatasbyQuery<T>(
+    return await readDatasByQuery<T>(
       query(
         collection(db, "tags"),
         orderBy("name"),
@@ -77,7 +77,7 @@ async function loadSearch<T>(
       )
     );
   } else {
-    return await readDatasbyQuery<T>(
+    return await readDatasByQuery<T>(
       query(
         collection(db, "users"),
         orderBy("displayName"),

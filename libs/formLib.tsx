@@ -8,8 +8,9 @@ import {
 import { UseFormWatch } from "react-hook-form";
 import { createTags } from "../apis/fbCreate";
 import { deleteAll } from "../apis/fbDelete";
+import { readTagsOfPost } from "../apis/fbRead";
 import { uploadImage } from "../apis/fileApi";
-import { db, getEach } from "../apis/firebase";
+import { db } from "../apis/firebase";
 import { IForm } from "../pages/add";
 import { IPost, ITag, IUser } from "./custom";
 
@@ -114,7 +115,7 @@ async function deleteAndAddTags(
   uid: string | undefined
 ) {
   if (!pid || !uid) return;
-  const tagsToDelete = await getEach<ITag>("tags", pid);
+  const tagsToDelete = await readTagsOfPost(pid);
   deleteAll(tagsToDelete, "tags");
   createTags(tags, uid, pid);
 }

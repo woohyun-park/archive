@@ -9,7 +9,7 @@ import { useModal } from "../../stores/useModal";
 import { wrapPromise } from "../../stores/libStores";
 import ModifyAndDelete from "../../components/ModifyAndDelete";
 import Post from "../../components/Post";
-import { getPost } from "../../apis/firebase";
+import { readPost } from "../../apis/fbRead";
 
 export default function PostPage() {
   const { curUser } = useUser();
@@ -21,7 +21,7 @@ export default function PostPage() {
 
   useEffect(() => {
     async function init() {
-      const newPost = await getPost(pid);
+      const newPost = await readPost(pid);
       setPost(newPost);
     }
     wrapPromise(async () => {

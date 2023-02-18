@@ -1,18 +1,20 @@
-import { DocumentData, QueryDocumentSnapshot } from "firebase/firestore";
+import {
+  DocumentData,
+  getDocs,
+  QueryDocumentSnapshot,
+} from "firebase/firestore";
 import create from "zustand";
 import { devtools } from "zustand/middleware";
-import { getAlarmsByQuery } from "../apis/firebase";
 import { IAlarm } from "../libs/custom";
 import { FETCH_LIMIT, getAlarmQuery, IFetchType } from "../apis/fbQuery";
 import { combineData, setCursor, wrapPromise } from "./libStores";
+import { readAlarm } from "../apis/fbRead";
 
 interface IUseAlarm {
   alarms: IAlarm[];
   isLast: boolean;
   setAlarms: (alarms: IAlarm[]) => void;
   getAlarms: (type: IFetchType, uid: string) => Promise<void>;
-  addAlarm: (alarm: IAlarm) => void;
-  deleteAlarm: (aid: string) => void;
 }
 
 let lastVisible: QueryDocumentSnapshot<DocumentData>;
@@ -32,9 +34,14 @@ export const useAlarm = create<IUseAlarm>()(
     getAlarms: async (type: IFetchType, uid: string) => {
       const res = await wrapPromise(async () => {
         const q = getAlarmQuery(type, lastVisible, uid);
-        let [snap, res] = await getAlarmsByQuery(q);
-        const isLast = res.length < FETCH_LIMIT.alarm ? true : false;
-        const alarms = combineData(get().alarms, res, type);
+        const snap = await getDocs(q);
+        const resAlarms: IAlarm[] = [];
+        for await (const doc of snap.docs) {
+          const alarm = await readAlarm(doc.data().id);
+          resAlarms.push(alarm);
+        }
+        const isLast = resAlarms.length < FETCH_LIMIT.alarm ? true : false;
+        const alarms = combineData(get().alarms, resAlarms, type);
         const newLastVisible = setCursor(snap, type);
         if (newLastVisible) lastVisible = newLastVisible;
         return { alarms, isLast };
@@ -47,20 +54,20 @@ export const useAlarm = create<IUseAlarm>()(
         };
       });
     },
-    addAlarm: (alarm: IAlarm) => {
-      set((state: IUseAlarm) => {
-        return {
-          ...state,
-          alarms: [alarm, ...state.alarms],
-        };
-      });
-    },
-    deleteAlarm: (aid: string) => {
-      set((state: IUseAlarm) => {
-        return {
-          alarms: [...state.alarms].filter((alarm) => alarm.id !== aid),
-        };
-      });
-    },
+    // addAlarm: (alarm: IAlarm) => {
+    //   set((state: IUseAlarm) => {
+    //     return {
+    //       ...state,
+    //       alarms: [alarm, ...state.alarms],
+    //     };
+    //   });
+    // },
+    // deleteAlarm: (aid: string) => {
+    //   set((state: IUseAlarm) => {
+    //     return {
+    //       alarms: [...state.alarms].filter((alarm) => alarm.id !== aid),
+    //     };
+    //   });
+    // },
   }))
 );

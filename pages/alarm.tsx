@@ -8,8 +8,8 @@ import { useModal } from "../stores/useModal";
 import { useStatus } from "../stores/useStatus";
 import WrapScroll from "../components/wrappers/WrapScroll";
 import Motion from "../components/wrappers/WrapMotion";
-import { getAlarm } from "../apis/firebase";
 import { IAlarm } from "../libs/custom";
+import { readAlarm } from "../apis/fbRead";
 
 export default function Alarm() {
   const router = useRouter();
@@ -35,7 +35,7 @@ export default function Alarm() {
         );
         const newAlarms: IAlarm[] = [];
         for await (const tempAlarm of tempAlarms) {
-          const alarm = await getAlarm(tempAlarm.id);
+          const alarm = await readAlarm(tempAlarm.id);
           alarm && newAlarms.push(alarm);
         }
         console.log(newAlarms, alarms);

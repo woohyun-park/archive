@@ -1,17 +1,9 @@
 import { signOut } from "firebase/auth";
-import { collection, doc, getDoc, query, where } from "firebase/firestore";
-import {
-  auth,
-  db,
-  getData,
-  getDatasByQuery,
-  getPath,
-  getPost,
-  updateFollow,
-} from "../../apis/firebase";
+import { collection, query, where } from "firebase/firestore";
+import { auth, db, updateFollow } from "../../apis/firebase";
 import Tab from "../../components/Tab";
 import { IDict, IPost, IScrap, ITag, IUser, SIZE } from "../../libs/custom";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Motion from "../../components/wrappers/WrapMotion";
 import Btn from "../../components/atoms/Btn";
 import { useUser } from "../../stores/useUser";
@@ -19,6 +11,7 @@ import BtnIcon from "../../components/atoms/BtnIcon";
 import { useRouter } from "next/router";
 import ProfileImg from "../../components/ProfileImg";
 import { useModal } from "../../stores/useModal";
+import { readData, readDatasByQuery, readPost } from "../../apis/fbRead";
 
 export default function Profile() {
   const [initUser, setInitUser] = useState<IUser | undefined>(undefined);
@@ -29,18 +22,18 @@ export default function Profile() {
   useEffect(() => {
     async function init() {
       const uid = router.query.uid as string;
-      const user = await getData<IUser>("users", uid);
+      const user = await readData<IUser>("users", uid);
       if (!user) return;
-      const posts = await getDatasByQuery<IPost>(
+      const posts = await readDatasByQuery<IPost>(
         query(collection(db, "posts"), where("uid", "==", uid))
       );
-      const resScraps = await getDatasByQuery<IScrap>(
+      const resScraps = await readDatasByQuery<IScrap>(
         query(collection(db, "scraps"), where("uid", "==", uid))
       );
       const scraps: IDict<IPost[]> = {};
       for await (const scrap of resScraps) {
         const pid = scrap.pid;
-        const tempPost = await getPost(pid);
+        const tempPost = await readPost(pid);
         if (!tempPost) continue;
         if (scraps[scrap.cont]) {
           scraps[scrap.cont].push(tempPost);
@@ -49,14 +42,14 @@ export default function Profile() {
         }
       }
 
-      const resTags = await getDatasByQuery<ITag>(
+      const resTags = await readDatasByQuery<ITag>(
         query(collection(db, "tags"), where("uid", "==", uid))
       );
 
       const tags: IDict<IPost[]> = {};
       for await (const tag of resTags) {
         const pid = tag.pid || "";
-        const tempPost = await getPost(pid);
+        const tempPost = await readPost(pid);
         if (!tempPost) continue;
         if (tags[tag.name]) {
           tags[tag.name].push(tempPost);
@@ -223,60 +216,3 @@ export default function Profile() {
     </>
   );
 }
-
-// interface IServerSidePaths {
-//   params: IServerSideProps;
-// }
-
-// interface IServerSideProps {
-//   uid: string;
-// }
-
-// export async function getServerSidePaths() {
-//   const paths = getPath("users", "uid");
-//   return { paths, fallback: false };
-// }
-
-// export async function getServerSideProps({ params }: IServerSidePaths) {
-//   const uid = params.uid;
-//   const initUser = await getData<IUser>("users", uid);
-//   const initPosts = await getDatasByQuery<IPost>(
-//     query(collection(db, "posts"), where("uid", "==", uid))
-//   );
-//   const resScraps = await getDatasByQuery<IScrap>(
-//     query(collection(db, "scraps"), where("uid", "==", uid))
-//   );
-//   const initScraps: IDict<IPost[]> = {};
-//   for await (const scrap of resScraps) {
-//     const res = await getDoc(doc(db, "posts", scrap.pid));
-//     const tempPost = {
-//       ...(res.data() as IPost),
-//       createdAt: res.data()?.createdAt.toDate(),
-//     };
-//     if (initScraps[scrap.cont]) {
-//       initScraps[scrap.cont].push(tempPost);
-//     } else {
-//       initScraps[scrap.cont] = [tempPost];
-//     }
-//   }
-
-//   const resTags = await getDatasByQuery<ITag>(
-//     query(collection(db, "tags"), where("uid", "==", uid))
-//   );
-
-//   const initTags: IDict<IPost[]> = {};
-//   for await (const tag of resTags) {
-//     const res = await getDoc(doc(db, "posts", tag.pid as string));
-//     const tempPost = {
-//       ...(res.data() as IPost),
-//       createdAt: res.data()?.createdAt.toDate(),
-//     };
-//     if (initTags[tag.name]) {
-//       initTags[tag.name].push(tempPost);
-//     } else {
-//       initTags[tag.name] = [tempPost];
-//     }
-//   }
-
-//   return { props: { initUser, initPosts, initScraps, initTags } };
-// }

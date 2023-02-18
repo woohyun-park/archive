@@ -1,7 +1,10 @@
-import { doc, DocumentData, QueryDocumentSnapshot } from "firebase/firestore";
+import {
+  DocumentData,
+  getDocs,
+  QueryDocumentSnapshot,
+} from "firebase/firestore";
 import create from "zustand";
 import { devtools } from "zustand/middleware";
-import { db, getDataByRef, getPostsByQuery } from "../apis/firebase";
 import { IPost, IUser } from "../libs/custom";
 import {
   getFeedQuery,
@@ -9,6 +12,7 @@ import {
   IFetchType,
 } from "../apis/fbQuery";
 import { combineData, setCursor, wrapPromise } from "./libStores";
+import { readData, readPost } from "../apis/fbRead";
 
 interface IFeedStore {
   posts: IPost[];
@@ -36,12 +40,17 @@ async function getPostsHelper(
   tag?: string
 ) {
   return await wrapPromise(async () => {
-    const user = await getDataByRef<IUser>(doc(db, "users", id));
+    const user = await readData<IUser>("users", id);
     const q = tag
       ? getFilteredFeedQuery(type, user, tag, lastFilteredVisible)
       : getFeedQuery(type, user, lastVisible);
-    let [snap, posts] = await getPostsByQuery(q);
-    posts = combineData(prevPosts, posts, type);
+    const snap = await getDocs(q);
+    const resPosts: IPost[] = [];
+    for (const doc of snap.docs) {
+      const post = await readPost(doc.data().id);
+      resPosts.push(post);
+    }
+    const posts = combineData(prevPosts, resPosts, type);
     const newLastVisible = setCursor(snap, type);
     if (newLastVisible)
       tag

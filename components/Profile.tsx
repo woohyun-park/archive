@@ -19,7 +19,7 @@ import { useUser } from "../stores/useUser";
 import ProfileImg from "./ProfileImg";
 import ModifyAndDelete from "./ModifyAndDelete";
 import Btn from "./atoms/Btn";
-import { readDatasbyQuery } from "../apis/fbRead";
+import { readDatasByQuery } from "../apis/fbRead";
 import { deleteAll } from "../apis/fbDelete";
 
 type IProfileProps = {
@@ -50,7 +50,7 @@ export default function Profile({ user, post, info, action }: IProfileProps) {
       await updateDoc(userRef, {
         followers: arrayRemove(curUser.id),
       });
-      const alarmRes = await readDatasbyQuery<IAlarm>(
+      const alarmRes = await readDatasByQuery<IAlarm>(
         query(
           collection(db, "alarms"),
           where("uid", "==", curUser.id),
