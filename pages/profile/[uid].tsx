@@ -19,12 +19,8 @@ import BtnIcon from "../../components/atoms/BtnIcon";
 import { useRouter } from "next/router";
 import ProfileImg from "../../components/ProfileImg";
 import { useModal } from "../../stores/useModal";
-import { useGlobal } from "../../hooks/useGlobal";
-import { useCache } from "../../stores/useCache";
 
 export default function Profile() {
-  const { cachedPosts } = useCache();
-
   const [initUser, setInitUser] = useState<IUser | undefined>(undefined);
   const [initPosts, setInitPosts] = useState<IPost[]>([]);
   const [initScraps, setInitScraps] = useState<IDict<IPost[]>>({});
@@ -44,9 +40,7 @@ export default function Profile() {
       const scraps: IDict<IPost[]> = {};
       for await (const scrap of resScraps) {
         const pid = scrap.pid;
-        const tempPost = cachedPosts[pid]
-          ? cachedPosts[pid]
-          : await getPost(pid);
+        const tempPost = await getPost(pid);
         if (!tempPost) continue;
         if (scraps[scrap.cont]) {
           scraps[scrap.cont].push(tempPost);
@@ -62,9 +56,7 @@ export default function Profile() {
       const tags: IDict<IPost[]> = {};
       for await (const tag of resTags) {
         const pid = tag.pid || "";
-        const tempPost = cachedPosts[pid]
-          ? cachedPosts[pid]
-          : await getPost(pid);
+        const tempPost = await getPost(pid);
         if (!tempPost) continue;
         if (tags[tag.name]) {
           tags[tag.name].push(tempPost);

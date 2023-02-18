@@ -1,6 +1,6 @@
 import create from "zustand";
 import { devtools } from "zustand/middleware";
-import { ILike, IScrap, IUser } from "../libs/custom";
+import { IAlarm, ILike, IScrap, IUser } from "../libs/custom";
 import {
   collection,
   doc,
@@ -13,7 +13,7 @@ import { db, getEach } from "../apis/firebase";
 
 interface IState {
   curUser: IUser;
-  getCurUser: (id: string) => Promise<void>;
+  getCurUser: (id: string) => Promise<IUser>;
 }
 
 export const useUser = create<IState>()(
@@ -30,12 +30,8 @@ export const useUser = create<IState>()(
     },
     getCurUser: async (id: string) => {
       const user = await getDoc(doc(db, "users", id));
-      const likes = await getEach<ILike>("likes", id);
-      const scraps = await getEach<IScrap>("scraps", id);
       const curUser = {
         ...(user.data() as IUser),
-        likes,
-        scraps,
       };
       const unsubscribeUser = onSnapshot(doc(db, "users", id), (doc) => {
         set((state: IState) => {
@@ -45,6 +41,7 @@ export const useUser = create<IState>()(
               ...(doc.data() as IUser),
               likes: state.curUser.likes,
               scraps: state.curUser.scraps,
+              alarms: state.curUser.alarms,
             },
           };
         });
@@ -79,12 +76,28 @@ export const useUser = create<IState>()(
           });
         }
       );
+      const unsubscribeAlarms = onSnapshot(
+        query(collection(db, "alarms"), where("targetUid", "==", id)),
+        (snap) => {
+          const datas: IAlarm[] = [];
+          snap.forEach((doc) => {
+            datas.push({ ...(doc.data() as IAlarm) });
+          });
+          set((state: IState) => {
+            return {
+              ...state,
+              curUser: { ...state.curUser, alarms: datas },
+            };
+          });
+        }
+      );
       set((state: IState) => {
         return {
           ...state,
           curUser,
         };
       });
+      return curUser;
     },
   }))
 );

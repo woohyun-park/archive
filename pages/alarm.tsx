@@ -8,12 +8,14 @@ import { useModal } from "../stores/useModal";
 import { useStatus } from "../stores/useStatus";
 import WrapScroll from "../components/wrappers/WrapScroll";
 import Motion from "../components/wrappers/WrapMotion";
+import { getAlarm } from "../apis/firebase";
+import { IAlarm } from "../libs/custom";
 
 export default function Alarm() {
   const router = useRouter();
 
   const { curUser } = useUser();
-  const { alarms, getAlarms, isLast } = useAlarm();
+  const { alarms, isLast, getAlarms, setAlarms } = useAlarm();
   const { setModalLoader, modalLoader } = useModal();
   const { scroll } = useStatus();
 
@@ -24,6 +26,20 @@ export default function Alarm() {
         setModalLoader(false);
         scrollTo(0, 0);
       } else {
+        if (!curUser.alarms) return;
+        const tempAlarms = [...curUser.alarms].filter(
+          (e1) =>
+            !alarms.find((e2) => {
+              return e1.id === e2.id;
+            })
+        );
+        const newAlarms: IAlarm[] = [];
+        for await (const tempAlarm of tempAlarms) {
+          const alarm = await getAlarm(tempAlarm.id);
+          alarm && newAlarms.push(alarm);
+        }
+        console.log(newAlarms, alarms);
+        setAlarms([...newAlarms, ...alarms]);
         scrollTo(0, scroll[router.asPath]);
       }
     }

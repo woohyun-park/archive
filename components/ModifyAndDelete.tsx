@@ -1,9 +1,8 @@
 import { useRouter } from "next/router";
 import { deletePost } from "../apis/firebase";
 import { IPost, SIZE } from "../libs/custom";
-import { useCache } from "../stores/useCache";
+import { useFeed } from "../stores/useFeed";
 import BtnIcon from "./atoms/BtnIcon";
-// import { deletePost } from "../apis/firebase";
 
 interface IModifyAndDeleteProps {
   post: IPost | null | undefined;
@@ -15,11 +14,7 @@ export default function ModifyAndDelete({
   redirect,
 }: IModifyAndDeleteProps) {
   const router = useRouter();
-
-  // 왜인지는 전혀 모르겠는데 useGlobal의 deletePost를 사용하면
-  // feedPage에서 infinteLoading이 작동하지 않는 현상이 있다.
-  // const {deletePost} = useGlobal();
-  const { deleteCachedPosts } = useCache();
+  const { posts, setPosts } = useFeed();
 
   return post ? (
     <div>
@@ -43,7 +38,7 @@ export default function ModifyAndDelete({
           onClick={async () => {
             if (confirm("정말 삭제하시겠습니까?")) {
               await deletePost(post?.id || "");
-              deleteCachedPosts(post?.id || "");
+              setPosts([...posts].filter((e) => e.id !== post.id));
             } else {
               console.log(post?.id);
             }

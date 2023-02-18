@@ -13,14 +13,19 @@ import Page from "../components/Page";
 import WrapScroll from "../components/wrappers/WrapScroll";
 import { useModal } from "../stores/useModal";
 import WrapLink from "../components/wrappers/WrapLink";
-import { useGlobal } from "../hooks/useGlobal";
 import { useStack } from "../stores/useStack";
 
 export default function Feed() {
   const { curUser } = useUser();
-  const { getFeed, getFilteredFeed } = useGlobal();
-  const { posts, filteredPosts, refresh, setFilteredPosts, setRefresh } =
-    useFeed();
+  const {
+    posts,
+    filteredPosts,
+    refresh,
+    getPosts,
+    getFilteredPosts,
+    setFilteredPosts,
+    setRefresh,
+  } = useFeed();
   const { keywords, setKeywords } = useKeyword();
   const { scroll, setScroll } = useStatus();
   const { setModalLoader } = useModal();
@@ -53,9 +58,9 @@ export default function Feed() {
   useEffect(() => {
     async function filterPosts() {
       if (keyword.length === 0) {
-        await getFeed("refresh", curUser.id);
+        await getPosts("refresh", curUser.id);
       } else {
-        await getFilteredFeed("init", curUser.id, keyword);
+        await getFilteredPosts("init", curUser.id, keyword);
       }
       setFilterLoading(false);
     }
@@ -114,10 +119,10 @@ export default function Feed() {
         <Page
           page="feed"
           data={posts}
-          onIntersect={() => getFeed("load", curUser.id)}
+          onIntersect={() => getPosts("load", curUser.id)}
           onChange={() => {}}
           onRefresh={async () => {
-            await getFeed("refresh", curUser.id);
+            await getPosts("refresh", curUser.id);
           }}
           changeListener={posts}
         />
@@ -125,10 +130,10 @@ export default function Feed() {
         <Page
           page="feed"
           data={filteredPosts}
-          onIntersect={() => getFilteredFeed("load", curUser.id, keyword)}
+          onIntersect={() => getFilteredPosts("load", curUser.id, keyword)}
           onChange={() => {}}
           onRefresh={async () => {
-            await getFilteredFeed("refresh", curUser.id, keyword);
+            await getFilteredPosts("refresh", curUser.id, keyword);
           }}
           changeListener={filteredPosts}
         />

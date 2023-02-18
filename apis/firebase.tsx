@@ -31,6 +31,7 @@ import {
   ITag,
   IUser,
 } from "../libs/custom";
+import { inRange } from "lodash";
 
 interface IPathParams {
   params: { [param: string]: string };
@@ -66,34 +67,42 @@ export async function addTags(
   }
 }
 
+// uid와 targetUid가 같을때는 comment만 생성
+// uid와 targetUid가 다를때는 comment와 alarm을 모두 생성
 export async function addComment(
   uid: string,
   targetUid: string,
   targetPid: string,
   txt: string
 ) {
-  const newAlarm: IAlarm = {
-    uid,
-    type: "comment",
-    targetUid,
-    targetPid,
-    createdAt: new Date(),
-  };
-  const alarmRef = await addDoc(collection(db, "alarms"), newAlarm);
-
-  const tempComment: IComment = {
-    uid,
-    pid: targetPid,
-    aid: alarmRef.id,
-    txt,
-    createdAt: serverTimestamp(),
-  };
-  const ref = await addDoc(collection(db, "comments"), tempComment);
-  await updateDoc(ref, {
-    id: ref.id,
-  });
-  await updateDoc(alarmRef, { id: alarmRef.id, targetCid: ref.id });
-  return await getDataByRef<IComment>(ref);
+  if (uid === targetUid) {
+    const ref = await addDoc(collection(db, "comments"), {
+      uid,
+      pid: targetPid,
+      txt,
+      createdAt: serverTimestamp(),
+    } as IComment);
+    await updateDoc(ref, { id: ref.id });
+    return await getDataByRef<IComment>(ref);
+  } else {
+    const alarmRef = await addDoc(collection(db, "alarms"), {
+      uid,
+      type: "comment",
+      targetUid,
+      targetPid,
+      createdAt: new Date(),
+    } as IAlarm);
+    const ref = await addDoc(collection(db, "comments"), {
+      uid,
+      pid: targetPid,
+      aid: alarmRef.id,
+      txt,
+      createdAt: serverTimestamp(),
+    } as IComment);
+    await updateDoc(alarmRef, { id: alarmRef.id, targetCid: ref.id });
+    await updateDoc(ref, { id: ref.id });
+    return await getDataByRef<IComment>(ref);
+  }
 }
 
 export async function addLike(
@@ -101,10 +110,6 @@ export async function addLike(
   targetUid: string,
   targetPid: string
 ) {
-  const newData: IDict<string> = {
-    uid,
-    pid: targetPid,
-  };
   const newAlarm: IAlarm = {
     uid,
     type: "like",
@@ -114,8 +119,12 @@ export async function addLike(
   };
   const refAlarm = await addDoc(collection(db, "alarms"), newAlarm);
   await updateDoc(refAlarm, { id: refAlarm.id });
-  newData.aid = refAlarm.id;
-  const ref = await addDoc(collection(db, "likes"), newData);
+  const newLike: ILike = {
+    uid,
+    pid: targetPid,
+    aid: refAlarm.id,
+  };
+  const ref = await addDoc(collection(db, "likes"), newLike);
   await updateDoc(ref, { id: ref.id });
 }
 
@@ -199,6 +208,31 @@ export async function getPostsByQuery(
   return [snap, posts];
 }
 
+export async function getAlarm(id: string, ref?: IDict<any>) {
+  const alarm: IDict<any> | null = ref
+    ? ref
+    : await getData<IAlarm>("alarms", id);
+  if (!alarm) return null;
+  if (alarm.type === "like") {
+    const author = await getData<IUser>("users", alarm.uid);
+    const post = await getData<IPost>("posts", alarm.targetPid || "");
+    alarm.author = author;
+    alarm.post = post;
+  } else if (alarm.type === "comment") {
+    const author = await getData<IUser>("users", alarm.uid);
+    const comment = await getData<IComment>("comments", alarm.targetCid || "");
+    const post = await getData<IPost>("posts", alarm.targetPid || "");
+    alarm.author = author;
+    alarm.post = post;
+    alarm.comment = comment;
+  } else if (alarm.type === "follow") {
+    const author = await getData<IUser>("users", alarm.uid);
+    alarm.author = author;
+  }
+  alarm.createdAt = (alarm.createdAt as Timestamp).toDate();
+  return alarm as IAlarm;
+}
+
 export async function getAlarmsByQuery(
   q: Query
 ): Promise<[QuerySnapshot<DocumentData>, IAlarm[]]> {
@@ -207,37 +241,26 @@ export async function getAlarmsByQuery(
   const alarms: IAlarm[] = [];
 
   for await (const doc of snap.docs) {
-    const alarm: IDict<any> = doc.data();
-    if (alarm.type === "like") {
-      const author = await getData<IUser>("users", alarm.uid);
-      const post = await getData<IPost>("posts", alarm.targetPid || "");
-      alarm.author = author;
-      alarm.post = post;
-    } else if (alarm.type === "comment") {
-      const author = await getData<IUser>("users", alarm.uid);
-      const comment = await getData<IComment>(
-        "comments",
-        alarm.targetCid || ""
-      );
-      const post = await getData<IPost>("posts", alarm.targetPid || "");
-      alarm.author = author;
-      alarm.post = post;
-      alarm.comment = comment;
-    } else if (alarm.type === "follow") {
-      const author = await getData<IUser>("users", alarm.uid);
-      alarm.author = author;
-    }
-    alarm.createdAt = alarm.createdAt.toDate();
-    alarms.push(alarm as IAlarm);
+    const alarm = await getAlarm(doc.data().id, doc.data());
+    if (!alarm) continue;
+    alarms.push(alarm);
   }
   return [snap, alarms];
 }
 
 export async function getEach<T>(type: string, id: string) {
+  console.log(
+    type,
+    type === "alarms" ? "targetUid" : type === "comments" ? "pid" : "uid"
+  );
   return (await getDatasByQuery<T>(
     query(
       collection(db, type),
-      where(type === "alarms" ? "targetPid" : "pid", "==", id),
+      where(
+        type === "alarms" ? "targetUid" : type === "comments" ? "pid" : "uid",
+        "==",
+        id
+      ),
       orderBy("createdAt", "desc")
     )
   )) as T[];

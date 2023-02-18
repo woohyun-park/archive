@@ -1,6 +1,7 @@
 import React, { forwardRef } from "react";
 import { addLike, addScrap, deleteLike, deleteScrap } from "../apis/firebase";
 import { IPost, IUser } from "../libs/custom";
+import { useAlarm } from "../stores/useAlarm";
 import BtnIcon from "./atoms/BtnIcon";
 
 interface IActionProps {
@@ -16,6 +17,7 @@ export default forwardRef<HTMLDivElement, IActionProps>(function Action(
   const lid = curUser.likes?.find((each) => each.pid === post.id)?.id || "";
   const aid = curUser.likes?.find((each) => each.pid === post.id)?.aid || "";
   const sid = curUser.scraps?.find((each) => each.pid === post.id)?.id || "";
+  const { addAlarm, deleteAlarm } = useAlarm();
 
   async function toggleLike() {
     if (lid === "") {

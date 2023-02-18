@@ -18,7 +18,7 @@ import Image from "next/image";
 import WrapMotion from "./wrappers/WrapMotion";
 import { RiGoogleFill } from "react-icons/ri";
 import ScrollTop from "./atoms/ScrollTop";
-import { useGlobal } from "../hooks/useGlobal";
+import { useFeed } from "../stores/useFeed";
 
 interface ILayoutProps {
   children: React.ReactNode;
@@ -37,6 +37,7 @@ export default function Layout({ children }: ILayoutProps) {
   const router = useRouter();
   const { gInit } = useStore();
   const { getCurUser } = useUser();
+  const { getPosts } = useFeed();
   const [login, setLogin] = useState<ILogin>({
     email: "",
     password: "",
@@ -44,14 +45,14 @@ export default function Layout({ children }: ILayoutProps) {
     isLoggedIn: null,
     error: "",
   });
-  const { getFeed } = useGlobal();
 
   useEffect(() => {
     auth.onAuthStateChanged(async (authState) => {
       if (authState) {
         await gInit(authState.uid);
-        await getCurUser(authState.uid);
-        await getFeed("init", authState.uid);
+        const user = await getCurUser(authState.uid);
+        console.log(user);
+        await getPosts("init", authState.uid);
         setLogin({ ...login, isLoggedIn: true });
       } else {
         setLogin({ ...login, isLoggedIn: false });

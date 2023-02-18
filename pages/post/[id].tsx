@@ -9,13 +9,11 @@ import { useModal } from "../../stores/useModal";
 import { wrapPromise } from "../../stores/libStores";
 import ModifyAndDelete from "../../components/ModifyAndDelete";
 import Post from "../../components/Post";
-import { useGlobal } from "../../hooks/useGlobal";
-import { useStack } from "../../stores/useStack";
+import { getPost } from "../../apis/firebase";
 
 export default function PostPage() {
   const { curUser } = useUser();
   const { setModalLoader } = useModal();
-  const { getPost, updatePosts } = useGlobal();
   const router = useRouter();
   const [post, setPost] = useState<IPost | null | undefined>(undefined);
 
@@ -31,10 +29,6 @@ export default function PostPage() {
       setModalLoader(false);
     }, 1000);
   }, []);
-
-  useEffect(() => {
-    post && updatePosts([post]);
-  }, [post]);
 
   return (
     <>

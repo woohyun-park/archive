@@ -7,20 +7,19 @@ import { useEffect } from "react";
 import Page from "../components/Page";
 import { useRouter } from "next/router";
 import { useStatus } from "../stores/useStatus";
-import { useGlobal } from "../hooks/useGlobal";
 import { useModal } from "../stores/useModal";
 
 export default function Search() {
   const { posts, isLast } = useSearch();
   const { scroll, setScroll } = useStatus();
-  const { getSearch } = useGlobal();
   const { setModalLoader } = useModal();
+  const { getPosts } = useSearch();
 
   const router = useRouter();
   useEffect(() => {
     async function init() {
       if (scroll[router.asPath] === undefined) {
-        await getSearch("init");
+        await getPosts("init");
         setModalLoader(false);
         scrollTo(0, 0);
       } else {
@@ -44,11 +43,11 @@ export default function Search() {
           page="search"
           data={posts}
           onIntersect={async () => {
-            await getSearch("load");
+            await getPosts("load");
           }}
           onChange={() => {}}
           onRefresh={async () => {
-            await getSearch("refresh");
+            await getPosts("refresh");
           }}
           changeListener={posts}
           isLast={isLast}

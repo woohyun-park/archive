@@ -78,6 +78,7 @@ export interface IUser {
   likes?: ILike[];
   scraps?: IScrap[];
   history?: string[];
+  alarms?: IAlarm[];
   // posts: string[];
   // tags: string[];
 
@@ -105,7 +106,7 @@ export interface IComment {
   id?: string;
   uid: string;
   pid: string;
-  aid: string;
+  aid?: string;
   createdAt: Date | FieldValue;
   txt: string;
 
@@ -125,7 +126,7 @@ export interface ILike {
   id?: string;
   uid: string;
   pid: string;
-  aid: string;
+  aid?: string;
 
   isLoadedAt?: Date;
 }
