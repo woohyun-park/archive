@@ -6,8 +6,9 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { UseFormWatch } from "react-hook-form";
+import { createTags } from "../apis/fbCreate";
 import { uploadImage } from "../apis/fileApi";
-import { addTags, db, deleteEach, getEach } from "../apis/firebase";
+import { db, deleteEach, getEach } from "../apis/firebase";
 import { IForm } from "../pages/add";
 import { IPost, ITag, IUser } from "./custom";
 
@@ -57,7 +58,8 @@ export async function handleImage({
       await updateDoc(postRef, { id: postRef.id });
       pid = postRef.id;
     }
-    addTags(tags, curUser.id, pid);
+    // addTags(tags, curUser.id, pid);
+    createTags(tags, curUser.id, pid);
   } else {
     if (prevPost) {
       // 이미지를 올리지 않았으며 수정인 경우
@@ -102,7 +104,8 @@ export async function handleColor({
     });
     const pid = postRef.id;
     await updateDoc(postRef, { id: pid });
-    addTags(tags, curUser.id, pid);
+    // addTags(tags, curUser.id, pid);
+    createTags(tags, curUser.id, pid);
   }
 }
 
@@ -114,5 +117,6 @@ async function deleteAndAddTags(
   if (!pid || !uid) return;
   const tagsToDelete = await getEach<ITag>("tags", pid);
   deleteEach(tagsToDelete, "tags");
-  addTags(tags, uid, pid);
+  // addTags(tags, uid, pid);
+  createTags(tags, uid, pid);
 }

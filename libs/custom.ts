@@ -81,19 +81,17 @@ export interface IUser {
   alarms?: IAlarm[];
   // posts: string[];
   // tags: string[];
-
-  isLoadedAt?: Date;
 }
 
 export interface IPost {
-  id?: string;
+  id: string;
   uid: string;
-  createdAt: Date | FieldValue;
   title: string;
   txt: string;
   imgs: string[];
   color: string;
   tags: string[];
+  createdAt: Date | FieldValue;
 
   likes?: ILike[];
   scraps?: IScrap[];
@@ -103,18 +101,16 @@ export interface IPost {
 }
 
 export interface IComment {
-  id?: string;
+  id: string;
   uid: string;
   pid: string;
   aid?: string;
-  createdAt: Date | FieldValue;
   txt: string;
-
-  isLoadedAt?: Date;
+  createdAt: Date | FieldValue;
 }
 
 export interface ITag {
-  id?: string;
+  id: string;
   pid?: string;
   uid: string;
   name: string;
@@ -123,31 +119,29 @@ export interface ITag {
 }
 
 export interface ILike {
-  id?: string;
+  id: string;
   uid: string;
   pid: string;
+  createdAt: Date | FieldValue;
   aid?: string;
-
-  isLoadedAt?: Date;
 }
 
 export interface IScrap {
-  id?: string;
+  id: string;
   uid: string;
   pid: string;
   cont: string;
-
-  isLoadedAt?: Date;
+  createdAt: Date | FieldValue;
 }
 
 export interface IAlarm {
-  id?: string;
+  id: string;
   type: "like" | "comment" | "follow";
   uid: string;
   targetUid: string;
-  targetPid?: string;
-  targetCid?: string;
-  createdAt: Date;
+  pid?: string;
+  cid?: string;
+  createdAt: Date | FieldValue;
 
   author?: IUser;
   post?: IPost;

@@ -3,7 +3,7 @@ import create from "zustand";
 import { devtools } from "zustand/middleware";
 import { getAlarmsByQuery } from "../apis/firebase";
 import { IAlarm } from "../libs/custom";
-import { FETCH_LIMIT, getAlarmQuery, IFetchType } from "../libs/queryLib";
+import { FETCH_LIMIT, getAlarmQuery, IFetchType } from "../apis/fbQuery";
 import { combineData, setCursor, wrapPromise } from "./libStores";
 
 interface IUseAlarm {

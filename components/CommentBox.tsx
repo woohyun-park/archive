@@ -1,14 +1,16 @@
 import { deleteDoc, doc } from "firebase/firestore";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import { addComment, db } from "../apis/firebase";
+import { db } from "../apis/firebase";
 import { IComment, IPost, IUser } from "../libs/custom";
 import { useRouter } from "next/router";
 import Action from "./Action";
 import Textarea from "./atoms/Textarea";
 import Btn from "./atoms/Btn";
 import Page from "./Page";
-import { FETCH_LIMIT } from "../libs/queryLib";
+import { FETCH_LIMIT } from "../apis/fbQuery";
+import { createComment } from "../apis/fbCreate";
+import { readComment } from "../apis/fbRead";
 
 type ICommentBoxProps = {
   post: IPost;
@@ -26,7 +28,7 @@ export default (function CommentBox({ post, user, setPost }: ICommentBoxProps) {
 
   const uid = user.id;
   const targetUid = post.uid;
-  const targetPid = post.id || "";
+  const pid = post.id || "";
 
   useEffect(() => {
     if (submitListener !== null)
@@ -38,7 +40,9 @@ export default (function CommentBox({ post, user, setPost }: ICommentBoxProps) {
   }
 
   async function handleSubmit(e: React.MouseEvent<HTMLButtonElement>) {
-    const newComment = await addComment(uid, targetUid, targetPid, comment);
+    const newCommentRef = await createComment(uid, targetUid, pid, comment);
+    const newComment = await readComment(newCommentRef.id);
+    if (!newComment) return;
     setComment("");
     setPost({
       ...post,

@@ -3,11 +3,7 @@ import create from "zustand";
 import { devtools } from "zustand/middleware";
 import { getPostsByQuery } from "../apis/firebase";
 import { IPost, ITag, IUser } from "../libs/custom";
-import {
-  FETCH_LIMIT,
-  getSearchQueryByType,
-  IFetchType,
-} from "../libs/queryLib";
+import { FETCH_LIMIT, getSearchQueryByType, IFetchType } from "../apis/fbQuery";
 import { combineData, setCursor, wrapPromise } from "./libStores";
 
 interface ISearchStore {

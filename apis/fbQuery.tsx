@@ -10,8 +10,8 @@ import {
   startAfter,
   where,
 } from "firebase/firestore";
-import { db } from "../apis/firebase";
-import { IUser } from "./custom";
+import { db } from "./firebase";
+import { IUser } from "../libs/custom";
 
 export type IFetchType = "init" | "load" | "refresh";
 export const FETCH_LIMIT = {

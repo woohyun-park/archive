@@ -7,7 +7,7 @@ import {
   getFeedQuery,
   getFilteredFeedQuery,
   IFetchType,
-} from "../libs/queryLib";
+} from "../apis/fbQuery";
 import { combineData, setCursor, wrapPromise } from "./libStores";
 
 interface IFeedStore {

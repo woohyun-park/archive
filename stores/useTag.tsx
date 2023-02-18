@@ -3,7 +3,7 @@ import create from "zustand";
 import { devtools } from "zustand/middleware";
 import { getPostsByQuery } from "../apis/firebase";
 import { IDict, IPost } from "../libs/custom";
-import { getTagQuery, IFetchType } from "../libs/queryLib";
+import { getTagQuery, IFetchType } from "../apis/fbQuery";
 import { combineData, setCursor } from "./libStores";
 
 interface IUseTag {

@@ -32,6 +32,7 @@ import {
   IUser,
 } from "../libs/custom";
 import { inRange } from "lodash";
+import { readLikes } from "./fbRead";
 
 interface IPathParams {
   params: { [param: string]: string };
@@ -49,84 +50,6 @@ const firebaseConfig = {
 export const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 export const auth = getAuth(app);
-
-export async function addTags(
-  arr: string[],
-  uid: string,
-  pid: string | undefined
-) {
-  console.log("addTags", arr);
-  for await (const tag of arr) {
-    const tempTag: ITag = {
-      uid,
-      pid,
-      name: tag,
-    };
-    const tagRef = await addDoc(collection(db, "tags"), tempTag);
-    await updateDoc(tagRef, { id: tagRef.id });
-  }
-}
-
-// uid와 targetUid가 같을때는 comment만 생성
-// uid와 targetUid가 다를때는 comment와 alarm을 모두 생성
-export async function addComment(
-  uid: string,
-  targetUid: string,
-  targetPid: string,
-  txt: string
-) {
-  if (uid === targetUid) {
-    const ref = await addDoc(collection(db, "comments"), {
-      uid,
-      pid: targetPid,
-      txt,
-      createdAt: serverTimestamp(),
-    } as IComment);
-    await updateDoc(ref, { id: ref.id });
-    return await getDataByRef<IComment>(ref);
-  } else {
-    const alarmRef = await addDoc(collection(db, "alarms"), {
-      uid,
-      type: "comment",
-      targetUid,
-      targetPid,
-      createdAt: new Date(),
-    } as IAlarm);
-    const ref = await addDoc(collection(db, "comments"), {
-      uid,
-      pid: targetPid,
-      aid: alarmRef.id,
-      txt,
-      createdAt: serverTimestamp(),
-    } as IComment);
-    await updateDoc(alarmRef, { id: alarmRef.id, targetCid: ref.id });
-    await updateDoc(ref, { id: ref.id });
-    return await getDataByRef<IComment>(ref);
-  }
-}
-
-export async function addLike(
-  uid: string,
-  targetUid: string,
-  targetPid: string
-) {
-  const newAlarm: IAlarm = {
-    uid,
-    type: "like",
-    targetUid,
-    targetPid,
-    createdAt: new Date(),
-  };
-  const refAlarm = await addDoc(collection(db, "alarms"), newAlarm);
-  await updateDoc(refAlarm, { id: refAlarm.id });
-  const newLike: ILike = {
-    uid,
-    pid: targetPid,
-    aid: refAlarm.id,
-  };
-  const ref = await addDoc(collection(db, "likes"), newLike);
-  await updateDoc(ref, { id: ref.id });
-}
 
 export async function addScrap(uid: string, pid: string) {
   const newData: IDict<string> = {
@@ -185,7 +108,9 @@ export async function getPost(id: string) {
   const pid = post.id || "";
   const author = await getData<IUser>("users", uid);
   if (author === null) return null;
-  const likes = await getEach<ILike>("likes", pid);
+  // const likes = await getEach<ILike>("likes", pid);
+  const likes = await readLikes(pid);
+  console.log(pid, likes);
   const scraps = await getEach<IScrap>("scraps", pid);
   const comments = await getEach<IComment>("comments", pid);
   post.likes = likes ? likes : [];
@@ -215,13 +140,13 @@ export async function getAlarm(id: string, ref?: IDict<any>) {
   if (!alarm) return null;
   if (alarm.type === "like") {
     const author = await getData<IUser>("users", alarm.uid);
-    const post = await getData<IPost>("posts", alarm.targetPid || "");
+    const post = await getData<IPost>("posts", alarm.pid || "");
     alarm.author = author;
     alarm.post = post;
   } else if (alarm.type === "comment") {
     const author = await getData<IUser>("users", alarm.uid);
-    const comment = await getData<IComment>("comments", alarm.targetCid || "");
-    const post = await getData<IPost>("posts", alarm.targetPid || "");
+    const comment = await getData<IComment>("comments", alarm.cid || "");
+    const post = await getData<IPost>("posts", alarm.pid || "");
     alarm.author = author;
     alarm.post = post;
     alarm.comment = comment;
@@ -310,6 +235,7 @@ export async function updateFollow(
       followers: arrayUnion(curUser.id),
     });
     const newAlarm: IAlarm = {
+      id: "",
       uid: curUser.id,
       type: "follow",
       targetUid: user.id,

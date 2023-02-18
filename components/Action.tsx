@@ -1,5 +1,6 @@
 import React, { forwardRef } from "react";
-import { addLike, addScrap, deleteLike, deleteScrap } from "../apis/firebase";
+import { createLike } from "../apis/fbCreate";
+import { addScrap, deleteLike, deleteScrap } from "../apis/firebase";
 import { IPost, IUser } from "../libs/custom";
 import { useAlarm } from "../stores/useAlarm";
 import BtnIcon from "./atoms/BtnIcon";
@@ -21,7 +22,7 @@ export default forwardRef<HTMLDivElement, IActionProps>(function Action(
 
   async function toggleLike() {
     if (lid === "") {
-      addLike(curUser.id, post.uid, post.id || "");
+      createLike(curUser.id, post.uid, post.id || "");
     } else {
       deleteLike(lid, aid);
     }
