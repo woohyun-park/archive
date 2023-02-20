@@ -37,7 +37,7 @@ export default function SearchResult() {
   }, []);
   return (
     <>
-      <div className="flex my-4">
+      <div className="flex m-4">
         <BtnIcon icon="back" onClick={() => router.back()} />
         <h1 className="title-page-sm">{keyword}에 대한 검색결과</h1>
       </div>
@@ -50,10 +50,16 @@ export default function SearchResult() {
             isActive: page === 0,
           },
           {
-            label: "users",
+            label: "tags",
             onClick: () => setPage(1),
-            style: { width: "100%" },
+            style: { width: "100%", marginRight: "0.25rem" },
             isActive: page === 1,
+          },
+          {
+            label: "users",
+            onClick: () => setPage(2),
+            style: { width: "100%" },
+            isActive: page === 2,
           },
         ]}
       />
@@ -73,7 +79,7 @@ export default function SearchResult() {
           changeListener={posts.data}
         />
       )}
-      {page === 1 && (
+      {page === 2 && (
         <Page
           page="user"
           data={users.data as IUser[]}
@@ -83,8 +89,10 @@ export default function SearchResult() {
           }}
           onChange={() => {}}
           onRefresh={async () => {
+            console.log(users.data);
             users.fetchUsersByKeyword &&
-              users.fetchUsersByKeyword("refresh", path, keyword);
+              (await users.fetchUsersByKeyword("refresh", path, keyword));
+            console.log(users.data);
           }}
           changeListener={users.data}
         />

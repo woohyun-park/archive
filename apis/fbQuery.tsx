@@ -200,6 +200,7 @@ export function getUsersByKeywordQuery(
   keyword: string,
   lastVisible: QueryDocumentSnapshot<DocumentData>
 ) {
+  console.log(type);
   if (type === "init")
     return query(
       collection(db, "users"),
@@ -210,14 +211,14 @@ export function getUsersByKeywordQuery(
     );
   if (type === "load")
     return query(
-      collection(db, "posts"),
+      collection(db, "users"),
       orderBy("displayName"),
       startAfter(lastVisible),
       endAt(keyword + "\uf8ff"),
       limit(FETCH_LIMIT.user)
     );
   return query(
-    collection(db, "posts"),
+    collection(db, "users"),
     orderBy("displayName"),
     startAt(keyword),
     endAt(lastVisible)

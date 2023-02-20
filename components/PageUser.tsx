@@ -1,5 +1,5 @@
 import { AnimatePresence } from "framer-motion";
-import { Children } from "react";
+import { Children, CSSProperties } from "react";
 import { IAlarm, IUser } from "../libs/custom";
 import { useUser } from "../stores/useUser";
 import AlarmComment from "./AlarmComment";
@@ -23,17 +23,19 @@ export default function PageUser({
 
   return (
     <>
-      <AnimatePresence>
-        {Children.toArray(
-          users.map((user) => (
-            <Profile
-              user={user}
-              info="intro"
-              action={curUser.id !== user.id ? "follow" : undefined}
-            />
-          ))
-        )}
-      </AnimatePresence>
+      <div className="mx-4">
+        <AnimatePresence>
+          {Children.toArray(
+            users.map((user) => (
+              <Profile
+                user={user}
+                info="intro"
+                action={curUser.id !== user.id ? "follow" : undefined}
+              />
+            ))
+          )}
+        </AnimatePresence>
+      </div>
     </>
   );
 }

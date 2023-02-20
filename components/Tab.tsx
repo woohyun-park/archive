@@ -16,7 +16,7 @@ interface ITab {
 export default function Tab({ tabs }: ITabProps) {
   const router = useRouter();
   return (
-    <div className="flex mb-4">
+    <div className="flex m-4">
       {Children.toArray(
         tabs.map((tab) => (
           <Btn
