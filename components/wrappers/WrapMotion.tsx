@@ -8,7 +8,7 @@ type IWrapMotion = {
   className?: string;
 };
 
-export type IWrapMotionType = "float" | "fade";
+export type IWrapMotionType = "float" | "fade" | "swipeLeft";
 
 export default function WrapMotion({
   children,
@@ -51,6 +51,8 @@ export default function WrapMotion({
                 animate: { opacity: 1 },
                 exit: { opacity: 0 },
               }
+            : type === "swipeLeft"
+            ? {}
             : {}
         }
       >

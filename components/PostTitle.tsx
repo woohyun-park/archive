@@ -11,15 +11,11 @@ export default function PostTitle({ post }: IPostTitle) {
 
   const { setModalLoader } = useStatus();
 
-  const storage = globalThis?.sessionStorage;
-  const prevPath = storage.getItem("prevPath");
-  const currentPath = storage.getItem("currentPath");
-
   return (
     <div
       className="mt-4 mb-4 text-5xl font-bold break-words hover:cursor-pointer w-fit"
       onClick={() => {
-        prevPath !== currentPath && setModalLoader(true);
+        router.asPath !== `/post/${post.id}` && setModalLoader(true);
         router.push(`/post/${post.id}`);
       }}
     >

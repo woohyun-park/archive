@@ -32,7 +32,7 @@ interface IUseCache {
 }
 
 interface ICache {
-  data: IDict<any>[];
+  data: any[];
   isLast: boolean;
   lastVisible: QueryDocumentSnapshot<DocumentData>;
 }

@@ -147,7 +147,9 @@ export default function Layout({ children }: ILayoutProps) {
         </div>
       ) : login.isLoggedIn ? (
         <>
-          {router.pathname === "/" ? (
+          {router.pathname === "/" ||
+          router.pathname === "/search/posts/[keyword]" ||
+          router.pathname === "/search/users/[keyword]" ? (
             <div className="my-4">{children}</div>
           ) : router.pathname === "/post/[id]" ? (
             <div className="m-4 mb-4">{children}</div>
