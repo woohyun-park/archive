@@ -14,7 +14,9 @@ export default function Alarm() {
   const { curUser } = useUser();
   const { setModalLoader, modalLoader } = useStatus();
   const { scroll } = useStatus();
-  const { path, data, isLast, fetchAlarms } = useCachedPage("alarms");
+  const { data, isLast, fetchAlarms } = useCachedPage("alarms");
+
+  const path = router.asPath;
 
   useEffect(() => {
     async function init() {

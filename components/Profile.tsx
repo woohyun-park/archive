@@ -10,7 +10,7 @@ import {
   where,
 } from "firebase/firestore";
 import Link from "next/link";
-import { db, updateUser } from "../apis/firebase";
+import { db } from "../apis/firebase";
 import { IAlarm, IPost, IUser } from "../libs/custom";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";

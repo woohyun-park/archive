@@ -13,7 +13,9 @@ export default function Search() {
   const router = useRouter();
 
   const { scroll, setModalLoader } = useStatus();
-  const { path, data, isLast, fetchPosts } = useCachedPage("posts");
+  const { data, isLast, fetchPosts } = useCachedPage("posts");
+
+  const path = router.asPath;
 
   useEffect(() => {
     async function init() {

@@ -1,30 +1,32 @@
-import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
-import Btn from "../../components/atoms/Btn";
+import { useEffect, useState } from "react";
 import BtnIcon from "../../components/atoms/BtnIcon";
 import Page from "../../components/Page";
 import Tab from "../../components/Tab";
 import { useCachedPage } from "../../hooks/useCachedPage";
-import { useCache } from "../../stores/useCache";
 import { useStatus } from "../../stores/useStatus";
 
 export default function SearchResult() {
   const router = useRouter();
+  const [page, setPage] = useState(0);
 
   const { scroll, setModalLoader } = useStatus();
-  const { path, data, isLast, fetchTaggedPosts } = useCachedPage("taggedPosts");
+  const posts = useCachedPage("taggedPosts");
 
   const keyword = (router.query.keyword as string) || "";
+  const path = router.asPath;
+  const storage = globalThis?.sessionStorage;
+  const prevPath = storage.getItem("currentPath");
 
   useEffect(() => {
     async function init() {
       if (scroll[path] === undefined) {
-        fetchTaggedPosts && (await fetchTaggedPosts("init", path, keyword));
+        posts.fetchTaggedPosts &&
+          (await posts.fetchTaggedPosts("init", path, keyword));
         setModalLoader(false);
         scrollTo(0, 0);
       } else {
-        scrollTo(0, scroll[path]);
+        prevPath !== "/search-modal" && scrollTo(0, scroll[path]);
       }
     }
     init();
@@ -39,25 +41,34 @@ export default function SearchResult() {
         tabs={[
           {
             label: "posts",
-            onClick: () => router.replace(`/search/posts/${keyword}`),
+            onClick: () => setPage(0),
             style: { width: "100%", marginRight: "0.25rem" },
-            isActive: false,
+            isActive: page === 0,
           },
           {
             label: "users",
-            onClick: () => router.replace(`/search/users/${keyword}`),
+            onClick: () => setPage(1),
             style: { width: "100%" },
+            isActive: page === 1,
           },
         ]}
       />
-      <Page
-        page="feed"
-        data={data}
-        onIntersect={() => {}}
-        onChange={() => {}}
-        onRefresh={async () => {}}
-        changeListener={data}
-      />
+      {page === 0 && (
+        <Page
+          page="feed"
+          data={posts.data}
+          onIntersect={() => {
+            posts.fetchTaggedPosts &&
+              posts.fetchTaggedPosts("load", path, keyword);
+          }}
+          onChange={() => {}}
+          onRefresh={async () => {
+            posts.fetchTaggedPosts &&
+              (await posts.fetchTaggedPosts("refresh", path, keyword));
+          }}
+          changeListener={posts.data}
+        />
+      )}
     </>
   );
 }

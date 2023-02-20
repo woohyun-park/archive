@@ -123,7 +123,7 @@ export const useCache = create<IUseCache>()(
       pathname: string,
       tag: string
     ) => {
-      const taggedPosts = get().caches[pathname]?.tags;
+      const taggedPosts = get().caches[pathname]?.taggedPosts;
       const cache = await readTaggedPosts(fetchType, { ...taggedPosts }, tag);
       set((state: IUseCache) => {
         const newState = { ...state };

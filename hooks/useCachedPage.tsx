@@ -21,6 +21,6 @@ export const useCachedPage = (type: "posts" | "taggedPosts" | "alarms") => {
   } else {
     //type == "alarms"
     const data = cache ? (cache.data as IAlarm[]) : [];
-    return { path, data, isLast, fetchAlarms };
+    return { data, isLast, fetchAlarms };
   }
 };
