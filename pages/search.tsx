@@ -7,23 +7,18 @@ import Page from "../components/Page";
 import { useRouter } from "next/router";
 import { useStatus } from "../stores/useStatus";
 import { useCache } from "../stores/useCache";
+import { useCachedPage } from "../hooks/useCachedPage";
 
 export default function Search() {
   const router = useRouter();
 
   const { scroll, setModalLoader } = useStatus();
-  const { caches, fetchSearchPage } = useCache();
-
-  const path = router.asPath;
-  const cache = caches[path];
-  const posts = cache ? (cache.data as IPost[]) : [];
-  const isLast = cache ? cache.isLast : false;
-  console.log(cache);
+  const { path, data, isLast, fetchPosts } = useCachedPage("posts");
 
   useEffect(() => {
     async function init() {
       if (scroll[path] === undefined) {
-        await fetchSearchPage("init", path);
+        fetchPosts && (await fetchPosts("init", path));
         setModalLoader(false);
         scrollTo(0, 0);
       } else {
@@ -45,15 +40,15 @@ export default function Search() {
         </Link>
         <Page
           page="search"
-          data={posts}
+          data={data}
           onIntersect={async () => {
-            await fetchSearchPage("load", path);
+            fetchPosts && (await fetchPosts("load", path));
           }}
           onChange={() => {}}
           onRefresh={async () => {
-            await fetchSearchPage("refresh", path);
+            fetchPosts && (await fetchPosts("refresh", path));
           }}
-          changeListener={posts}
+          changeListener={data}
           isLast={isLast}
         />
       </WrapMotion>

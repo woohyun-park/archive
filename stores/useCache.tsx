@@ -17,19 +17,21 @@ import { combineData, setCursor } from "./libStores";
 import { readAlarm, readPost } from "../apis/fbRead";
 
 interface IUseCache {
-  caches: IDict<ICache>;
-  fetchAlarmPage: (
+  caches: IDict<IPage>;
+  fetchAlarms: (
     fetchType: IFetchType,
     pathname: string,
     uid: string
   ) => Promise<void>;
-  fetchSearchPage: (fetchType: IFetchType, pathname: string) => Promise<void>;
-  fetchTagPage: (
+  fetchPosts: (fetchType: IFetchType, pathname: string) => Promise<void>;
+  fetchTaggedPosts: (
     fetchType: IFetchType,
     pathname: string,
     tag: string
   ) => Promise<void>;
 }
+
+type IPage = IDict<ICache>;
 
 interface ICache {
   data: any[];
@@ -37,11 +39,7 @@ interface ICache {
   lastVisible: QueryDocumentSnapshot<DocumentData>;
 }
 
-async function readAlarmPage(
-  fetchType: IFetchType,
-  cache: ICache,
-  uid: string
-) {
+async function readAlarms(fetchType: IFetchType, cache: ICache, uid: string) {
   const snap = await getDocs(getAlarmQuery(fetchType, uid, cache.lastVisible));
   const resAlarms: IAlarm[] = [];
   for await (const doc of snap.docs) {
@@ -55,7 +53,7 @@ async function readAlarmPage(
   return cache;
 }
 
-async function readSearchPage(fetchType: IFetchType, cache: ICache) {
+async function readPosts(fetchType: IFetchType, cache: ICache) {
   const snap = await getDocs(
     getSearchQueryByType(fetchType, cache.lastVisible)
   );
@@ -71,7 +69,11 @@ async function readSearchPage(fetchType: IFetchType, cache: ICache) {
   return cache;
 }
 
-async function readTagPage(fetchType: IFetchType, cache: ICache, tag: string) {
+async function readTaggedPosts(
+  fetchType: IFetchType,
+  cache: ICache,
+  tag: string
+) {
   const snap = await getDocs(getTagQuery(fetchType, tag, cache.lastVisible));
   const resPosts: IPost[] = [];
   for await (const doc of snap.docs) {
@@ -89,49 +91,45 @@ export const useCache = create<IUseCache>()(
   devtools((set, get) => ({
     caches: {},
 
-    fetchAlarmPage: async (
+    fetchAlarms: async (
       fetchType: IFetchType,
       pathname: string,
       uid: string
     ) => {
-      const cache = await readAlarmPage(
-        fetchType,
-        { ...get().caches[pathname] },
-        uid
-      );
+      const alarms = get().caches[pathname]?.alarms;
+      const cache = await readAlarms(fetchType, { ...alarms }, uid);
       set((state: IUseCache) => {
         const newState = { ...state };
-        newState.caches[pathname] = cache;
+        if (!newState.caches[pathname])
+          newState.caches[pathname] = { alarms: cache };
+        else newState.caches[pathname].alarms = cache;
+
         return newState;
       });
     },
-
-    fetchSearchPage: async (fetchType: IFetchType, pathname: string) => {
-      const cache = await readSearchPage(fetchType, {
-        ...get().caches[pathname],
-      });
+    fetchPosts: async (fetchType: IFetchType, pathname: string) => {
+      const posts = get().caches[pathname]?.posts;
+      const cache = await readPosts(fetchType, { ...posts });
       set((state: IUseCache) => {
         const newState = { ...state };
-        newState.caches[pathname] = cache;
+        if (!newState.caches[pathname])
+          newState.caches[pathname] = { posts: cache };
+        else newState.caches[pathname].posts = cache;
         return newState;
       });
     },
-
-    fetchTagPage: async (
+    fetchTaggedPosts: async (
       fetchType: IFetchType,
       pathname: string,
       tag: string
     ) => {
-      const cache = await readTagPage(
-        fetchType,
-        {
-          ...get().caches[pathname],
-        },
-        tag
-      );
+      const taggedPosts = get().caches[pathname]?.tags;
+      const cache = await readTaggedPosts(fetchType, { ...taggedPosts }, tag);
       set((state: IUseCache) => {
         const newState = { ...state };
-        newState.caches[pathname] = cache;
+        if (!newState.caches[pathname])
+          newState.caches[pathname] = { taggedPosts: cache };
+        else newState.caches[pathname].taggedPosts = cache;
         return newState;
       });
     },

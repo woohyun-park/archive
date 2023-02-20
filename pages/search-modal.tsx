@@ -51,7 +51,7 @@ export default function Search() {
   function handleSearch(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === "Enter") {
       updateHistory(keyword);
-      router.push(`/search/posts/${keyword}`);
+      router.push(`/search/${keyword}`);
     }
   }
 

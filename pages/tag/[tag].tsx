@@ -7,26 +7,23 @@ import Motion from "../../components/wrappers/WrapMotion";
 import { useStatus } from "../../stores/useStatus";
 import { useCache } from "../../stores/useCache";
 import { IPost } from "../../libs/custom";
+import { useCachedPage } from "../../hooks/useCachedPage";
 
 export default function Tag({}) {
   const router = useRouter();
 
   const { scroll, setModalLoader, modalLoader } = useStatus();
-  const { caches, fetchTagPage } = useCache();
+  const { path, data, isLast, fetchTaggedPosts } = useCachedPage("taggedPosts");
 
-  const path = router.asPath;
   const tag = router.query.tag as string;
-  const cache = caches[path];
-  const posts = cache && (cache.data as IPost[]);
 
   useEffect(() => {
     async function init() {
       if (scroll[path] === undefined) {
-        await fetchTagPage("init", path, tag);
+        fetchTaggedPosts && (await fetchTaggedPosts("init", path, tag));
         setModalLoader(false);
         scrollTo(0, 0);
       } else {
-        console.log("2");
         scrollTo(0, scroll[path]);
       }
     }
@@ -45,13 +42,16 @@ export default function Tag({}) {
           </div>
           <Page
             page="feed"
-            data={posts}
-            onIntersect={() => fetchTagPage("load", path, tag)}
+            data={data}
+            onIntersect={() =>
+              fetchTaggedPosts && fetchTaggedPosts("load", path, tag)
+            }
             onChange={() => {}}
             onRefresh={async () => {
-              await fetchTagPage("refresh", path, tag);
+              fetchTaggedPosts &&
+                (await fetchTaggedPosts("refresh", path, tag));
             }}
-            changeListener={posts}
+            changeListener={data}
           />
         </>
       )}

@@ -6,26 +6,20 @@ import Page from "../components/Page";
 import { useStatus } from "../stores/useStatus";
 import WrapScroll from "../components/wrappers/WrapScroll";
 import Motion from "../components/wrappers/WrapMotion";
-import { IAlarm } from "../libs/custom";
-import { useCache } from "../stores/useCache";
+import { useCachedPage } from "../hooks/useCachedPage";
 
 export default function Alarm() {
   const router = useRouter();
 
   const { curUser } = useUser();
-  const { caches, fetchAlarmPage } = useCache();
   const { setModalLoader, modalLoader } = useStatus();
   const { scroll } = useStatus();
-
-  const path = router.asPath;
-  const cache = caches[path];
-  const alarms = cache ? (cache.data as IAlarm[]) : [];
-  const isLast = cache ? cache.isLast : false;
+  const { path, data, isLast, fetchAlarms } = useCachedPage("alarms");
 
   useEffect(() => {
     async function init() {
       if (scroll[path] === undefined) {
-        await fetchAlarmPage("init", path, curUser.id);
+        fetchAlarms && (await fetchAlarms("init", path, curUser.id));
         setModalLoader(false);
         scrollTo(0, 0);
       } else {
@@ -47,13 +41,15 @@ export default function Alarm() {
           </div>
           <Page
             page="alarm"
-            data={alarms}
-            onIntersect={() => fetchAlarmPage("load", path, curUser.id)}
+            data={data}
+            onIntersect={() =>
+              fetchAlarms && fetchAlarms("load", path, curUser.id)
+            }
             onChange={() => {}}
             onRefresh={async () => {
-              await fetchAlarmPage("refresh", path, curUser.id);
+              fetchAlarms && (await fetchAlarms("refresh", path, curUser.id));
             }}
-            changeListener={alarms}
+            changeListener={data}
             isLast={isLast}
             minHeight="50vh"
           />
