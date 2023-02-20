@@ -1,11 +1,19 @@
 import { useRouter } from "next/router";
-import { IFetchType } from "../apis/fbQuery";
-import { IAlarm, IPost } from "../libs/custom";
+import { IAlarm, IPost, IUser } from "../libs/custom";
 import { useCache } from "../stores/useCache";
 
-export const useCachedPage = (type: "posts" | "taggedPosts" | "alarms") => {
+export const useCachedPage = (
+  type: "posts" | "postsByTag" | "postsByKeyword" | "alarms" | "usersByKeyword"
+) => {
   const router = useRouter();
-  const { caches, fetchPosts, fetchTaggedPosts, fetchAlarms } = useCache();
+  const {
+    caches,
+    fetchPosts,
+    fetchPostsByTag,
+    fetchPostsByKeyword,
+    fetchAlarms,
+    fetchUsersByKeyword,
+  } = useCache();
 
   const path = router.asPath;
   const page = caches[path];
@@ -14,10 +22,16 @@ export const useCachedPage = (type: "posts" | "taggedPosts" | "alarms") => {
 
   if (type === "posts") {
     const data = cache ? (cache.data as IPost[]) : [];
-    return { path, data, isLast, fetchPosts };
-  } else if (type === "taggedPosts") {
+    return { data, isLast, fetchPosts };
+  } else if (type === "postsByTag") {
     const data = cache ? (cache.data as IPost[]) : [];
-    return { path, data, isLast, fetchTaggedPosts };
+    return { data, isLast, fetchPostsByTag };
+  } else if (type === "postsByKeyword") {
+    const data = cache ? (cache.data as IPost[]) : [];
+    return { data, isLast, fetchPostsByKeyword };
+  } else if (type === "usersByKeyword") {
+    const data = cache ? (cache.data as IUser[]) : [];
+    return { data, isLast, fetchUsersByKeyword };
   } else {
     //type == "alarms"
     const data = cache ? (cache.data as IAlarm[]) : [];

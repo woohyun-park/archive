@@ -8,6 +8,7 @@ import {
   Query,
   QueryDocumentSnapshot,
   startAfter,
+  startAt,
   where,
 } from "firebase/firestore";
 import { db } from "./firebase";
@@ -20,6 +21,7 @@ export const FETCH_LIMIT = {
   post3: 15,
   alarm: 16,
   comment: 16,
+  user: 16,
 };
 
 export function getFeedQuery(
@@ -51,7 +53,7 @@ export function getFeedQuery(
   );
 }
 
-export function getFilteredFeedQuery(
+export function getFeedByTagQuery(
   type: IFetchType,
   user: IUser,
   tag: string,
@@ -84,7 +86,7 @@ export function getFilteredFeedQuery(
   );
 }
 
-export function getSearchQueryByType(
+export function getPostsQuery(
   type: IFetchType,
   lastVisible: QueryDocumentSnapshot<DocumentData>
 ): Query<DocumentData> {
@@ -104,6 +106,63 @@ export function getSearchQueryByType(
   return query(
     collection(db, "posts"),
     orderBy("createdAt", "desc"),
+    endAt(lastVisible)
+  );
+}
+
+export function getPostsByTagQuery(
+  type: IFetchType,
+  tag: string,
+  lastVisible: QueryDocumentSnapshot<DocumentData>
+): Query<DocumentData> {
+  if (type === "init")
+    return query(
+      collection(db, "posts"),
+      where("tags", "array-contains", tag),
+      orderBy("createdAt", "desc"),
+      limit(FETCH_LIMIT.post1)
+    );
+  if (type === "load")
+    return query(
+      collection(db, "posts"),
+      where("tags", "array-contains", tag),
+      orderBy("createdAt", "desc"),
+      startAfter(lastVisible),
+      limit(FETCH_LIMIT.post1)
+    );
+  return query(
+    collection(db, "posts"),
+    where("tags", "array-contains", tag),
+    orderBy("createdAt", "desc"),
+    endAt(lastVisible)
+  );
+}
+
+export function getPostsByKeywordQuery(
+  type: IFetchType,
+  keyword: string,
+  lastVisible: QueryDocumentSnapshot<DocumentData>
+) {
+  if (type === "init")
+    return query(
+      collection(db, "posts"),
+      orderBy("title"),
+      startAt(keyword),
+      endAt(keyword + "\uf8ff"),
+      limit(FETCH_LIMIT.post1)
+    );
+  if (type === "load")
+    return query(
+      collection(db, "posts"),
+      orderBy("title"),
+      startAfter(lastVisible),
+      endAt(keyword + "\uf8ff"),
+      limit(FETCH_LIMIT.post1)
+    );
+  return query(
+    collection(db, "posts"),
+    orderBy("title"),
+    startAt(keyword),
     endAt(lastVisible)
   );
 }
@@ -136,30 +195,31 @@ export function getAlarmQuery(
   );
 }
 
-export function getTagQuery(
+export function getUsersByKeywordQuery(
   type: IFetchType,
-  tag: string,
+  keyword: string,
   lastVisible: QueryDocumentSnapshot<DocumentData>
-): Query<DocumentData> {
+) {
   if (type === "init")
     return query(
-      collection(db, "posts"),
-      where("tags", "array-contains", tag),
-      orderBy("createdAt", "desc"),
-      limit(FETCH_LIMIT.post1)
+      collection(db, "users"),
+      orderBy("displayName"),
+      startAt(keyword),
+      endAt(keyword + "\uf8ff"),
+      limit(FETCH_LIMIT.user)
     );
   if (type === "load")
     return query(
       collection(db, "posts"),
-      where("tags", "array-contains", tag),
-      orderBy("createdAt", "desc"),
+      orderBy("displayName"),
       startAfter(lastVisible),
-      limit(FETCH_LIMIT.post1)
+      endAt(keyword + "\uf8ff"),
+      limit(FETCH_LIMIT.user)
     );
   return query(
     collection(db, "posts"),
-    where("tags", "array-contains", tag),
-    orderBy("createdAt", "desc"),
+    orderBy("displayName"),
+    startAt(keyword),
     endAt(lastVisible)
   );
 }

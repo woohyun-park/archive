@@ -7,6 +7,7 @@ import { useStatus } from "../stores/useStatus";
 import WrapScroll from "../components/wrappers/WrapScroll";
 import Motion from "../components/wrappers/WrapMotion";
 import { useCachedPage } from "../hooks/useCachedPage";
+import { IAlarm } from "../libs/custom";
 
 export default function Alarm() {
   const router = useRouter();
@@ -43,7 +44,7 @@ export default function Alarm() {
           </div>
           <Page
             page="alarm"
-            data={data}
+            data={data as IAlarm[]}
             onIntersect={() =>
               fetchAlarms && fetchAlarms("load", path, curUser.id)
             }

@@ -48,7 +48,6 @@ export default function Layout({ children }: ILayoutProps) {
     auth.onAuthStateChanged(async (authState) => {
       if (authState) {
         const user = await getCurUser(authState.uid);
-        console.log(user);
         await getPosts("init", authState.uid);
         setLogin({ ...login, isLoggedIn: true });
       } else {

@@ -2,13 +2,13 @@ import axios, { AxiosRequestConfig } from "axios";
 import { useRouter } from "next/router";
 import React, { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import { updateUser } from "../apis/firebase";
 import WrapMotion from "../components/wrappers/WrapMotion";
 import Btn from "../components/atoms/Btn";
 import BtnIcon from "../components/atoms/BtnIcon";
 import { useUser } from "../stores/useUser";
 import FormInput from "../components/atoms/FormInput";
 import ProfileImg from "../components/ProfileImg";
+import { updateUser } from "../apis/fbUpdate";
 
 interface IForm {
   file: File[];

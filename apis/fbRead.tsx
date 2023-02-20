@@ -1,26 +1,39 @@
 import {
   collection,
   doc,
+  DocumentData,
   getDoc,
   getDocs,
   Query,
   query,
+  QueryDocumentSnapshot,
+  snapshotEqual,
   where,
 } from "firebase/firestore";
 import {
   IAlarm,
   IComment,
+  IDataType,
   ILike,
   IPost,
   IScrap,
   ITag,
   IUser,
 } from "../libs/custom";
-import { convertCreatedAt, db, IDataType } from "./firebase";
+import { convertCreatedAt, db } from "./firebase";
 
 export async function readData<T>(type: IDataType, id: string) {
   const data = (await getDoc(doc(db, type, id))).data();
   return { ...data, createdAt: convertCreatedAt(data?.createdAt) } as T;
+}
+
+export async function readUsers(docs: QueryDocumentSnapshot<DocumentData>[]) {
+  const res: IUser[] = [];
+  for await (const doc of docs) {
+    const user = await readData<IUser>("users", doc.data().id);
+    res.push(user);
+  }
+  return res;
 }
 
 export async function readDatasByQuery<T>(q: Query) {
@@ -49,6 +62,15 @@ export async function readPost(pid: string) {
   return post;
 }
 
+export async function readPosts(docs: QueryDocumentSnapshot<DocumentData>[]) {
+  const res: IPost[] = [];
+  for await (const doc of docs) {
+    const post = await readPost(doc.data().id);
+    res.push(post);
+  }
+  return res;
+}
+
 export async function readTagsOfPost(pid: string) {
   return await readDatasByQuery<ITag>(
     query(collection(db, "tags"), where("pid", "==", pid))
@@ -74,6 +96,15 @@ export async function readAlarm(aid: string) {
   const author = await readData<IUser>("users", uid);
   alarm.author = author;
   return alarm as IAlarm;
+}
+
+export async function readAlarms(docs: QueryDocumentSnapshot<DocumentData>[]) {
+  const res: IAlarm[] = [];
+  for await (const doc of docs) {
+    const alarm = await readAlarm(doc.data().id);
+    res.push(alarm);
+  }
+  return res;
 }
 
 export async function readAlarmsOfPost(pid: string) {

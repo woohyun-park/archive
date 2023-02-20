@@ -6,11 +6,7 @@ import {
 import create from "zustand";
 import { devtools } from "zustand/middleware";
 import { IPost, IUser } from "../libs/custom";
-import {
-  getFeedQuery,
-  getFilteredFeedQuery,
-  IFetchType,
-} from "../apis/fbQuery";
+import { getFeedByTagQuery, getFeedQuery, IFetchType } from "../apis/fbQuery";
 import { combineData, setCursor, wrapPromise } from "./libStores";
 import { readData, readPost } from "../apis/fbRead";
 
@@ -42,7 +38,7 @@ async function getPostsHelper(
   return await wrapPromise(async () => {
     const user = await readData<IUser>("users", id);
     const q = tag
-      ? getFilteredFeedQuery(type, user, tag, lastFilteredVisible)
+      ? getFeedByTagQuery(type, user, tag, lastFilteredVisible)
       : getFeedQuery(type, user, lastVisible);
     const snap = await getDocs(q);
     const resPosts: IPost[] = [];

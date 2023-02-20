@@ -1,16 +1,17 @@
 import React, { useEffect } from "react";
 import PullToRefresh from "react-simple-pull-to-refresh";
 import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
-import { IAlarm, IComment, IPost } from "../libs/custom";
+import { IAlarm, IComment, IPost, IUser } from "../libs/custom";
 import PageFeed from "./PageFeed";
 import Loader from "./Loader";
 import PageSearch from "./PageSearch";
 import PageAlarm from "./PageAlarm";
 import PagePost from "./PagePost";
+import PageUser from "./PageUser";
 
 interface IPageProps {
-  page: "feed" | "search" | "alarm" | "post";
-  data: IPost[] | IAlarm[] | IComment[];
+  page: "feed" | "search" | "alarm" | "post" | "user";
+  data: IPost[] | IAlarm[] | IComment[] | IUser[];
   onIntersect: () => void;
   onChange: () => void;
   onRefresh: () => Promise<void>;
@@ -75,6 +76,13 @@ export default function Page({
               onClick={
                 onClick || function (e: React.MouseEvent<HTMLDivElement>) {}
               }
+              setLastIntersecting={setLastIntersecting}
+            />
+          )}
+          {page === "user" && (
+            <PageUser
+              users={data as IUser[]}
+              isLast={isLast || false}
               setLastIntersecting={setLastIntersecting}
             />
           )}
