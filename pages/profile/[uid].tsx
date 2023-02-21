@@ -13,26 +13,38 @@ import { readData, readDatasByQuery, readPost } from "../../apis/fbRead";
 import { useStatus } from "../../stores/useStatus";
 import { updateFollow } from "../../apis/fbUpdate";
 import { useCachedPage } from "../../hooks/useCachedPage";
+import TabPage from "../../components/TabPage";
 
 export default function Profile() {
+  const { curUser } = useUser();
+  const { setModalLoader } = useStatus();
+  const posts = useCachedPage("postsByUid");
+  console.log("posts!!!!!!!", posts);
+
   const router = useRouter();
   const [user, setUser] = useState<IUser>();
+  const [status, setStatus] = useState({
+    initIsFollowing: curUser.followings.find((elem) => elem === user?.id)
+      ? true
+      : false,
+    isFollowing: curUser.followings.find((elem) => elem === user?.id)
+      ? true
+      : false,
+  });
   // const [initUser, setInitUser] = useState<IUser | undefined>(undefined);
   // const [initPosts, setInitPosts] = useState<IPost[]>([]);
   const [initScraps, setInitScraps] = useState<IDict<IPost[]>>({});
   const [initTags, setInitTags] = useState<IDict<IPost[]>>({});
 
-  const postsByUid = useCachedPage("postsByUid");
-  const posts = postsByUid.data;
-
+  const uid = user?.id;
   const path = router.asPath;
 
   useEffect(() => {
     async function init() {
       const uid = router.query.uid as string;
       const user = await readData<IUser>("users", uid);
-      postsByUid.fetchPostsByUid &&
-        (await postsByUid.fetchPostsByUid("init", path, user.id));
+      posts.fetchPostsByUid &&
+        (await posts.fetchPostsByUid("init", path, user.id));
       // if (!user) return;
       // const posts = await readDatasByQuery<IPost>(
       //   query(collection(db, "posts"), where("uid", "==", uid))
@@ -74,20 +86,6 @@ export default function Profile() {
     }
     init();
   }, []);
-
-  const { curUser } = useUser();
-  const { setModalLoader } = useStatus();
-
-  const [status, setStatus] = useState({
-    initIsFollowing: curUser.followings.find((elem) => elem === user?.id)
-      ? true
-      : false,
-    isFollowing: curUser.followings.find((elem) => elem === user?.id)
-      ? true
-      : false,
-  });
-  const [tags, setTags] = useState(initTags);
-  const [scraps, setScraps] = useState(initScraps);
 
   useEffect(() => {
     setModalLoader(false);
@@ -132,7 +130,7 @@ export default function Profile() {
                 <div className="flex justify-between w-2/3">
                   <div>
                     <div className="text-gray-2">아카이브</div>
-                    <div className="profileNum">{posts.length}</div>
+                    <div className="profileNum">{posts.data.length}</div>
                   </div>
                   <div>
                     <div className="text-gray-2">팔로워</div>
@@ -203,6 +201,42 @@ export default function Profile() {
               </>
             )}
           </Motion>
+          <TabPage
+            tabs={[
+              {
+                type: "pageTwoPost",
+                label: "posts",
+                page: "search",
+                data: posts.data as IPost[],
+                onIntersect: () => {
+                  posts.fetchPostsByUid &&
+                    posts.fetchPostsByUid("load", path, user.id);
+                },
+                onChange: () => {},
+                onRefresh: async () => {
+                  posts.fetchPostsByUid &&
+                    posts.fetchPostsByUid("refresh", path, user.id);
+                },
+                changeListener: posts,
+                isLast: posts.isLast,
+              },
+              // {
+              //   label: "users",
+              //   data: users.data as IUser[],
+              //   page: "user",
+              //   onIntersect: () => {
+              //     users.fetchUsersByKeyword &&
+              //       users.fetchUsersByKeyword("load", path, keyword);
+              //   },
+              //   onChange: () => {},
+              //   onRefresh: async () => {
+              //     users.fetchUsersByKeyword &&
+              //       (await users.fetchUsersByKeyword("refresh", path, keyword));
+              //   },
+              //   changeListener: users.data,
+              // },
+            ]}
+          />
           <div className="mb-24"></div>
         </>
       ) : (

@@ -13,8 +13,8 @@ interface IPostBoxProps {
 
 export default function PostBox({
   post,
-  includeTitle = false,
-  includeTag = false,
+  includeTitle,
+  includeTag,
   style = "",
 }: IPostBoxProps) {
   const router = useRouter();
@@ -51,15 +51,14 @@ export default function PostBox({
           </Link>
         )}
         {includeTag && (
-          <div className="absolute bottom-0 right-0 flex flex-row-reverse flex-wrap-reverse w-2/3 m-4 text-right">
-            {router.pathname === "/" &&
-              Children.toArray(
-                [...post.tags]?.reverse().map((tag) => (
-                  <Link href={{ pathname: `/tag/${tag}` }} legacyBehavior>
-                    <button className="m-1 mb-0 button-black hover:cursor-pointer">{`#${tag}`}</button>
-                  </Link>
-                ))
-              )}
+          <div className="absolute bottom-0 right-0 flex flex-row-reverse flex-wrap-reverse w-2/3 mx-2 my-3 text-right">
+            {Children.toArray(
+              [...post.tags]?.reverse().map((tag) => (
+                <Link href={{ pathname: `/tag/${tag}` }} legacyBehavior>
+                  <button className="m-1 mb-0 button-black hover:cursor-pointer">{`#${tag}`}</button>
+                </Link>
+              ))
+            )}
           </div>
         )}
       </div>

@@ -13,6 +13,7 @@ export default function PageSearch({
   isLast,
   setLastIntersecting,
 }: IPageSearchProps) {
+  console.log("pageSearch!!!", isLast);
   return (
     <>
       <div
@@ -27,7 +28,7 @@ export default function PageSearch({
                 <PostBox
                   post={{ ...post, id: post.id }}
                   includeTitle={true}
-                  includeTag={true}
+                  includeTag={false}
                   style="font-size: 1rem;"
                 ></PostBox>
               </div>

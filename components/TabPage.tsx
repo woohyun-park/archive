@@ -1,22 +1,22 @@
-import { Router, useRouter } from "next/router";
-import { Children, useEffect, useRef, useState } from "react";
+import { useRouter } from "next/router";
+import { Children, useEffect, useRef } from "react";
+import { IPost } from "../libs/custom";
 import { useStatus } from "../stores/useStatus";
 import Btn from "./atoms/Btn";
 import Page from "./Page";
 import { IPageProps } from "./Page";
-import WrapScroll from "./wrappers/WrapScroll";
-import WrapScrollPage from "./wrappers/WrapScrollPage";
+import PageTwoPost from "./PageTwoPost";
 
 interface ITabPageProps {
   tabs: ITabPage[];
 }
 
 type ITabPage = IPageProps & {
+  type: "pageTwoPost" | "default";
   label: string;
 };
 
 export default function TabPage({ tabs }: ITabPageProps) {
-  console.log(tabs);
   const router = useRouter();
   const ref = useRef<HTMLDivElement>(null);
   const { scroll, setScroll, pages, setSelectedPage } = useStatus();
@@ -39,7 +39,7 @@ export default function TabPage({ tabs }: ITabPageProps) {
           setScroll(path + "/" + page, ref.current?.scrollTop || 0);
         }}
       >
-        <div className="flex h-full m-4">
+        <div className="flex h-full">
           {Children.toArray(
             tabs.map((tab, i) => (
               <Btn
@@ -60,7 +60,6 @@ export default function TabPage({ tabs }: ITabPageProps) {
         <div className="h-[calc(100vh_-_13rem)] overflow-hidden relative">
           {Children.toArray(
             tabs.map((tab, i) => (
-              // <div className="w-full h-[calc(100vh_-_15rem)] overflow-scroll absolute">
               <div
                 className="w-full h-[calc(100vh_-_13rem)] overflow-scroll absolute duration-300"
                 style={{
@@ -69,14 +68,26 @@ export default function TabPage({ tabs }: ITabPageProps) {
                 ref={page === i ? ref : null}
               >
                 <div className="absolute w-full duration-300" id={`test${i}`}>
-                  <Page
-                    page={tab.page}
-                    data={tab.data}
-                    onIntersect={tab.onIntersect}
-                    onChange={tab.onChange}
-                    onRefresh={tab.onRefresh}
-                    changeListener={tab.changeListener}
-                  />
+                  {tab.type === "pageTwoPost" ? (
+                    <PageTwoPost
+                      posts={tab.data as IPost[]}
+                      onIntersect={tab.onIntersect}
+                      onChange={tab.onChange}
+                      onRefresh={tab.onRefresh}
+                      changeListener={tab.changeListener}
+                      isLast={tab.isLast || false}
+                    />
+                  ) : (
+                    <Page
+                      page={tab.page}
+                      data={tab.data}
+                      onIntersect={tab.onIntersect}
+                      onChange={tab.onChange}
+                      onRefresh={tab.onRefresh}
+                      changeListener={tab.changeListener}
+                      isLast={tab.isLast}
+                    />
+                  )}
                 </div>
               </div>
             ))

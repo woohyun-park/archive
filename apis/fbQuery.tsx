@@ -178,14 +178,14 @@ export function getPostsByUidQuery(
       collection(db, "posts"),
       orderBy("createdAt", "desc"),
       where("uid", "==", uid),
-      limit(FETCH_LIMIT.post1)
+      limit(FETCH_LIMIT.post3)
     );
   if (type === "load")
     return query(
       collection(db, "posts"),
       orderBy("createdAt", "desc"),
       where("uid", "==", uid),
-      limit(FETCH_LIMIT.post1)
+      limit(FETCH_LIMIT.post3)
     );
   return query(
     collection(db, "posts"),
