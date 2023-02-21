@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { MouseEventHandler } from "react";
 
 type IWrapMotion = {
   children: React.ReactNode;
@@ -6,6 +7,7 @@ type IWrapMotion = {
   key?: string;
   duration?: number;
   className?: string;
+  onClick?: MouseEventHandler<HTMLDivElement>;
 };
 
 export type IWrapMotionType = "float" | "fade" | "swipeLeft";
@@ -16,12 +18,14 @@ export default function WrapMotion({
   key,
   duration = 0.33,
   className,
+  onClick,
 }: IWrapMotion) {
   return (
     <>
       <motion.div
         key={key}
         className={className}
+        onClick={onClick}
         initial="initial"
         animate="animate"
         exit="exit"

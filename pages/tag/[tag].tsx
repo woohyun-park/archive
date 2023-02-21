@@ -13,14 +13,15 @@ export default function Tag({}) {
   const router = useRouter();
 
   const { scroll, setModalLoader, modalLoader } = useStatus();
-  const { path, data, isLast, fetchTaggedPosts } = useCachedPage("taggedPosts");
+  const { data, isLast, fetchPostsByTag } = useCachedPage("postsByTag");
 
   const tag = router.query.tag as string;
+  const path = router.asPath;
 
   useEffect(() => {
     async function init() {
       if (scroll[path] === undefined) {
-        fetchTaggedPosts && (await fetchTaggedPosts("init", path, tag));
+        fetchPostsByTag && (await fetchPostsByTag("init", path, tag));
         setModalLoader(false);
         scrollTo(0, 0);
       } else {
@@ -44,12 +45,11 @@ export default function Tag({}) {
             page="feed"
             data={data}
             onIntersect={() =>
-              fetchTaggedPosts && fetchTaggedPosts("load", path, tag)
+              fetchPostsByTag && fetchPostsByTag("load", path, tag)
             }
             onChange={() => {}}
             onRefresh={async () => {
-              fetchTaggedPosts &&
-                (await fetchTaggedPosts("refresh", path, tag));
+              fetchPostsByTag && (await fetchPostsByTag("refresh", path, tag));
             }}
             changeListener={data}
           />

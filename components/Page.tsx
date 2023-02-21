@@ -47,7 +47,7 @@ export default function Page({
         pullingContent={<Loader isVisible={true} />}
         refreshingContent={<Loader isVisible={true} />}
         isPullable={page === "post" ? false : true}
-        // className="min-h-[50vh]"
+        className="min-h-[50vh]"
       >
         <>
           {page === "feed" && (

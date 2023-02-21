@@ -21,6 +21,7 @@ import ModifyAndDelete from "./ModifyAndDelete";
 import Btn from "./atoms/Btn";
 import { readDatasByQuery } from "../apis/fbRead";
 import { deleteAll } from "../apis/fbDelete";
+import { updateUser } from "../apis/fbUpdate";
 
 type IProfileProps = {
   user: IUser;
@@ -97,7 +98,9 @@ export default function Profile({ user, post, info, action }: IProfileProps) {
           />
           <div className="ml-1">
             <Link href={`/profile/${user?.id}`} legacyBehavior>
-              <a className="text-sm text-black">{user?.displayName}</a>
+              <a className="text-sm font-bold text-black">
+                {user?.displayName}
+              </a>
             </Link>
             {info === "time" && (
               <div className="text-xs -translate-y-[2px] text-gray-1">
