@@ -1,32 +1,20 @@
-import {
-  DocumentData,
-  getDocs,
-  QueryDocumentSnapshot,
-} from "firebase/firestore";
 import create from "zustand";
 import { devtools } from "zustand/middleware";
-import { IAlarm, IDict, IPost, ITag, IUser } from "../libs/custom";
+import { IDict } from "../libs/custom";
+import { IFetchType } from "../apis/fbQuery";
 import {
-  FETCH_LIMIT,
-  getAlarmQuery,
-  getPostsByKeywordQuery,
-  getPostsByTagQuery,
-  getPostsQuery,
-  getTagsQuery,
-  getUsersByKeywordQuery,
-  IFetchType,
-} from "../apis/fbQuery";
-import { combineData, setCursor } from "./libStores";
-import {
-  readAlarm,
-  readAlarms,
-  readDatasByQuery,
-  readPost,
-  readPosts,
-  readUsers,
-} from "../apis/fbRead";
+  fetchAlarmsHelper,
+  fetchPostsByKeywordHelper,
+  fetchPostsByTagHelper,
+  fetchPostsByUidHelper,
+  fetchPostsHelper,
+  fetchTagsHelper,
+  fetchUsersByKeywordHelper,
+  getNewState,
+  ICache,
+} from "./useCacheHelper";
 
-interface IUseCache {
+export interface IUseCache {
   caches: IDict<IPage>;
   fetchAlarms: (
     fetchType: IFetchType,
@@ -44,6 +32,11 @@ interface IUseCache {
     pathname: string,
     keyword: string
   ) => Promise<void>;
+  fetchPostsByUid: (
+    fetchType: IFetchType,
+    pathname: string,
+    uid: string
+  ) => Promise<void>;
   fetchTags: (
     fetchType: IFetchType,
     pathname: string,
@@ -58,100 +51,6 @@ interface IUseCache {
 
 type IPage = IDict<ICache>;
 
-interface ICache {
-  data: any[];
-  isLast: boolean;
-  lastVisible: QueryDocumentSnapshot<DocumentData>;
-}
-
-async function fetchAlarmsHelper(
-  fetchType: IFetchType,
-  cache: ICache,
-  uid: string
-) {
-  const snap = await getDocs(getAlarmQuery(fetchType, uid, cache.lastVisible));
-  const resAlarms = await readAlarms(snap.docs);
-  cache.data = combineData(cache.data, resAlarms, fetchType);
-  cache.isLast = resAlarms.length < FETCH_LIMIT.alarm ? true : false;
-  const newLastVisible = setCursor(snap, fetchType);
-  if (newLastVisible) cache.lastVisible = newLastVisible;
-  return cache;
-}
-
-async function fetchPostsHelper(fetchType: IFetchType, cache: ICache) {
-  const snap = await getDocs(getPostsQuery(fetchType, cache.lastVisible));
-  const resPosts = await readPosts(snap.docs);
-  cache.data = combineData(cache.data, resPosts, fetchType);
-  cache.isLast = resPosts.length < FETCH_LIMIT.post3 ? true : false;
-  const newLastVisible = setCursor(snap, fetchType);
-  if (newLastVisible) cache.lastVisible = newLastVisible;
-  return cache;
-}
-
-async function fetchPostsByTagHelper(
-  fetchType: IFetchType,
-  cache: ICache,
-  tag: string
-) {
-  const snap = await getDocs(
-    getPostsByTagQuery(fetchType, tag, cache.lastVisible)
-  );
-  const resPosts = await readPosts(snap.docs);
-  cache.data = combineData(cache.data, resPosts, fetchType);
-  cache.isLast = resPosts.length < FETCH_LIMIT.post1 ? true : false;
-  const newLastVisible = setCursor(snap, fetchType);
-  if (newLastVisible) cache.lastVisible = newLastVisible;
-  return cache;
-}
-
-async function fetchPostsByKeywordHelper(
-  fetchType: IFetchType,
-  cache: ICache,
-  keyword: string
-) {
-  const snap = await getDocs(
-    getPostsByKeywordQuery(fetchType, keyword, cache.lastVisible)
-  );
-  const resPosts = await readPosts(snap.docs);
-  cache.data = combineData(cache.data, resPosts, fetchType);
-  cache.isLast = resPosts.length < FETCH_LIMIT.post1 ? true : false;
-  const newLastVisible = setCursor(snap, fetchType);
-  if (newLastVisible) cache.lastVisible = newLastVisible;
-  return cache;
-}
-
-async function fetchTagsHelper(
-  fetchType: IFetchType,
-  cache: ICache,
-  keyword: string
-) {
-  const q = getTagsQuery(fetchType, keyword, cache.lastVisible);
-  const snap = await getDocs(q);
-  const resTags: any[] = [];
-  snap.forEach((doc) => resTags.push(doc.data()));
-  cache.data = combineData(cache.data, resTags, fetchType);
-  cache.isLast = resTags.length < FETCH_LIMIT.tag ? true : false;
-  const newLastVisible = setCursor(snap, fetchType);
-  if (newLastVisible) cache.lastVisible = newLastVisible;
-  return cache;
-}
-
-async function fetchUsersByKeywordHelper(
-  fetchType: IFetchType,
-  cache: ICache,
-  keyword: string
-) {
-  const snap = await getDocs(
-    getUsersByKeywordQuery(fetchType, keyword, cache.lastVisible)
-  );
-  const resUsers = await readUsers(snap.docs);
-  cache.data = combineData(cache.data, resUsers, fetchType);
-  cache.isLast = resUsers.length < FETCH_LIMIT.user ? true : false;
-  const newLastVisible = setCursor(snap, fetchType);
-  if (newLastVisible) cache.lastVisible = newLastVisible;
-  return cache;
-}
-
 export const useCache = create<IUseCache>()(
   devtools((set, get) => ({
     caches: {},
@@ -163,25 +62,12 @@ export const useCache = create<IUseCache>()(
     ) => {
       const alarms = get().caches[pathname]?.alarms;
       const cache = await fetchAlarmsHelper(fetchType, { ...alarms }, uid);
-      set((state: IUseCache) => {
-        const newState = { ...state };
-        if (!newState.caches[pathname])
-          newState.caches[pathname] = { alarms: cache };
-        else newState.caches[pathname].alarms = cache;
-
-        return newState;
-      });
+      set((state: IUseCache) => getNewState("alarms", state, cache, pathname));
     },
     fetchPosts: async (fetchType: IFetchType, pathname: string) => {
       const posts = get().caches[pathname]?.posts;
       const cache = await fetchPostsHelper(fetchType, { ...posts });
-      set((state: IUseCache) => {
-        const newState = { ...state };
-        if (!newState.caches[pathname])
-          newState.caches[pathname] = { posts: cache };
-        else newState.caches[pathname].posts = cache;
-        return newState;
-      });
+      set((state: IUseCache) => getNewState("posts", state, cache, pathname));
     },
     fetchPostsByTag: async (
       fetchType: IFetchType,
@@ -194,13 +80,9 @@ export const useCache = create<IUseCache>()(
         { ...postsByTag },
         tag
       );
-      set((state: IUseCache) => {
-        const newState = { ...state };
-        if (!newState.caches[pathname])
-          newState.caches[pathname] = { postsByTag: cache };
-        else newState.caches[pathname].postsByTag = cache;
-        return newState;
-      });
+      set((state: IUseCache) =>
+        getNewState("postsByTag", state, cache, pathname)
+      );
     },
     fetchPostsByKeyword: async (
       fetchType: IFetchType,
@@ -213,13 +95,24 @@ export const useCache = create<IUseCache>()(
         { ...postsByKeyword },
         keyword
       );
-      set((state: IUseCache) => {
-        const newState = { ...state };
-        if (!newState.caches[pathname])
-          newState.caches[pathname] = { postsByKeyword: cache };
-        else newState.caches[pathname].postsByKeyword = cache;
-        return newState;
-      });
+      set((state: IUseCache) =>
+        getNewState("postsByKeyword", state, cache, pathname)
+      );
+    },
+    fetchPostsByUid: async (
+      fetchType: IFetchType,
+      pathname: string,
+      uid: string
+    ) => {
+      const postsByUid = get().caches[pathname]?.postsByUid;
+      const cache = await fetchPostsByUidHelper(
+        fetchType,
+        { ...postsByUid },
+        uid
+      );
+      set((state: IUseCache) =>
+        getNewState("postsByUid", state, cache, pathname)
+      );
     },
     fetchTags: async (
       fetchType: IFetchType,
@@ -228,13 +121,7 @@ export const useCache = create<IUseCache>()(
     ) => {
       const tags = get().caches[pathname]?.tags;
       const cache = await fetchTagsHelper(fetchType, { ...tags }, keyword);
-      set((state: IUseCache) => {
-        const newState = { ...state };
-        if (!newState.caches[pathname])
-          newState.caches[pathname] = { tags: cache };
-        else newState.caches[pathname].tags = cache;
-        return newState;
-      });
+      set((state: IUseCache) => getNewState("tags", state, cache, pathname));
     },
     fetchUsersByKeyword: async (
       fetchType: IFetchType,
@@ -247,13 +134,9 @@ export const useCache = create<IUseCache>()(
         { ...usersByKeyword },
         keyword
       );
-      set((state: IUseCache) => {
-        const newState = { ...state };
-        if (!newState.caches[pathname])
-          newState.caches[pathname] = { usersByKeyword: cache };
-        else newState.caches[pathname].usersByKeyword = cache;
-        return newState;
-      });
+      set((state: IUseCache) =>
+        getNewState("usersByKeyword", state, cache, pathname)
+      );
     },
   }))
 );

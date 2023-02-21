@@ -168,6 +168,33 @@ export function getPostsByKeywordQuery(
   );
 }
 
+export function getPostsByUidQuery(
+  type: IFetchType,
+  uid: string,
+  lastVisible: QueryDocumentSnapshot<DocumentData>
+) {
+  if (type === "init")
+    return query(
+      collection(db, "posts"),
+      orderBy("createdAt", "desc"),
+      where("uid", "==", uid),
+      limit(FETCH_LIMIT.post1)
+    );
+  if (type === "load")
+    return query(
+      collection(db, "posts"),
+      orderBy("createdAt", "desc"),
+      where("uid", "==", uid),
+      limit(FETCH_LIMIT.post1)
+    );
+  return query(
+    collection(db, "posts"),
+    orderBy("createdAt", "desc"),
+    where("uid", "==", uid),
+    endAt(lastVisible)
+  );
+}
+
 export function getTagsQuery(
   type: IFetchType,
   keyword: string,

@@ -1,26 +1,21 @@
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import BtnIcon from "../../components/atoms/BtnIcon";
-import Page from "../../components/Page";
 import TabPage from "../../components/TabPage";
-import Tab from "../../components/Tab";
 import { useCachedPage } from "../../hooks/useCachedPage";
 import { IPost, ITag, IUser } from "../../libs/custom";
 import { useStatus } from "../../stores/useStatus";
 
 export default function SearchResult() {
   const router = useRouter();
-  const [page, setPage] = useState(0);
 
-  const { scroll, setModalLoader } = useStatus();
+  const { setModalLoader } = useStatus();
   const posts = useCachedPage("postsByKeyword");
   const users = useCachedPage("usersByKeyword");
   const tags = useCachedPage("tags");
 
   const keyword = (router.query.keyword as string) || "";
   const path = router.asPath;
-  const storage = globalThis?.sessionStorage;
-  const prevPath = storage.getItem("currentPath");
 
   useEffect(() => {
     async function init() {
