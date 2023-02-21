@@ -23,7 +23,7 @@ export default function SearchResult() {
 
   useEffect(() => {
     async function init() {
-      if (scroll[path] === undefined) {
+      if (posts.data.length === 0 && users.data.length == 0) {
         posts.fetchPostsByKeyword &&
           (await posts.fetchPostsByKeyword("init", path, keyword));
         users.fetchUsersByKeyword &&

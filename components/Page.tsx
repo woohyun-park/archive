@@ -19,9 +19,7 @@ export interface IPageProps {
   onClick?: (e: React.MouseEvent<HTMLDivElement>) => void;
   changeListener: any;
   isLast?: boolean;
-  minHeight?: string;
-  wrapMotionType?: IWrapMotionType;
-  key?: string;
+  scrollRefId?: string;
 }
 
 export default function Page({
@@ -33,6 +31,7 @@ export default function Page({
   onClick,
   changeListener,
   isLast,
+  scrollRefId,
 }: IPageProps) {
   useEffect(() => {
     document.querySelector(".ptr")?.setAttribute("style", "overflow:visible;");
@@ -56,6 +55,7 @@ export default function Page({
             <PageFeed
               posts={data as IPost[]}
               setLastIntersecting={setLastIntersecting}
+              scrollRefId={scrollRefId}
             />
           )}
           {page === "search" && (
