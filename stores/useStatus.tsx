@@ -10,14 +10,14 @@ interface IUseStatus {
 
   setScroll: (pathname: string, scroll: number) => void;
   setSelectedPage: (pathname: string, page: number) => void;
-  setScrollRefId: (pathname: string, page: number, scrollRefId: string) => void;
+  setPageScrolls: (pathname: string, page: number, scroll: number) => void;
   setKeywords: (path: string, keyword: string) => void;
   setModalLoader: (modalLoader: boolean) => void;
 }
 
 interface IPageStatus {
   selectedPage: number;
-  scrollRefIds: IDict<string>;
+  pageScrolls: IDict<string>;
 }
 
 export const useStatus = create<IUseStatus>()(
@@ -45,17 +45,17 @@ export const useStatus = create<IUseStatus>()(
         };
       });
     },
-    setScrollRefId: (pathname: string, page: number, scrollRefId: string) => {
+    setPageScrolls: (pathname: string, page: number, scroll: number) => {
       set((state: IUseStatus) => {
-        const scrollRefIds = {
-          ...state.pages[pathname].scrollRefIds,
-          [page]: scrollRefId,
+        const pageScrolls = {
+          ...state.pages[pathname].pageScrolls,
+          [page]: scroll,
         };
         return {
           ...state,
           pages: {
             ...state.pages,
-            [pathname]: { ...state.pages[pathname], scrollRefIds },
+            [pathname]: { ...state.pages[pathname], pageScrolls },
           },
         };
       });

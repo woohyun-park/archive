@@ -31,7 +31,7 @@ export default function SearchResult() {
         setModalLoader(false);
         scrollTo(0, 0);
       } else {
-        prevPath !== "/search-modal" && scrollTo(0, scroll[path]);
+        // prevPath !== "/search-modal" && scrollTo(0, scroll[path]);
       }
     }
     init();

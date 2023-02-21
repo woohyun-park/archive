@@ -14,7 +14,6 @@ import WrapScroll from "./wrappers/WrapScroll";
 interface IPostProps {
   type: "feed" | "post";
   post: IPost;
-  wrapMotionType?: IWrapMotionType;
 }
 
 export default function Post({ type, post }: IPostProps) {
@@ -29,33 +28,31 @@ export default function Post({ type, post }: IPostProps) {
         type === "feed" ? (
           <>
             <WrapMotion type="float" className="px-4 py-1 bg-white">
-              <WrapScroll>
-                <Profile
-                  post={post}
-                  user={post.author as IUser}
-                  info="time"
-                  action={
-                    curUser.id === post.uid ? "modifyAndDelete" : undefined
-                  }
-                />
-                <PostBox post={post} />
-                <PostTitle post={post} />
-                <PostTag tags={post.tags} />
-                <Action
-                  post={post}
-                  curUser={curUser}
-                  onCommentClick={() => {
-                    setModalLoader(true);
-                    router.push(
-                      {
-                        pathname: `/post/${post.id}`,
-                        query: { isCommentFocused: true },
-                      },
-                      `/post/${post.id}`
-                    );
-                  }}
-                />
-              </WrapScroll>
+              {/* <WrapScroll> */}
+              <Profile
+                post={post}
+                user={post.author as IUser}
+                info="time"
+                action={curUser.id === post.uid ? "modifyAndDelete" : undefined}
+              />
+              <PostBox post={post} />
+              <PostTitle post={post} />
+              <PostTag tags={post.tags} />
+              <Action
+                post={post}
+                curUser={curUser}
+                onCommentClick={() => {
+                  setModalLoader(true);
+                  router.push(
+                    {
+                      pathname: `/post/${post.id}`,
+                      query: { isCommentFocused: true },
+                    },
+                    `/post/${post.id}`
+                  );
+                }}
+              />
+              {/* </WrapScroll> */}
             </WrapMotion>
           </>
         ) : type === "post" ? (
