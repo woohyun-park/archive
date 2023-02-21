@@ -37,7 +37,7 @@ export default function SearchResult() {
   }, []);
   return (
     <>
-      <div className="flex m-4">
+      <div className="flex m-4 mb-8">
         <BtnIcon icon="back" onClick={() => router.back()} />
         <h1 className="title-page-sm">{keyword}에 대한 검색결과</h1>
       </div>
