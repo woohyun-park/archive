@@ -24,6 +24,10 @@ body {
   position: relative;
 }
 
+* {
+  overflow: visible;
+}
+
 ::-webkit-scrollbar {
   display: none;
 }

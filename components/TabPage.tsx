@@ -35,7 +35,7 @@ export default function TabPage({ tabs }: ITabPageProps) {
         {Children.toArray(
           tabs.map((tab, i) => (
             <div
-              className="absolute w-full duration-300"
+              className="h-[calc(100vh_-_15rem)] absolute w-full duration-300"
               style={{ transform: `translateX(${(i - page) * 100}%)` }}
             >
               <Page

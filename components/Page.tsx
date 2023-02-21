@@ -1,4 +1,4 @@
-import React, { CSSProperties, useEffect } from "react";
+import React, { useEffect } from "react";
 import PullToRefresh from "react-simple-pull-to-refresh";
 import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 import { IAlarm, IComment, IPost, IUser } from "../libs/custom";
@@ -21,6 +21,7 @@ export interface IPageProps {
   isLast?: boolean;
   minHeight?: string;
   wrapMotionType?: IWrapMotionType;
+  key?: string;
 }
 
 export default function Page({
@@ -32,7 +33,6 @@ export default function Page({
   onClick,
   changeListener,
   isLast,
-  minHeight = "50vh",
 }: IPageProps) {
   useEffect(() => {
     document.querySelector(".ptr")?.setAttribute("style", "overflow:visible;");
@@ -49,8 +49,9 @@ export default function Page({
         pullingContent={<Loader isVisible={true} />}
         refreshingContent={<Loader isVisible={true} />}
         isPullable={page === "post" ? false : true}
+        className="min-h-[50vh]"
       >
-        <div id="page_d1">
+        <>
           {page === "feed" && (
             <PageFeed
               posts={data as IPost[]}
@@ -88,17 +89,9 @@ export default function Page({
               setLastIntersecting={setLastIntersecting}
             />
           )}
-        </div>
+        </>
       </PullToRefresh>
       <Loader isVisible={loading} scrollIntoView={true} />
-
-      <style jsx>
-        {`
-          #page_d1 {
-            min-height: ${minHeight};
-          }
-        `}
-      </style>
     </>
   );
 }
