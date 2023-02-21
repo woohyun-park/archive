@@ -52,11 +52,9 @@ export default function PageTwoPost({
                 <>
                   <div>
                     <PostBox
+                      type="titleAndTags"
                       post={{ ...post, id: post.id }}
-                      includeTitle={true}
-                      includeTag={true}
-                      style="font-size: 1rem;"
-                    ></PostBox>
+                    />
                   </div>
                   {!isLast && i === posts.length - 1 && (
                     <div ref={setLastIntersecting}></div>

@@ -25,12 +25,7 @@ export default function PageSearch({
           posts.map((post, i) => (
             <>
               <div>
-                <PostBox
-                  post={{ ...post, id: post.id }}
-                  includeTitle={true}
-                  includeTag={false}
-                  style="font-size: 1rem;"
-                ></PostBox>
+                <PostBox type="title" post={{ ...post, id: post.id }} />
               </div>
               {!isLast && i === posts.length - 1 && (
                 <div ref={setLastIntersecting}></div>

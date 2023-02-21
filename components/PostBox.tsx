@@ -4,19 +4,14 @@ import { useRouter } from "next/router";
 import { Children } from "react";
 import { COLOR, IPost } from "../libs/custom";
 
+type IPostBoxType = "noText" | "title" | "titleAndTags";
+
 interface IPostBoxProps {
+  type: IPostBoxType;
   post: IPost;
-  includeTitle?: boolean;
-  includeTag?: boolean;
-  style?: string;
 }
 
-export default function PostBox({
-  post,
-  includeTitle,
-  includeTag,
-  style = "",
-}: IPostBoxProps) {
+export default function PostBox({ type, post }: IPostBoxProps) {
   const router = useRouter();
   return (
     <>
@@ -34,7 +29,7 @@ export default function PostBox({
             <div className="absolute w-full h-full bg-black/10"></div>
           </>
         )}
-        {includeTitle && (
+        {(type === "title" || type === "titleAndTags") && (
           <Link
             href={{
               pathname: `/post/${post.id}`,
@@ -43,21 +38,27 @@ export default function PostBox({
             as={`/post/${post.id}`}
           >
             <div
-              className="absolute m-2 text-5xl font-bold break-words hover:cursor-pointer"
-              id="box_d2"
+              className={
+                type === "title"
+                  ? "absolute m-2 text-xl font-bold break-words hover:cursor-pointer"
+                  : "absolute m-2 text-4xl font-bold break-words hover:cursor-pointer"
+              }
             >
               {post.title}
             </div>
           </Link>
         )}
-        {includeTag && (
-          <div className="absolute bottom-0 right-0 flex flex-row-reverse flex-wrap-reverse w-2/3 mx-2 my-3 text-right">
+        {type === "titleAndTags" && (
+          <div className="absolute bottom-0 right-0 flex flex-row-reverse flex-wrap-reverse w-full mx-2 my-3 text-right">
             {Children.toArray(
-              [...post.tags]?.reverse().map((tag) => (
-                <Link href={{ pathname: `/tag/${tag}` }} legacyBehavior>
-                  <button className="m-1 mb-0 button-black hover:cursor-pointer">{`#${tag}`}</button>
-                </Link>
-              ))
+              [...post.tags]
+                ?.reverse()
+                .map((tag) => (
+                  <button
+                    className="tag-sm my-1 mx-[0.125rem] mb-0"
+                    onClick={() => router.push(`/tag/${tag}`)}
+                  >{`#${tag}`}</button>
+                ))
             )}
           </div>
         )}
@@ -68,9 +69,6 @@ export default function PostBox({
         }
         #box_d1 {
           background-color: ${post.color};
-        }
-        #box_d2 {
-          ${style}
         }
       `}</style>
     </>
