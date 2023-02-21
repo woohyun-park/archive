@@ -17,7 +17,7 @@ type ITabPage = IPageProps & {
 
 export default function TabPage({ tabs }: ITabPageProps) {
   const router = useRouter();
-  const ref = useRef(null);
+  const ref = useRef<HTMLDivElement>(null);
   const { scroll, setScroll, pages, setSelectedPage } = useStatus();
 
   const path = router.asPath;
@@ -35,7 +35,7 @@ export default function TabPage({ tabs }: ITabPageProps) {
     <>
       <div
         onClick={() => {
-          setScroll(path + "/" + page, ref.current?.scrollTop);
+          setScroll(path + "/" + page, ref.current?.scrollTop || 0);
         }}
       >
         <div className="flex h-full m-4">
@@ -44,7 +44,7 @@ export default function TabPage({ tabs }: ITabPageProps) {
               <Btn
                 label={tab.label}
                 onClick={() => {
-                  setScroll(path + "/" + page, ref.current?.scrollTop);
+                  setScroll(path + "/" + page, ref.current?.scrollTop || 0);
                   setSelectedPage(path, i);
                 }}
                 style={{

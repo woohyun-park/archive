@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import PullToRefresh from "react-simple-pull-to-refresh";
 import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
-import { IAlarm, IComment, IPost, IUser } from "../libs/custom";
+import { IAlarm, IComment, IPost, ITag, IUser } from "../libs/custom";
 import PageFeed from "./PageFeed";
 import Loader from "./Loader";
 import PageSearch from "./PageSearch";
@@ -9,10 +9,11 @@ import PageAlarm from "./PageAlarm";
 import PagePost from "./PagePost";
 import PageUser from "./PageUser";
 import { IWrapMotionType } from "./wrappers/WrapMotion";
+import PageTag from "./PageTag";
 
 export interface IPageProps {
-  page: "feed" | "search" | "alarm" | "post" | "user";
-  data: IPost[] | IAlarm[] | IComment[] | IUser[];
+  page: "feed" | "search" | "alarm" | "post" | "user" | "tag";
+  data: IPost[] | IAlarm[] | IComment[] | IUser[] | ITag[];
   onIntersect: () => void;
   onChange: () => void;
   onRefresh: () => Promise<void>;
@@ -82,6 +83,13 @@ export default function Page({
           {page === "user" && (
             <PageUser
               users={data as IUser[]}
+              isLast={isLast || false}
+              setLastIntersecting={setLastIntersecting}
+            />
+          )}
+          {page === "tag" && (
+            <PageTag
+              tags={data as ITag[]}
               isLast={isLast || false}
               setLastIntersecting={setLastIntersecting}
             />

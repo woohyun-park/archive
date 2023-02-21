@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { deletePost } from "../apis/firebase";
+import { deletePost } from "../apis/fbDelete";
 import { IPost, SIZE } from "../libs/custom";
 import { useFeed } from "../stores/useFeed";
 import BtnIcon from "./atoms/BtnIcon";

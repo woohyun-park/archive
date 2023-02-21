@@ -1,4 +1,5 @@
-import { deleteDoc, doc } from "firebase/firestore";
+import { arrayRemove, deleteDoc, doc, updateDoc } from "firebase/firestore";
+import { ITag } from "../libs/custom";
 import {
   readAlarmsOfPost,
   readCommentsOfPost,
@@ -14,6 +15,18 @@ export async function deleteAll(datas: IData[], type: string) {
   }
 }
 
+export async function deleteTag(tag: string, tid: string) {
+  const ref = doc(db, "tagConts", tag);
+  await deleteDoc(doc(db, "tags", tid));
+  await updateDoc(ref, { tags: arrayRemove(tid) });
+}
+
+export async function deleteTags(tags: ITag[]) {
+  for await (const tag of tags) {
+    await deleteTag(tag.name, tag.id);
+  }
+}
+
 export async function deletePost(pid: string) {
   const ref = doc(db, "posts", pid);
   const likes = await readLikesOfPost(pid);
@@ -25,8 +38,9 @@ export async function deletePost(pid: string) {
   await deleteAll(likes, "likes");
   await deleteAll(scraps, "scraps");
   await deleteAll(comments, "comments");
-  await deleteAll(tags, "tags");
+  // await deleteAll(tags, "tags");
   await deleteAll(alarms, "alarms");
+  await deleteTags(tags);
   return ref;
 }
 

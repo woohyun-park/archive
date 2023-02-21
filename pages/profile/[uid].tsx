@@ -157,9 +157,7 @@ export default function Profile() {
               <ProfileImg size="lg" photoURL={initUser.photoURL} />
             </div>
 
-            <div className="h-full py-4 break-all min-h-[96px]">
-              {initUser.txt}
-            </div>
+            <div className="h-full py-4 break-all">{initUser.txt}</div>
 
             {initUser.id === curUser.id ? (
               <Btn

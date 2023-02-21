@@ -1,7 +1,11 @@
 import {
   addDoc,
+  arrayUnion,
   collection,
+  doc,
+  getDoc,
   serverTimestamp,
+  setDoc,
   updateDoc,
 } from "firebase/firestore";
 import { IAlarm, IComment, ILike, IScrap, ITag } from "../libs/custom";
@@ -27,7 +31,13 @@ export async function createTag(tag: string, uid: string, pid: string) {
     name: tag,
     createdAt: serverTimestamp(),
   };
-  return await createDoc("tags", newTag);
+  const tagRef = await createDoc("tags", newTag);
+  const tagContRef = doc(db, "tagConts", tag);
+  console.log(tagContRef.converter);
+  if (tagContRef.converter)
+    await updateDoc(tagContRef, { tags: arrayUnion(tagRef.id) });
+  else await setDoc(doc(db, "tagConts", tag), { name: tag, tags: [tagRef.id] });
+  return tagRef;
 }
 
 export async function createTags(tags: string[], uid: string, pid: string) {
