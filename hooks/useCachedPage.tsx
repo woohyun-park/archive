@@ -1,9 +1,15 @@
 import { useRouter } from "next/router";
-import { IAlarm, IPost, IUser } from "../libs/custom";
+import { IAlarm, IPost, ITag, IUser } from "../libs/custom";
 import { useCache } from "../stores/useCache";
 
 export const useCachedPage = (
-  type: "posts" | "postsByTag" | "postsByKeyword" | "alarms" | "usersByKeyword"
+  type:
+    | "posts"
+    | "postsByTag"
+    | "postsByKeyword"
+    | "alarms"
+    | "usersByKeyword"
+    | "tags"
 ) => {
   const router = useRouter();
   const {
@@ -13,6 +19,7 @@ export const useCachedPage = (
     fetchPostsByKeyword,
     fetchAlarms,
     fetchUsersByKeyword,
+    fetchTags,
   } = useCache();
 
   const path = router.asPath;
@@ -32,6 +39,9 @@ export const useCachedPage = (
   } else if (type === "usersByKeyword") {
     const data = cache ? (cache.data as IUser[]) : [];
     return { data, isLast, fetchUsersByKeyword };
+  } else if (type === "tags") {
+    const data = cache ? (cache.data as ITag[]) : [];
+    return { data, isLast, fetchTags };
   } else {
     //type == "alarms"
     const data = cache ? (cache.data as IAlarm[]) : [];

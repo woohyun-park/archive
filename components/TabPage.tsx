@@ -16,6 +16,7 @@ type ITabPage = IPageProps & {
 };
 
 export default function TabPage({ tabs }: ITabPageProps) {
+  console.log(tabs);
   const router = useRouter();
   const ref = useRef<HTMLDivElement>(null);
   const { scroll, setScroll, pages, setSelectedPage } = useStatus();

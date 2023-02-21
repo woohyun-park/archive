@@ -22,6 +22,7 @@ export const FETCH_LIMIT = {
   alarm: 16,
   comment: 16,
   user: 16,
+  tag: 16,
 };
 
 export function getFeedQuery(
@@ -162,6 +163,36 @@ export function getPostsByKeywordQuery(
   return query(
     collection(db, "posts"),
     orderBy("title"),
+    startAt(keyword),
+    endAt(lastVisible)
+  );
+}
+
+export function getTagsQuery(
+  type: IFetchType,
+  keyword: string,
+  lastVisible: QueryDocumentSnapshot<DocumentData>
+) {
+  console.log("getTagsQuery", type, keyword);
+  if (type === "init")
+    return query(
+      collection(db, "tagConts"),
+      orderBy("name"),
+      startAt(keyword),
+      endAt(keyword + "\uf8ff"),
+      limit(FETCH_LIMIT.tag)
+    );
+  if (type === "load")
+    return query(
+      collection(db, "tagConts"),
+      orderBy("name"),
+      startAfter(lastVisible),
+      endAt(keyword + "\uf8ff"),
+      limit(FETCH_LIMIT.tag)
+    );
+  return query(
+    collection(db, "tagConts"),
+    orderBy("name"),
     startAt(keyword),
     endAt(lastVisible)
   );

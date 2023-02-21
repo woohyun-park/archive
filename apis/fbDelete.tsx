@@ -38,7 +38,6 @@ export async function deletePost(pid: string) {
   await deleteAll(likes, "likes");
   await deleteAll(scraps, "scraps");
   await deleteAll(comments, "comments");
-  // await deleteAll(tags, "tags");
   await deleteAll(alarms, "alarms");
   await deleteTags(tags);
   return ref;
