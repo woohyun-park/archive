@@ -10,7 +10,7 @@ import PagePost from "./PagePost";
 import PageUser from "./PageUser";
 import { IWrapMotionType } from "./wrappers/WrapMotion";
 
-interface IPageProps {
+export interface IPageProps {
   page: "feed" | "search" | "alarm" | "post" | "user";
   data: IPost[] | IAlarm[] | IComment[] | IUser[];
   onIntersect: () => void;

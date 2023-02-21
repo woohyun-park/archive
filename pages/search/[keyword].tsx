@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import BtnIcon from "../../components/atoms/BtnIcon";
 import Page from "../../components/Page";
-import TabSearch from "../../components/TabSearch";
+import ITabPage from "../../components/TabPage";
 import Tab from "../../components/Tab";
 import { useCachedPage } from "../../hooks/useCachedPage";
 import { IPost, IUser } from "../../libs/custom";
@@ -42,25 +42,40 @@ export default function SearchResult() {
         <BtnIcon icon="back" onClick={() => router.back()} />
         <h1 className="title-page-sm">{keyword}에 대한 검색결과</h1>
       </div>
-      <TabSearch
+      <ITabPage
         tabs={[
           {
             label: "posts",
-            onClick: () => setPage(0),
-            style: { width: "100%", marginRight: "0.25rem" },
-            isActive: page === 0,
+            data: posts.data as IPost[],
+            page: "feed",
+            onIntersect: () => {
+              posts.fetchPostsByKeyword &&
+                posts.fetchPostsByKeyword("load", path, keyword);
+            },
+            onChange: () => {},
+            onRefresh: async () => {
+              posts.fetchPostsByKeyword &&
+                (await posts.fetchPostsByKeyword("refresh", path, keyword));
+            },
+            changeListener: posts.data,
           },
-          {
-            label: "tags",
-            onClick: () => setPage(1),
-            style: { width: "100%", marginRight: "0.25rem" },
-            isActive: page === 1,
-          },
+          // {
+          //   label: "tags",
+          // },
           {
             label: "users",
-            onClick: () => setPage(2),
-            style: { width: "100%" },
-            isActive: page === 2,
+            data: users.data as IUser[],
+            page: "user",
+            onIntersect: () => {
+              users.fetchUsersByKeyword &&
+                users.fetchUsersByKeyword("load", path, keyword);
+            },
+            onChange: () => {},
+            onRefresh: async () => {
+              users.fetchUsersByKeyword &&
+                (await users.fetchUsersByKeyword("refresh", path, keyword));
+            },
+            changeListener: users.data,
           },
         ]}
       />
