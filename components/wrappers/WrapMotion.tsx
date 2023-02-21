@@ -51,8 +51,6 @@ export default function WrapMotion({
                 animate: { opacity: 1 },
                 exit: { opacity: 0 },
               }
-            : type === "swipeLeft"
-            ? {}
             : {}
         }
       >

@@ -24,6 +24,10 @@ body {
   position: relative;
 }
 
+::-webkit-scrollbar {
+  display: none;
+}
+
 @layer components {
   .title-logo {
     font-family: "LINESeedKR-Bd", sans-serif;

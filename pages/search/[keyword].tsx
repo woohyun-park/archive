@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import BtnIcon from "../../components/atoms/BtnIcon";
 import Page from "../../components/Page";
+import TabSearch from "../../components/TabSearch";
 import Tab from "../../components/Tab";
 import { useCachedPage } from "../../hooks/useCachedPage";
 import { IPost, IUser } from "../../libs/custom";
@@ -41,7 +42,7 @@ export default function SearchResult() {
         <BtnIcon icon="back" onClick={() => router.back()} />
         <h1 className="title-page-sm">{keyword}에 대한 검색결과</h1>
       </div>
-      <Tab
+      <TabSearch
         tabs={[
           {
             label: "posts",
@@ -63,40 +64,6 @@ export default function SearchResult() {
           },
         ]}
       />
-      {page === 0 && (
-        <Page
-          page="feed"
-          data={posts.data as IPost[]}
-          onIntersect={() => {
-            posts.fetchPostsByKeyword &&
-              posts.fetchPostsByKeyword("load", path, keyword);
-          }}
-          onChange={() => {}}
-          onRefresh={async () => {
-            posts.fetchPostsByKeyword &&
-              (await posts.fetchPostsByKeyword("refresh", path, keyword));
-          }}
-          changeListener={posts.data}
-        />
-      )}
-      {page === 2 && (
-        <Page
-          page="user"
-          data={users.data as IUser[]}
-          onIntersect={() => {
-            users.fetchUsersByKeyword &&
-              users.fetchUsersByKeyword("load", path, keyword);
-          }}
-          onChange={() => {}}
-          onRefresh={async () => {
-            console.log(users.data);
-            users.fetchUsersByKeyword &&
-              (await users.fetchUsersByKeyword("refresh", path, keyword));
-            console.log(users.data);
-          }}
-          changeListener={users.data}
-        />
-      )}
     </>
   );
 }

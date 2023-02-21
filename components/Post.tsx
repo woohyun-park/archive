@@ -8,12 +8,13 @@ import PostImg from "./PostImg";
 import PostTag from "./PostTag";
 import PostTitle from "./PostTitle";
 import Profile from "./Profile";
-import WrapMotion from "./wrappers/WrapMotion";
+import WrapMotion, { IWrapMotionType } from "./wrappers/WrapMotion";
 import WrapScroll from "./wrappers/WrapScroll";
 
 interface IPostProps {
   type: "feed" | "post";
   post: IPost;
+  wrapMotionType?: IWrapMotionType;
 }
 
 export default function Post({ type, post }: IPostProps) {

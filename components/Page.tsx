@@ -8,6 +8,7 @@ import PageSearch from "./PageSearch";
 import PageAlarm from "./PageAlarm";
 import PagePost from "./PagePost";
 import PageUser from "./PageUser";
+import { IWrapMotionType } from "./wrappers/WrapMotion";
 
 interface IPageProps {
   page: "feed" | "search" | "alarm" | "post" | "user";
@@ -19,6 +20,7 @@ interface IPageProps {
   changeListener: any;
   isLast?: boolean;
   minHeight?: string;
+  wrapMotionType?: IWrapMotionType;
 }
 
 export default function Page({
@@ -89,6 +91,7 @@ export default function Page({
         </div>
       </PullToRefresh>
       <Loader isVisible={loading} scrollIntoView={true} />
+
       <style jsx>
         {`
           #page_d1 {
