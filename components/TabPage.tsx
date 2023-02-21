@@ -5,14 +5,14 @@ import { useStatus } from "../stores/useStatus";
 import Btn from "./atoms/Btn";
 import Page from "./Page";
 import { IPageProps } from "./Page";
-import PageTwoPost from "./PageTwoPost";
+import PagePostColTwo from "./PagePostColTwo";
 
 interface ITabPageProps {
   tabs: ITabPage[];
 }
 
 type ITabPage = IPageProps & {
-  type: "pageTwoPost" | "default";
+  type: "postColTwo" | "default";
   label: string;
 };
 
@@ -68,8 +68,8 @@ export default function TabPage({ tabs }: ITabPageProps) {
                 ref={page === i ? ref : null}
               >
                 <div className="absolute w-full duration-300" id={`test${i}`}>
-                  {tab.type === "pageTwoPost" ? (
-                    <PageTwoPost
+                  {tab.type === "postColTwo" ? (
+                    <PagePostColTwo
                       posts={tab.data as IPost[]}
                       onIntersect={tab.onIntersect}
                       onChange={tab.onChange}

@@ -1,4 +1,4 @@
-import { IPost, SIZE } from "../libs/custom";
+import { SIZE } from "../libs/custom";
 import { HiMagnifyingGlass } from "react-icons/hi2";
 import Link from "next/link";
 import WrapMotion from "../components/wrappers/WrapMotion";
@@ -6,7 +6,6 @@ import { useEffect } from "react";
 import Page from "../components/Page";
 import { useRouter } from "next/router";
 import { useStatus } from "../stores/useStatus";
-import { useCache } from "../stores/useCache";
 import { useCachedPage } from "../hooks/useCachedPage";
 
 export default function Search() {

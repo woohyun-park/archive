@@ -204,7 +204,7 @@ export default function Profile() {
           <TabPage
             tabs={[
               {
-                type: "pageTwoPost",
+                type: "postColTwo",
                 label: "posts",
                 page: "search",
                 data: posts.data as IPost[],
