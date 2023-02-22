@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { Children, useEffect, useRef } from "react";
+import { Children, use, useEffect, useRef, useState } from "react";
 import { IPost } from "../libs/custom";
 import { useStatus } from "../stores/useStatus";
 import Btn from "./atoms/Btn";
@@ -33,44 +33,92 @@ export default function PageTab({ header, tabs }: IPageTapProps) {
     }
   }, [page]);
 
+  const [headerHeight, setHeaderHeight] = useState(0);
+  const [tabHeight, setTabHeight] = useState(0);
+  const [scrollY, setScrollY] = useState(window.scrollY);
+  useEffect(() => {
+    window.addEventListener("scroll", () => {
+      console.log("scroll!", window.scrollY, headerHeight, tabHeight);
+      setScrollY(window.scrollY);
+    });
+  }, []);
+  const headerRef = useRef(null);
+  const tabRef = useRef(null);
+
+  // useEffect(() => {
+  //   console.log("useEffect!", headerHeight, tabHeight, scrollY);
+  //   setTimeout(() => {
+  //     setHeaderHeight(headerRef.current.clientHeight);
+  //     setTabHeight(tabRef.current.clientHeight);
+  //     document.body.style.height = `calc(100vh + ${
+  //       headerHeight + tabHeight
+  //     }px)`;
+  //   }, 1000);
+  // }, []);
+
+  useEffect(() => {
+    console.log(headerRef.current.clientHeight, tabRef.current.clientHeight);
+    setHeaderHeight(headerRef.current.clientHeight);
+    setTabHeight(tabRef.current.clientHeight);
+    document.body.style.height = `calc(100vh + ${
+      headerRef.current.clientHeight + tabRef.current.clientHeight
+    }px)`;
+  }, [headerRef, tabRef]);
+  // useEffect(() => {
+  //   console.log("tabRef!", tabRef, headerHeight, tabRef.current.clientHeight);
+  //   setTabHeight(tabRef.current.clientHeight);
+  //   document.body.style.height = `calc(100vh + ${
+  //     headerHeight + tabRef.current.clientHeight
+  //   }px)`;
+  // }, []);
+
   return (
     <>
-      <div className="relative">
+      {/* <div className="relative h-[100vh] overflow-hidden"> */}
+      <div className="relative h-[100vh]">
+        <div ref={headerRef}>{header}</div>
+        <div className="sticky top-0 z-10 h-8" ref={tabRef}>
+          <div className="flex px-4 py-4 bg-white">
+            {Children.toArray(
+              tabs.map((tab, i) => (
+                <Btn
+                  label={tab.label}
+                  onClick={() => {
+                    setScroll(path + "/" + page, ref.current?.scrollTop || 0);
+                    setSelectedPage(path, i);
+                  }}
+                  style={{
+                    width: "100%",
+                    marginRight: i === tabs.length - 1 ? "" : "0.25rem",
+                  }}
+                  isActive={page === i}
+                />
+              ))
+            )}
+          </div>
+        </div>
         {tabs.map((tab, i) => (
           <div
-            className="overflow-auto h-[100vh] absolute w-full"
+            // className="overflow-auto h-[100vh] absolute w-full"
+            className="absolute w-full overflow-auto"
             key={i}
             style={{
+              height: `calc(100vh - ${headerHeight + tabHeight}px)`,
               transform: `translateX(${(i - page) * 100}%)`,
             }}
           >
             <div>
-              <div>{header}</div>
               <div>
-                <div className="sticky top-0 z-10 h-8">
-                  <div className="flex px-4 py-4 bg-white">
-                    {Children.toArray(
-                      tabs.map((tab, i) => (
-                        <Btn
-                          label={tab.label}
-                          onClick={() => {
-                            setScroll(
-                              path + "/" + page,
-                              ref.current?.scrollTop || 0
-                            );
-                            setSelectedPage(path, i);
-                          }}
-                          style={{
-                            width: "100%",
-                            marginRight: i === tabs.length - 1 ? "" : "0.25rem",
-                          }}
-                          isActive={page === i}
-                        />
-                      ))
-                    )}
-                  </div>
-                </div>
-                <div className="mt-8 mb-32">
+                <div
+                  className="mb-32"
+                  style={{
+                    paddingTop: `${
+                      scrollY < headerHeight
+                        ? tabHeight
+                        : tabHeight + (scrollY - headerHeight)
+                    }px`,
+                  }}
+                >
                   {Children.toArray(
                     tabs.slice(i, i + 1).map((tab) => (
                       <div className="w-full" ref={page === i ? ref : null}>
