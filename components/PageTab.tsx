@@ -7,6 +7,7 @@ import PagePosts, { IPagePostsProps } from "./PagePosts";
 import PageTags, { IPageTagsProps } from "./PageTags";
 import PageUsers, { IPageUsersProps } from "./PageUsers";
 import WrapScrollTab from "./wrappers/WrapScrollTab";
+import { useCache } from "../stores/useCache";
 
 // 하나의 route에 tab을 통해서 여러개의 infiniteScrollPage를 만들 수 있는 컴포넌트
 
@@ -33,11 +34,26 @@ type ITagsType = IPageTagsProps & ITabType;
 
 export default function PageTab({ header, tabs }: IPageTapProps) {
   const router = useRouter();
-  const ref = useRef<HTMLDivElement>(null);
+  // const ref = useRef<HTMLDivElement>(null);
+  // const articleRef = useRef<HTMLDivElement>(null);
+  const scrollRefs = useRef<HTMLDivElement[]>([]);
+  scrollRefs.current = [];
+  const addToScrollRefs = (e: HTMLDivElement | null) => {
+    e && scrollRefs.current.push(e);
+  };
+  const { caches } = useCache();
+  const cache = caches[router.asPath];
+
+  const articleRefs = useRef<HTMLDivElement[]>([]);
+  articleRefs.current = [];
+  const addToArticleRefs = (e: HTMLDivElement | null) => {
+    e && articleRefs.current.push(e);
+  };
   const headerRef = useRef<HTMLDivElement>(null);
   const tabRef = useRef<HTMLDivElement>(null);
-  const [headerHeight, setHeaderHeight] = useState(0);
-  const [tabHeight, setTabHeight] = useState(0);
+  const [articleHeight, setArticleHeight] = useState<number | null>(null);
+  const [headerHeight, setHeaderHeight] = useState<number | null>(null);
+  const [tabHeight, setTabHeight] = useState<number | null>(null);
 
   const { scroll, setScroll, pages, setSelectedPage } = useStatus();
 
@@ -45,21 +61,97 @@ export default function PageTab({ header, tabs }: IPageTapProps) {
   const page = pages[path] && pages[path].selectedPage;
 
   useEffect(() => {
-    if (page !== undefined) ref.current?.scrollTo(0, scroll[path + "/" + page]);
+    if (page !== undefined) scrollRefs.current[page].scrollTo(0, scroll[path]);
     else setSelectedPage(path, 0);
   }, [page]);
 
   useEffect(() => {
-    setHeaderHeight(headerRef.current?.clientHeight || 0);
-    setTabHeight(tabRef.current?.clientHeight || 0);
-    document.body.style.height = `calc(100vh + ${
-      headerRef.current?.clientHeight || 0
-    }px)`;
-  }, [headerRef, tabRef]);
+    const newHeaderHeight = headerRef.current?.clientHeight || 0;
+    const newTabHeight = tabRef.current?.clientHeight || 0;
+    const newArticleHeight =
+      articleRefs.current[page === undefined ? 0 : page]?.clientHeight || 0;
+    console.log(
+      "useEffect!",
+      newHeaderHeight,
+      newTabHeight,
+      newArticleHeight,
+      articleRefs
+    );
+    setHeaderHeight(newHeaderHeight);
+    setTabHeight(newTabHeight);
+    setArticleHeight(newArticleHeight);
+    // document.body.style.height =
+    //   tabHeight && articleHeight
+    //     ? `min(100vh - ${tabHeight}px, ${tabHeight + articleHeight}px)`
+    //     : "100vh";
+
+    // contRef.current?.setAttribute(
+    //   "style",
+    //   `height: calc(100vh + ${newHeaderHeight}px)`
+    // );
+    document.body.style.height = `calc(100vh + ${newHeaderHeight}px)`;
+    // console.log(
+    //   window.innerHeight,
+    //   newHeaderHeight + newTabHeight + newArticleHeight
+    // );
+    // if (
+    //   window.innerHeight >=
+    //   newHeaderHeight + newTabHeight + newArticleHeight
+    // ) {
+    //   document.body.style.overflow = "hidden";
+    // }
+  }, [page]);
+
+  let init = cache && cache[tabs[0].fetchType];
+  const [initState, setInitState] = useState(0);
+
+  useEffect(() => {
+    if (initState > 1) return;
+    const newHeaderHeight = headerRef.current?.clientHeight || 0;
+    const newTabHeight = tabRef.current?.clientHeight || 0;
+    const newArticleHeight =
+      articleRefs.current[page === undefined ? 0 : page]?.clientHeight || 0;
+    setHeaderHeight(newHeaderHeight);
+    setTabHeight(newTabHeight);
+    setArticleHeight(newArticleHeight);
+    // document.body.style.height =
+    //   tabHeight && articleHeight
+    //     ? `min(100vh - ${tabHeight}px, ${tabHeight + articleHeight}px)`
+    //     : "100vh";
+    document.body.style.height = `calc(100vh + ${newHeaderHeight}px)`;
+    setInitState(initState + 1);
+  }, [init]);
+
+  // useEffect(() => {
+  //   const newHeaderHeight = headerRef.current?.clientHeight || 0;
+  //   const newTabHeight = tabRef.current?.clientHeight || 0;
+  //   const newArticleHeight = articleRefs.current[page]?.clientHeight || 0;
+  //   setHeaderHeight(newHeaderHeight);
+  //   setTabHeight(newTabHeight);
+  //   setArticleHeight(newArticleHeight);
+  //   document.body.style.height =
+  //     tabHeight && articleHeight
+  //       ? `min(100vh - ${tabHeight}px, ${tabHeight + articleHeight}px)`
+  //       : "100vh";
+  // }, []);
 
   return (
     <>
-      <div className="relative h-[100vh] overflow-hidden">
+      <div
+        className="relative h-[100vh] overflow-hidden"
+        style={{
+          height: (() => {
+            console.log(headerHeight, tabHeight, articleHeight);
+            return headerHeight && tabHeight && articleHeight
+              ? `${
+                  window.innerHeight >= headerHeight + tabHeight + articleHeight
+                    ? headerHeight + tabHeight + articleHeight
+                    : window.innerHeight - tabHeight
+                }px`
+              : "";
+          })(),
+        }}
+      >
         <div ref={headerRef}>{header}</div>
         <div className="sticky top-0 z-10 h-8" ref={tabRef}>
           <div className="flex px-4 py-4 bg-white">
@@ -68,7 +160,10 @@ export default function PageTab({ header, tabs }: IPageTapProps) {
                 <Btn
                   label={tab.label}
                   onClick={() => {
-                    setScroll(path + "/" + page, ref.current?.scrollTop || 0);
+                    setScroll(
+                      path + "/" + page,
+                      scrollRefs.current[page]?.scrollTop || 0
+                    );
                     setSelectedPage(path, i);
                   }}
                   style={{
@@ -88,15 +183,18 @@ export default function PageTab({ header, tabs }: IPageTapProps) {
                 id="refScroll"
                 className="absolute w-full overflow-auto"
                 style={{
-                  height: `calc(100vh - ${headerHeight + tabHeight}px)`,
+                  height: `calc(100vh - ${tabHeight}px)`,
+                  // height: `min(100vh - ${tabHeight}px, ${
+                  //   tabHeight + articleHeight
+                  // }px)`,
                   transform: `translateX(${(i - page) * 100}%)`,
                 }}
-                ref={page === i ? ref : null}
+                ref={(e) => addToScrollRefs(e)}
               >
-                <div>
+                <div ref={(e) => addToArticleRefs(e)}>
                   <div>
                     <div
-                      className="mb-16"
+                      className="mb-36"
                       style={{
                         paddingTop: `${tabHeight}px`,
                       }}
@@ -110,7 +208,7 @@ export default function PageTab({ header, tabs }: IPageTapProps) {
                         {tab.type === "posts" && (
                           <PagePosts
                             fetchType={tab.fetchType}
-                            numCol={(tab as IPostsType).numCol}
+                            numCols={(tab as IPostsType).numCols}
                           />
                         )}
                         {tab.type === "users" && (

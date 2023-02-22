@@ -5,6 +5,7 @@ import { useCachedPage } from "../hooks/useCachedPage";
 import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 import { IUser } from "../libs/custom";
 import { ICacheType } from "../stores/useCacheHelper";
+import { useStatus } from "../stores/useStatus";
 import { useUser } from "../stores/useUser";
 import Profile from "./Profile";
 import WrapRefreshAndLoad from "./wrappers/WrapRefreshAndReload";
@@ -20,6 +21,7 @@ export default function PageUsers({
 
   const cache = useCachedPage(fetchType);
   const { curUser } = useUser();
+  const { setModalLoader } = useStatus();
 
   const path = router.asPath;
   const keyword = (router.query.keyword as string) || "";
@@ -50,6 +52,7 @@ export default function PageUsers({
             cache.fetchUsersByKeyword("init", path, keyword);
         }
       }
+      setModalLoader(false);
     }
     init();
   }, []);

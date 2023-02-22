@@ -5,6 +5,7 @@ import { useCachedPage } from "../hooks/useCachedPage";
 import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 import { ITag, IUser } from "../libs/custom";
 import { ICacheType } from "../stores/useCacheHelper";
+import { useStatus } from "../stores/useStatus";
 import { useUser } from "../stores/useUser";
 import Profile from "./Profile";
 import WrapMotion from "./wrappers/WrapMotion";
@@ -18,6 +19,7 @@ export default function PageTags({ fetchType = "tags" }: IPageTagsProps) {
   const router = useRouter();
 
   const cache = useCachedPage(fetchType);
+  const { setModalLoader } = useStatus();
   const { curUser } = useUser();
 
   const path = router.asPath;
@@ -43,9 +45,10 @@ export default function PageTags({ fetchType = "tags" }: IPageTagsProps) {
     async function init() {
       if (cache.data.length === 0) {
         if (fetchType === "tags") {
-          cache.fetchTags && cache.fetchTags("init", path, keyword);
+          cache.fetchTags && (await cache.fetchTags("init", path, keyword));
         }
       }
+      setModalLoader(false);
     }
     init();
   }, []);

@@ -1,7 +1,6 @@
 import { AnimatePresence } from "framer-motion";
 import { useRouter } from "next/router";
 import { Children } from "react";
-import { ITag } from "../libs/custom";
 import WrapMotion from "./wrappers/WrapMotion";
 
 interface IPageTagProps {

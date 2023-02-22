@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { CSSProperties, useEffect, useRef } from "react";
 import WrapMotion from "./wrappers/WrapMotion";
 
 interface ILoaderProps {

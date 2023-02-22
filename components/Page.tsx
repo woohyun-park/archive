@@ -9,10 +9,9 @@ import PageAlarm from "./PageAlarm";
 import PagePost from "./PagePost";
 import PageUser from "./PageUser";
 import { IWrapMotionType } from "./wrappers/WrapMotion";
-import PageTag from "./PageTag";
 
 export interface IPageProps {
-  page: "feed" | "search" | "alarm" | "post" | "user" | "tag";
+  page: "feed" | "search" | "alarm" | "post";
   data: IPost[] | IAlarm[] | IComment[] | IUser[] | ITag[];
   onIntersect: () => void;
   onChange: () => void;
@@ -77,20 +76,6 @@ export default function Page({
               onClick={
                 onClick || function (e: React.MouseEvent<HTMLDivElement>) {}
               }
-              setLastIntersecting={setLastIntersecting}
-            />
-          )}
-          {page === "user" && (
-            <PageUser
-              users={data as IUser[]}
-              isLast={isLast || false}
-              setLastIntersecting={setLastIntersecting}
-            />
-          )}
-          {page === "tag" && (
-            <PageTag
-              tags={data as ITag[]}
-              isLast={isLast || false}
               setLastIntersecting={setLastIntersecting}
             />
           )}

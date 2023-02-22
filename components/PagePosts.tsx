@@ -5,6 +5,7 @@ import { useCachedPage } from "../hooks/useCachedPage";
 import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 import { IPost } from "../libs/custom";
 import { ICacheType } from "../stores/useCacheHelper";
+import { useStatus } from "../stores/useStatus";
 import { useUser } from "../stores/useUser";
 import Loader from "./Loader";
 import PostBox from "./PostBox";
@@ -13,17 +14,18 @@ import WrapRefreshAndLoad from "./wrappers/WrapRefreshAndReload";
 
 export interface IPagePostsProps {
   fetchType: ICacheType;
-  numCol: 1 | 2 | 3;
+  numCols: 1 | 2 | 3;
 }
 
 export default function PagePosts({
   fetchType = "posts",
-  numCol = 1,
+  numCols = 1,
 }: IPagePostsProps) {
   const router = useRouter();
 
   const cache = useCachedPage(fetchType);
   const { curUser } = useUser();
+  const { setModalLoader } = useStatus();
 
   const path = router.asPath;
   const keyword = (router.query.keyword as string) || "";
@@ -76,6 +78,7 @@ export default function PagePosts({
             (await cache.fetchPostsByUid("init", path, curUser.id));
         }
       }
+      setModalLoader(false);
     }
     init();
   }, []);
@@ -89,7 +92,7 @@ export default function PagePosts({
   return (
     <>
       <WrapRefreshAndLoad onRefresh={onRefresh} loading={loading}>
-        {numCol === 1 && (
+        {numCols === 1 && (
           <AnimatePresence>
             {Children.toArray(
               posts.map((e, i) => (
@@ -104,7 +107,7 @@ export default function PagePosts({
             )}
           </AnimatePresence>
         )}
-        {numCol === 2 && (
+        {numCols === 2 && (
           <div className="grid grid-cols-2 mt-4 mb-4 gap-y-2 gap-x-2">
             {Children.toArray(
               posts.map((post, i) => (
@@ -121,7 +124,7 @@ export default function PagePosts({
             )}
           </div>
         )}
-        {numCol === 3 && (
+        {numCols === 3 && (
           <div
             className={
               posts.length !== 0
@@ -144,7 +147,6 @@ export default function PagePosts({
           </div>
         )}
       </WrapRefreshAndLoad>
-      <Loader isVisible={loading} scrollIntoView={true} />
     </>
   );
 }

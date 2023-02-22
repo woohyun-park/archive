@@ -2,9 +2,7 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 import BtnIcon from "../../components/atoms/BtnIcon";
 import PageTab from "../../components/PageTab";
-import TabPage from "../../components/TabPage";
 import { useCachedPage } from "../../hooks/useCachedPage";
-import { IPost, ITag, IUser } from "../../libs/custom";
 import { useStatus } from "../../stores/useStatus";
 
 export default function SearchResult() {
@@ -45,7 +43,7 @@ export default function SearchResult() {
             type: "posts",
             fetchType: "postsByKeyword",
             label: "posts",
-            numCol: 1,
+            numCols: 1,
           },
           {
             type: "tags",

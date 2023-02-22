@@ -11,6 +11,7 @@ import { debounce } from "lodash";
 import Page from "../components/Page";
 import WrapScroll from "../components/wrappers/WrapScroll";
 import WrapLink from "../components/wrappers/WrapLink";
+import PagePosts from "../components/PagePosts";
 
 export default function Feed() {
   const { curUser } = useUser();

@@ -146,14 +146,7 @@ export default function Layout({ children }: ILayoutProps) {
         </div>
       ) : login.isLoggedIn ? (
         <>
-          {router.pathname === "/" ||
-          router.pathname === "/search/[keyword]" ? (
-            <div className="">{children}</div>
-          ) : router.pathname === "/post/[id]" ? (
-            <div className="m-4 mb-4">{children}</div>
-          ) : (
-            <div className="m-4 mb-16">{children}</div>
-          )}
+          <div className="">{children}</div>
           {router.pathname === "/" && <ScrollTop />}
           <Nav />
         </>
