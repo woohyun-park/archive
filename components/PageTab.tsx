@@ -139,18 +139,20 @@ export default function PageTab({ header, tabs }: IPageTapProps) {
     <>
       <div
         className="relative h-[100vh] overflow-hidden"
-        style={{
-          height: (() => {
-            console.log(headerHeight, tabHeight, articleHeight);
-            return headerHeight && tabHeight && articleHeight
-              ? `${
-                  window.innerHeight >= headerHeight + tabHeight + articleHeight
-                    ? headerHeight + tabHeight + articleHeight
-                    : window.innerHeight - tabHeight
-                }px`
-              : "";
-          })(),
-        }}
+        style={
+          {
+            // height: (() => {
+            //   console.log(headerHeight, tabHeight, articleHeight);
+            //   return headerHeight && tabHeight && articleHeight
+            //     ? `${
+            //         window.innerHeight >= headerHeight + tabHeight + articleHeight
+            //           ? headerHeight + tabHeight + articleHeight
+            //           : window.innerHeight - tabHeight
+            //       }px`
+            //     : "";
+            // })(),
+          }
+        }
       >
         <div ref={headerRef}>{header}</div>
         <div className="sticky top-0 z-10 h-8" ref={tabRef}>
