@@ -43,7 +43,7 @@ export default function SearchResult() {
         tabs={[
           {
             type: "posts",
-            fetchType: "posts",
+            fetchType: "postsByKeyword",
             label: "posts",
             numCol: 1,
           },
@@ -61,21 +61,11 @@ export default function SearchResult() {
           //   },
           //   changeListener: tags.data,
           // },
-          // {
-          //   label: "users",
-          //   data: users.data as IUser[],
-          //   page: "user",
-          //   onIntersect: () => {
-          //     users.fetchUsersByKeyword &&
-          //       users.fetchUsersByKeyword("load", path, keyword);
-          //   },
-          //   onChange: () => {},
-          //   onRefresh: async () => {
-          //     users.fetchUsersByKeyword &&
-          //       (await users.fetchUsersByKeyword("refresh", path, keyword));
-          //   },
-          //   changeListener: users.data,
-          // },
+          {
+            type: "users",
+            fetchType: "usersByKeyword",
+            label: "users",
+          },
         ]}
       />
     </>

@@ -5,6 +5,7 @@ import Btn from "./atoms/Btn";
 import Page from "./Page";
 import { IPageProps } from "./Page";
 import PagePosts, { IPagePostsProps } from "./PagePosts";
+import PageUsers, { IPageUsersProps } from "./PageUsers";
 import WrapScrollTab from "./wrappers/WrapScrollTab";
 
 // 하나의 route에 tab을 통해서 여러개의 infiniteScrollPage를 만들 수 있는 컴포넌트
@@ -20,15 +21,15 @@ interface IPageTapProps {
   tabs: IDataType[];
 }
 
-type IDataType = IPagePostsProps & {
-  type: "posts";
+type IDataType = IPostsType | IUsersType;
+
+type ITabType = {
+  type: "posts" | "users";
   label: string;
 };
 
-type ITabPage = IPageProps & {
-  type: "postColTwo" | "default";
-  label: string;
-};
+type IPostsType = IPagePostsProps & ITabType;
+type IUsersType = IPageUsersProps & ITabType;
 
 export default function PageTab({ header, tabs }: IPageTapProps) {
   const router = useRouter();
@@ -121,8 +122,11 @@ export default function PageTab({ header, tabs }: IPageTapProps) {
                         {tab.type === "posts" && (
                           <PagePosts
                             fetchType={tab.fetchType}
-                            numCol={tab.numCol}
+                            numCol={(tab as IPostsType).numCol}
                           />
+                        )}
+                        {tab.type === "users" && (
+                          <PageUsers fetchType={tab.fetchType} />
                         )}
                       </div>
                     </div>

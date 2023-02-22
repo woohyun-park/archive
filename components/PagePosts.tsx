@@ -4,6 +4,7 @@ import React, { Children, useEffect } from "react";
 import { useCachedPage } from "../hooks/useCachedPage";
 import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 import { IPost } from "../libs/custom";
+import { ICacheType } from "../stores/useCacheHelper";
 import { useStatus } from "../stores/useStatus";
 import { useUser } from "../stores/useUser";
 import PostBox from "./PostBox";
@@ -11,7 +12,7 @@ import PostCard from "./PostCard";
 import WrapRefreshAndLoad from "./wrappers/WrapLink copy";
 
 export interface IPagePostsProps {
-  fetchType: "posts" | "postsByKeyword" | "postsByTag" | "postsByUid";
+  fetchType: ICacheType;
   numCol: 1 | 2 | 3;
 }
 
