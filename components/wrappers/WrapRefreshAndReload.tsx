@@ -2,7 +2,7 @@ import React from "react";
 import PullToRefresh from "react-simple-pull-to-refresh";
 import Loader from "../Loader";
 
-interface IWrapRefresh {
+interface IWrapRefreshAndReload {
   children: React.ReactNode;
   loading: boolean;
   onRefresh: () => Promise<any>;
@@ -12,7 +12,7 @@ export default function WrapRefreshAndLoad({
   children,
   loading,
   onRefresh,
-}: IWrapRefresh) {
+}: IWrapRefreshAndReload) {
   return (
     <>
       <PullToRefresh
@@ -22,7 +22,7 @@ export default function WrapRefreshAndLoad({
         isPullable={true}
         className="min-h-[50vh]"
       >
-        {children}
+        <>{children}</>
       </PullToRefresh>
       <Loader isVisible={loading} scrollIntoView={true} />
     </>

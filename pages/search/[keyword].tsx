@@ -47,20 +47,11 @@ export default function SearchResult() {
             label: "posts",
             numCol: 1,
           },
-          // {
-          //   label: "tags",
-          //   data: tags.data as ITag[],
-          //   page: "tag",
-          //   onIntersect: () => {
-          //     tags.fetchTags && tags.fetchTags("load", path, keyword);
-          //   },
-          //   onChange: () => {},
-          //   onRefresh: async () => {
-          //     tags.fetchTags &&
-          //       (await tags.fetchTags("refresh", path, keyword));
-          //   },
-          //   changeListener: tags.data,
-          // },
+          {
+            type: "tags",
+            fetchType: "tags",
+            label: "tags",
+          },
           {
             type: "users",
             fetchType: "usersByKeyword",

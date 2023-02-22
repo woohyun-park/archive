@@ -3,14 +3,11 @@ import { useRouter } from "next/router";
 import React, { Children, useEffect } from "react";
 import { useCachedPage } from "../hooks/useCachedPage";
 import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
-import { IPost, IUser } from "../libs/custom";
+import { IUser } from "../libs/custom";
 import { ICacheType } from "../stores/useCacheHelper";
-import { useStatus } from "../stores/useStatus";
 import { useUser } from "../stores/useUser";
-import PostBox from "./PostBox";
-import PostCard from "./PostCard";
 import Profile from "./Profile";
-import WrapRefreshAndLoad from "./wrappers/WrapLink copy";
+import WrapRefreshAndLoad from "./wrappers/WrapRefreshAndReload";
 
 export interface IPageUsersProps {
   fetchType: ICacheType;
@@ -22,7 +19,6 @@ export default function PageUsers({
   const router = useRouter();
 
   const cache = useCachedPage(fetchType);
-  const { setModalLoader } = useStatus();
   const { curUser } = useUser();
 
   const path = router.asPath;
@@ -68,17 +64,20 @@ export default function PageUsers({
     <>
       <WrapRefreshAndLoad onRefresh={onRefresh} loading={loading}>
         <div className="mx-4">
-          <AnimatePresence>
-            {Children.toArray(
-              users.map((user) => (
+          {Children.toArray(
+            users.map((user, i) => (
+              <>
                 <Profile
                   user={user}
                   info="intro"
                   action={curUser.id !== user.id ? "follow" : undefined}
                 />
-              ))
-            )}
-          </AnimatePresence>
+                {!isLast && i === users.length - 1 && (
+                  <div ref={setLastIntersecting}></div>
+                )}
+              </>
+            ))
+          )}
         </div>
       </WrapRefreshAndLoad>
     </>

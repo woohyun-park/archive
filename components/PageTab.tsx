@@ -1,10 +1,10 @@
+import { AnimatePresence } from "framer-motion";
 import { useRouter } from "next/router";
 import { Children, useEffect, useRef, useState } from "react";
 import { useStatus } from "../stores/useStatus";
 import Btn from "./atoms/Btn";
-import Page from "./Page";
-import { IPageProps } from "./Page";
 import PagePosts, { IPagePostsProps } from "./PagePosts";
+import PageTags, { IPageTagsProps } from "./PageTags";
 import PageUsers, { IPageUsersProps } from "./PageUsers";
 import WrapScrollTab from "./wrappers/WrapScrollTab";
 
@@ -17,19 +17,19 @@ import WrapScrollTab from "./wrappers/WrapScrollTab";
 
 interface IPageTapProps {
   header: React.ReactNode;
-  // tabs: ITabPage[];
   tabs: IDataType[];
 }
 
-type IDataType = IPostsType | IUsersType;
+type IDataType = IPostsType | IUsersType | ITagsType;
 
 type ITabType = {
-  type: "posts" | "users";
+  type: "posts" | "users" | "tags";
   label: string;
 };
 
 type IPostsType = IPagePostsProps & ITabType;
 type IUsersType = IPageUsersProps & ITabType;
+type ITagsType = IPageTagsProps & ITabType;
 
 export default function PageTab({ header, tabs }: IPageTapProps) {
   const router = useRouter();
@@ -47,7 +47,6 @@ export default function PageTab({ header, tabs }: IPageTapProps) {
   useEffect(() => {
     if (page !== undefined) ref.current?.scrollTo(0, scroll[path + "/" + page]);
     else setSelectedPage(path, 0);
-    console.log(ref);
   }, [page]);
 
   useEffect(() => {
@@ -108,17 +107,6 @@ export default function PageTab({ header, tabs }: IPageTapProps) {
                           transform: `translateX(${(i - page) * 100}%)`,
                         }}
                       >
-                        {/* {tab.type === "default" && (
-                          <Page
-                            page={tab.page}
-                            data={tab.data}
-                            onIntersect={tab.onIntersect}
-                            onChange={tab.onChange}
-                            onRefresh={tab.onRefresh}
-                            changeListener={tab.changeListener}
-                            isLast={tab.isLast}
-                          />
-                        )} */}
                         {tab.type === "posts" && (
                           <PagePosts
                             fetchType={tab.fetchType}
@@ -128,6 +116,9 @@ export default function PageTab({ header, tabs }: IPageTapProps) {
                         {tab.type === "users" && (
                           <PageUsers fetchType={tab.fetchType} />
                         )}
+                        {tab.type === "tags" && (
+                          <PageTags fetchType={tab.fetchType} />
+                        )}
                       </div>
                     </div>
                   </div>
@@ -136,54 +127,6 @@ export default function PageTab({ header, tabs }: IPageTapProps) {
             </WrapScrollTab>
           ))
         )}
-        {/* {Children.toArray(
-          tabs.map((tab, i) => (
-            <WrapScrollTab path={path + "/" + page}>
-              <div
-                id="refScroll"
-                className="absolute w-full overflow-auto"
-                style={{
-                  height: `calc(100vh - ${headerHeight + tabHeight}px)`,
-                  transform: `translateX(${(i - page) * 100}%)`,
-                }}
-                ref={page === i ? ref : null}
-              >
-                <div>
-                  <div>
-                    <div
-                      className="mb-16"
-                      style={{
-                        paddingTop: `${tabHeight}px`,
-                      }}
-                    >
-                      <div
-                        className="w-full duration-300"
-                        style={{
-                          transform: `translateX(${(i - page) * 100}%)`,
-                        }}
-                      >
-                        {tab.type === "default" && (
-                          <Page
-                            page={tab.page}
-                            data={tab.data}
-                            onIntersect={tab.onIntersect}
-                            onChange={tab.onChange}
-                            onRefresh={tab.onRefresh}
-                            changeListener={tab.changeListener}
-                            isLast={tab.isLast}
-                          />
-                        )}
-                        {tab.type === "postColTwo" && (
-                          <PagePosts type="postsByKeyword" numCol={3} />
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </WrapScrollTab>
-          ))
-        )} */}
       </div>
     </>
   );

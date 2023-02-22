@@ -5,11 +5,11 @@ import { useCachedPage } from "../hooks/useCachedPage";
 import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 import { IPost } from "../libs/custom";
 import { ICacheType } from "../stores/useCacheHelper";
-import { useStatus } from "../stores/useStatus";
 import { useUser } from "../stores/useUser";
+import Loader from "./Loader";
 import PostBox from "./PostBox";
 import PostCard from "./PostCard";
-import WrapRefreshAndLoad from "./wrappers/WrapLink copy";
+import WrapRefreshAndLoad from "./wrappers/WrapRefreshAndReload";
 
 export interface IPagePostsProps {
   fetchType: ICacheType;
@@ -20,12 +20,9 @@ export default function PagePosts({
   fetchType = "posts",
   numCol = 1,
 }: IPagePostsProps) {
-  console.log(fetchType, numCol);
-
   const router = useRouter();
 
   const cache = useCachedPage(fetchType);
-  const { setModalLoader } = useStatus();
   const { curUser } = useUser();
 
   const path = router.asPath;
@@ -98,7 +95,7 @@ export default function PagePosts({
               posts.map((e, i) => (
                 <div>
                   <PostCard post={e as IPost} />
-                  {i === posts.length - 1 && (
+                  {!isLast && i === posts.length - 1 && (
                     <div ref={setLastIntersecting}></div>
                   )}
                   <hr className="w-full h-4 text-white bg-white" />
@@ -147,6 +144,7 @@ export default function PagePosts({
           </div>
         )}
       </WrapRefreshAndLoad>
+      <Loader isVisible={loading} scrollIntoView={true} />
     </>
   );
 }
