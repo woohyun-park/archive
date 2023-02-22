@@ -60,9 +60,7 @@ export default function PageTab({ header, tabs }: IPageTapProps) {
     console.log(headerRef.current.clientHeight, tabRef.current.clientHeight);
     setHeaderHeight(headerRef.current.clientHeight);
     setTabHeight(tabRef.current.clientHeight);
-    document.body.style.height = `calc(100vh + ${
-      headerRef.current.clientHeight + tabRef.current.clientHeight
-    }px)`;
+    document.body.style.height = `calc(100vh + ${headerRef.current.clientHeight}px)`;
   }, [headerRef, tabRef]);
   // useEffect(() => {
   //   console.log("tabRef!", tabRef, headerHeight, tabRef.current.clientHeight);
@@ -75,7 +73,7 @@ export default function PageTab({ header, tabs }: IPageTapProps) {
   return (
     <>
       {/* <div className="relative h-[100vh] overflow-hidden"> */}
-      <div className="relative h-[100vh]">
+      <div className="relative h-[100vh] overflow-hidden">
         <div ref={headerRef}>{header}</div>
         <div className="sticky top-0 z-10 h-8" ref={tabRef}>
           <div className="flex px-4 py-4 bg-white">
@@ -110,7 +108,7 @@ export default function PageTab({ header, tabs }: IPageTapProps) {
             <div>
               <div>
                 <div
-                  className="mb-32"
+                  className="mb-16"
                   style={{
                     paddingTop: `${
                       scrollY < headerHeight
@@ -121,7 +119,13 @@ export default function PageTab({ header, tabs }: IPageTapProps) {
                 >
                   {Children.toArray(
                     tabs.slice(i, i + 1).map((tab) => (
-                      <div className="w-full" ref={page === i ? ref : null}>
+                      <div
+                        className="w-full duration-300"
+                        ref={page === i ? ref : null}
+                        style={{
+                          transform: `translateX(${(i - page) * 100}%)`,
+                        }}
+                      >
                         <Page
                           page={tab.page}
                           data={tab.data}
