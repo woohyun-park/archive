@@ -5,7 +5,7 @@ import { useStatus } from "../stores/useStatus";
 import Btn from "./atoms/Btn";
 import Page from "./Page";
 import { IPageProps } from "./Page";
-import PagePostColTwo from "./PagePostColTwo";
+import PagePostColTwo from "./PagePosts";
 
 interface ITabPageProps {
   tabs: ITabPage[];

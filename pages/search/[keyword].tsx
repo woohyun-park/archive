@@ -42,49 +42,40 @@ export default function SearchResult() {
         }
         tabs={[
           {
+            type: "posts",
+            fetchType: "posts",
             label: "posts",
-            data: posts.data as IPost[],
-            page: "feed",
-            onIntersect: () => {
-              posts.fetchPostsByKeyword &&
-                posts.fetchPostsByKeyword("load", path, keyword);
-            },
-            onChange: () => {},
-            onRefresh: async () => {
-              posts.fetchPostsByKeyword &&
-                (await posts.fetchPostsByKeyword("refresh", path, keyword));
-            },
-            changeListener: posts.data,
+            numCol: 1,
           },
-          {
-            label: "tags",
-            data: tags.data as ITag[],
-            page: "tag",
-            onIntersect: () => {
-              tags.fetchTags && tags.fetchTags("load", path, keyword);
-            },
-            onChange: () => {},
-            onRefresh: async () => {
-              tags.fetchTags &&
-                (await tags.fetchTags("refresh", path, keyword));
-            },
-            changeListener: tags.data,
-          },
-          {
-            label: "users",
-            data: users.data as IUser[],
-            page: "user",
-            onIntersect: () => {
-              users.fetchUsersByKeyword &&
-                users.fetchUsersByKeyword("load", path, keyword);
-            },
-            onChange: () => {},
-            onRefresh: async () => {
-              users.fetchUsersByKeyword &&
-                (await users.fetchUsersByKeyword("refresh", path, keyword));
-            },
-            changeListener: users.data,
-          },
+          // {
+          //   label: "tags",
+          //   data: tags.data as ITag[],
+          //   page: "tag",
+          //   onIntersect: () => {
+          //     tags.fetchTags && tags.fetchTags("load", path, keyword);
+          //   },
+          //   onChange: () => {},
+          //   onRefresh: async () => {
+          //     tags.fetchTags &&
+          //       (await tags.fetchTags("refresh", path, keyword));
+          //   },
+          //   changeListener: tags.data,
+          // },
+          // {
+          //   label: "users",
+          //   data: users.data as IUser[],
+          //   page: "user",
+          //   onIntersect: () => {
+          //     users.fetchUsersByKeyword &&
+          //       users.fetchUsersByKeyword("load", path, keyword);
+          //   },
+          //   onChange: () => {},
+          //   onRefresh: async () => {
+          //     users.fetchUsersByKeyword &&
+          //       (await users.fetchUsersByKeyword("refresh", path, keyword));
+          //   },
+          //   changeListener: users.data,
+          // },
         ]}
       />
     </>
