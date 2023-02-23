@@ -4,6 +4,7 @@ import { ICacheType } from "../stores/useCacheHelper";
 import { useStatus } from "../stores/useStatus";
 import Btn from "./atoms/Btn";
 import PagePosts, { IPagePostsProps } from "./PagePosts";
+import PageScraps from "./PageScraps";
 import PageTags, { IPageTagsProps } from "./PageTags";
 import PageUsers, { IPageUsersProps } from "./PageUsers";
 import WrapScrollTab from "./wrappers/WrapScrollTab";
@@ -30,7 +31,7 @@ type IUsersType = IPageUsersProps & ITabType;
 type ITagsType = IPageTagsProps & ITabType;
 
 type ITabType = {
-  type: "posts" | "users" | "tags";
+  type: "posts" | "users" | "tags" | "scraps";
   label: string;
 };
 
@@ -111,6 +112,9 @@ export default function PageTab({ header, tabs }: IPageTapProps) {
                   )}
                   {tab.type === "users" && (
                     <PageUsers fetchType={tab.fetchType as ICacheType} />
+                  )}
+                  {tab.type === "scraps" && (
+                    <PageScraps fetchType={tab.fetchType as ICacheType} />
                   )}
                   {tab.type === "tags" && (
                     <PageTags fetchType={tab.fetchType as ICacheType} />

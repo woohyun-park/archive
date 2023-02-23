@@ -18,7 +18,6 @@ export default function Profile() {
   const { curUser } = useUser();
   const { setModalLoader } = useStatus();
   const posts = useCachedPage("postsByUid");
-  console.log("posts!!!!!!!", posts);
 
   const router = useRouter();
   const [user, setUser] = useState<IUser>();
@@ -213,44 +212,14 @@ export default function Profile() {
                 label: "posts",
                 numCols: 3,
               },
+              {
+                type: "scraps",
+                fetchType: "scraps",
+                label: "scraps",
+                numCols: 3,
+              },
             ]}
           />
-          {/* <TabPage
-            tabs={[
-              {
-                type: "postColTwo",
-                label: "posts",
-                page: "search",
-                data: posts.data as IPost[],
-                onIntersect: () => {
-                  posts.fetchPostsByUid &&
-                    posts.fetchPostsByUid("load", path, user.id);
-                },
-                onChange: () => {},
-                onRefresh: async () => {
-                  posts.fetchPostsByUid &&
-                    posts.fetchPostsByUid("refresh", path, user.id);
-                },
-                changeListener: posts,
-                isLast: posts.isLast,
-              },
-              // {
-              //   label: "users",
-              //   data: users.data as IUser[],
-              //   page: "user",
-              //   onIntersect: () => {
-              //     users.fetchUsersByKeyword &&
-              //       users.fetchUsersByKeyword("load", path, keyword);
-              //   },
-              //   onChange: () => {},
-              //   onRefresh: async () => {
-              //     users.fetchUsersByKeyword &&
-              //       (await users.fetchUsersByKeyword("refresh", path, keyword));
-              //   },
-              //   changeListener: users.data,
-              // },
-            ]}
-          /> */}
         </>
       ) : (
         <></>

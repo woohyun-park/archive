@@ -19,10 +19,11 @@ export const FETCH_LIMIT = {
   post1: 4,
   post2: 8,
   post3: 15,
-  alarm: 16,
-  comment: 16,
   user: 16,
   tag: 16,
+  scrap: 15,
+  comment: 16,
+  alarm: 16,
 };
 
 export function getFeedQuery(
@@ -195,6 +196,36 @@ export function getPostsByUidQuery(
   );
 }
 
+export function getUsersByKeywordQuery(
+  type: IFetchType,
+  keyword: string,
+  lastVisible: QueryDocumentSnapshot<DocumentData>
+) {
+  console.log(type);
+  if (type === "init")
+    return query(
+      collection(db, "users"),
+      orderBy("displayName"),
+      startAt(keyword),
+      endAt(keyword + "\uf8ff"),
+      limit(FETCH_LIMIT.user)
+    );
+  if (type === "load")
+    return query(
+      collection(db, "users"),
+      orderBy("displayName"),
+      startAfter(lastVisible),
+      endAt(keyword + "\uf8ff"),
+      limit(FETCH_LIMIT.user)
+    );
+  return query(
+    collection(db, "users"),
+    orderBy("displayName"),
+    startAt(keyword),
+    endAt(lastVisible)
+  );
+}
+
 export function getTagsQuery(
   type: IFetchType,
   keyword: string,
@@ -225,6 +256,33 @@ export function getTagsQuery(
   );
 }
 
+export function getScrapsQuery(
+  type: IFetchType,
+  uid: string,
+  lastVisible: QueryDocumentSnapshot<DocumentData>
+) {
+  if (type === "init")
+    return query(
+      collection(db, "scraps"),
+      where("uid", "==", uid),
+      orderBy("createdAt", "desc"),
+      limit(FETCH_LIMIT.scrap)
+    );
+  if (type === "load")
+    return query(
+      collection(db, "scraps"),
+      where("uid", "==", uid),
+      orderBy("createdAt", "desc"),
+      limit(FETCH_LIMIT.scrap)
+    );
+  return query(
+    collection(db, "scraps"),
+    where("uid", "==", uid),
+    orderBy("createdAt", "desc"),
+    endAt(lastVisible)
+  );
+}
+
 export function getAlarmQuery(
   type: IFetchType,
   uid: string,
@@ -249,36 +307,6 @@ export function getAlarmQuery(
     collection(db, "alarms"),
     where("targetUid", "==", uid),
     orderBy("createdAt", "desc"),
-    endAt(lastVisible)
-  );
-}
-
-export function getUsersByKeywordQuery(
-  type: IFetchType,
-  keyword: string,
-  lastVisible: QueryDocumentSnapshot<DocumentData>
-) {
-  console.log(type);
-  if (type === "init")
-    return query(
-      collection(db, "users"),
-      orderBy("displayName"),
-      startAt(keyword),
-      endAt(keyword + "\uf8ff"),
-      limit(FETCH_LIMIT.user)
-    );
-  if (type === "load")
-    return query(
-      collection(db, "users"),
-      orderBy("displayName"),
-      startAfter(lastVisible),
-      endAt(keyword + "\uf8ff"),
-      limit(FETCH_LIMIT.user)
-    );
-  return query(
-    collection(db, "users"),
-    orderBy("displayName"),
-    startAt(keyword),
     endAt(lastVisible)
   );
 }

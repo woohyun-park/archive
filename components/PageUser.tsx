@@ -1,12 +1,8 @@
 import { AnimatePresence } from "framer-motion";
-import { Children, CSSProperties } from "react";
-import { IAlarm, IUser } from "../libs/custom";
+import { Children } from "react";
+import { IUser } from "../libs/custom";
 import { useUser } from "../stores/useUser";
-import AlarmComment from "./AlarmComment";
-import AlarmFollow from "./AlarmFollow";
-import AlarmLike from "./AlarmLike";
 import Profile from "./Profile";
-import WrapMotion from "./wrappers/WrapMotion";
 
 interface IPageUserProps {
   users: IUser[];

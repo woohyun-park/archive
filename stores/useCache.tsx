@@ -8,6 +8,7 @@ import {
   fetchPostsByTagHelper,
   fetchPostsByUidHelper,
   fetchPostsHelper,
+  fetchScrapsHelper,
   fetchTagsHelper,
   fetchUsersByKeywordHelper,
   getNewState,
@@ -16,11 +17,6 @@ import {
 
 export interface IUseCache {
   caches: IDict<IPage>;
-  fetchAlarms: (
-    fetchType: IFetchType,
-    pathname: string,
-    uid: string
-  ) => Promise<void>;
   fetchPosts: (fetchType: IFetchType, pathname: string) => Promise<void>;
   fetchPostsByTag: (
     fetchType: IFetchType,
@@ -37,15 +33,25 @@ export interface IUseCache {
     pathname: string,
     uid: string
   ) => Promise<void>;
+  fetchUsersByKeyword: (
+    fetchType: IFetchType,
+    pathname: string,
+    keyword: string
+  ) => Promise<void>;
   fetchTags: (
     fetchType: IFetchType,
     pathname: string,
     keyword: string
   ) => Promise<void>;
-  fetchUsersByKeyword: (
+  fetchScraps: (
     fetchType: IFetchType,
     pathname: string,
-    keyword: string
+    uid: string
+  ) => Promise<void>;
+  fetchAlarms: (
+    fetchType: IFetchType,
+    pathname: string,
+    uid: string
   ) => Promise<void>;
 }
 
@@ -55,15 +61,6 @@ export const useCache = create<IUseCache>()(
   devtools((set, get) => ({
     caches: {},
 
-    fetchAlarms: async (
-      fetchType: IFetchType,
-      pathname: string,
-      uid: string
-    ) => {
-      const alarms = get().caches[pathname]?.alarms;
-      const cache = await fetchAlarmsHelper(fetchType, { ...alarms }, uid);
-      set((state: IUseCache) => getNewState("alarms", state, cache, pathname));
-    },
     fetchPosts: async (fetchType: IFetchType, pathname: string) => {
       const posts = get().caches[pathname]?.posts;
       const cache = await fetchPostsHelper(fetchType, { ...posts });
@@ -114,15 +111,6 @@ export const useCache = create<IUseCache>()(
         getNewState("postsByUid", state, cache, pathname)
       );
     },
-    fetchTags: async (
-      fetchType: IFetchType,
-      pathname: string,
-      keyword: string
-    ) => {
-      const tags = get().caches[pathname]?.tags;
-      const cache = await fetchTagsHelper(fetchType, { ...tags }, keyword);
-      set((state: IUseCache) => getNewState("tags", state, cache, pathname));
-    },
     fetchUsersByKeyword: async (
       fetchType: IFetchType,
       pathname: string,
@@ -137,6 +125,33 @@ export const useCache = create<IUseCache>()(
       set((state: IUseCache) =>
         getNewState("usersByKeyword", state, cache, pathname)
       );
+    },
+    fetchAlarms: async (
+      fetchType: IFetchType,
+      pathname: string,
+      uid: string
+    ) => {
+      const alarms = get().caches[pathname]?.alarms;
+      const cache = await fetchAlarmsHelper(fetchType, { ...alarms }, uid);
+      set((state: IUseCache) => getNewState("alarms", state, cache, pathname));
+    },
+    fetchScraps: async (
+      fetchType: IFetchType,
+      pathname: string,
+      uid: string
+    ) => {
+      const scraps = get().caches[pathname]?.scraps;
+      const cache = await fetchScrapsHelper(fetchType, { ...scraps }, uid);
+      set((state: IUseCache) => getNewState("scraps", state, cache, pathname));
+    },
+    fetchTags: async (
+      fetchType: IFetchType,
+      pathname: string,
+      keyword: string
+    ) => {
+      const tags = get().caches[pathname]?.tags;
+      const cache = await fetchTagsHelper(fetchType, { ...tags }, keyword);
+      set((state: IUseCache) => getNewState("tags", state, cache, pathname));
     },
   }))
 );

@@ -1,5 +1,5 @@
-import { CSSProperties, MouseEventHandler } from "react";
-import { IDict } from "../../libs/custom";
+import { MouseEventHandler } from "react";
+import { mergeTailwindClasses } from "../../apis/tailwind";
 
 interface IButtonProps {
   label: string;
@@ -28,15 +28,6 @@ export default function Btn({
   className,
   onClick,
 }: IButtonProps) {
-  function mergeTailwindClasses(...classStrings: string[]) {
-    let classHash: IDict<string> = {};
-    classStrings.map((str) => {
-      str
-        .split(/\s+/g)
-        .map((token) => (classHash[token.split("-")[0]] = token));
-    });
-    return Object.values(classHash).sort().join(" ");
-  }
   function getClassName() {
     let toFormat: string[] = [];
     if (size === "base") toFormat.push(...btn_base);
@@ -45,6 +36,7 @@ export default function Btn({
     if (width === "full") toFormat.push("w-full");
     return mergeTailwindClasses(...toFormat, className || "");
   }
+
   return (
     <button type={type} onClick={onClick} className={getClassName()}>
       {label}

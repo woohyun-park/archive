@@ -36,6 +36,15 @@ export async function readUsers(docs: QueryDocumentSnapshot<DocumentData>[]) {
   return res;
 }
 
+export async function readScraps(docs: QueryDocumentSnapshot<DocumentData>[]) {
+  const res: IScrap[] = [];
+  for await (const doc of docs) {
+    const scrap = await readData<IScrap>("scraps", doc.data().id);
+    res.push(scrap);
+  }
+  return res;
+}
+
 export async function readDatasByQuery<T>(q: Query) {
   const snap = await getDocs(q);
   const datas: T[] = [];

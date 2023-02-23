@@ -10,22 +10,25 @@ import {
   getPostsByTagQuery,
   getPostsByUidQuery,
   getPostsQuery,
+  getScrapsQuery,
   getTagsQuery,
   getUsersByKeywordQuery,
   IFetchType,
 } from "../apis/fbQuery";
 import { combineData, setCursor } from "./libStores";
-import { readAlarms, readPosts, readUsers } from "../apis/fbRead";
+import { readAlarms, readPosts, readScraps, readUsers } from "../apis/fbRead";
 import { IUseCache } from "./useCache";
+import { IScrap } from "../libs/custom";
 
 export type ICacheType =
   | "posts"
   | "postsByTag"
   | "postsByKeyword"
   | "postsByUid"
-  | "alarms"
   | "usersByKeyword"
-  | "tags";
+  | "tags"
+  | "scraps"
+  | "alarms";
 
 export interface ICache {
   data: any[];
@@ -43,20 +46,6 @@ export function getNewState(
   if (!newState.caches[pathname]) newState.caches[pathname] = { [type]: cache };
   else newState.caches[pathname][type] = cache;
   return newState;
-}
-
-export async function fetchAlarmsHelper(
-  fetchType: IFetchType,
-  cache: ICache,
-  uid: string
-) {
-  const snap = await getDocs(getAlarmQuery(fetchType, uid, cache.lastVisible));
-  const resAlarms = await readAlarms(snap.docs);
-  cache.data = combineData(cache.data, resAlarms, fetchType);
-  cache.isLast = resAlarms.length < FETCH_LIMIT.alarm ? true : false;
-  const newLastVisible = setCursor(snap, fetchType);
-  if (newLastVisible) cache.lastVisible = newLastVisible;
-  return cache;
 }
 
 export async function fetchPostsHelper(fetchType: IFetchType, cache: ICache) {
@@ -117,6 +106,22 @@ export async function fetchPostsByUidHelper(
   return cache;
 }
 
+export async function fetchUsersByKeywordHelper(
+  fetchType: IFetchType,
+  cache: ICache,
+  keyword: string
+) {
+  const snap = await getDocs(
+    getUsersByKeywordQuery(fetchType, keyword, cache.lastVisible)
+  );
+  const resUsers = await readUsers(snap.docs);
+  cache.data = combineData(cache.data, resUsers, fetchType);
+  cache.isLast = resUsers.length < FETCH_LIMIT.user ? true : false;
+  const newLastVisible = setCursor(snap, fetchType);
+  if (newLastVisible) cache.lastVisible = newLastVisible;
+  return cache;
+}
+
 export async function fetchTagsHelper(
   fetchType: IFetchType,
   cache: ICache,
@@ -133,17 +138,30 @@ export async function fetchTagsHelper(
   return cache;
 }
 
-export async function fetchUsersByKeywordHelper(
+export async function fetchScrapsHelper(
   fetchType: IFetchType,
   cache: ICache,
-  keyword: string
+  uid: string
 ) {
-  const snap = await getDocs(
-    getUsersByKeywordQuery(fetchType, keyword, cache.lastVisible)
-  );
-  const resUsers = await readUsers(snap.docs);
-  cache.data = combineData(cache.data, resUsers, fetchType);
-  cache.isLast = resUsers.length < FETCH_LIMIT.user ? true : false;
+  const q = getScrapsQuery(fetchType, uid, cache.lastVisible);
+  const snap = await getDocs(q);
+  const resScraps = await readScraps(snap.docs);
+  cache.data = combineData(cache.data, resScraps, fetchType);
+  cache.isLast = resScraps.length < FETCH_LIMIT.tag ? true : false;
+  const newLastVisible = setCursor(snap, fetchType);
+  if (newLastVisible) cache.lastVisible = newLastVisible;
+  return cache;
+}
+
+export async function fetchAlarmsHelper(
+  fetchType: IFetchType,
+  cache: ICache,
+  uid: string
+) {
+  const snap = await getDocs(getAlarmQuery(fetchType, uid, cache.lastVisible));
+  const resAlarms = await readAlarms(snap.docs);
+  cache.data = combineData(cache.data, resAlarms, fetchType);
+  cache.isLast = resAlarms.length < FETCH_LIMIT.alarm ? true : false;
   const newLastVisible = setCursor(snap, fetchType);
   if (newLastVisible) cache.lastVisible = newLastVisible;
   return cache;
