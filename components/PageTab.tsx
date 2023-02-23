@@ -34,8 +34,6 @@ type ITagsType = IPageTagsProps & ITabType;
 
 export default function PageTab({ header, tabs }: IPageTapProps) {
   const router = useRouter();
-  // const ref = useRef<HTMLDivElement>(null);
-  // const articleRef = useRef<HTMLDivElement>(null);
   const scrollRefs = useRef<HTMLDivElement[]>([]);
   scrollRefs.current = [];
   const addToScrollRefs = (e: HTMLDivElement | null) => {
@@ -70,36 +68,10 @@ export default function PageTab({ header, tabs }: IPageTapProps) {
     const newTabHeight = tabRef.current?.clientHeight || 0;
     const newArticleHeight =
       articleRefs.current[page === undefined ? 0 : page]?.clientHeight || 0;
-    console.log(
-      "useEffect!",
-      newHeaderHeight,
-      newTabHeight,
-      newArticleHeight,
-      articleRefs
-    );
     setHeaderHeight(newHeaderHeight);
     setTabHeight(newTabHeight);
     setArticleHeight(newArticleHeight);
-    // document.body.style.height =
-    //   tabHeight && articleHeight
-    //     ? `min(100vh - ${tabHeight}px, ${tabHeight + articleHeight}px)`
-    //     : "100vh";
-
-    // contRef.current?.setAttribute(
-    //   "style",
-    //   `height: calc(100vh + ${newHeaderHeight}px)`
-    // );
     document.body.style.height = `calc(100vh + ${newHeaderHeight}px)`;
-    // console.log(
-    //   window.innerHeight,
-    //   newHeaderHeight + newTabHeight + newArticleHeight
-    // );
-    // if (
-    //   window.innerHeight >=
-    //   newHeaderHeight + newTabHeight + newArticleHeight
-    // ) {
-    //   document.body.style.overflow = "hidden";
-    // }
   }, [page]);
 
   let init = cache && cache[tabs[0].fetchType];
@@ -114,48 +86,13 @@ export default function PageTab({ header, tabs }: IPageTapProps) {
     setHeaderHeight(newHeaderHeight);
     setTabHeight(newTabHeight);
     setArticleHeight(newArticleHeight);
-    // document.body.style.height =
-    //   tabHeight && articleHeight
-    //     ? `min(100vh - ${tabHeight}px, ${tabHeight + articleHeight}px)`
-    //     : "100vh";
     document.body.style.height = `calc(100vh + ${newHeaderHeight}px)`;
     setInitState(initState + 1);
   }, [init]);
 
-  // useEffect(() => {
-  //   const newHeaderHeight = headerRef.current?.clientHeight || 0;
-  //   const newTabHeight = tabRef.current?.clientHeight || 0;
-  //   const newArticleHeight = articleRefs.current[page]?.clientHeight || 0;
-  //   setHeaderHeight(newHeaderHeight);
-  //   setTabHeight(newTabHeight);
-  //   setArticleHeight(newArticleHeight);
-  //   document.body.style.height =
-  //     tabHeight && articleHeight
-  //       ? `min(100vh - ${tabHeight}px, ${tabHeight + articleHeight}px)`
-  //       : "100vh";
-  // }, []);
-
   return (
     <>
-      <div
-        className="static h-[100vh] overflow-hidden"
-        // className="relative h-[100vh] overflow-hidden"
-        style={
-          {
-            // height: `calc(100vh + ${headerHeight}px)`,
-            // height: (() => {
-            //   console.log(headerHeight, tabHeight, articleHeight);
-            //   return headerHeight && tabHeight && articleHeight
-            //     ? `${
-            //         window.innerHeight >= headerHeight + tabHeight + articleHeight
-            //           ? headerHeight + tabHeight + articleHeight
-            //           : window.innerHeight - tabHeight
-            //       }px`
-            //     : "";
-            // })(),
-          }
-        }
-      >
+      <div className="static h-[100vh] overflow-hidden">
         <div ref={headerRef}>{header}</div>
         <div className="sticky top-0 z-10 h-8" ref={tabRef}>
           <div className="flex px-4 py-4 bg-white">
@@ -170,10 +107,7 @@ export default function PageTab({ header, tabs }: IPageTapProps) {
                     );
                     setSelectedPage(path, i);
                   }}
-                  style={{
-                    width: "100%",
-                    marginRight: i === tabs.length - 1 ? "" : "0.25rem",
-                  }}
+                  width="full"
                   isActive={page === i}
                 />
               ))
@@ -188,9 +122,6 @@ export default function PageTab({ header, tabs }: IPageTapProps) {
                 className="absolute w-full overflow-auto"
                 style={{
                   height: `calc(100vh - ${tabHeight}px)`,
-                  // height: `min(100vh - ${tabHeight}px, ${
-                  //   tabHeight + articleHeight
-                  // }px)`,
                   transform: `translateX(${(i - page) * 100}%)`,
                 }}
                 ref={(e) => addToScrollRefs(e)}

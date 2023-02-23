@@ -67,23 +67,28 @@ body {
     @apply p-1 text-center text-black rounded-full bg-gray-3;
   }
 
-  .button-sm {
-    @apply flex items-center justify-center h-8 px-4 py-2 text-sm text-center text-white transition duration-150 ease-in-out bg-black rounded-lg hover:bg-black-f focus:bg-black-f focus:outline-none focus:ring-0 active:bg-black-f min-w-fit;
-  }
-  .button-sm-inactive {
-    @apply flex items-center justify-center h-8 px-4 py-2 text-sm text-center text-black transition duration-150 ease-in-out rounded-lg bg-gray-3 hover:bg-gray-3f focus:bg-gray-3f focus:outline-none focus:ring-0 active:bg-gray-3f min-w-fit;
-  }
-
   .tag-sm {
     @apply flex items-center justify-center h-8 px-2 py-2 text-sm text-center text-white transition duration-150 ease-in-out bg-black rounded-lg hover:bg-black-f focus:bg-black-f focus:outline-none focus:ring-0 active:bg-black-f min-w-fit;
   }
 
+  .button-sm {
+    @apply button-base;
+    @apply h-8 px-4 text-sm;
+  }
+  /* .button-sm-inactive {
+    @apply button-base-inactive;
+    @apply h-8 px-4 text-sm;
+  } */
   .button-base {
     @apply flex items-center justify-center h-10 px-4 py-2 text-base text-center text-white transition duration-150 ease-in-out bg-black rounded-lg hover:bg-black-f focus:bg-black-f focus:outline-none focus:ring-0 active:bg-black-f min-w-fit;
   }
-  .button-base-inactive {
-    @apply flex items-center justify-center h-10 px-4 py-2 text-base text-center text-black transition duration-150 ease-in-out rounded-lg bg-gray-3 hover:bg-gray-3f focus:bg-gray-3f focus:outline-none focus:ring-0 active:bg-gray-3f min-w-fit;
+  .button-inactive {
+    @apply text-black bg-gray-3 hover:bg-gray-3f focus:bg-gray-3f active:bg-gray-3f;
   }
+  /* .button-base-inactive {
+    @apply button-base;
+    @apply text-black bg-gray-3 hover:bg-gray-3f focus:bg-gray-3f active:bg-gray-3f;
+  } */
 
   .input-base {
     @apply block w-full h-10 px-2 py-2 text-base transition ease-in-out border-2 border-solid rounded-lg text-gray-1 bg-gray-3 bg-clip-padding border-gray-3 focus:text-gray-1 focus:border-gray-3f focus:outline-none;
