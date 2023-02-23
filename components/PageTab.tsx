@@ -95,30 +95,25 @@ export default function PageTab({ header, tabs }: IPageTapProps) {
                 id="refScroll"
                 className="absolute w-full overflow-auto duration-300 h-[100vh]"
                 style={{
-                  transform: `translateX(${(i - page) * 100}%)`,
+                  // height을 전체 뷰포트 - tabHeight로 설정해서 상단에 sticky한 tab과 겹치지 않도록 한다.
                   height: `calc(100vh - ${tabRef.current?.clientHeight}px)`,
+                  transform: `translateX(${(i - page) * 100}%)`,
                 }}
                 ref={(e) => addScrollRefs(e, i)}
               >
                 <div>
-                  <div>
-                    <div>
-                      <div>
-                        {tab.type === "posts" && (
-                          <PagePosts
-                            fetchType={tab.fetchType as ICacheType}
-                            numCols={(tab as IPostsType).numCols}
-                          />
-                        )}
-                        {tab.type === "users" && (
-                          <PageUsers fetchType={tab.fetchType as ICacheType} />
-                        )}
-                        {tab.type === "tags" && (
-                          <PageTags fetchType={tab.fetchType as ICacheType} />
-                        )}
-                      </div>
-                    </div>
-                  </div>
+                  {tab.type === "posts" && (
+                    <PagePosts
+                      fetchType={tab.fetchType as ICacheType}
+                      numCols={(tab as IPostsType).numCols}
+                    />
+                  )}
+                  {tab.type === "users" && (
+                    <PageUsers fetchType={tab.fetchType as ICacheType} />
+                  )}
+                  {tab.type === "tags" && (
+                    <PageTags fetchType={tab.fetchType as ICacheType} />
+                  )}
                 </div>
               </div>
             </WrapScrollTab>
