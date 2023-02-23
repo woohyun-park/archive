@@ -82,6 +82,7 @@ export default function PageTab({ header, tabs }: IPageTapProps) {
                 onClick={() => onTabClick(i)}
                 width="full"
                 isActive={page === i}
+                className={i === 0 ? "" : "ml-2"}
               />
             ))
           )}
