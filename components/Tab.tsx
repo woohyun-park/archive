@@ -22,7 +22,7 @@ export default function Tab({ tabs }: ITabProps) {
           <Btn
             label={tab.label}
             onClick={tab.onClick}
-            style={tab.style}
+            // style={tab.style}
             isActive={tab.isActive}
           />
         ))

@@ -190,14 +190,17 @@ export default function Layout({ children }: ILayoutProps) {
           <div>
             <Btn
               label="카카오톡으로 로그인"
-              style={{
-                width: "100%",
-                backgroundColor: "#F3E366",
-                color: "black",
-                marginBottom: "0.5rem",
-              }}
+              // style={{
+              //   width: "100%",
+              //   backgroundColor: "#F3E366",
+              //   color: "black",
+              //   marginBottom: "0.5rem",
+              // }}
             />
-            <Btn label="Apple로 로그인" style={{ width: "100%" }} />
+            <Btn
+              label="Apple로 로그인"
+              // style={{ width: "100%" }}
+            />
             <button
               className="p-1 m-2 text-white bg-black rounded-full"
               onClick={handleSocialLogin}

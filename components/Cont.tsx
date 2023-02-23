@@ -1,12 +1,12 @@
 import { useRouter } from "next/router";
 import { Children } from "react";
-import { getRoute, IPost, IType } from "../libs/custom";
+import { IPost } from "../libs/custom";
 import ContImage from "./ContImage";
 
 interface IImageProps {
   tag: string;
   posts: IPost[];
-  type: IType;
+  type: "color" | "img" | "color-4" | "img-4";
   onClick?: () => void;
 }
 

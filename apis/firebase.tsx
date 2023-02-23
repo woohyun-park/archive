@@ -1,15 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { FieldValue, getFirestore, Timestamp } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
-import {
-  IAlarm,
-  IComment,
-  ILike,
-  IPost,
-  IScrap,
-  ITag,
-  IUser,
-} from "../libs/custom";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FB_API_KEY,

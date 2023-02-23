@@ -44,11 +44,11 @@ export default function Post({ type, post }: IPostProps) {
             <WrapLink href={`/tag/${tag}`} loader={true}>
               <Btn
                 label={`#${tag}`}
-                style={{
-                  margin: "0.125rem",
-                  paddingRight: "0.5rem",
-                  paddingLeft: "0.5rem",
-                }}
+                // style={{
+                //   margin: "0.125rem",
+                //   paddingRight: "0.5rem",
+                //   paddingLeft: "0.5rem",
+                // }}
               />
             </WrapLink>
           ))

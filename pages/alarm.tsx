@@ -54,7 +54,7 @@ export default function Alarm() {
             }}
             changeListener={data}
             isLast={isLast}
-            minHeight="50vh"
+            // minHeight="50vh"
           />
           <div className="mb-32"></div>
         </>

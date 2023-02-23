@@ -2,18 +2,20 @@ import { CSSProperties, MouseEventHandler } from "react";
 
 interface IButtonProps {
   label: string;
-  onClick?: MouseEventHandler<HTMLButtonElement>;
+  type?: "button" | "submit" | "reset" | undefined;
   isActive?: boolean;
   size?: "base" | "sm";
   width?: "fit" | "full";
+  onClick?: MouseEventHandler<HTMLButtonElement>;
 }
 
 export default function Btn({
   label,
-  onClick,
+  type = "button",
   size = "base",
   width = "fit",
   isActive = true,
+  onClick,
 }: IButtonProps) {
   function getClassName() {
     let className = [];
@@ -26,7 +28,7 @@ export default function Btn({
   return (
     <button
       id="btn_b1"
-      type="button"
+      type={type}
       onClick={onClick}
       className={getClassName()}
     >
