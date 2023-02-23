@@ -16,11 +16,11 @@ export default function Modal({ isVisible, content }: IModal) {
   }, []);
 
   if (isBrowser) {
-    if (isVisible) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
+    // if (isVisible) {
+    //   document.body.style.overflow = "hidden";
+    // } else {
+    //   document.body.style.overflow = "unset";
+    // }
     return ReactDOM.createPortal(
       <AnimatePresence>
         {isVisible && (

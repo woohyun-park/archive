@@ -71,7 +71,7 @@ export default function PageTab({ header, tabs }: IPageTapProps) {
     setHeaderHeight(newHeaderHeight);
     setTabHeight(newTabHeight);
     setArticleHeight(newArticleHeight);
-    document.body.style.height = `calc(100vh + ${newHeaderHeight}px)`;
+    // document.body.style.height = `calc(100vh + ${newHeaderHeight}px)`;
   }, [page]);
 
   let init = cache && cache[tabs[0].fetchType];
@@ -86,15 +86,24 @@ export default function PageTab({ header, tabs }: IPageTapProps) {
     setHeaderHeight(newHeaderHeight);
     setTabHeight(newTabHeight);
     setArticleHeight(newArticleHeight);
-    document.body.style.height = `calc(100vh + ${newHeaderHeight}px)`;
+    // document.body.style.height = `calc(100vh + ${newHeaderHeight}px)`;
     setInitState(initState + 1);
   }, [init]);
 
   return (
     <>
-      <div className="static h-[100vh] overflow-hidden">
+      <div
+        className="static h-[100vh] overflow-y-scroll"
+        style={
+          {
+            // height: `calc(100vh + ${
+            //   headerHeight && tabHeight && headerHeight + tabHeight
+            // }px)`,
+          }
+        }
+      >
         <div ref={headerRef}>{header}</div>
-        <div className="sticky top-0 z-10 h-8" ref={tabRef}>
+        <div className="sticky top-0 z-10" ref={tabRef}>
           <div className="flex px-4 py-4 bg-white">
             {Children.toArray(
               tabs.map((tab, i) => (
@@ -128,11 +137,7 @@ export default function PageTab({ header, tabs }: IPageTapProps) {
               >
                 <div ref={(e) => addToArticleRefs(e)}>
                   <div>
-                    <div
-                      style={{
-                        paddingTop: `${tabHeight}px`,
-                      }}
-                    >
+                    <div>
                       <div
                         className="w-full duration-300"
                         style={{
