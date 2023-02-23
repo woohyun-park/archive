@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
-import { Children, useEffect, useRef, useState } from "react";
+import { Children, useEffect, useRef } from "react";
+import { ICacheType } from "../stores/useCacheHelper";
 import { useStatus } from "../stores/useStatus";
 import Btn from "./atoms/Btn";
 import PagePosts, { IPagePostsProps } from "./PagePosts";
@@ -35,6 +36,7 @@ type ITabType = {
 
 export default function PageTab({ header, tabs }: IPageTapProps) {
   const router = useRouter();
+  const tabRef = useRef<HTMLDivElement>(null);
   const scrollRefs = useRef<HTMLDivElement[]>([]);
   scrollRefs.current = [];
 
@@ -69,7 +71,10 @@ export default function PageTab({ header, tabs }: IPageTapProps) {
     <>
       <div className="static h-[100vh] overflow-y-scroll">
         <div>{header}</div>
-        <div className="sticky top-0 z-10 flex px-4 py-4 bg-white">
+        <div
+          ref={tabRef}
+          className="box-border sticky top-0 z-10 flex py-4 mx-4 bg-white"
+        >
           {Children.toArray(
             tabs.map((tab, i) => (
               <Btn
@@ -91,6 +96,7 @@ export default function PageTab({ header, tabs }: IPageTapProps) {
                 className="absolute w-full overflow-auto duration-300 h-[100vh]"
                 style={{
                   transform: `translateX(${(i - page) * 100}%)`,
+                  height: `calc(100vh - ${tabRef.current?.clientHeight}px)`,
                 }}
                 ref={(e) => addScrollRefs(e, i)}
               >
@@ -100,15 +106,15 @@ export default function PageTab({ header, tabs }: IPageTapProps) {
                       <div>
                         {tab.type === "posts" && (
                           <PagePosts
-                            fetchType={tab.fetchType}
+                            fetchType={tab.fetchType as ICacheType}
                             numCols={(tab as IPostsType).numCols}
                           />
                         )}
                         {tab.type === "users" && (
-                          <PageUsers fetchType={tab.fetchType} />
+                          <PageUsers fetchType={tab.fetchType as ICacheType} />
                         )}
                         {tab.type === "tags" && (
-                          <PageTags fetchType={tab.fetchType} />
+                          <PageTags fetchType={tab.fetchType as ICacheType} />
                         )}
                       </div>
                     </div>
