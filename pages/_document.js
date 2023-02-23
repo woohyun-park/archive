@@ -25,7 +25,7 @@ class MainDocument extends Document {
         <body>
           <Main />
           <NextScript />
-          <div id="modal-root"></div>
+          <div id="modal-root" className="fixed z-50"></div>
         </body>
       </Html>
     );

@@ -1,4 +1,3 @@
-import { AnimatePresence } from "framer-motion";
 import { useRouter } from "next/router";
 import { Children, useEffect, useRef, useState } from "react";
 import { useStatus } from "../stores/useStatus";
@@ -7,7 +6,6 @@ import PagePosts, { IPagePostsProps } from "./PagePosts";
 import PageTags, { IPageTagsProps } from "./PageTags";
 import PageUsers, { IPageUsersProps } from "./PageUsers";
 import WrapScrollTab from "./wrappers/WrapScrollTab";
-import { useCache } from "../stores/useCache";
 
 // 하나의 route에 tab을 통해서 여러개의 infiniteScrollPage를 만들 수 있는 컴포넌트
 
@@ -16,6 +14,9 @@ import { useCache } from "../stores/useCache";
 
 // tabs: 각각의 tab에 대한 정보를 담고있는 데이터
 
+// ! 각각의 tab의 스크롤을 저장하는 경우는 두가지이다.
+// 다른 탭으로 넘어갈 때, 그리고 다른 상세 페이지로 넘어갔다가 돌아올 때
+
 interface IPageTapProps {
   header: React.ReactNode;
   tabs: IDataType[];
@@ -23,118 +24,80 @@ interface IPageTapProps {
 
 type IDataType = IPostsType | IUsersType | ITagsType;
 
+type IPostsType = IPagePostsProps & ITabType;
+type IUsersType = IPageUsersProps & ITabType;
+type ITagsType = IPageTagsProps & ITabType;
+
 type ITabType = {
   type: "posts" | "users" | "tags";
   label: string;
 };
 
-type IPostsType = IPagePostsProps & ITabType;
-type IUsersType = IPageUsersProps & ITabType;
-type ITagsType = IPageTagsProps & ITabType;
-
 export default function PageTab({ header, tabs }: IPageTapProps) {
   const router = useRouter();
   const scrollRefs = useRef<HTMLDivElement[]>([]);
   scrollRefs.current = [];
-  const addToScrollRefs = (e: HTMLDivElement | null) => {
-    e && scrollRefs.current.push(e);
-  };
-  const { caches } = useCache();
-  const cache = caches[router.asPath];
-
-  const articleRefs = useRef<HTMLDivElement[]>([]);
-  articleRefs.current = [];
-  const addToArticleRefs = (e: HTMLDivElement | null) => {
-    e && articleRefs.current.push(e);
-  };
-  const headerRef = useRef<HTMLDivElement>(null);
-  const tabRef = useRef<HTMLDivElement>(null);
-  // const [articleHeight, setArticleHeight] = useState<number | null>(null);
-  // const [headerHeight, setHeaderHeight] = useState<number | null>(null);
-  const [tabHeight, setTabHeight] = useState<number | null>(null);
 
   const { scroll, setScroll, pages, setSelectedPage } = useStatus();
 
   const path = router.asPath;
   const page = pages[path] && pages[path].selectedPage;
 
+  // 각각의 tab에 대한 scroll 값을 가지고 있는 container에 대한 ref인 scrollRefs를 init한다
+  // 또한 init과 동시에 만약 현재 tab에 대한 scroll이 저장되어 있다면 해당 tab을 해당 위치로 스크롤시킨다.
+  function addScrollRefs(e: HTMLDivElement | null, i: number) {
+    if (page === i) {
+      e?.scrollTo(0, scroll[path + "/" + page]);
+    }
+    e && scrollRefs.current.push(e);
+  }
+
+  // tab을 클릭하면 해당 tab에 대한 scroll을 저장하고 page를 변경한다.
+  function onTabClick(i: number) {
+    setScroll(path + "/" + page, scrollRefs.current[page]?.scrollTop || 0);
+    setSelectedPage(path, i);
+  }
+
+  // page가 변경될때 변경되는 tab에 대한 scroll이 저장되어 있다면 해당 tab을 해당 위치로 스크롤시킨다.
   useEffect(() => {
-    if (page !== undefined) scrollRefs.current[page].scrollTo(0, scroll[path]);
+    if (page !== undefined && scrollRefs.current[page])
+      scrollRefs.current[page].scrollTo(0, scroll[path + "/" + page]);
     else setSelectedPage(path, 0);
   }, [page]);
-
-  // useEffect(() => {
-  // const newHeaderHeight = headerRef.current?.clientHeight || 0;
-  // const newTabHeight = tabRef.current?.clientHeight || 0;
-  // const newArticleHeight =
-  // articleRefs.current[page === undefined ? 0 : page]?.clientHeight || 0;
-  // setHeaderHeight(newHeaderHeight);
-  // setTabHeight(newTabHeight);
-  // setArticleHeight(newArticleHeight);
-  // }, [page]);
-
-  // const init = cache && cache[tabs[0].fetchType];
-  // const [initState, setInitState] = useState(0);
-
-  // headerHeight, tabHeight, articleHeight을 구하여
-  useEffect(() => {
-    // if (initState > 1) return;
-    // const newHeaderHeight = headerRef.current?.clientHeight || 0;
-    const newTabHeight = tabRef.current?.clientHeight || 0;
-    // console.log(newTabHeight);
-    // const newArticleHeight =
-    // articleRefs.current[page === undefined ? 0 : page]?.clientHeight || 0;
-    // setHeaderHeight(newHeaderHeight);
-    setTabHeight(newTabHeight);
-    // setArticleHeight(newArticleHeight);
-    // setInitState(initState + 1);
-  }, []);
 
   return (
     <>
       <div className="static h-[100vh] overflow-y-scroll">
-        <div ref={headerRef}>{header}</div>
-        <div className="sticky top-0 z-10" ref={tabRef}>
-          <div className="flex px-4 py-4 bg-white">
-            {Children.toArray(
-              tabs.map((tab, i) => (
-                <Btn
-                  label={tab.label}
-                  onClick={() => {
-                    setScroll(
-                      path + "/" + page,
-                      scrollRefs.current[page]?.scrollTop || 0
-                    );
-                    setSelectedPage(path, i);
-                  }}
-                  width="full"
-                  isActive={page === i}
-                />
-              ))
-            )}
-          </div>
+        <div>{header}</div>
+        <div className="sticky top-0 z-10 flex px-4 py-4 bg-white">
+          {Children.toArray(
+            tabs.map((tab, i) => (
+              <Btn
+                label={tab.label}
+                onClick={() => onTabClick(i)}
+                width="full"
+                isActive={page === i}
+              />
+            ))
+          )}
         </div>
         {Children.toArray(
           tabs.map((tab, i) => (
+            // 각 tab의 가장 상위 div는 relative로 설정하여
+            // 하위 div에서 absolute 등을 사용할 때에 해당 div에 종속적이도록 만들어준다.
             <WrapScrollTab path={path + "/" + page} className="relative">
               <div
                 id="refScroll"
-                className="absolute w-full overflow-auto"
+                className="absolute w-full overflow-auto duration-300 h-[100vh]"
                 style={{
-                  height: `calc(100vh - ${tabHeight}px)`,
                   transform: `translateX(${(i - page) * 100}%)`,
                 }}
-                ref={(e) => addToScrollRefs(e)}
+                ref={(e) => addScrollRefs(e, i)}
               >
-                <div ref={(e) => addToArticleRefs(e)}>
+                <div>
                   <div>
                     <div>
-                      <div
-                        className="w-full duration-300"
-                        style={{
-                          transform: `translateX(${(i - page) * 100}%)`,
-                        }}
-                      >
+                      <div>
                         {tab.type === "posts" && (
                           <PagePosts
                             fetchType={tab.fetchType}

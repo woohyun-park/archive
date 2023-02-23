@@ -31,9 +31,9 @@ body {
   overflow: visible;
 }
 
-/* ::-webkit-scrollbar {
+::-webkit-scrollbar {
   display: none;
-} */
+}
 
 @layer components {
   .title-logo {
