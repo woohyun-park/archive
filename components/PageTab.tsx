@@ -138,9 +138,11 @@ export default function PageTab({ header, tabs }: IPageTapProps) {
   return (
     <>
       <div
-        className="relative h-[100vh] overflow-hidden"
+        className="static h-[100vh] overflow-hidden"
+        // className="relative h-[100vh] overflow-hidden"
         style={
           {
+            // height: `calc(100vh + ${headerHeight}px)`,
             // height: (() => {
             //   console.log(headerHeight, tabHeight, articleHeight);
             //   return headerHeight && tabHeight && articleHeight
@@ -196,7 +198,6 @@ export default function PageTab({ header, tabs }: IPageTapProps) {
                 <div ref={(e) => addToArticleRefs(e)}>
                   <div>
                     <div
-                      className="mb-36"
                       style={{
                         paddingTop: `${tabHeight}px`,
                       }}
