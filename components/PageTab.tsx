@@ -116,7 +116,7 @@ export default function PageTab({ header, tabs }: IPageTapProps) {
         </div>
         {Children.toArray(
           tabs.map((tab, i) => (
-            <WrapScrollTab path={path + "/" + page}>
+            <WrapScrollTab path={path + "/" + page} className="relative">
               <div
                 id="refScroll"
                 className="absolute w-full overflow-auto"

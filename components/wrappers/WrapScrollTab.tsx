@@ -11,9 +11,14 @@ import { useStatus } from "../../stores/useStatus";
 interface IWrapScrollTabProps {
   children: React.ReactNode;
   path: string;
+  className: string;
 }
 
-export default function WrapScrollTab({ children, path }: IWrapScrollTabProps) {
+export default function WrapScrollTab({
+  children,
+  path,
+  className,
+}: IWrapScrollTabProps) {
   const ref = useRef<HTMLDivElement>(null);
 
   const { scroll, setScroll } = useStatus();
@@ -31,7 +36,7 @@ export default function WrapScrollTab({ children, path }: IWrapScrollTabProps) {
   }
 
   return (
-    <div onClick={onClick} ref={ref}>
+    <div onClick={onClick} ref={ref} className={className}>
       {children}
     </div>
   );
