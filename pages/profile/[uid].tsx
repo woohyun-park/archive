@@ -251,7 +251,6 @@ export default function Profile() {
               // },
             ]}
           /> */}
-          <div className="mb-24"></div>
         </>
       ) : (
         <></>

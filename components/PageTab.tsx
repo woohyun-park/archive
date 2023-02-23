@@ -49,8 +49,8 @@ export default function PageTab({ header, tabs }: IPageTapProps) {
   };
   const headerRef = useRef<HTMLDivElement>(null);
   const tabRef = useRef<HTMLDivElement>(null);
-  const [articleHeight, setArticleHeight] = useState<number | null>(null);
-  const [headerHeight, setHeaderHeight] = useState<number | null>(null);
+  // const [articleHeight, setArticleHeight] = useState<number | null>(null);
+  // const [headerHeight, setHeaderHeight] = useState<number | null>(null);
   const [tabHeight, setTabHeight] = useState<number | null>(null);
 
   const { scroll, setScroll, pages, setSelectedPage } = useStatus();
@@ -63,45 +63,36 @@ export default function PageTab({ header, tabs }: IPageTapProps) {
     else setSelectedPage(path, 0);
   }, [page]);
 
-  useEffect(() => {
-    const newHeaderHeight = headerRef.current?.clientHeight || 0;
-    const newTabHeight = tabRef.current?.clientHeight || 0;
-    const newArticleHeight =
-      articleRefs.current[page === undefined ? 0 : page]?.clientHeight || 0;
-    setHeaderHeight(newHeaderHeight);
-    setTabHeight(newTabHeight);
-    setArticleHeight(newArticleHeight);
-    // document.body.style.height = `calc(100vh + ${newHeaderHeight}px)`;
-  }, [page]);
+  // useEffect(() => {
+  // const newHeaderHeight = headerRef.current?.clientHeight || 0;
+  // const newTabHeight = tabRef.current?.clientHeight || 0;
+  // const newArticleHeight =
+  // articleRefs.current[page === undefined ? 0 : page]?.clientHeight || 0;
+  // setHeaderHeight(newHeaderHeight);
+  // setTabHeight(newTabHeight);
+  // setArticleHeight(newArticleHeight);
+  // }, [page]);
 
-  let init = cache && cache[tabs[0].fetchType];
-  const [initState, setInitState] = useState(0);
+  // const init = cache && cache[tabs[0].fetchType];
+  // const [initState, setInitState] = useState(0);
 
+  // headerHeight, tabHeight, articleHeight을 구하여
   useEffect(() => {
-    if (initState > 1) return;
-    const newHeaderHeight = headerRef.current?.clientHeight || 0;
+    // if (initState > 1) return;
+    // const newHeaderHeight = headerRef.current?.clientHeight || 0;
     const newTabHeight = tabRef.current?.clientHeight || 0;
-    const newArticleHeight =
-      articleRefs.current[page === undefined ? 0 : page]?.clientHeight || 0;
-    setHeaderHeight(newHeaderHeight);
+    // console.log(newTabHeight);
+    // const newArticleHeight =
+    // articleRefs.current[page === undefined ? 0 : page]?.clientHeight || 0;
+    // setHeaderHeight(newHeaderHeight);
     setTabHeight(newTabHeight);
-    setArticleHeight(newArticleHeight);
-    // document.body.style.height = `calc(100vh + ${newHeaderHeight}px)`;
-    setInitState(initState + 1);
-  }, [init]);
+    // setArticleHeight(newArticleHeight);
+    // setInitState(initState + 1);
+  }, []);
 
   return (
     <>
-      <div
-        className="static h-[100vh] overflow-y-scroll"
-        style={
-          {
-            // height: `calc(100vh + ${
-            //   headerHeight && tabHeight && headerHeight + tabHeight
-            // }px)`,
-          }
-        }
-      >
+      <div className="static h-[100vh] overflow-y-scroll">
         <div ref={headerRef}>{header}</div>
         <div className="sticky top-0 z-10" ref={tabRef}>
           <div className="flex px-4 py-4 bg-white">
