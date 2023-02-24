@@ -17,7 +17,7 @@ import PageTab from "../../components/PageTab";
 export default function Profile() {
   const { curUser } = useUser();
   const { setModalLoader } = useStatus();
-  const posts = useCachedPage("postsByUid");
+  const posts = useCachedPage("posts", "tabPosts");
 
   const router = useRouter();
   const [user, setUser] = useState<IUser>();
@@ -206,12 +206,12 @@ export default function Profile() {
               </Motion>
             }
             tabs={[
-              {
-                type: "posts",
-                fetchType: "postsByUid",
-                label: "posts",
-                numCols: 3,
-              },
+              // {
+              //   type: "posts",
+              //   fetchType: "postsByUid",
+              //   label: "posts",
+              //   numCols: 3,
+              // },
               {
                 type: "scraps",
                 fetchType: "scraps",
@@ -220,9 +220,10 @@ export default function Profile() {
               },
               {
                 type: "posts",
-                fetchType: "test",
-                label: "test",
-                numCols: 3,
+                fetchType: "posts",
+                label: "posts",
+                numCols: 1,
+                as: "fetchPostsHere",
               },
             ]}
           />

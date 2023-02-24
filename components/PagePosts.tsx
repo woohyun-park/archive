@@ -15,16 +15,26 @@ import WrapRefreshAndLoad from "./wrappers/WrapRefreshAndReload";
 
 export interface IPagePostsProps {
   fetchType: ICacheType;
+  as: string;
   numCols: 1 | 2 | 3;
 }
 
+const FETCH_LIMIT = {
+  1: 4,
+  2: 8,
+  3: 15,
+};
+
 export default function PagePosts({
   fetchType = "posts",
+  as,
   numCols = 1,
 }: IPagePostsProps) {
+  console.log("PagePosts", fetchType, as, numCols);
   const router = useRouter();
 
-  const cache = useCachedPage(fetchType);
+  const cache = useCachedPage(fetchType, as);
+  console.log("cache", cache.data);
   const { curUser } = useUser();
   const { setModalLoader } = useStatus();
 
@@ -35,7 +45,8 @@ export default function PagePosts({
   const posts = cache.data as IPost[];
   function onIntersect() {
     if (fetchType === "posts") {
-      cache.fetchPosts && cache.fetchPosts("load", path);
+      cache.fetchPosts &&
+        cache.fetchPosts("load", FETCH_LIMIT[numCols], path, as);
     } else if (fetchType === "postsByKeyword") {
       cache.fetchPostsByKeyword &&
         cache.fetchPostsByKeyword("load", path, keyword);
@@ -51,7 +62,8 @@ export default function PagePosts({
   function onChange() {}
   async function onRefresh() {
     if (fetchType === "posts") {
-      cache.fetchPosts && (await cache.fetchPosts("refresh", path));
+      cache.fetchPosts &&
+        (await cache.fetchPosts("refresh", FETCH_LIMIT[numCols], path, as));
     } else if (fetchType === "postsByKeyword") {
       cache.fetchPostsByKeyword &&
         (await cache.fetchPostsByKeyword("refresh", path, keyword));
@@ -70,7 +82,8 @@ export default function PagePosts({
     async function init() {
       if (cache.data.length === 0) {
         if (fetchType === "posts") {
-          cache.fetchPosts && (await cache.fetchPosts("init", path));
+          cache.fetchPosts &&
+            cache.fetchPosts("init", FETCH_LIMIT[numCols], path, as);
         } else if (fetchType === "postsByKeyword") {
           cache.fetchPostsByKeyword &&
             (await cache.fetchPostsByKeyword("init", path, keyword));
@@ -80,8 +93,6 @@ export default function PagePosts({
         } else if (fetchType === "postsByUid") {
           cache.fetchPostsByUid &&
             (await cache.fetchPostsByUid("init", path, curUser.id));
-        } else if (fetchType === "test") {
-          cache.fetchTest && (await cache.fetchTest("init", 5, path, "test"));
         }
       }
       setModalLoader(false);

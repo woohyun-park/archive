@@ -3,7 +3,7 @@ import { IAlarm, IPost, IScrap, ITag, IUser } from "../libs/custom";
 import { useCache } from "../stores/useCache";
 import { ICacheType } from "../stores/useCacheHelper";
 
-export const useCachedPage = (type: ICacheType | "test") => {
+export const useCachedPage = (type: string, as?: string) => {
   const router = useRouter();
   const {
     caches,
@@ -15,34 +15,31 @@ export const useCachedPage = (type: ICacheType | "test") => {
     fetchTags,
     fetchScraps,
     fetchAlarms,
-
-    fetchTest,
   } = useCache();
 
   const path = router.asPath;
   const page = caches[path];
-  const cache = page && page[type];
+  const cache = page && (as ? page[as] : page[type]);
   const isLast = cache ? cache.isLast : false;
 
-  if (type === "test") {
-    const data = cache ? (cache.data as IPost[]) : [];
-    return { data, isLast, fetchTest };
-  } else if (type === "posts") {
+  if (type === "posts") {
     const data = cache ? (cache.data as IPost[]) : [];
     return { data, isLast, fetchPosts };
-  } else if (type === "postsByTag") {
-    const data = cache ? (cache.data as IPost[]) : [];
-    return { data, isLast, fetchPostsByTag };
-  } else if (type === "postsByKeyword") {
-    const data = cache ? (cache.data as IPost[]) : [];
-    return { data, isLast, fetchPostsByKeyword };
-  } else if (type === "postsByUid") {
-    const data = cache ? (cache.data as IPost[]) : [];
-    return { data, isLast, fetchPostsByUid };
-  } else if (type === "usersByKeyword") {
-    const data = cache ? (cache.data as IUser[]) : [];
-    return { data, isLast, fetchUsersByKeyword };
-  } else if (type === "tags") {
+  }
+  // else if (type === "postsByTag") {
+  //   const data = cache ? (cache.data as IPost[]) : [];
+  //   return { data, isLast, fetchPostsByTag };
+  // } else if (type === "postsByKeyword") {
+  //   const data = cache ? (cache.data as IPost[]) : [];
+  //   return { data, isLast, fetchPostsByKeyword };
+  // } else if (type === "postsByUid") {
+  //   const data = cache ? (cache.data as IPost[]) : [];
+  //   return { data, isLast, fetchPostsByUid };
+  // } else if (type === "usersByKeyword") {
+  //   const data = cache ? (cache.data as IUser[]) : [];
+  //   return { data, isLast, fetchUsersByKeyword };
+  // }
+  else if (type === "tags") {
     const data = cache ? (cache.data as ITag[]) : [];
     return { data, isLast, fetchTags };
   } else if (type === "scraps") {

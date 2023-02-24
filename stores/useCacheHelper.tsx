@@ -23,10 +23,10 @@ import { IScrap } from "../libs/custom";
 
 export type ICacheType =
   | "posts"
-  | "postsByTag"
-  | "postsByKeyword"
-  | "postsByUid"
-  | "usersByKeyword"
+  // | "postsByTag"
+  // | "postsByKeyword"
+  // | "postsByUid"
+  // | "usersByKeyword"
   | "tags"
   | "scraps"
   | "alarms"
@@ -50,7 +50,7 @@ export function getNewState(
   return newState;
 }
 
-export function getNewStateTest(
+export function getNewPostState(
   pathname: string,
   key: string,
   state: IUseCache,
@@ -62,7 +62,7 @@ export function getNewStateTest(
   return newState;
 }
 
-export async function testHelper(
+export async function fetchPostsHelper(
   fetchType: IFetchType,
   fetchLimit: number,
   query: Query<DocumentData>,
@@ -70,10 +70,9 @@ export async function testHelper(
 ) {
   const snap = await getDocs(query);
   const resPosts = await readPosts(snap.docs);
-  console.log("testHelper", resPosts);
   const newLastVisible = setCursor(snap, fetchType);
   if (!newLastVisible)
-    throw console.error("Cannot fetch the following:", fetchType, query);
+    throw console.error("Cannot fetch the following posts:", fetchType, query);
   if (cache) {
     cache.data = combineData(cache.data, resPosts, fetchType);
     cache.isLast = resPosts.length < fetchLimit ? true : false;
@@ -85,66 +84,67 @@ export async function testHelper(
       lastVisible: newLastVisible,
     };
   }
+  console.log("fetchPostsHelper", cache);
   return cache;
 }
 
-export async function fetchPostsHelper(fetchType: IFetchType, cache: ICache) {
-  const snap = await getDocs(getPostsQuery(fetchType, cache.lastVisible));
-  const resPosts = await readPosts(snap.docs);
-  cache.data = combineData(cache.data, resPosts, fetchType);
-  cache.isLast = resPosts.length < FETCH_LIMIT.post3 ? true : false;
-  const newLastVisible = setCursor(snap, fetchType);
-  if (newLastVisible) cache.lastVisible = newLastVisible;
-  return cache;
-}
+// export async function fetchPostsHelper(fetchType: IFetchType, cache: ICache) {
+//   const snap = await getDocs(getPostsQuery(fetchType, cache.lastVisible));
+//   const resPosts = await readPosts(snap.docs);
+//   cache.data = combineData(cache.data, resPosts, fetchType);
+//   cache.isLast = resPosts.length < FETCH_LIMIT.post3 ? true : false;
+//   const newLastVisible = setCursor(snap, fetchType);
+//   if (newLastVisible) cache.lastVisible = newLastVisible;
+//   return cache;
+// }
 
-export async function fetchPostsByTagHelper(
-  fetchType: IFetchType,
-  cache: ICache,
-  tag: string
-) {
-  const snap = await getDocs(
-    getPostsByTagQuery(fetchType, tag, cache.lastVisible)
-  );
-  const resPosts = await readPosts(snap.docs);
-  cache.data = combineData(cache.data, resPosts, fetchType);
-  cache.isLast = resPosts.length < FETCH_LIMIT.post1 ? true : false;
-  const newLastVisible = setCursor(snap, fetchType);
-  if (newLastVisible) cache.lastVisible = newLastVisible;
-  return cache;
-}
+// export async function fetchPostsByTagHelper(
+//   fetchType: IFetchType,
+//   cache: ICache,
+//   tag: string
+// ) {
+//   const snap = await getDocs(
+//     getPostsByTagQuery(fetchType, tag, cache.lastVisible)
+//   );
+//   const resPosts = await readPosts(snap.docs);
+//   cache.data = combineData(cache.data, resPosts, fetchType);
+//   cache.isLast = resPosts.length < FETCH_LIMIT.post1 ? true : false;
+//   const newLastVisible = setCursor(snap, fetchType);
+//   if (newLastVisible) cache.lastVisible = newLastVisible;
+//   return cache;
+// }
 
-export async function fetchPostsByKeywordHelper(
-  fetchType: IFetchType,
-  cache: ICache,
-  keyword: string
-) {
-  const snap = await getDocs(
-    getPostsByKeywordQuery(fetchType, keyword, cache.lastVisible)
-  );
-  const resPosts = await readPosts(snap.docs);
-  cache.data = combineData(cache.data, resPosts, fetchType);
-  cache.isLast = resPosts.length < FETCH_LIMIT.post1 ? true : false;
-  const newLastVisible = setCursor(snap, fetchType);
-  if (newLastVisible) cache.lastVisible = newLastVisible;
-  return cache;
-}
+// export async function fetchPostsByKeywordHelper(
+//   fetchType: IFetchType,
+//   cache: ICache,
+//   keyword: string
+// ) {
+//   const snap = await getDocs(
+//     getPostsByKeywordQuery(fetchType, keyword, cache.lastVisible)
+//   );
+//   const resPosts = await readPosts(snap.docs);
+//   cache.data = combineData(cache.data, resPosts, fetchType);
+//   cache.isLast = resPosts.length < FETCH_LIMIT.post1 ? true : false;
+//   const newLastVisible = setCursor(snap, fetchType);
+//   if (newLastVisible) cache.lastVisible = newLastVisible;
+//   return cache;
+// }
 
-export async function fetchPostsByUidHelper(
-  fetchType: IFetchType,
-  cache: ICache,
-  uid: string
-) {
-  const snap = await getDocs(
-    getPostsByUidQuery(fetchType, uid, cache.lastVisible)
-  );
-  const resPosts = await readPosts(snap.docs);
-  cache.data = combineData(cache.data, resPosts, fetchType);
-  cache.isLast = resPosts.length < FETCH_LIMIT.post3 ? true : false;
-  const newLastVisible = setCursor(snap, fetchType);
-  if (newLastVisible) cache.lastVisible = newLastVisible;
-  return cache;
-}
+// export async function fetchPostsByUidHelper(
+//   fetchType: IFetchType,
+//   cache: ICache,
+//   uid: string
+// ) {
+//   const snap = await getDocs(
+//     getPostsByUidQuery(fetchType, uid, cache.lastVisible)
+//   );
+//   const resPosts = await readPosts(snap.docs);
+//   cache.data = combineData(cache.data, resPosts, fetchType);
+//   cache.isLast = resPosts.length < FETCH_LIMIT.post3 ? true : false;
+//   const newLastVisible = setCursor(snap, fetchType);
+//   if (newLastVisible) cache.lastVisible = newLastVisible;
+//   return cache;
+// }
 
 export async function fetchUsersByKeywordHelper(
   fetchType: IFetchType,

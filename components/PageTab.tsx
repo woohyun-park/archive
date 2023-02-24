@@ -33,9 +33,11 @@ type ITagsType = IPageTagsProps & ITabType;
 type ITabType = {
   type: "posts" | "users" | "tags" | "scraps";
   label: string;
+  // key: string;
 };
 
 export default function PageTab({ header, tabs }: IPageTapProps) {
+  console.log("PageTab", header, tabs);
   const router = useRouter();
   const tabRef = useRef<HTMLDivElement>(null);
   const scrollRefs = useRef<HTMLDivElement[]>([]);
@@ -108,6 +110,7 @@ export default function PageTab({ header, tabs }: IPageTapProps) {
                     <PagePosts
                       fetchType={tab.fetchType as ICacheType}
                       numCols={(tab as IPostsType).numCols}
+                      as={(tab as IPostsType).as}
                     />
                   )}
                   {tab.type === "users" && (
