@@ -3,7 +3,7 @@ import { IAlarm, IPost, IScrap, ITag, IUser } from "../libs/custom";
 import { useCache } from "../stores/useCache";
 import { ICacheType } from "../stores/useCacheHelper";
 
-export const useCachedPage = (type: ICacheType) => {
+export const useCachedPage = (type: ICacheType | "test") => {
   const router = useRouter();
   const {
     caches,
@@ -15,6 +15,8 @@ export const useCachedPage = (type: ICacheType) => {
     fetchTags,
     fetchScraps,
     fetchAlarms,
+
+    fetchTest,
   } = useCache();
 
   const path = router.asPath;
@@ -22,7 +24,10 @@ export const useCachedPage = (type: ICacheType) => {
   const cache = page && page[type];
   const isLast = cache ? cache.isLast : false;
 
-  if (type === "posts") {
+  if (type === "test") {
+    const data = cache ? (cache.data as IPost[]) : [];
+    return { data, isLast, fetchTest };
+  } else if (type === "posts") {
     const data = cache ? (cache.data as IPost[]) : [];
     return { data, isLast, fetchPosts };
   } else if (type === "postsByTag") {

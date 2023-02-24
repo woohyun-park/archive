@@ -3,7 +3,7 @@ import { mergeTailwindClasses } from "../../apis/tailwind";
 
 interface IButtonProps {
   label: string;
-  type?: "button" | "submit" | "reset" | undefined;
+  type?: "button" | "submit";
   isActive?: boolean;
   size?: "base" | "sm";
   width?: "fit" | "full";

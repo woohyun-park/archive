@@ -90,7 +90,7 @@ export function getFeedByTagQuery(
 
 export function getPostsQuery(
   type: IFetchType,
-  lastVisible: QueryDocumentSnapshot<DocumentData>
+  lastVisible?: QueryDocumentSnapshot<DocumentData>
 ): Query<DocumentData> {
   if (type === "init")
     return query(

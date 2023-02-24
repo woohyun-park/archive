@@ -218,6 +218,12 @@ export default function Profile() {
                 label: "scraps",
                 numCols: 3,
               },
+              {
+                type: "posts",
+                fetchType: "test",
+                label: "test",
+                numCols: 3,
+              },
             ]}
           />
         </>

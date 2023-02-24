@@ -1,7 +1,7 @@
 import create from "zustand";
 import { devtools } from "zustand/middleware";
 import { IDict } from "../libs/custom";
-import { IFetchType } from "../apis/fbQuery";
+import { getPostsQuery, IFetchType } from "../apis/fbQuery";
 import {
   fetchAlarmsHelper,
   fetchPostsByKeywordHelper,
@@ -12,8 +12,11 @@ import {
   fetchTagsHelper,
   fetchUsersByKeywordHelper,
   getNewState,
+  getNewStateTest,
   ICache,
+  testHelper,
 } from "./useCacheHelper";
+import { DocumentData, Query } from "firebase/firestore";
 
 export interface IUseCache {
   caches: IDict<IPage>;
@@ -53,6 +56,13 @@ export interface IUseCache {
     pathname: string,
     uid: string
   ) => Promise<void>;
+
+  fetchTest: (
+    fetchType: IFetchType,
+    fetchLimit: number,
+    pathname: string,
+    key: string
+  ) => Promise<void>;
 }
 
 type IPage = IDict<ICache>;
@@ -60,6 +70,25 @@ type IPage = IDict<ICache>;
 export const useCache = create<IUseCache>()(
   devtools((set, get) => ({
     caches: {},
+
+    fetchTest: async (
+      fetchType: IFetchType,
+      fetchLimit: number,
+      pathname: string,
+      key: string
+    ) => {
+      console.log("fetchTest");
+      const prevCache = get().caches[pathname]
+        ? get().caches[pathname][key]
+        : undefined;
+      const cache = await testHelper(
+        fetchType,
+        fetchLimit,
+        getPostsQuery(fetchType),
+        prevCache
+      );
+      set((state: IUseCache) => getNewStateTest(pathname, key, state, cache));
+    },
 
     fetchPosts: async (fetchType: IFetchType, pathname: string) => {
       const posts = get().caches[pathname]?.posts;

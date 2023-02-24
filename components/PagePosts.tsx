@@ -1,6 +1,7 @@
 import { AnimatePresence } from "framer-motion";
 import { useRouter } from "next/router";
 import React, { Children, useEffect } from "react";
+import { getPostsQuery } from "../apis/fbQuery";
 import { useCachedPage } from "../hooks/useCachedPage";
 import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 import { IPost } from "../libs/custom";
@@ -43,6 +44,9 @@ export default function PagePosts({
     } else if (fetchType === "postsByUid") {
       cache.fetchPostsByUid && cache.fetchPostsByUid("load", path, curUser.id);
     }
+    // else if (fetchType === "test") {
+    //   cache.fetchTest && cache.fetchTest("load", 5, path, "test");
+    // }
   }
   function onChange() {}
   async function onRefresh() {
@@ -76,6 +80,8 @@ export default function PagePosts({
         } else if (fetchType === "postsByUid") {
           cache.fetchPostsByUid &&
             (await cache.fetchPostsByUid("init", path, curUser.id));
+        } else if (fetchType === "test") {
+          cache.fetchTest && (await cache.fetchTest("init", 5, path, "test"));
         }
       }
       setModalLoader(false);

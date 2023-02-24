@@ -1,6 +1,7 @@
 import {
   DocumentData,
   getDocs,
+  Query,
   QueryDocumentSnapshot,
 } from "firebase/firestore";
 import {
@@ -28,7 +29,8 @@ export type ICacheType =
   | "usersByKeyword"
   | "tags"
   | "scraps"
-  | "alarms";
+  | "alarms"
+  | "test";
 
 export interface ICache {
   data: any[];
@@ -37,15 +39,53 @@ export interface ICache {
 }
 
 export function getNewState(
-  type: ICacheType,
+  key: string,
   state: IUseCache,
   cache: ICache,
   pathname: string
 ) {
   const newState = { ...state };
-  if (!newState.caches[pathname]) newState.caches[pathname] = { [type]: cache };
-  else newState.caches[pathname][type] = cache;
+  if (!newState.caches[pathname]) newState.caches[pathname] = { [key]: cache };
+  else newState.caches[pathname][key] = cache;
   return newState;
+}
+
+export function getNewStateTest(
+  pathname: string,
+  key: string,
+  state: IUseCache,
+  cache: ICache
+) {
+  const newState = { ...state };
+  if (!newState.caches[pathname]) newState.caches[pathname] = { [key]: cache };
+  else newState.caches[pathname][key] = cache;
+  return newState;
+}
+
+export async function testHelper(
+  fetchType: IFetchType,
+  fetchLimit: number,
+  query: Query<DocumentData>,
+  cache: ICache | undefined
+) {
+  const snap = await getDocs(query);
+  const resPosts = await readPosts(snap.docs);
+  console.log("testHelper", resPosts);
+  const newLastVisible = setCursor(snap, fetchType);
+  if (!newLastVisible)
+    throw console.error("Cannot fetch the following:", fetchType, query);
+  if (cache) {
+    cache.data = combineData(cache.data, resPosts, fetchType);
+    cache.isLast = resPosts.length < fetchLimit ? true : false;
+    if (newLastVisible) cache.lastVisible = newLastVisible;
+  } else {
+    cache = {
+      data: combineData([], resPosts, fetchType),
+      isLast: resPosts.length < fetchLimit ? true : false,
+      lastVisible: newLastVisible,
+    };
+  }
+  return cache;
 }
 
 export async function fetchPostsHelper(fetchType: IFetchType, cache: ICache) {
