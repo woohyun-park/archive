@@ -1,40 +1,20 @@
 import create from "zustand";
 import { devtools } from "zustand/middleware";
 import { IDict } from "../libs/custom";
-import { getPostsQuery, IFetchType } from "../apis/fbQuery";
+import { getPostsQuery } from "../apis/fbQuery";
 import {
   fetchAlarmsHelper,
-  fetchPostsByKeywordHelper,
-  fetchPostsByTagHelper,
-  fetchPostsByUidHelper,
   fetchPostsHelper,
   fetchScrapsHelper,
   fetchTagsHelper,
   fetchUsersByKeywordHelper,
   getNewPostState,
   getNewState,
-  getNewStateTest,
   ICache,
 } from "./useCacheHelper";
-import { DocumentData, Query } from "firebase/firestore";
 
 export interface IUseCache {
   caches: IDict<IPage>;
-  // fetchPostsByTag: (
-  //   fetchType: IFetchType,
-  //   pathname: string,
-  //   tag: string
-  // ) => Promise<void>;
-  // fetchPostsByKeyword: (
-  //   fetchType: IFetchType,
-  //   pathname: string,
-  //   keyword: string
-  // ) => Promise<void>;
-  // fetchPostsByUid: (
-  //   fetchType: IFetchType,
-  //   pathname: string,
-  //   uid: string
-  // ) => Promise<void>;
   fetchUsersByKeyword: (
     fetchType: IFetchType,
     pathname: string,
@@ -55,46 +35,58 @@ export interface IUseCache {
     pathname: string,
     uid: string
   ) => Promise<void>;
-
-  // fetchPosts: (fetchType: IFetchType, pathname: string) => Promise<void>;
   fetchPosts: (
-    fetchType: IFetchType,
-    fetchLimit: number,
+    type: IFetchType,
+    query: IFetchQuery,
     pathname: string,
-    key: string
+    as: string,
+    numCols: number
   ) => Promise<void>;
 }
 
 type IPage = IDict<ICache>;
 
+export type IFetchType = "init" | "load" | "refresh";
+
+export type IFetchQuery = {
+  type: "none" | "keyword";
+  value: IDict<string>;
+};
+
+export const FETCH_LIMIT = {
+  post: { 1: 4, 2: 8, 3: 15 } as IDict<number>,
+  user: 16,
+  tag: 16,
+  scrap: 15,
+  comment: 16,
+  alarm: 16,
+};
+
 export const useCache = create<IUseCache>()(
   devtools((set, get) => ({
     caches: {},
-
-    //TODO: fetchPosts로 통합하는데, 아래와 같은 형식으로 여러 방식으로 쿼리할 수 있도록.
-    // fetchOption: {
-    //  type: "init" | "load" | "refresh";
-    //  queryType: "none" | "uid" | "tag" | "keyword" 등
-    //  queryValue: 여기에 Object 형식으로 쿼리하는데 uid, tag가 필요하면 {uid, tag} 이런식으로
-    //  limit: number;
-    // }
     fetchPosts: async (
-      fetchType: IFetchType,
-      fetchLimit: number,
-      fetchOption: 
+      type: IFetchType,
+      query: IFetchQuery,
       pathname: string,
-      key: string
+      as: string,
+      numCols: number
     ) => {
       const prevCache = get().caches[pathname]
-        ? get().caches[pathname][key]
+        ? get().caches[pathname][as]
         : undefined;
       const cache = await fetchPostsHelper(
-        fetchType,
-        fetchLimit,
-        getPostsQuery(fetchType),
+        type,
+        FETCH_LIMIT.post[numCols],
+        getPostsQuery(
+          type,
+          query,
+          FETCH_LIMIT.post[numCols],
+          prevCache?.lastVisible
+        ),
         prevCache
       );
-      set((state: IUseCache) => getNewPostState(pathname, key, state, cache));
+      set((state: IUseCache) => getNewPostState(pathname, as, state, cache));
     },
 
     // fetchPosts: async (fetchType: IFetchType, pathname: string) => {

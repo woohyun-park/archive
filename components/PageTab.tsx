@@ -19,11 +19,6 @@ import WrapScrollTab from "./wrappers/WrapScrollTab";
 // ! 각각의 tab의 스크롤을 저장하는 경우는 두가지이다.
 // 다른 탭으로 넘어갈 때, 그리고 다른 상세 페이지로 넘어갔다가 돌아올 때
 
-interface IPageTapProps {
-  header: React.ReactNode;
-  tabs: IDataType[];
-}
-
 type IDataType = IPostsType | IUsersType | ITagsType;
 
 type IPostsType = IPagePostsProps & ITabType;
@@ -36,8 +31,12 @@ type ITabType = {
   // key: string;
 };
 
+interface IPageTapProps {
+  header: React.ReactNode;
+  tabs: IDataType[];
+}
+
 export default function PageTab({ header, tabs }: IPageTapProps) {
-  console.log("PageTab", header, tabs);
   const router = useRouter();
   const tabRef = useRef<HTMLDivElement>(null);
   const scrollRefs = useRef<HTMLDivElement[]>([]);
@@ -108,9 +107,9 @@ export default function PageTab({ header, tabs }: IPageTapProps) {
                 <div>
                   {tab.type === "posts" && (
                     <PagePosts
-                      fetchType={tab.fetchType as ICacheType}
-                      numCols={(tab as IPostsType).numCols}
+                      query={(tab as IPostsType).query}
                       as={(tab as IPostsType).as}
+                      numCols={(tab as IPostsType).numCols}
                     />
                   )}
                   {tab.type === "users" && (

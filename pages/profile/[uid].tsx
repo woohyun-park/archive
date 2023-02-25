@@ -1,14 +1,11 @@
-import { signOut } from "firebase/auth";
-import { auth, db } from "../../apis/firebase";
-import { IDict, IPost, IScrap, ITag, IUser, SIZE } from "../../libs/custom";
+import { IDict, IPost, IUser } from "../../libs/custom";
 import { useEffect, useState } from "react";
 import Motion from "../../components/wrappers/WrapMotion";
-import Btn from "../../components/atoms/Btn";
 import { useUser } from "../../stores/useUser";
 import BtnIcon from "../../components/atoms/BtnIcon";
 import { useRouter } from "next/router";
 import ProfileImg from "../../components/ProfileImg";
-import { readData, readDatasByQuery, readPost } from "../../apis/fbRead";
+import { readData } from "../../apis/fbRead";
 import { useStatus } from "../../stores/useStatus";
 import { updateFollow } from "../../apis/fbUpdate";
 import { useCachedPage } from "../../hooks/useCachedPage";
@@ -41,8 +38,17 @@ export default function Profile() {
     async function init() {
       const uid = router.query.uid as string;
       const user = await readData<IUser>("users", uid);
-      posts.fetchPostsByUid &&
-        (await posts.fetchPostsByUid("init", path, user.id));
+      posts.fetchPosts &&
+        (await posts.fetchPosts(
+          {
+            type: "init",
+            queryType: "none",
+            queryValue: {},
+            limit: FETCH_LIMIT.post1,
+          },
+          path,
+          "posts"
+        ));
       // if (!user) return;
       // const posts = await readDatasByQuery<IPost>(
       //   query(collection(db, "posts"), where("uid", "==", uid))

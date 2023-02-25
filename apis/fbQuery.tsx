@@ -13,18 +13,7 @@ import {
 } from "firebase/firestore";
 import { db } from "./firebase";
 import { IUser } from "../libs/custom";
-
-export type IFetchType = "init" | "load" | "refresh";
-export const FETCH_LIMIT = {
-  post1: 4,
-  post2: 8,
-  post3: 15,
-  user: 16,
-  tag: 16,
-  scrap: 15,
-  comment: 16,
-  alarm: 16,
-};
+import { FETCH_LIMIT, IFetchQuery, IFetchType } from "../stores/useCache";
 
 export function getFeedQuery(
   type: IFetchType,
@@ -37,7 +26,7 @@ export function getFeedQuery(
       collection(db, "posts"),
       where("uid", "in", [...user.followings, id]),
       orderBy("createdAt", "desc"),
-      limit(FETCH_LIMIT.post1)
+      limit(FETCH_LIMIT.post[1])
     );
   if (type === "load")
     return query(
@@ -45,7 +34,7 @@ export function getFeedQuery(
       where("uid", "in", [...user.followings, id]),
       orderBy("createdAt", "desc"),
       startAfter(lastVisible),
-      limit(FETCH_LIMIT.post1)
+      limit(FETCH_LIMIT.post[1])
     );
   return query(
     collection(db, "posts"),
@@ -68,7 +57,7 @@ export function getFeedByTagQuery(
       where("uid", "in", [...user.followings, id]),
       where("tags", "array-contains", tag),
       orderBy("createdAt", "desc"),
-      limit(FETCH_LIMIT.post1)
+      limit(FETCH_LIMIT.post[1])
     );
   if (type === "load")
     return query(
@@ -77,7 +66,7 @@ export function getFeedByTagQuery(
       where("tags", "array-contains", tag),
       orderBy("createdAt", "desc"),
       startAfter(lastVisible),
-      limit(FETCH_LIMIT.post1)
+      limit(FETCH_LIMIT.post[1])
     );
   return query(
     collection(db, "posts"),
@@ -89,27 +78,55 @@ export function getFeedByTagQuery(
 }
 
 export function getPostsQuery(
-  type: IFetchType,
-  lastVisible?: QueryDocumentSnapshot<DocumentData>
+  fetchType: IFetchType,
+  fetchQuery: IFetchQuery,
+  fetchLimit: number,
+  lastVisible: QueryDocumentSnapshot<DocumentData> | undefined
 ): Query<DocumentData> {
-  if (type === "init")
+  if (fetchQuery.type === "keyword") {
+    const keyword = fetchQuery.value.keyword;
+    if (fetchType === "init")
+      return query(
+        collection(db, "posts"),
+        orderBy("title"),
+        startAt(keyword),
+        endAt(keyword + "\uf8ff"),
+        limit(fetchLimit)
+      );
+    if (type === "load")
+      return query(
+        collection(db, "posts"),
+        orderBy("title"),
+        startAfter(lastVisible),
+        endAt(keyword + "\uf8ff"),
+        limit(fetchLimit)
+      );
+    return query(
+      collection(db, "posts"),
+      orderBy("title"),
+      startAt(keyword),
+      endAt(lastVisible)
+    );
+  } else {
+    if (fetchType === "init")
+      return query(
+        collection(db, "posts"),
+        orderBy("createdAt", "desc"),
+        limit(fetchLimit)
+      );
+    if (fetchType === "load")
+      return query(
+        collection(db, "posts"),
+        orderBy("createdAt", "desc"),
+        startAfter(lastVisible),
+        limit(fetchLimit)
+      );
     return query(
       collection(db, "posts"),
       orderBy("createdAt", "desc"),
-      limit(FETCH_LIMIT.post3)
+      endAt(lastVisible)
     );
-  if (type === "load")
-    return query(
-      collection(db, "posts"),
-      orderBy("createdAt", "desc"),
-      startAfter(lastVisible),
-      limit(FETCH_LIMIT.post3)
-    );
-  return query(
-    collection(db, "posts"),
-    orderBy("createdAt", "desc"),
-    endAt(lastVisible)
-  );
+  }
 }
 
 export function getPostsByTagQuery(
@@ -122,7 +139,7 @@ export function getPostsByTagQuery(
       collection(db, "posts"),
       where("tags", "array-contains", tag),
       orderBy("createdAt", "desc"),
-      limit(FETCH_LIMIT.post1)
+      limit(FETCH_LIMIT.post[1])
     );
   if (type === "load")
     return query(
@@ -130,7 +147,7 @@ export function getPostsByTagQuery(
       where("tags", "array-contains", tag),
       orderBy("createdAt", "desc"),
       startAfter(lastVisible),
-      limit(FETCH_LIMIT.post1)
+      limit(FETCH_LIMIT.post[1])
     );
   return query(
     collection(db, "posts"),
@@ -151,7 +168,7 @@ export function getPostsByKeywordQuery(
       orderBy("title"),
       startAt(keyword),
       endAt(keyword + "\uf8ff"),
-      limit(FETCH_LIMIT.post1)
+      limit(FETCH_LIMIT.post[1])
     );
   if (type === "load")
     return query(
@@ -159,7 +176,7 @@ export function getPostsByKeywordQuery(
       orderBy("title"),
       startAfter(lastVisible),
       endAt(keyword + "\uf8ff"),
-      limit(FETCH_LIMIT.post1)
+      limit(FETCH_LIMIT.post[1])
     );
   return query(
     collection(db, "posts"),
@@ -179,14 +196,14 @@ export function getPostsByUidQuery(
       collection(db, "posts"),
       orderBy("createdAt", "desc"),
       where("uid", "==", uid),
-      limit(FETCH_LIMIT.post3)
+      limit(FETCH_LIMIT.post[3])
     );
   if (type === "load")
     return query(
       collection(db, "posts"),
       orderBy("createdAt", "desc"),
       where("uid", "==", uid),
-      limit(FETCH_LIMIT.post3)
+      limit(FETCH_LIMIT.post[3])
     );
   return query(
     collection(db, "posts"),
