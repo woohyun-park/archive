@@ -6,10 +6,6 @@ import {
 } from "firebase/firestore";
 import {
   getAlarmQuery,
-  getPostsByKeywordQuery,
-  getPostsByTagQuery,
-  getPostsByUidQuery,
-  getPostsQuery,
   getScrapsQuery,
   getTagsQuery,
   getUsersByKeywordQuery,
@@ -17,7 +13,6 @@ import {
 import { combineData, setCursor } from "./libStores";
 import { readAlarms, readPosts, readScraps, readUsers } from "../apis/fbRead";
 import { FETCH_LIMIT, IFetchType, IUseCache } from "./useCache";
-import { IScrap } from "../libs/custom";
 
 export type ICacheType =
   | "posts"
