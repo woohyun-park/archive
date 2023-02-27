@@ -49,7 +49,7 @@ type IPage = IDict<ICache>;
 export type IFetchType = "init" | "load" | "refresh";
 
 export type IFetchQuery = {
-  type: "none" | "keyword";
+  type: "none" | "keyword" | "tag";
   value: IDict<string>;
 };
 

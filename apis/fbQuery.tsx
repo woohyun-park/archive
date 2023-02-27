@@ -93,7 +93,7 @@ export function getPostsQuery(
         endAt(keyword + "\uf8ff"),
         limit(fetchLimit)
       );
-    if (type === "load")
+    if (fetchType === "load")
       return query(
         collection(db, "posts"),
         orderBy("title"),
@@ -105,6 +105,29 @@ export function getPostsQuery(
       collection(db, "posts"),
       orderBy("title"),
       startAt(keyword),
+      endAt(lastVisible)
+    );
+  } else if (fetchQuery.type === "tag") {
+    const tag = fetchQuery.value.tag;
+    if (fetchType === "init")
+      return query(
+        collection(db, "posts"),
+        where("tags", "array-contains", tag),
+        orderBy("createdAt", "desc"),
+        limit(FETCH_LIMIT.post[1])
+      );
+    if (fetchType === "load")
+      return query(
+        collection(db, "posts"),
+        where("tags", "array-contains", tag),
+        orderBy("createdAt", "desc"),
+        startAfter(lastVisible),
+        limit(FETCH_LIMIT.post[1])
+      );
+    return query(
+      collection(db, "posts"),
+      where("tags", "array-contains", tag),
+      orderBy("createdAt", "desc"),
       endAt(lastVisible)
     );
   } else {
@@ -127,63 +150,6 @@ export function getPostsQuery(
       endAt(lastVisible)
     );
   }
-}
-
-export function getPostsByTagQuery(
-  type: IFetchType,
-  tag: string,
-  lastVisible: QueryDocumentSnapshot<DocumentData>
-): Query<DocumentData> {
-  if (type === "init")
-    return query(
-      collection(db, "posts"),
-      where("tags", "array-contains", tag),
-      orderBy("createdAt", "desc"),
-      limit(FETCH_LIMIT.post[1])
-    );
-  if (type === "load")
-    return query(
-      collection(db, "posts"),
-      where("tags", "array-contains", tag),
-      orderBy("createdAt", "desc"),
-      startAfter(lastVisible),
-      limit(FETCH_LIMIT.post[1])
-    );
-  return query(
-    collection(db, "posts"),
-    where("tags", "array-contains", tag),
-    orderBy("createdAt", "desc"),
-    endAt(lastVisible)
-  );
-}
-
-export function getPostsByKeywordQuery(
-  type: IFetchType,
-  keyword: string,
-  lastVisible: QueryDocumentSnapshot<DocumentData>
-) {
-  if (type === "init")
-    return query(
-      collection(db, "posts"),
-      orderBy("title"),
-      startAt(keyword),
-      endAt(keyword + "\uf8ff"),
-      limit(FETCH_LIMIT.post[1])
-    );
-  if (type === "load")
-    return query(
-      collection(db, "posts"),
-      orderBy("title"),
-      startAfter(lastVisible),
-      endAt(keyword + "\uf8ff"),
-      limit(FETCH_LIMIT.post[1])
-    );
-  return query(
-    collection(db, "posts"),
-    orderBy("title"),
-    startAt(keyword),
-    endAt(lastVisible)
-  );
 }
 
 export function getPostsByUidQuery(
