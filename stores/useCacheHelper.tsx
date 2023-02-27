@@ -14,16 +14,7 @@ import { combineData, setCursor } from "./libStores";
 import { readAlarms, readPosts, readScraps, readUsers } from "../apis/fbRead";
 import { FETCH_LIMIT, IFetchType, IUseCache } from "./useCache";
 
-export type ICacheType =
-  | "posts"
-  // | "postsByTag"
-  // | "postsByKeyword"
-  // | "postsByUid"
-  // | "usersByKeyword"
-  | "tags"
-  | "scraps"
-  | "alarms"
-  | "test";
+export type ICacheType = "posts" | "tags" | "scraps" | "alarms" | "test";
 
 export interface ICache {
   data: any[];
