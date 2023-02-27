@@ -1,68 +1,33 @@
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import Loader from "../components/Loader";
-import { useFeed } from "../stores/useFeed";
-import { useStatus } from "../stores/useStatus";
 import { useUser } from "../stores/useUser";
 import ProfileImg from "../components/ProfileImg";
 import BtnIcon from "../components/atoms/BtnIcon";
 import InputIcon from "../components/atoms/InputIcon";
 import { debounce } from "lodash";
-import Page from "../components/Page";
 import WrapScroll from "../components/wrappers/WrapScroll";
 import WrapLink from "../components/wrappers/WrapLink";
 import PagePosts from "../components/PagePosts";
+import { createHash } from "crypto";
 
 export default function Feed() {
-  const { curUser } = useUser();
-  const {
-    posts,
-    filteredPosts,
-    refresh,
-    getPosts,
-    getFilteredPosts,
-    setFilteredPosts,
-    setRefresh,
-  } = useFeed();
-  const { scroll, keywords, setScroll, setKeywords, setModalLoader } =
-    useStatus();
-
   const router = useRouter();
-  const [filterLoading, setFilterLoading] = useState(false);
-  const [resetFilter, setResetFilter] = useState<boolean | null>(null);
+  const [tag, setTag] = useState("");
+  const [debounceTag, setDebounceTag] = useState("");
 
-  const keyword = keywords[router.asPath] || "";
-
-  useEffect(() => {
-    setModalLoader(false);
-    setTimeout(() => {
-      if (refresh) {
-        window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
-        setFilterLoading(true);
-        setRefresh(false);
-      } else {
-        window.scrollTo(0, scroll[router.asPath]);
-      }
-    }, 10);
-  }, []);
+  const { curUser } = useUser();
 
   useEffect(() => {
     debounce(() => {
-      resetFilter !== null && setFilterLoading(true);
+      setDebounceTag(tag);
     }, 500)();
-  }, [keyword]);
+  }, [tag]);
 
-  useEffect(() => {
-    async function filterPosts() {
-      if (keyword.length === 0) {
-        await getPosts("refresh", curUser.id);
-      } else {
-        await getFilteredPosts("init", curUser.id, keyword);
-      }
-      setFilterLoading(false);
-    }
-    filterPosts();
-  }, [filterLoading]);
+  function hash(key: string) {
+    const hash = createHash("sha256");
+    hash.update(key);
+    return hash.digest("hex");
+  }
 
   return (
     <div className="relative flex flex-col">
@@ -88,45 +53,41 @@ export default function Feed() {
         icon="filter"
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
           e.preventDefault();
-          const keyword = e.target.value;
-          if (keyword === "") {
-            setFilteredPosts([]);
-          } else if (keyword.slice(keyword.length - 1) !== " ") {
-            setKeywords(router.asPath, keyword);
-            setResetFilter(!resetFilter);
+          const newTag = e.target.value;
+          if (newTag.slice(newTag.length - 1) !== " ") {
+            setTag(newTag);
           }
         }}
         onDelete={() => {
-          setKeywords(router.asPath, "");
-          setResetFilter(!resetFilter);
-          setFilteredPosts([]);
+          setTag("");
         }}
-        keyword={keyword}
+        keyword={tag}
         placeholder={"찾고싶은 태그를 입력해보세요!"}
         style="margin-left: 1rem; margin-right: 1rem;"
       />
-      <Loader isVisible={filterLoading} />
-      {keyword.length === 0 ? (
-        <Page
-          page="feed"
-          data={posts}
-          onIntersect={() => getPosts("load", curUser.id)}
-          onChange={() => {}}
-          onRefresh={async () => {
-            await getPosts("refresh", curUser.id);
+      {tag.length === 0 ? (
+        <PagePosts
+          query={{
+            type: "follow",
+            value: {
+              follow: [...curUser.followings, curUser.id],
+            },
           }}
-          changeListener={posts}
+          as="posts"
+          numCols={1}
         />
       ) : (
-        <Page
-          page="feed"
-          data={filteredPosts}
-          onIntersect={() => getFilteredPosts("load", curUser.id, keyword)}
-          onChange={() => {}}
-          onRefresh={async () => {
-            await getFilteredPosts("refresh", curUser.id, keyword);
+        <PagePosts
+          key={hash(debounceTag)}
+          query={{
+            type: "followAndTag",
+            value: {
+              follow: [...curUser.followings, curUser.id],
+              tag,
+            },
           }}
-          changeListener={filteredPosts}
+          as={hash(debounceTag)}
+          numCols={1}
         />
       )}
       <div className="mb-24"></div>

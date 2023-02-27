@@ -18,6 +18,7 @@ export interface IPagePostsProps {
 }
 
 export default function PagePosts({ query, as, numCols = 1 }: IPagePostsProps) {
+  // console.log("PagePosts", query);
   const router = useRouter();
 
   const cache = useCachedPage("posts", as);
@@ -67,6 +68,7 @@ export default function PagePosts({ query, as, numCols = 1 }: IPagePostsProps) {
 
   useEffect(() => {
     async function init() {
+      console.log("init", query);
       if (cache.data.length === 0) {
         cache.fetchPosts &&
           (await cache.fetchPosts("init", query, path, as, numCols));

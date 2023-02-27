@@ -49,8 +49,8 @@ type IPage = IDict<ICache>;
 export type IFetchType = "init" | "load" | "refresh";
 
 export type IFetchQuery = {
-  type: "none" | "keyword" | "tag";
-  value: IDict<string>;
+  type: "none" | "follow" | "followAndTag" | "keyword" | "tag";
+  value: IDict<any>;
 };
 
 export const FETCH_LIMIT = {

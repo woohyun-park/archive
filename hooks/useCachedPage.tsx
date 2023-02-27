@@ -1,16 +1,12 @@
 import { useRouter } from "next/router";
 import { IAlarm, IPost, IScrap, ITag, IUser } from "../libs/custom";
 import { useCache } from "../stores/useCache";
-import { ICacheType } from "../stores/useCacheHelper";
 
 export const useCachedPage = (type: string, as?: string) => {
   const router = useRouter();
   const {
     caches,
     fetchPosts,
-    fetchPostsByTag,
-    fetchPostsByKeyword,
-    fetchPostsByUid,
     fetchUsersByKeyword,
     fetchTags,
     fetchScraps,

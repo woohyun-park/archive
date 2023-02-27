@@ -22,7 +22,7 @@ export default function Tag({}) {
           type: "tag",
           value: { tag },
         }}
-        as={"posts"}
+        as="posts"
         numCols={1}
       />
     </Motion>

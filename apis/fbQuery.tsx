@@ -14,6 +14,7 @@ import {
 import { db } from "./firebase";
 import { IUser } from "../libs/custom";
 import { FETCH_LIMIT, IFetchQuery, IFetchType } from "../stores/useCache";
+import { StringMappingType } from "typescript";
 
 export function getFeedQuery(
   type: IFetchType,
@@ -83,73 +84,30 @@ export function getPostsQuery(
   fetchLimit: number,
   lastVisible: QueryDocumentSnapshot<DocumentData> | undefined
 ): Query<DocumentData> {
-  if (fetchQuery.type === "keyword") {
-    const keyword = fetchQuery.value.keyword;
-    if (fetchType === "init")
-      return query(
-        collection(db, "posts"),
-        orderBy("title"),
-        startAt(keyword),
-        endAt(keyword + "\uf8ff"),
-        limit(fetchLimit)
-      );
-    if (fetchType === "load")
-      return query(
-        collection(db, "posts"),
-        orderBy("title"),
-        startAfter(lastVisible),
-        endAt(keyword + "\uf8ff"),
-        limit(fetchLimit)
-      );
-    return query(
-      collection(db, "posts"),
-      orderBy("title"),
-      startAt(keyword),
-      endAt(lastVisible)
+  if (fetchQuery.type === "follow")
+    return getPostsQueryByFollow(
+      fetchType,
+      fetchQuery,
+      fetchLimit,
+      lastVisible
     );
-  } else if (fetchQuery.type === "tag") {
-    const tag = fetchQuery.value.tag;
-    if (fetchType === "init")
-      return query(
-        collection(db, "posts"),
-        where("tags", "array-contains", tag),
-        orderBy("createdAt", "desc"),
-        limit(FETCH_LIMIT.post[1])
-      );
-    if (fetchType === "load")
-      return query(
-        collection(db, "posts"),
-        where("tags", "array-contains", tag),
-        orderBy("createdAt", "desc"),
-        startAfter(lastVisible),
-        limit(FETCH_LIMIT.post[1])
-      );
-    return query(
-      collection(db, "posts"),
-      where("tags", "array-contains", tag),
-      orderBy("createdAt", "desc"),
-      endAt(lastVisible)
+  else if (fetchQuery.type === "followAndTag")
+    return getPostsQueryByFollowAndTag(
+      fetchType,
+      fetchQuery,
+      fetchLimit,
+      lastVisible
     );
-  } else {
-    if (fetchType === "init")
-      return query(
-        collection(db, "posts"),
-        orderBy("createdAt", "desc"),
-        limit(fetchLimit)
-      );
-    if (fetchType === "load")
-      return query(
-        collection(db, "posts"),
-        orderBy("createdAt", "desc"),
-        startAfter(lastVisible),
-        limit(fetchLimit)
-      );
-    return query(
-      collection(db, "posts"),
-      orderBy("createdAt", "desc"),
-      endAt(lastVisible)
+  else if (fetchQuery.type === "keyword")
+    return getPostsQueryByKeyword(
+      fetchType,
+      fetchQuery,
+      fetchLimit,
+      lastVisible
     );
-  }
+  else if (fetchQuery.type === "tag")
+    return getPostsQueryByTag(fetchType, fetchQuery, fetchLimit, lastVisible);
+  else return getPostsQueryAll(fetchType, fetchQuery, fetchLimit, lastVisible);
 }
 
 export function getPostsByUidQuery(
@@ -289,6 +247,157 @@ export function getAlarmQuery(
   return query(
     collection(db, "alarms"),
     where("targetUid", "==", uid),
+    orderBy("createdAt", "desc"),
+    endAt(lastVisible)
+  );
+}
+
+function getPostsQueryByFollowAndTag(
+  fetchType: IFetchType,
+  fetchQuery: IFetchQuery,
+  fetchLimit: number,
+  lastVisible: QueryDocumentSnapshot<DocumentData> | undefined
+) {
+  const follow = fetchQuery.value.follow;
+  const tag = fetchQuery.value.tag;
+  if (fetchType === "init")
+    return query(
+      collection(db, "posts"),
+      where("uid", "in", follow),
+      where("tags", "array-contains", tag),
+      orderBy("createdAt", "desc"),
+      limit(fetchLimit)
+    );
+  if (fetchType === "load")
+    return query(
+      collection(db, "posts"),
+      where("uid", "in", follow),
+      where("tags", "array-contains", tag),
+      orderBy("createdAt", "desc"),
+      startAfter(lastVisible),
+      limit(fetchLimit)
+    );
+  return query(
+    collection(db, "posts"),
+    where("uid", "in", follow),
+    where("tags", "array-contains", tag),
+    orderBy("createdAt", "desc"),
+    endAt(lastVisible)
+  );
+}
+
+function getPostsQueryByFollow(
+  fetchType: IFetchType,
+  fetchQuery: IFetchQuery,
+  fetchLimit: number,
+  lastVisible: QueryDocumentSnapshot<DocumentData> | undefined
+) {
+  const follow = fetchQuery.value.follow;
+  if (fetchType === "init")
+    return query(
+      collection(db, "posts"),
+      where("uid", "in", follow),
+      orderBy("createdAt", "desc"),
+      limit(fetchLimit)
+    );
+  if (fetchType === "load")
+    return query(
+      collection(db, "posts"),
+      where("uid", "in", follow),
+      orderBy("createdAt", "desc"),
+      startAfter(lastVisible),
+      limit(fetchLimit)
+    );
+  return query(
+    collection(db, "posts"),
+    where("uid", "in", follow),
+    orderBy("createdAt", "desc"),
+    endAt(lastVisible)
+  );
+}
+
+function getPostsQueryByKeyword(
+  fetchType: IFetchType,
+  fetchQuery: IFetchQuery,
+  fetchLimit: number,
+  lastVisible: QueryDocumentSnapshot<DocumentData> | undefined
+) {
+  const keyword = fetchQuery.value.keyword;
+  if (fetchType === "init")
+    return query(
+      collection(db, "posts"),
+      orderBy("title"),
+      startAt(keyword),
+      endAt(keyword + "\uf8ff"),
+      limit(fetchLimit)
+    );
+  if (fetchType === "load")
+    return query(
+      collection(db, "posts"),
+      orderBy("title"),
+      startAfter(lastVisible),
+      endAt(keyword + "\uf8ff"),
+      limit(fetchLimit)
+    );
+  return query(
+    collection(db, "posts"),
+    orderBy("title"),
+    startAt(keyword),
+    endAt(lastVisible)
+  );
+}
+
+function getPostsQueryByTag(
+  fetchType: IFetchType,
+  fetchQuery: IFetchQuery,
+  fetchLimit: number,
+  lastVisible: QueryDocumentSnapshot<DocumentData> | undefined
+) {
+  const tag = fetchQuery.value.tag;
+  if (fetchType === "init")
+    return query(
+      collection(db, "posts"),
+      where("tags", "array-contains", tag),
+      orderBy("createdAt", "desc"),
+      limit(fetchLimit)
+    );
+  if (fetchType === "load")
+    return query(
+      collection(db, "posts"),
+      where("tags", "array-contains", tag),
+      orderBy("createdAt", "desc"),
+      startAfter(lastVisible),
+      limit(fetchLimit)
+    );
+  return query(
+    collection(db, "posts"),
+    where("tags", "array-contains", tag),
+    orderBy("createdAt", "desc"),
+    endAt(lastVisible)
+  );
+}
+
+function getPostsQueryAll(
+  fetchType: IFetchType,
+  fetchQuery: IFetchQuery,
+  fetchLimit: number,
+  lastVisible: QueryDocumentSnapshot<DocumentData> | undefined
+) {
+  if (fetchType === "init")
+    return query(
+      collection(db, "posts"),
+      orderBy("createdAt", "desc"),
+      limit(fetchLimit)
+    );
+  if (fetchType === "load")
+    return query(
+      collection(db, "posts"),
+      orderBy("createdAt", "desc"),
+      startAfter(lastVisible),
+      limit(fetchLimit)
+    );
+  return query(
+    collection(db, "posts"),
     orderBy("createdAt", "desc"),
     endAt(lastVisible)
   );
