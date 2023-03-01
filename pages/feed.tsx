@@ -17,12 +17,18 @@ export default function Feed() {
 
   const { curUser } = useUser();
 
+  // tag가 바뀔때마다 서버에 요청을 보내지 않도록 debounceTag라는 state을 따로 만들어놓고,
+  // tag가 바뀔때마다 debounce를 사용하여 debounceTag를 set하도록 만들었다.
+  // 따라서 tag를 사용하는 부분(PagePosts)에서는 debounceTag를 사용한다.
   useEffect(() => {
     debounce(() => {
       setDebounceTag(tag);
     }, 500)();
   }, [tag]);
 
+  // 피드의 게시물들을 cache에 "posts"라는 key로 저장하는데,
+  // 만약 피드를 tag로 필터한 게시물들을 cache에 각 tag를 key로 사용해서 저장하게 되면 "posts"라는 tag로 검색할때에는 중복이 일어날 수 있으므로,
+  // 아래 hash 함수를 사용해서 tag로 필터된 게시물들을 cache에 저장할 때 해쉬된 값을 key로 사용하도록 한다.
   function hash(key: string) {
     const hash = createHash("sha256");
     hash.update(key);
