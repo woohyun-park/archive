@@ -8,9 +8,9 @@ import Action from "./Action";
 import Textarea from "./atoms/Textarea";
 import Btn from "./atoms/Btn";
 import Page from "./Page";
-import { FETCH_LIMIT } from "../apis/fbQuery";
 import { createComment } from "../apis/fbCreate";
 import { readComment } from "../apis/fbRead";
+import { FETCH_LIMIT } from "../stores/useCache";
 
 type ICommentBoxProps = {
   post: IPost;
