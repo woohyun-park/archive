@@ -114,6 +114,13 @@ export function getPostsQuery(
     return getPostsQueryByTag(fetchType, fetchQuery, fetchLimit, lastVisible);
   else if (fetchQuery.type === "uid") {
     return getPostsQueryByUid(fetchType, fetchQuery, fetchLimit, lastVisible);
+  } else if (fetchQuery.type === "uidAndTag") {
+    return getPostsQueryByUidAndTag(
+      fetchType,
+      fetchQuery,
+      fetchLimit,
+      lastVisible
+    );
   } else
     return getPostsQueryAll(fetchType, fetchQuery, fetchLimit, lastVisible);
 }
@@ -335,6 +342,39 @@ export function getPostsQueryByUid(
     collection(db, "posts"),
     orderBy("createdAt", "desc"),
     where("uid", "==", uid),
+    endAt(lastVisible)
+  );
+}
+
+export function getPostsQueryByUidAndTag(
+  fetchType: IFetchType,
+  fetchQuery: IFetchQueryPosts,
+  fetchLimit: number,
+  lastVisible: QueryDocumentSnapshot<DocumentData> | undefined
+) {
+  const uid = fetchQuery.value.uid;
+  const tag = fetchQuery.value.tag;
+  if (fetchType === "init")
+    return query(
+      collection(db, "posts"),
+      orderBy("createdAt", "desc"),
+      where("uid", "==", uid),
+      where("tags", "array-contains", tag),
+      limit(fetchLimit)
+    );
+  if (fetchType === "load")
+    return query(
+      collection(db, "posts"),
+      orderBy("createdAt", "desc"),
+      where("uid", "==", uid),
+      where("tags", "array-contains", tag),
+      limit(fetchLimit)
+    );
+  return query(
+    collection(db, "posts"),
+    orderBy("createdAt", "desc"),
+    where("uid", "==", uid),
+    where("tags", "array-contains", tag),
     endAt(lastVisible)
   );
 }

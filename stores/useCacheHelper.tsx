@@ -34,18 +34,6 @@ export function getNewState(
   return newState;
 }
 
-// export function getNewPostState(
-//   pathname: string,
-//   key: string,
-//   state: IUseCache,
-//   cache: ICache
-// ) {
-//   const newState = { ...state };
-//   if (!newState.caches[pathname]) newState.caches[pathname] = { [key]: cache };
-//   else newState.caches[pathname][key] = cache;
-//   return newState;
-// }
-
 export async function fetchPostsHelper(
   fetchType: IFetchType,
   fetchLimit: number,

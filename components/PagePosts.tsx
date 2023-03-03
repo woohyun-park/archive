@@ -24,6 +24,7 @@ export default function PagePosts({
   numCols = 1,
   className,
 }: IPagePostsProps) {
+  console.log("PagePosts", query, as, numCols, className);
   const router = useRouter();
 
   const cache = useCachedPage("posts", as);
@@ -31,8 +32,6 @@ export default function PagePosts({
   const { setModalLoader } = useStatus();
 
   const path = router.asPath;
-  const keyword = (router.query.keyword as string) || "";
-  const tag = (router.query.tag as string) || "";
 
   const posts = cache.data as IPost[];
   function onIntersect() {
@@ -86,7 +85,7 @@ export default function PagePosts({
           </AnimatePresence>
         )}
         {numCols === 2 && (
-          <div className="grid grid-cols-2 mt-4 mb-4 gap-y-2 gap-x-2">
+          <div className="grid grid-cols-2 m-4 gap-y-2 gap-x-2">
             {Children.toArray(
               posts.map((post, i) => (
                 <>
@@ -105,9 +104,7 @@ export default function PagePosts({
         {numCols === 3 && (
           <div
             className={
-              posts.length !== 0
-                ? "grid grid-cols-3 mt-4 mb-4 gap-y-2 gap-x-2"
-                : ""
+              posts.length !== 0 ? "grid grid-cols-3 m-4 gap-y-2 gap-x-2" : ""
             }
           >
             {Children.toArray(

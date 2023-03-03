@@ -36,57 +36,7 @@ export default function Profile() {
     async function init() {
       const uid = router.query.uid as string;
       const user = await readData<IUser>("users", uid);
-      // posts.fetchPosts &&
-      //   (await posts.fetchPosts(
-      //     "init",
-      //     {
-      //       type: "uid",
-      //       value: {
-      //         uid: curUser.id,
-      //       },
-      //     },
-      //     path,
-      //     "posts",
-      //     3
-      //   ));
-      // if (!user) return;
-      // const posts = await readDatasByQuery<IPost>(
-      //   query(collection(db, "posts"), where("uid", "==", uid))
-      // );
-      // const resScraps = await readDatasByQuery<IScrap>(
-      //   query(collection(db, "scraps"), where("uid", "==", uid))
-      // );
-      // const scraps: IDict<IPost[]> = {};
-      // for await (const scrap of resScraps) {
-      //   const pid = scrap.pid;
-      //   const tempPost = await readPost(pid);
-      //   if (!tempPost) continue;
-      //   if (scraps[scrap.cont]) {
-      //     scraps[scrap.cont].push(tempPost);
-      //   } else {
-      //     scraps[scrap.cont] = [tempPost];
-      //   }
-      // }
-
-      // const resTags = await readDatasByQuery<ITag>(
-      //   query(collection(db, "tags"), where("uid", "==", uid))
-      // );
-
-      // const tags: IDict<IPost[]> = {};
-      // for await (const tag of resTags) {
-      //   const pid = tag.pid || "";
-      //   const tempPost = await readPost(pid);
-      //   if (!tempPost) continue;
-      //   if (tags[tag.name]) {
-      //     tags[tag.name].push(tempPost);
-      //   } else {
-      //     tags[tag.name] = [tempPost];
-      //   }
-      // }
       setUser(user);
-      // setInitPosts(posts);
-      // setInitScraps(scraps);
-      // setInitTags(tags);
     }
     init();
   }, []);

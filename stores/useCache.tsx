@@ -52,7 +52,14 @@ type IPage = IDict<ICache>;
 export type IFetchType = "init" | "load" | "refresh";
 
 export type IFetchQueryPosts = {
-  type: "none" | "follow" | "followAndTag" | "keyword" | "tag" | "uid";
+  type:
+    | "none"
+    | "follow"
+    | "followAndTag"
+    | "keyword"
+    | "tag"
+    | "uid"
+    | "uidAndTag";
   value: IDict<any>;
 };
 

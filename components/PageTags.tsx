@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import React, { Children, useEffect } from "react";
 import { useCachedPage } from "../hooks/useCachedPage";
 import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
+import { IDict, ITag } from "../libs/custom";
 import { IFetchQueryTags } from "../stores/useCache";
 import { useStatus } from "../stores/useStatus";
 import WrapMotion from "./wrappers/WrapMotion";
@@ -13,7 +14,6 @@ export interface IPageTagsProps {
 }
 
 export default function PageTags({ query, as }: IPageTagsProps) {
-  console.log("PageTags", query, as);
   const router = useRouter();
 
   const cache = useCachedPage("tags", as);
@@ -42,6 +42,22 @@ export default function PageTags({ query, as }: IPageTagsProps) {
     init();
   }, []);
 
+  function formatTags(tags: any[]) {
+    console.log(tags);
+    if (tags.length == 0) return tags;
+    if (tags[0].id) {
+      const result: IDict<any> = {};
+      tags.forEach((tag: ITag) => {
+        const name = tag.name;
+        const tid = tag.id;
+        if (result[name]) result[name].tags.push(tid);
+        else result[name] = { name, tags: [tid] };
+      });
+      return Object.values(result);
+    }
+    return tags;
+  }
+
   const { setLastIntersecting, loading } = useInfiniteScroll({
     handleIntersect: onIntersect,
     handleChange: onChange,
@@ -52,12 +68,16 @@ export default function PageTags({ query, as }: IPageTagsProps) {
     <>
       <WrapRefreshAndLoad onRefresh={onRefresh} loading={loading}>
         {Children.toArray(
-          tags.map((tag, i) => {
+          formatTags(tags).map((tag, i) => {
             return (
               <WrapMotion
                 type="float"
                 className="flex items-center mx-4 my-2 hover:cursor-pointer"
-                onClick={() => router.push(`/tag/${tag.name}`)}
+                onClick={() => {
+                  if (query.type === "keyword") router.push(`/tag/${tag.name}`);
+                  /* query.type === "uid"*/ else
+                    router.push(`/profile/${query.value.uid}/${tag.name}`);
+                }}
               >
                 <div className="flex items-center justify-center w-8 h-8 mr-2 text-xl rounded-full bg-gray-3 text-bold">
                   #
