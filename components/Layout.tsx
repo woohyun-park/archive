@@ -17,7 +17,6 @@ import Image from "next/image";
 import WrapMotion from "./wrappers/WrapMotion";
 import { RiGoogleFill } from "react-icons/ri";
 import ScrollTop from "./atoms/ScrollTop";
-import { useFeed } from "../stores/useFeed";
 
 interface ILayoutProps {
   children: React.ReactNode;
@@ -35,7 +34,6 @@ export default function Layout({ children }: ILayoutProps) {
   const provider = new GoogleAuthProvider();
   const router = useRouter();
   const { getCurUser } = useUser();
-  const { getPosts } = useFeed();
   const [login, setLogin] = useState<ILogin>({
     email: "",
     password: "",
@@ -48,7 +46,6 @@ export default function Layout({ children }: ILayoutProps) {
     auth.onAuthStateChanged(async (authState) => {
       if (authState) {
         const user = await getCurUser(authState.uid);
-        await getPosts("init", authState.uid);
         setLogin({ ...login, isLoggedIn: true });
       } else {
         setLogin({ ...login, isLoggedIn: false });

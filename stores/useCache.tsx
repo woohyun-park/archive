@@ -110,7 +110,6 @@ export const useCache = create<IUseCache>()(
       pathname: string,
       as: string
     ) => {
-      console.log("fetchTags", type, query, pathname, as);
       const prevCache = get().caches[pathname]
         ? get().caches[pathname][as]
         : undefined;
@@ -120,7 +119,6 @@ export const useCache = create<IUseCache>()(
         getTagsQuery(type, query, FETCH_LIMIT.tag, prevCache?.lastVisible),
         prevCache
       );
-      console.log("fetchTags", cache);
       set((state: IUseCache) => getNewState(as, state, cache, pathname));
     },
 

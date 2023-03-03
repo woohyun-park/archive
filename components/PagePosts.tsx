@@ -15,6 +15,7 @@ export interface IPagePostsProps {
   query: IFetchQueryPosts;
   as: string;
   numCols: 1 | 2 | 3;
+  isPullable?: boolean;
   className?: string;
 }
 
@@ -22,6 +23,7 @@ export default function PagePosts({
   query,
   as,
   numCols = 1,
+  isPullable = true,
   className,
 }: IPagePostsProps) {
   const router = useRouter();
@@ -67,6 +69,7 @@ export default function PagePosts({
         onRefresh={onRefresh}
         loading={loading}
         className={className}
+        isPullable={isPullable}
       >
         {numCols === 1 && (
           <AnimatePresence>

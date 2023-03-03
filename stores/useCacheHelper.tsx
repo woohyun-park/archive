@@ -40,6 +40,7 @@ export async function fetchPostsHelper(
   query: Query<DocumentData>,
   cache: ICache | undefined
 ) {
+  console.log("fetchPostsHelper", fetchType, fetchLimit, query, cache);
   const snap = await getDocs(query);
   const resPosts = await readPosts(snap.docs);
   const newLastVisible = setCursor(snap, fetchType);
@@ -70,7 +71,7 @@ export async function fetchTagsHelper(
   snap.forEach((doc) => resTags.push(doc.data()));
   const newLastVisible = setCursor(snap, fetchType);
   if (!newLastVisible)
-    throw console.error("Cannot fetch the following posts:", fetchType, query);
+    throw console.error("Cannot fetch the following tags:", fetchType, query);
   if (cache) {
     cache.data = combineData(cache.data, resTags, fetchType);
     cache.isLast = resTags.length < fetchLimit ? true : false;

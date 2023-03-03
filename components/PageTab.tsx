@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import { Children, useEffect, useRef } from "react";
 import { mergeTailwindClasses } from "../apis/tailwind";
+import { IPost } from "../libs/custom";
 import { ICacheType } from "../stores/useCacheHelper";
 import { useStatus } from "../stores/useStatus";
 import Btn from "./atoms/Btn";
@@ -117,12 +118,14 @@ export default function PageTab({ header, tabs, className }: IPageTapProps) {
                       query={(tab as IPostsType).query}
                       as={(tab as IPostsType).as}
                       numCols={(tab as IPostsType).numCols}
+                      isPullable={(tab as IPostsType).isPullable}
                     />
                   )}
                   {tab.type === "tags" && (
                     <PageTags
                       query={(tab as ITagsType).query}
                       as={(tab as ITagsType).as}
+                      isPullable={(tab as ITagsType).isPullable}
                     />
                   )}
                   {tab.type === "users" && (

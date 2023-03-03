@@ -11,7 +11,6 @@ import { handleColor, handleImage } from "../libs/formLib";
 import { useFormTag } from "../hooks/useFormTag";
 import FormTag from "../components/atoms/FormTag";
 import ColorBox from "../components/atoms/ColorBox";
-import { useFeed } from "../stores/useFeed";
 
 export interface IForm {
   file: File[];
@@ -54,7 +53,6 @@ export default function Add() {
   const file = register("file");
   const fileRef = useRef<HTMLInputElement | null>(null);
   const imgRef = useRef<HTMLDivElement | null>(null);
-  const { setRefresh } = useFeed();
 
   async function onValid(data: IForm) {
     if (confirm(`아카이브를 ${prevPost ? "수정" : "생성"}하시겠습니까?`)) {
@@ -63,7 +61,6 @@ export default function Add() {
         await handleImage({ watch, prevPost, data, curUser, tags });
       // 색깔인 경우
       else await handleColor({ prevPost, data, curUser, tags });
-      setRefresh(true);
       router.push({ pathname: "/" });
     }
   }

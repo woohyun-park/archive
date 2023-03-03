@@ -89,6 +89,7 @@ export function getPostsQuery(
   fetchLimit: number,
   lastVisible: QueryDocumentSnapshot<DocumentData> | undefined
 ): Query<DocumentData> {
+  console.log("getPostsQuery", fetchType, fetchQuery, fetchLimit, lastVisible);
   if (fetchQuery.type === "follow")
     return getPostsQueryByFollow(
       fetchType,
@@ -423,7 +424,7 @@ function getPostsQueryByKeyword(
   if (fetchType === "init")
     return query(
       collection(db, "posts"),
-      orderBy("createdAt", "desc"),
+      orderBy("title"),
       startAt(keyword),
       endAt(keyword + "\uf8ff"),
       limit(fetchLimit)
@@ -431,14 +432,14 @@ function getPostsQueryByKeyword(
   if (fetchType === "load")
     return query(
       collection(db, "posts"),
-      orderBy("createdAt", "desc"),
+      orderBy("title"),
       startAfter(lastVisible),
       endAt(keyword + "\uf8ff"),
       limit(fetchLimit)
     );
   return query(
     collection(db, "posts"),
-    orderBy("createdAt", "desc"),
+    orderBy("title"),
     startAt(keyword),
     endAt(lastVisible)
   );

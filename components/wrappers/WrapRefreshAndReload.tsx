@@ -6,26 +6,25 @@ import Loader from "../Loader";
 interface IWrapRefreshAndReload {
   children: React.ReactNode;
   loading: boolean;
-  onRefresh: () => Promise<any>;
+  isPullable?: boolean;
   className?: string;
+  onRefresh: () => Promise<any>;
 }
 
 export default function WrapRefreshAndLoad({
   children,
   loading,
-  onRefresh,
+  isPullable = true,
   className,
+  onRefresh,
 }: IWrapRefreshAndReload) {
   return (
     <>
       <PullToRefresh
-        onRefresh={async () => {
-          console.log("WrapRefreshAndLoad: onRefresh");
-          onRefresh();
-        }}
+        onRefresh={onRefresh}
         pullingContent={<Loader isVisible={true} />}
         refreshingContent={<Loader isVisible={true} />}
-        isPullable={true}
+        isPullable={isPullable}
         className={mergeTailwindClasses("min-h-[50vh]", className || "")}
       >
         <>{children}</>

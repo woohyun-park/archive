@@ -33,7 +33,8 @@ export async function createTag(tag: string, uid: string, pid: string) {
   };
   const tagRef = await createDoc("tags", newTag);
   const tagContRef = doc(db, "tagConts", tag);
-  if (tagContRef.converter)
+  const tagContDoc = await getDoc(tagContRef);
+  if (tagContDoc.exists())
     await updateDoc(tagContRef, { tags: arrayUnion(tagRef.id) });
   else await setDoc(doc(db, "tagConts", tag), { name: tag, tags: [tagRef.id] });
   return tagRef;
