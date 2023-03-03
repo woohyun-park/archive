@@ -37,11 +37,13 @@ export default function SearchResult() {
             as: "tags",
             isPullable: false,
           },
-          // {
-          //   type: "users",
-          //   fetchType: "usersByKeyword",
-          //   label: "users",
-          // },
+          {
+            type: "users",
+            label: "users",
+            query: { type: "keyword", value: { keyword } },
+            as: "users",
+            isPullable: false,
+          },
         ]}
       />
     </>

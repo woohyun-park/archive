@@ -7,7 +7,7 @@ export const useCachedPage = (type: string, as?: string) => {
   const {
     caches,
     fetchPosts,
-    fetchUsersByKeyword,
+    fetchUsers,
     fetchTags,
     fetchScraps,
     fetchAlarms,
@@ -24,6 +24,9 @@ export const useCachedPage = (type: string, as?: string) => {
   } else if (type === "tags") {
     const data = cache ? (cache.data as ITag[]) : [];
     return { data, isLast, fetchTags };
+  } else if (type === "users") {
+    const data = cache ? (cache.data as IUser[]) : [];
+    return { data, isLast, fetchUsers };
   } else if (type === "scraps") {
     const data = cache ? (cache.data as IScrap[]) : [];
     return { data, isLast, fetchScraps };

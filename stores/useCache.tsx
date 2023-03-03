@@ -1,13 +1,13 @@
 import create from "zustand";
 import { devtools } from "zustand/middleware";
 import { IDict } from "../libs/custom";
-import { getPostsQuery, getTagsQuery } from "../apis/fbQuery";
+import { getPostsQuery, getTagsQuery, getUsersQuery } from "../apis/fbQuery";
 import {
   fetchAlarmsHelper,
   fetchPostsHelper,
   fetchScrapsHelper,
   fetchTagsHelper,
-  fetchUsersByKeywordHelper,
+  fetchUsersHelper,
   getNewState,
   ICache,
 } from "./useCacheHelper";
@@ -15,23 +15,6 @@ import { type } from "os";
 
 export interface IUseCache {
   caches: IDict<IPage>;
-  fetchUsersByKeyword: (
-    fetchType: IFetchType,
-    pathname: string,
-    keyword: string
-  ) => Promise<void>;
-
-  fetchScraps: (
-    fetchType: IFetchType,
-    pathname: string,
-    uid: string
-  ) => Promise<void>;
-  fetchAlarms: (
-    fetchType: IFetchType,
-    pathname: string,
-    uid: string
-  ) => Promise<void>;
-
   fetchPosts: (
     type: IFetchType,
     query: IFetchQueryPosts,
@@ -44,6 +27,23 @@ export interface IUseCache {
     query: IFetchQueryTags,
     pathname: string,
     as: string
+  ) => Promise<void>;
+  fetchUsers: (
+    type: IFetchType,
+    query: IFetchQueryUsers,
+    pathname: string,
+    as: string
+  ) => Promise<void>;
+
+  fetchScraps: (
+    fetchType: IFetchType,
+    pathname: string,
+    uid: string
+  ) => Promise<void>;
+  fetchAlarms: (
+    fetchType: IFetchType,
+    pathname: string,
+    uid: string
   ) => Promise<void>;
 }
 
@@ -65,6 +65,11 @@ export type IFetchQueryPosts = {
 
 export type IFetchQueryTags = {
   type: "keyword" | "uid";
+  value: IDict<any>;
+};
+
+export type IFetchQueryUsers = {
+  type: "keyword";
   value: IDict<any>;
 };
 
@@ -103,7 +108,6 @@ export const useCache = create<IUseCache>()(
       );
       set((state: IUseCache) => getNewState(as, state, cache, pathname));
     },
-
     fetchTags: async (
       type: IFetchType,
       query: IFetchQueryTags,
@@ -122,20 +126,22 @@ export const useCache = create<IUseCache>()(
       set((state: IUseCache) => getNewState(as, state, cache, pathname));
     },
 
-    fetchUsersByKeyword: async (
-      fetchType: IFetchType,
+    fetchUsers: async (
+      type: IFetchType,
+      query: IFetchQueryUsers,
       pathname: string,
-      keyword: string
+      as: string
     ) => {
-      const usersByKeyword = get().caches[pathname]?.usersByKeyword;
-      const cache = await fetchUsersByKeywordHelper(
-        fetchType,
-        { ...usersByKeyword },
-        keyword
+      const prevCache = get().caches[pathname]
+        ? get().caches[pathname][as]
+        : undefined;
+      const cache = await fetchUsersHelper(
+        type,
+        FETCH_LIMIT.user,
+        getUsersQuery(type, query, FETCH_LIMIT.tag, prevCache?.lastVisible),
+        prevCache
       );
-      set((state: IUseCache) =>
-        getNewState("usersByKeyword", state, cache, pathname)
-      );
+      set((state: IUseCache) => getNewState(as, state, cache, pathname));
     },
     fetchAlarms: async (
       fetchType: IFetchType,

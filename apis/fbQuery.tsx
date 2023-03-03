@@ -203,27 +203,44 @@ function getTagsQueryByUid(
   );
 }
 
-export function getUsersByKeywordQuery(
-  type: IFetchType,
-  keyword: string,
-  lastVisible: QueryDocumentSnapshot<DocumentData>
+export function getUsersQuery(
+  fetchType: IFetchType,
+  fetchQuery: IFetchQueryTags,
+  fetchLimit: number,
+  lastVisible: QueryDocumentSnapshot<DocumentData> | undefined
+): Query<DocumentData> {
+  return getUsersQueryByKeyword(fetchType, fetchQuery, fetchLimit, lastVisible);
+}
+
+export function getUsersQueryByKeyword(
+  fetchType: IFetchType,
+  fetchQuery: IFetchQueryTags,
+  fetchLimit: number,
+  lastVisible: QueryDocumentSnapshot<DocumentData> | undefined
 ) {
-  console.log(type);
-  if (type === "init")
+  console.log(
+    "getUsersQueryByKeyword",
+    fetchType,
+    fetchQuery,
+    fetchLimit,
+    lastVisible
+  );
+  const keyword = fetchQuery.value.keyword;
+  if (fetchType === "init")
     return query(
       collection(db, "users"),
       orderBy("displayName"),
       startAt(keyword),
       endAt(keyword + "\uf8ff"),
-      limit(FETCH_LIMIT.user)
+      limit(fetchLimit)
     );
-  if (type === "load")
+  if (fetchType === "load")
     return query(
       collection(db, "users"),
       orderBy("displayName"),
       startAfter(lastVisible),
       endAt(keyword + "\uf8ff"),
-      limit(FETCH_LIMIT.user)
+      limit(fetchLimit)
     );
   return query(
     collection(db, "users"),

@@ -4,12 +4,7 @@ import {
   Query,
   QueryDocumentSnapshot,
 } from "firebase/firestore";
-import {
-  getAlarmQuery,
-  getScrapsQuery,
-  getTagsQuery,
-  getUsersByKeywordQuery,
-} from "../apis/fbQuery";
+import { getAlarmQuery, getScrapsQuery } from "../apis/fbQuery";
 import { combineData, setCursor } from "./libStores";
 import { readAlarms, readPosts, readScraps, readUsers } from "../apis/fbRead";
 import { FETCH_LIMIT, IFetchType, IUseCache } from "./useCache";
@@ -59,7 +54,6 @@ export async function fetchPostsHelper(
   }
   return cache;
 }
-
 export async function fetchTagsHelper(
   fetchType: IFetchType,
   fetchLimit: number,
@@ -85,36 +79,28 @@ export async function fetchTagsHelper(
   }
   return cache;
 }
-
-// export async function fetchTagsHelper(
-//   fetchType: IFetchType,
-//   cache: ICache,
-//   keyword: string
-// ) {
-//   const q = getTagsQuery(fetchType, keyword, cache.lastVisible);
-// const snap = await getDocs(q);
-// const resTags: any[] = [];
-// snap.forEach((doc) => resTags.push(doc.data()));
-//   cache.data = combineData(cache.data, resTags, fetchType);
-//   cache.isLast = resTags.length < FETCH_LIMIT.tag ? true : false;
-//   const newLastVisible = setCursor(snap, fetchType);
-//   if (newLastVisible) cache.lastVisible = newLastVisible;
-//   return cache;
-// }
-
-export async function fetchUsersByKeywordHelper(
+export async function fetchUsersHelper(
   fetchType: IFetchType,
-  cache: ICache,
-  keyword: string
+  fetchLimit: number,
+  query: Query<DocumentData>,
+  cache: ICache | undefined
 ) {
-  const snap = await getDocs(
-    getUsersByKeywordQuery(fetchType, keyword, cache.lastVisible)
-  );
+  const snap = await getDocs(query);
   const resUsers = await readUsers(snap.docs);
-  cache.data = combineData(cache.data, resUsers, fetchType);
-  cache.isLast = resUsers.length < FETCH_LIMIT.user ? true : false;
   const newLastVisible = setCursor(snap, fetchType);
-  if (newLastVisible) cache.lastVisible = newLastVisible;
+  if (!newLastVisible)
+    throw console.error("Cannot fetch the following users:", fetchType, query);
+  if (cache) {
+    cache.data = combineData(cache.data, resUsers, fetchType);
+    cache.isLast = resUsers.length < fetchLimit ? true : false;
+    if (newLastVisible) cache.lastVisible = newLastVisible;
+  } else {
+    cache = {
+      data: combineData([], resUsers, fetchType),
+      isLast: resUsers.length < fetchLimit ? true : false,
+      lastVisible: newLastVisible,
+    };
+  }
   return cache;
 }
 

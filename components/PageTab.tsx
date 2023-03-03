@@ -129,7 +129,11 @@ export default function PageTab({ header, tabs, className }: IPageTapProps) {
                     />
                   )}
                   {tab.type === "users" && (
-                    <PageUsers fetchType={tab.fetchType as ICacheType} />
+                    <PageUsers
+                      query={(tab as IUsersType).query}
+                      as={(tab as IUsersType).as}
+                      isPullable={(tab as IUsersType).isPullable}
+                    />
                   )}
                   {tab.type === "scraps" && (
                     <PageScraps fetchType={tab.fetchType as ICacheType} />
