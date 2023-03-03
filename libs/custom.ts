@@ -96,6 +96,7 @@ export interface IUser {
   scraps?: IScrap[];
   history?: string[];
   alarms?: IAlarm[];
+  tags?: string[];
 }
 
 export interface IPost {

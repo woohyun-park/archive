@@ -18,22 +18,23 @@ export default function SearchResult() {
         }
         tabs={[
           {
-            label: "posts",
             type: "posts",
+            label: "posts",
             query: { type: "keyword", value: { keyword } },
             as: "posts",
             numCols: 1,
           },
           {
             type: "tags",
-            fetchType: "tags",
             label: "tags",
+            query: { type: "keyword", value: { keyword } },
+            as: "tags",
           },
-          {
-            type: "users",
-            fetchType: "usersByKeyword",
-            label: "users",
-          },
+          // {
+          //   type: "users",
+          //   fetchType: "usersByKeyword",
+          //   label: "users",
+          // },
         ]}
       />
     </>

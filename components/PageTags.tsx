@@ -1,42 +1,33 @@
-import { AnimatePresence } from "framer-motion";
 import { useRouter } from "next/router";
 import React, { Children, useEffect } from "react";
 import { useCachedPage } from "../hooks/useCachedPage";
 import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
-import { ITag, IUser } from "../libs/custom";
-import { ICacheType } from "../stores/useCacheHelper";
+import { IFetchQueryTags } from "../stores/useCache";
 import { useStatus } from "../stores/useStatus";
-import { useUser } from "../stores/useUser";
-import Profile from "./Profile";
 import WrapMotion from "./wrappers/WrapMotion";
 import WrapRefreshAndLoad from "./wrappers/WrapRefreshAndReload";
 
 export interface IPageTagsProps {
-  fetchType: ICacheType;
+  query: IFetchQueryTags;
+  as: string;
 }
 
-export default function PageTags({ fetchType = "tags" }: IPageTagsProps) {
+export default function PageTags({ query, as }: IPageTagsProps) {
+  console.log("PageTags", query, as);
   const router = useRouter();
 
-  const cache = useCachedPage(fetchType);
+  const cache = useCachedPage("tags", as);
   const { setModalLoader } = useStatus();
-  const { curUser } = useUser();
 
   const path = router.asPath;
-  const keyword = (router.query.keyword as string) || "";
-  const tag = (router.query.tag as string) || "";
 
   const tags = cache.data as any[];
   function onIntersect() {
-    if (fetchType === "tags") {
-      cache.fetchTags && cache.fetchTags("load", path, keyword);
-    }
+    cache.fetchTags && cache.fetchTags("load", query, path, as);
   }
   function onChange() {}
   async function onRefresh() {
-    if (fetchType === "tags") {
-      cache.fetchTags && cache.fetchTags("refresh", path, keyword);
-    }
+    cache.fetchTags && cache.fetchTags("refresh", query, path, as);
   }
   const changeListener = tags;
   const isLast = cache.isLast;
@@ -44,9 +35,7 @@ export default function PageTags({ fetchType = "tags" }: IPageTagsProps) {
   useEffect(() => {
     async function init() {
       if (cache.data.length === 0) {
-        if (fetchType === "tags") {
-          cache.fetchTags && (await cache.fetchTags("init", path, keyword));
-        }
+        cache.fetchTags && (await cache.fetchTags("init", query, path, as));
       }
       setModalLoader(false);
     }

@@ -117,7 +117,12 @@ export default function PageTab({ header, tabs, className }: IPageTapProps) {
                       query={(tab as IPostsType).query}
                       as={(tab as IPostsType).as}
                       numCols={(tab as IPostsType).numCols}
-                      className="px-4"
+                    />
+                  )}
+                  {tab.type === "tags" && (
+                    <PageTags
+                      query={(tab as ITagsType).query}
+                      as={(tab as ITagsType).as}
                     />
                   )}
                   {tab.type === "users" && (
@@ -125,9 +130,6 @@ export default function PageTab({ header, tabs, className }: IPageTapProps) {
                   )}
                   {tab.type === "scraps" && (
                     <PageScraps fetchType={tab.fetchType as ICacheType} />
-                  )}
-                  {tab.type === "tags" && (
-                    <PageTags fetchType={tab.fetchType as ICacheType} />
                   )}
                 </div>
               </div>

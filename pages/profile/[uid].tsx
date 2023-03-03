@@ -209,24 +209,18 @@ export default function Profile() {
             </Motion>
           }
           tabs={[
-            // {
-            //   type: "posts",
-            //   fetchType: "postsByUid",
-            //   label: "posts",
-            //   numCols: 3,
-            // },
             {
               type: "posts",
-              label: "grid",
+              label: "posts",
               query: { type: "uid", value: { uid: curUser.id } },
-              as: "postsByUid",
+              as: "posts",
               numCols: 2,
             },
             {
-              type: "posts",
-              label: "grid",
+              type: "tags",
+              label: "tags",
               query: { type: "uid", value: { uid: curUser.id } },
-              as: "postsByUid",
+              as: "tags",
               numCols: 2,
             },
             {

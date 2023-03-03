@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import PullToRefresh from "react-simple-pull-to-refresh";
 import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 import { IAlarm, IComment, IPost, ITag, IUser } from "../libs/custom";
-import PageFeed from "./PageFeed";
 import Loader from "./Loader";
 import PageSearch from "./PageSearch";
 import PageAlarm from "./PageAlarm";
@@ -49,12 +48,6 @@ export default function Page({
         className="min-h-[50vh]"
       >
         <>
-          {page === "feed" && (
-            <PageFeed
-              posts={data as IPost[]}
-              setLastIntersecting={setLastIntersecting}
-            />
-          )}
           {page === "search" && (
             <PageSearch
               posts={data as IPost[]}

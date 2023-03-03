@@ -1,14 +1,13 @@
 import create from "zustand";
 import { devtools } from "zustand/middleware";
 import { IDict } from "../libs/custom";
-import { getPostsQuery } from "../apis/fbQuery";
+import { getPostsQuery, getTagsQuery } from "../apis/fbQuery";
 import {
   fetchAlarmsHelper,
   fetchPostsHelper,
   fetchScrapsHelper,
   fetchTagsHelper,
   fetchUsersByKeywordHelper,
-  getNewPostState,
   getNewState,
   ICache,
 } from "./useCacheHelper";
@@ -21,11 +20,7 @@ export interface IUseCache {
     pathname: string,
     keyword: string
   ) => Promise<void>;
-  fetchTags: (
-    fetchType: IFetchType,
-    pathname: string,
-    keyword: string
-  ) => Promise<void>;
+
   fetchScraps: (
     fetchType: IFetchType,
     pathname: string,
@@ -36,12 +31,19 @@ export interface IUseCache {
     pathname: string,
     uid: string
   ) => Promise<void>;
+
   fetchPosts: (
     type: IFetchType,
     query: IFetchQueryPosts,
     pathname: string,
     as: string,
     numCols: number
+  ) => Promise<void>;
+  fetchTags: (
+    type: IFetchType,
+    query: IFetchQueryTags,
+    pathname: string,
+    as: string
   ) => Promise<void>;
 }
 
@@ -55,7 +57,7 @@ export type IFetchQueryPosts = {
 };
 
 export type IFetchQueryTags = {
-  type: "uid";
+  type: "keyword" | "uid";
   value: IDict<any>;
 };
 
@@ -92,17 +94,26 @@ export const useCache = create<IUseCache>()(
         ),
         prevCache
       );
-      set((state: IUseCache) => getNewPostState(pathname, as, state, cache));
+      set((state: IUseCache) => getNewState(as, state, cache, pathname));
     },
 
     fetchTags: async (
-      fetchType: IFetchType,
+      type: IFetchType,
+      query: IFetchQueryTags,
       pathname: string,
-      keyword: string
+      as: string
     ) => {
-      const tags = get().caches[pathname]?.tags;
-      const cache = await fetchTagsHelper(fetchType, { ...tags }, keyword);
-      set((state: IUseCache) => getNewState("tags", state, cache, pathname));
+      console.log("fetchTags", type, query, pathname, as);
+      const prevCache = get().caches[pathname]
+        ? get().caches[pathname][as]
+        : undefined;
+      const cache = await fetchTagsHelper(
+        type,
+        FETCH_LIMIT.tag,
+        getTagsQuery(type, query, FETCH_LIMIT.tag, prevCache?.lastVisible),
+        prevCache
+      );
+      set((state: IUseCache) => getNewState(as, state, cache, pathname));
     },
 
     fetchUsersByKeyword: async (

@@ -4,7 +4,7 @@ import React, { Children, useEffect } from "react";
 import { useCachedPage } from "../hooks/useCachedPage";
 import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 import { IPost } from "../libs/custom";
-import { IFetchQuery, IFetchType } from "../stores/useCache";
+import { IFetchQueryPosts, IFetchType } from "../stores/useCache";
 import { useStatus } from "../stores/useStatus";
 import { useUser } from "../stores/useUser";
 import PostBox from "./PostBox";
@@ -12,7 +12,7 @@ import PostCard from "./PostCard";
 import WrapRefreshAndLoad from "./wrappers/WrapRefreshAndReload";
 
 export interface IPagePostsProps {
-  query: IFetchQuery;
+  query: IFetchQueryPosts;
   as: string;
   numCols: 1 | 2 | 3;
   className?: string;
