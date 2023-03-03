@@ -25,8 +25,8 @@ export default function Loader({
       <div
         className={
           isVisible
-            ? "flex justify-center h-[82px] duration-500 overflow-hidden"
-            : "flex justify-center h-0 duration-500 overflow-hidden"
+            ? "flex justify-center h-[82px] duration-500 overflow-hidden bg-white"
+            : "flex justify-center h-0 duration-500 overflow-hidden bg-white"
         }
         ref={ref}
       >

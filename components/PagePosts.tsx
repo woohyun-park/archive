@@ -15,10 +15,15 @@ export interface IPagePostsProps {
   query: IFetchQuery;
   as: string;
   numCols: 1 | 2 | 3;
+  className?: string;
 }
 
-export default function PagePosts({ query, as, numCols = 1 }: IPagePostsProps) {
-  // console.log("PagePosts", query);
+export default function PagePosts({
+  query,
+  as,
+  numCols = 1,
+  className,
+}: IPagePostsProps) {
   const router = useRouter();
 
   const cache = useCachedPage("posts", as);
@@ -31,61 +36,21 @@ export default function PagePosts({ query, as, numCols = 1 }: IPagePostsProps) {
 
   const posts = cache.data as IPost[];
   function onIntersect() {
-    // if (fetchType === "posts") {
     cache.fetchPosts && cache.fetchPosts("load", query, path, as, numCols);
-    // }
-    // else if (fetchType === "postsByKeyword") {
-    //   cache.fetchPostsByKeyword &&
-    //     cache.fetchPostsByKeyword("load", path, keyword);
-    // } else if (fetchType === "postsByTag") {
-    //   cache.fetchPostsByTag && cache.fetchPostsByTag("load", path, tag);
-    // } else if (fetchType === "postsByUid") {
-    //   cache.fetchPostsByUid && cache.fetchPostsByUid("load", path, curUser.id);
-    // }
-    // else if (fetchType === "test") {
-    //   cache.fetchTest && cache.fetchTest("load", 5, path, "test");
-    // }
   }
   function onChange() {}
   async function onRefresh() {
-    // if (fetchType === "posts") {
     cache.fetchPosts &&
       (await cache.fetchPosts("refresh", query, path, as, numCols));
-    // }
-    // else if (fetchType === "postsByKeyword") {
-    //   cache.fetchPostsByKeyword &&
-    //     (await cache.fetchPostsByKeyword("refresh", path, keyword));
-    // } else if (fetchType === "postsByTag") {
-    //   cache.fetchPostsByTag &&
-    //     (await cache.fetchPostsByTag("refresh", path, tag));
-    // } else if (fetchType === "postsByUid") {
-    //   cache.fetchPostsByUid &&
-    //     (await cache.fetchPostsByUid("refresh", path, curUser.id));
-    // }
   }
   const changeListener = posts;
   const isLast = cache.isLast;
 
   useEffect(() => {
     async function init() {
-      console.log("init", query);
       if (cache.data.length === 0) {
         cache.fetchPosts &&
           (await cache.fetchPosts("init", query, path, as, numCols));
-        // if (fetchType === "posts") {
-        //       cache.fetchPosts &&
-        //         cache.fetchPosts("init", FETCH_LIMIT[numCols], path, as);
-        //     }
-        // else if (fetchType === "postsByKeyword") {
-        //   cache.fetchPostsByKeyword &&
-        //     (await cache.fetchPostsByKeyword("init", path, keyword));
-        // } else if (fetchType === "postsByTag") {
-        //   cache.fetchPostsByTag &&
-        //     (await cache.fetchPostsByTag("init", path, tag));
-        // } else if (fetchType === "postsByUid") {
-        //   cache.fetchPostsByUid &&
-        //     (await cache.fetchPostsByUid("init", path, curUser.id));
-        // }
       }
       setModalLoader(false);
     }
@@ -100,7 +65,11 @@ export default function PagePosts({ query, as, numCols = 1 }: IPagePostsProps) {
 
   return (
     <>
-      <WrapRefreshAndLoad onRefresh={onRefresh} loading={loading}>
+      <WrapRefreshAndLoad
+        onRefresh={onRefresh}
+        loading={loading}
+        className={className}
+      >
         {numCols === 1 && (
           <AnimatePresence>
             {Children.toArray(

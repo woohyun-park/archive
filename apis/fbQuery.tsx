@@ -107,34 +107,10 @@ export function getPostsQuery(
     );
   else if (fetchQuery.type === "tag")
     return getPostsQueryByTag(fetchType, fetchQuery, fetchLimit, lastVisible);
-  else return getPostsQueryAll(fetchType, fetchQuery, fetchLimit, lastVisible);
-}
-
-export function getPostsByUidQuery(
-  type: IFetchType,
-  uid: string,
-  lastVisible: QueryDocumentSnapshot<DocumentData>
-) {
-  if (type === "init")
-    return query(
-      collection(db, "posts"),
-      orderBy("createdAt", "desc"),
-      where("uid", "==", uid),
-      limit(FETCH_LIMIT.post[3])
-    );
-  if (type === "load")
-    return query(
-      collection(db, "posts"),
-      orderBy("createdAt", "desc"),
-      where("uid", "==", uid),
-      limit(FETCH_LIMIT.post[3])
-    );
-  return query(
-    collection(db, "posts"),
-    orderBy("createdAt", "desc"),
-    where("uid", "==", uid),
-    endAt(lastVisible)
-  );
+  else if (fetchQuery.type === "uid") {
+    return getPostsQueryByUid(fetchType, fetchQuery, fetchLimit, lastVisible);
+  } else
+    return getPostsQueryAll(fetchType, fetchQuery, fetchLimit, lastVisible);
 }
 
 export function getUsersByKeywordQuery(
@@ -248,6 +224,35 @@ export function getAlarmQuery(
     collection(db, "alarms"),
     where("targetUid", "==", uid),
     orderBy("createdAt", "desc"),
+    endAt(lastVisible)
+  );
+}
+
+export function getPostsQueryByUid(
+  fetchType: IFetchType,
+  fetchQuery: IFetchQuery,
+  fetchLimit: number,
+  lastVisible: QueryDocumentSnapshot<DocumentData> | undefined
+) {
+  const uid = fetchQuery.value.uid;
+  if (fetchType === "init")
+    return query(
+      collection(db, "posts"),
+      orderBy("createdAt", "desc"),
+      where("uid", "==", uid),
+      limit(fetchLimit)
+    );
+  if (fetchType === "load")
+    return query(
+      collection(db, "posts"),
+      orderBy("createdAt", "desc"),
+      where("uid", "==", uid),
+      limit(fetchLimit)
+    );
+  return query(
+    collection(db, "posts"),
+    orderBy("createdAt", "desc"),
+    where("uid", "==", uid),
     endAt(lastVisible)
   );
 }

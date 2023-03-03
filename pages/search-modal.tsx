@@ -77,7 +77,7 @@ export default function Search() {
   }
 
   return (
-    <>
+    <div className="p-4 pt-2">
       <div className="flex w-full">
         <div className="w-full">
           <InputIcon
@@ -134,6 +134,6 @@ export default function Search() {
           </div>
         </div>
       </WrapMotion>
-    </>
+    </div>
   );
 }

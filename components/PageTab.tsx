@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 import { Children, useEffect, useRef } from "react";
+import { mergeTailwindClasses } from "../apis/tailwind";
 import { ICacheType } from "../stores/useCacheHelper";
 import { useStatus } from "../stores/useStatus";
 import Btn from "./atoms/Btn";
@@ -34,9 +35,10 @@ type ITabType = {
 interface IPageTapProps {
   header: React.ReactNode;
   tabs: IDataType[];
+  className?: string;
 }
 
-export default function PageTab({ header, tabs }: IPageTapProps) {
+export default function PageTab({ header, tabs, className }: IPageTapProps) {
   const router = useRouter();
   const tabRef = useRef<HTMLDivElement>(null);
   const scrollRefs = useRef<HTMLDivElement[]>([]);
@@ -71,7 +73,12 @@ export default function PageTab({ header, tabs }: IPageTapProps) {
 
   return (
     <>
-      <div className="static h-[100vh] overflow-y-scroll">
+      <div
+        className={mergeTailwindClasses(
+          "static h-[100vh] overflow-y-scroll",
+          className || ""
+        )}
+      >
         <div>{header}</div>
         <div
           ref={tabRef}
@@ -110,6 +117,7 @@ export default function PageTab({ header, tabs }: IPageTapProps) {
                       query={(tab as IPostsType).query}
                       as={(tab as IPostsType).as}
                       numCols={(tab as IPostsType).numCols}
+                      className="px-4"
                     />
                   )}
                   {tab.type === "users" && (

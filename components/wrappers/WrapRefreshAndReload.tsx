@@ -1,17 +1,20 @@
 import React from "react";
 import PullToRefresh from "react-simple-pull-to-refresh";
+import { mergeTailwindClasses } from "../../apis/tailwind";
 import Loader from "../Loader";
 
 interface IWrapRefreshAndReload {
   children: React.ReactNode;
   loading: boolean;
   onRefresh: () => Promise<any>;
+  className?: string;
 }
 
 export default function WrapRefreshAndLoad({
   children,
   loading,
   onRefresh,
+  className,
 }: IWrapRefreshAndReload) {
   return (
     <>
@@ -20,7 +23,7 @@ export default function WrapRefreshAndLoad({
         pullingContent={<Loader isVisible={true} />}
         refreshingContent={<Loader isVisible={true} />}
         isPullable={true}
-        className="min-h-[50vh]"
+        className={mergeTailwindClasses("min-h-[50vh]", className || "")}
       >
         <>{children}</>
       </PullToRefresh>
