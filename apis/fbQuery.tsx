@@ -183,54 +183,24 @@ function getTagsQueryByUid(
   if (fetchType === "init")
     return query(
       collection(db, "tags"),
-      orderBy("name"),
+      orderBy("createdAt", "desc"),
       where("uid", "==", uid),
       limit(fetchLimit)
     );
   if (fetchType === "load")
     return query(
       collection(db, "tags"),
-      orderBy("name"),
+      orderBy("createdAt", "desc"),
       where("uid", "==", uid),
       limit(fetchLimit)
     );
   return query(
     collection(db, "tags"),
-    orderBy("name"),
+    orderBy("createdAt", "desc"),
     where("uid", "==", uid),
     endAt(lastVisible)
   );
 }
-
-// export function getTagsQuery(
-//   type: IFetchType,
-//   keyword: string,
-//   lastVisible: QueryDocumentSnapshot<DocumentData>
-// ) {
-//   console.log("getTagsQuery", type, keyword);
-// if (type === "init")
-//   return query(
-//     collection(db, "tagConts"),
-//     orderBy("name"),
-//     startAt(keyword),
-//     endAt(keyword + "\uf8ff"),
-//     limit(FETCH_LIMIT.tag)
-//   );
-// if (type === "load")
-//   return query(
-//     collection(db, "tagConts"),
-//     orderBy("name"),
-//     startAfter(lastVisible),
-//     endAt(keyword + "\uf8ff"),
-//     limit(FETCH_LIMIT.tag)
-//   );
-// return query(
-//   collection(db, "tagConts"),
-//   orderBy("name"),
-//   startAt(keyword),
-//   endAt(lastVisible)
-// );
-// }
 
 export function getUsersByKeywordQuery(
   type: IFetchType,
@@ -453,7 +423,7 @@ function getPostsQueryByKeyword(
   if (fetchType === "init")
     return query(
       collection(db, "posts"),
-      orderBy("title"),
+      orderBy("createdAt", "desc"),
       startAt(keyword),
       endAt(keyword + "\uf8ff"),
       limit(fetchLimit)
@@ -461,14 +431,14 @@ function getPostsQueryByKeyword(
   if (fetchType === "load")
     return query(
       collection(db, "posts"),
-      orderBy("title"),
+      orderBy("createdAt", "desc"),
       startAfter(lastVisible),
       endAt(keyword + "\uf8ff"),
       limit(fetchLimit)
     );
   return query(
     collection(db, "posts"),
-    orderBy("title"),
+    orderBy("createdAt", "desc"),
     startAt(keyword),
     endAt(lastVisible)
   );

@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import React, { Children, useEffect } from "react";
+import React, { Children, useEffect, useState } from "react";
 import { useCachedPage } from "../hooks/useCachedPage";
 import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 import { IDict, ITag } from "../libs/custom";
@@ -22,11 +22,13 @@ export default function PageTags({ query, as }: IPageTagsProps) {
   const path = router.asPath;
 
   const tags = cache.data as any[];
+
   function onIntersect() {
     cache.fetchTags && cache.fetchTags("load", query, path, as);
   }
   function onChange() {}
   async function onRefresh() {
+    console.log("onRefresh");
     cache.fetchTags && cache.fetchTags("refresh", query, path, as);
   }
   const changeListener = tags;
@@ -75,7 +77,7 @@ export default function PageTags({ query, as }: IPageTagsProps) {
                 className="flex items-center mx-4 my-2 hover:cursor-pointer"
                 onClick={() => {
                   if (query.type === "keyword") router.push(`/tag/${tag.name}`);
-                  /* query.type === "uid"*/ else
+                  /* query.type === "uid"         */ else
                     router.push(`/profile/${query.value.uid}/${tag.name}`);
                 }}
               >

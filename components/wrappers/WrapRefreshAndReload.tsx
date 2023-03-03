@@ -19,7 +19,10 @@ export default function WrapRefreshAndLoad({
   return (
     <>
       <PullToRefresh
-        onRefresh={onRefresh}
+        onRefresh={async () => {
+          console.log("WrapRefreshAndLoad: onRefresh");
+          onRefresh();
+        }}
         pullingContent={<Loader isVisible={true} />}
         refreshingContent={<Loader isVisible={true} />}
         isPullable={true}

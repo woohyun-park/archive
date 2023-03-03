@@ -24,7 +24,6 @@ export default function PagePosts({
   numCols = 1,
   className,
 }: IPagePostsProps) {
-  console.log("PagePosts", query, as, numCols, className);
   const router = useRouter();
 
   const cache = useCachedPage("posts", as);
