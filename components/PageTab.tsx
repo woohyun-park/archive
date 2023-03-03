@@ -1,10 +1,8 @@
 import { useRouter } from "next/router";
 import { Children, useEffect, useRef } from "react";
 import { mergeTailwindClasses } from "../apis/tailwind";
-import { IPost } from "../libs/custom";
 import { ICacheType } from "../stores/useCacheHelper";
 import { useStatus } from "../stores/useStatus";
-import Btn from "./atoms/Btn";
 import PagePosts, { IPagePostsProps } from "./PagePosts";
 import PageScraps from "./PageScraps";
 import PageTags, { IPageTagsProps } from "./PageTags";
@@ -30,7 +28,6 @@ type ITagsType = IPageTagsProps & ITabType;
 type ITabType = {
   type: "posts" | "users" | "tags" | "scraps";
   label: string;
-  // key: string;
 };
 
 interface IPageTapProps {
@@ -83,17 +80,20 @@ export default function PageTab({ header, tabs, className }: IPageTapProps) {
         <div>{header}</div>
         <div
           ref={tabRef}
-          className="box-border sticky top-0 z-10 flex py-4 mx-4 bg-white"
+          className="box-border sticky top-0 z-10 flex bg-white"
         >
           {Children.toArray(
             tabs.map((tab, i) => (
-              <Btn
-                label={tab.label}
+              <div
+                className={
+                  i === page
+                    ? "w-full text-center font-bold border-gray-3 border-b-4 px-2 pt-6 pb-2 hover:cursor-pointer"
+                    : "w-full text-center px-2 pt-6 pb-2 hover:cursor-pointer"
+                }
                 onClick={() => onTabClick(i)}
-                width="full"
-                isActive={page === i}
-                className={i === 0 ? "" : "ml-2"}
-              />
+              >
+                {tab.label}
+              </div>
             ))
           )}
         </div>

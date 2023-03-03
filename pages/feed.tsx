@@ -36,7 +36,7 @@ export default function Feed() {
   }
 
   return (
-    <div className="relative flex flex-col mt-4">
+    <div className="relative flex flex-col mt-4 bg-white">
       <div className="flex items-center justify-between px-4 pb-2">
         <h1
           className="hover:cursor-pointer title-logo"

@@ -3,10 +3,7 @@ import PullToRefresh from "react-simple-pull-to-refresh";
 import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 import { IAlarm, IComment, IPost, ITag, IUser } from "../libs/custom";
 import Loader from "./Loader";
-import PageSearch from "./PageSearch";
 import PageAlarm from "./PageAlarm";
-import PagePost from "./PagePost";
-import PageUser from "./PageUser";
 import { IWrapMotionType } from "./wrappers/WrapMotion";
 
 export interface IPageProps {
@@ -48,27 +45,10 @@ export default function Page({
         className="min-h-[50vh]"
       >
         <>
-          {page === "search" && (
-            <PageSearch
-              posts={data as IPost[]}
-              isLast={isLast || false}
-              setLastIntersecting={setLastIntersecting}
-            />
-          )}
           {page === "alarm" && (
             <PageAlarm
               alarms={data as IAlarm[]}
               isLast={isLast || false}
-              setLastIntersecting={setLastIntersecting}
-            />
-          )}
-          {page === "post" && (
-            <PagePost
-              comments={data as IComment[]}
-              isLast={isLast || false}
-              onClick={
-                onClick || function (e: React.MouseEvent<HTMLDivElement>) {}
-              }
               setLastIntersecting={setLastIntersecting}
             />
           )}

@@ -42,14 +42,7 @@ export default function PostCard({ post }: IPostCardProps) {
           {Children.toArray(
             post.tags.map((tag, i) => (
               <WrapLink href={`/tag/${tag}`} loader={true}>
-                <Btn
-                  label={`#${tag}`}
-                  // style={{
-                  //   margin: "0.125rem",
-                  //   paddingRight: "0.5rem",
-                  //   paddingLeft: "0.5rem",
-                  // }}
-                />
+                <Btn label={`#${tag}`} className="px-2" />
               </WrapLink>
             ))
           )}
