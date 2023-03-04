@@ -6,6 +6,7 @@ export const useCachedPage = (type: string, as?: string) => {
   const router = useRouter();
   const {
     caches,
+    fetchPost,
     fetchPosts,
     fetchUsers,
     fetchTags,
@@ -18,8 +19,10 @@ export const useCachedPage = (type: string, as?: string) => {
   const page = caches[path];
   const cache = page && (as ? page[as] : page[type]);
   const isLast = cache ? cache.isLast : false;
-
-  if (type === "posts") {
+  if (type === "post") {
+    const data = cache ? (cache.data as IPost[]) : [];
+    return { data, isLast, fetchPost };
+  } else if (type === "posts") {
     const data = cache ? (cache.data as IPost[]) : [];
     return { data, isLast, fetchPosts };
   } else if (type === "comments") {

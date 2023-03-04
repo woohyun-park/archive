@@ -4,6 +4,7 @@ import {
   DocumentData,
   getDoc,
   getDocs,
+  orderBy,
   Query,
   query,
   QueryDocumentSnapshot,
@@ -134,7 +135,11 @@ export async function readComment(cid: string) {
 
 export async function readCommentsOfPost(pid: string) {
   return await readDatasByQuery<IComment>(
-    query(collection(db, "comments"), where("pid", "==", pid))
+    query(
+      collection(db, "comments"),
+      where("pid", "==", pid),
+      orderBy("createdAt", "desc")
+    )
   );
 }
 

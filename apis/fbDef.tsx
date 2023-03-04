@@ -21,6 +21,11 @@ export type IFetchQueryComments = {
   value: IDict<any>;
 };
 
+export type IFetchQueryPost = {
+  type: "pid";
+  value: IDict<any>;
+};
+
 export type IFetchQueryPosts = {
   type:
     | "none"

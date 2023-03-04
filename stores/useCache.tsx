@@ -14,6 +14,7 @@ import {
   FETCH_LIMIT,
   IFetchQueryAlarms,
   IFetchQueryComments,
+  IFetchQueryPost,
   IFetchQueryPosts,
   IFetchQueryTags,
   IFetchQueryUsers,
@@ -35,11 +36,13 @@ import {
 import { readPost, readPosts, readScraps } from "../apis/fbRead";
 import { combineData, setCursor } from "./libStores";
 import { db } from "../apis/firebase";
+import { async } from "@firebase/util";
 
 type IPage = IDict<ICache>;
 
 export interface IUseCache {
   caches: IDict<IPage>;
+  fetchPost: (query: IFetchQueryPost, pathname: string) => Promise<void>;
   fetchPosts: (
     type: IFetchType,
     query: IFetchQueryPosts,
@@ -79,6 +82,16 @@ export interface IUseCache {
 export const useCache = create<IUseCache>()(
   devtools((set, get) => ({
     caches: {},
+    fetchPost: async (query, pathname) => {
+      const pid = query.value.pid;
+      const newPost = await readPost(pid);
+      const newCache: ICache = {
+        data: [newPost],
+        isLast: true,
+        lastVisible: undefined,
+      };
+      set((state: IUseCache) => getNewState("post", state, newCache, pathname));
+    },
     fetchPosts: async (
       type: IFetchType,
       query: IFetchQueryPosts,

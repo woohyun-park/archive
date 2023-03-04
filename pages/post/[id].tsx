@@ -1,33 +1,32 @@
 import { useRouter } from "next/router";
 import { IPost } from "../../libs/custom";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import BtnIcon from "../../components/atoms/BtnIcon";
 import { useUser } from "../../stores/useUser";
 import CommentBox from "../../components/CommentBox";
 import Motion from "../../components/wrappers/WrapMotion";
-import { wrapPromise } from "../../stores/libStores";
 import ModifyAndDelete from "../../components/ModifyAndDelete";
 import Post from "../../components/Post";
-import { readPost } from "../../apis/fbRead";
-import { useStatus } from "../../stores/useStatus";
+import { useCachedPage } from "../../hooks/useCachedPage";
+import { useLoading } from "../../hooks/useLoading";
 
 export default function PostPage() {
-  const { curUser } = useUser();
-  const { setModalLoader } = useStatus();
   const router = useRouter();
-  const [post, setPost] = useState<IPost | null | undefined>(undefined);
+
+  const { curUser } = useUser();
+  const { data, fetchPost } = useCachedPage("post");
+  useLoading(["post"]);
 
   const pid = (router.query.id as string) || "";
+  const path = router.asPath;
+  const post = data[0] as IPost;
+
+  async function fetch() {
+    fetchPost && (await fetchPost({ type: "pid", value: { pid } }, path));
+  }
 
   useEffect(() => {
-    async function init() {
-      const newPost = await readPost(pid);
-      setPost(newPost);
-    }
-    wrapPromise(async () => {
-      await init();
-      setModalLoader(false);
-    }, 1000);
+    fetch();
   }, []);
 
   return (
@@ -57,7 +56,7 @@ export default function PostPage() {
               <CommentBox
                 post={post}
                 user={curUser}
-                setPost={setPost}
+                onRefresh={fetch}
                 className="pb-16 mx-4"
               />
             </>

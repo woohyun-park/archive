@@ -22,7 +22,7 @@ export type ICacheType = "posts" | "tags" | "scraps" | "alarms" | "test";
 export interface ICache {
   data: any[];
   isLast: boolean;
-  lastVisible: QueryDocumentSnapshot<DocumentData>;
+  lastVisible: QueryDocumentSnapshot<DocumentData> | undefined;
 }
 
 export function getNewState(

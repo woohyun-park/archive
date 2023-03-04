@@ -1,11 +1,8 @@
 import { useRouter } from "next/router";
-import { useEffect } from "react";
 import BtnIcon from "../components/atoms/BtnIcon";
 import { useUser } from "../stores/useUser";
-import { useStatus } from "../stores/useStatus";
 import WrapScroll from "../components/wrappers/WrapScroll";
 import Motion from "../components/wrappers/WrapMotion";
-import { useCachedPage } from "../hooks/useCachedPage";
 import PageAlarms from "../components/PageAlarms";
 import { useLoading } from "../hooks/useLoading";
 

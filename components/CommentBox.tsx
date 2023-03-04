@@ -2,7 +2,7 @@ import { deleteDoc, doc } from "firebase/firestore";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { db } from "../apis/firebase";
-import { IComment, IPost, IUser } from "../libs/custom";
+import { IPost, IUser } from "../libs/custom";
 import { useRouter } from "next/router";
 import Action from "./Action";
 import Textarea from "./atoms/Textarea";
@@ -10,27 +10,29 @@ import Btn from "./atoms/Btn";
 import { createComment } from "../apis/fbCreate";
 import { readComment } from "../apis/fbRead";
 import { FETCH_LIMIT } from "../apis/fbDef";
-import PageComments from "./PageComments";
+import { AnimatePresence } from "framer-motion";
+import Comment from "./Comment";
+import { useUser } from "../stores/useUser";
 
 type ICommentBoxProps = {
   post: IPost;
   user: IUser;
   className?: string;
-  setPost: React.Dispatch<React.SetStateAction<IPost | null | undefined>>;
+  onRefresh: () => Promise<void>;
 };
 
 export default (function CommentBox({
   post,
   user,
   className,
-  setPost,
+  onRefresh,
 }: ICommentBoxProps) {
   const [comment, setComment] = useState("");
-  const [page, setPage] = useState(FETCH_LIMIT.comment);
   const [submitListener, setSubmitListener] = useState<boolean | null>(null);
   const router = useRouter();
   const commentRef = useRef<HTMLTextAreaElement>(null);
   const actionRef = useRef<HTMLDivElement>(null);
+  const { curUser } = useUser();
 
   const uid = user.id;
   const targetUid = post.uid;
@@ -50,31 +52,17 @@ export default (function CommentBox({
     const newComment = await readComment(newCommentRef.id);
     if (!newComment) return;
     setComment("");
-    setPost({
-      ...post,
-      comments: [newComment, ...(post.comments as IComment[])],
-    });
+    onRefresh();
     setSubmitListener(!submitListener);
-    setPage(page + 1);
   }
 
   async function handleDeleteComment(e: React.MouseEvent<HTMLDivElement>) {
     const id = e.currentTarget.id;
+    const comment = post.comments?.find((comment) => comment.id === id);
     await deleteDoc(doc(db, "comments", id));
-    await deleteDoc(
-      doc(
-        db,
-        "alarms",
-        post.comments?.find((comment) => comment.id === id)?.aid || ""
-      )
-    );
-    setPost({
-      ...post,
-      comments: [...(post.comments as IComment[])].filter(
-        (post) => post.id !== id
-      ),
-    });
-    setPage(page - 1);
+    curUser.id !== comment?.uid &&
+      (await deleteDoc(doc(db, "alarms", comment?.aid || "")));
+    onRefresh();
   }
 
   return (
@@ -87,19 +75,17 @@ export default (function CommentBox({
         }}
         ref={actionRef}
       />
-      <PageComments query={{ type: "pid", value: { pid } }} />
-      {/* <Page
-        page="post"
-        data={post.comments?.slice(0, page) || []}
-        onIntersect={() =>
-          setTimeout(() => setPage(page + FETCH_LIMIT.comment), 500)
-        }
-        onChange={() => {}}
-        onRefresh={async () => {}}
-        onClick={handleDeleteComment}
-        changeListener={page}
-        isLast={post.comments && post.comments?.length <= page}
-      /> */}
+      <AnimatePresence>
+        {post.comments?.map((comment, i) => {
+          return (
+            <Comment
+              comment={comment}
+              onClick={handleDeleteComment}
+              key={comment.id}
+            />
+          );
+        })}
+      </AnimatePresence>
       <div className="fixed bottom-0 flex items-center justify-between py-4 bg-white w-[calc(100vw_-_2rem)] max-w-[calc(480px_-_2rem)]">
         <div className="profileImg-sm">
           <Image src={user.photoURL} alt="" fill />
