@@ -9,6 +9,7 @@ import { readAlarms, readPosts, readScraps, readUsers } from "../apis/fbRead";
 import { IUseCache } from "./useCache";
 import { FETCH_LIMIT, IFetchType } from "../apis/fbDef";
 import { getScrapsQuery } from "../apis/fbQueryScraps";
+import { IPost } from "../libs/custom";
 
 export type ICacheType = "posts" | "tags" | "scraps" | "alarms" | "test";
 
@@ -30,31 +31,15 @@ export function getNewState(
   return newState;
 }
 
-export async function fetchPostsHelper(
-  fetchType: IFetchType,
-  fetchLimit: number,
-  query: Query<DocumentData>,
-  cache: ICache | undefined
-) {
-  console.log("fetchPostsHelper", fetchType, fetchLimit, query, cache);
-  const snap = await getDocs(query);
-  const resPosts = await readPosts(snap.docs);
-  const newLastVisible = setCursor(snap, fetchType);
-  if (!newLastVisible)
-    throw console.error("Cannot fetch the following posts:", fetchType, query);
-  if (cache) {
-    cache.data = combineData(cache.data, resPosts, fetchType);
-    cache.isLast = resPosts.length < fetchLimit ? true : false;
-    if (newLastVisible) cache.lastVisible = newLastVisible;
-  } else {
-    cache = {
-      data: combineData([], resPosts, fetchType),
-      isLast: resPosts.length < fetchLimit ? true : false,
-      lastVisible: newLastVisible,
-    };
-  }
-  return cache;
-}
+// export async function fetchPostsHelper(
+//   fetchType: IFetchType,
+//   fetchLimit: number,
+//   cache: ICache | undefined,
+//   data: IPost[]
+// ) {
+
+//   return cache;
+// }
 export async function fetchTagsHelper(
   fetchType: IFetchType,
   fetchLimit: number,

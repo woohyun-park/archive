@@ -24,7 +24,8 @@ export type IFetchQueryPosts = {
     | "keyword"
     | "tag"
     | "uid"
-    | "uidAndTag";
+    | "uidAndTag"
+    | "uidAndScrap";
   value: IDict<any>;
 };
 

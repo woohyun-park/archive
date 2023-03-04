@@ -52,6 +52,13 @@ export function getPostsQuery(
       fetchLimit,
       lastVisible
     );
+  } else if (fetchQuery.type === "uidAndScrap") {
+    return getPostsQueryByUidAndScrap(
+      fetchType,
+      fetchQuery,
+      fetchLimit,
+      lastVisible
+    );
   } else
     return getPostsQueryAll(fetchType, fetchQuery, fetchLimit, lastVisible);
 }
@@ -239,6 +246,39 @@ function getPostsQueryByUidAndTag(
     orderBy("createdAt", "desc"),
     where("uid", "==", uid),
     where("tags", "array-contains", tag),
+    endAt(lastVisible)
+  );
+}
+
+function getPostsQueryByUidAndScrap(
+  fetchType: IFetchType,
+  fetchQuery: IFetchQueryPosts,
+  fetchLimit: number,
+  lastVisible: QueryDocumentSnapshot<DocumentData> | undefined
+) {
+  const uid = fetchQuery.value.uid;
+  const cont = fetchQuery.value.cont;
+  if (fetchType === "init")
+    return query(
+      collection(db, "scraps"),
+      orderBy("createdAt", "desc"),
+      where("uid", "==", uid),
+      where("cont", "==", cont),
+      limit(fetchLimit)
+    );
+  if (fetchType === "load")
+    return query(
+      collection(db, "scraps"),
+      orderBy("createdAt", "desc"),
+      where("uid", "==", uid),
+      where("cont", "==", cont),
+      limit(fetchLimit)
+    );
+  return query(
+    collection(db, "scraps"),
+    orderBy("createdAt", "desc"),
+    where("uid", "==", uid),
+    where("cont", "==", cont),
     endAt(lastVisible)
   );
 }

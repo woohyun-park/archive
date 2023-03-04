@@ -52,15 +52,15 @@ export default function PageScraps({ query }: IPageScrapsProps) {
     changeListener,
   });
 
-  console.log("Scraps!", scraps);
-
   return (
     <>
       <WrapRefreshAndLoad onRefresh={onRefresh} loading={loading}>
         {Children.toArray(
           scraps.map((scrap, i) => {
             return (
-              <div>{scrap.cont}</div>
+              <div onClick={() => router.push(`/scrap/${scrap.cont}`)}>
+                {scrap.cont}
+              </div>
               // <WrapMotion
               //   type="float"
               //   className="flex items-center mx-4 my-2 hover:cursor-pointer"

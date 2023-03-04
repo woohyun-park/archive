@@ -1,6 +1,6 @@
 import create from "zustand";
 import { devtools } from "zustand/middleware";
-import { IDict } from "../libs/custom";
+import { IDict, IPost } from "../libs/custom";
 import {
   fetchAlarmsHelper,
   fetchPostsHelper,
@@ -23,6 +23,13 @@ import { getTagsQuery } from "../apis/fbQueryTags";
 import { getUsersQuery } from "../apis/fbQueryUsers";
 import { getAlarmsQuery } from "../apis/fbQueryAlarms";
 import { getScrapsQuery } from "../apis/fbQueryScraps";
+import {
+  DocumentData,
+  getDocs,
+  QueryDocumentSnapshot,
+} from "firebase/firestore";
+import { readPost, readPosts, readScraps } from "../apis/fbRead";
+import { combineData, setCursor } from "./libStores";
 
 type IPage = IDict<ICache>;
 
@@ -72,17 +79,44 @@ export const useCache = create<IUseCache>()(
       const prevCache = get().caches[pathname]
         ? get().caches[pathname][as]
         : undefined;
-      const cache = await fetchPostsHelper(
+      let resPosts: IPost[];
+      let newLastVisible: QueryDocumentSnapshot<DocumentData> | null;
+      const q = getPostsQuery(
         type,
+        query,
         FETCH_LIMIT.post[numCols],
-        getPostsQuery(
-          type,
-          query,
-          FETCH_LIMIT.post[numCols],
-          prevCache?.lastVisible
-        ),
-        prevCache
+        prevCache?.lastVisible
       );
+      if (query.type !== "uidAndScrap") {
+        const snap = await getDocs(q);
+        resPosts = await readPosts(snap.docs);
+        newLastVisible = setCursor(snap, type);
+      } else {
+        const snapScrap = await getDocs(q);
+        const resScraps = await readScraps(snapScrap.docs);
+        resPosts = [];
+        for await (const res of resScraps) {
+          const post = await readPost(res.pid);
+          resPosts.push(post);
+        }
+        newLastVisible = setCursor(snapScrap, type);
+      }
+      if (!newLastVisible)
+        throw console.error("Cannot fetch the following posts:", type, query);
+      let cache: ICache;
+      if (prevCache) {
+        cache = prevCache;
+        cache.data = combineData(cache.data, resPosts, type);
+        cache.isLast =
+          resPosts.length < FETCH_LIMIT.post[numCols] ? true : false;
+        if (newLastVisible) cache.lastVisible = newLastVisible;
+      } else {
+        cache = {
+          data: combineData([], resPosts, type),
+          isLast: resPosts.length < FETCH_LIMIT.post[numCols] ? true : false,
+          lastVisible: newLastVisible,
+        };
+      }
       set((state: IUseCache) => getNewState(as, state, cache, pathname));
     },
     fetchTags: async (
