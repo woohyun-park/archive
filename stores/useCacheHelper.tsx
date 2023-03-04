@@ -7,9 +7,7 @@ import {
 import { combineData, setCursor } from "./libStores";
 import { readAlarms, readPosts, readScraps, readUsers } from "../apis/fbRead";
 import { IUseCache } from "./useCache";
-import { FETCH_LIMIT, IFetchType } from "../apis/fbDef";
-import { getScrapsQuery } from "../apis/fbQueryScraps";
-import { IPost } from "../libs/custom";
+import { IFetchType } from "../apis/fbDef";
 
 export type ICacheType = "posts" | "tags" | "scraps" | "alarms" | "test";
 

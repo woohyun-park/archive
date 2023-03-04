@@ -20,7 +20,6 @@ export default function PageAlarms({ query }: IPageAlarmsProps) {
   const router = useRouter();
 
   const cache = useCachedPage("alarms");
-  const { setModalLoader } = useStatus();
 
   const path = router.asPath;
 
@@ -40,7 +39,6 @@ export default function PageAlarms({ query }: IPageAlarmsProps) {
       if (cache.data.length === 0) {
         cache.fetchAlarms && (await cache.fetchAlarms("init", query, path));
       }
-      setModalLoader(false);
     }
     init();
   }, []);

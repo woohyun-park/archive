@@ -22,7 +22,6 @@ export default function PageScraps({ query }: IPageScrapsProps) {
   const router = useRouter();
 
   const cache = useCachedPage("scraps");
-  const { setModalLoader } = useStatus();
   const { curUser } = useUser();
 
   const path = router.asPath;
@@ -45,7 +44,6 @@ export default function PageScraps({ query }: IPageScrapsProps) {
       if (cache.data.length === 0) {
         cache.fetchScraps && (await cache.fetchScraps("init", query, path));
       }
-      setModalLoader(false);
     }
     init();
   }, []);

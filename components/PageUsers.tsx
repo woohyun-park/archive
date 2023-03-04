@@ -24,7 +24,6 @@ export default function PageUsers({
 
   const cache = useCachedPage("users");
   const { curUser } = useUser();
-  const { setModalLoader } = useStatus();
 
   const path = router.asPath;
 
@@ -44,7 +43,6 @@ export default function PageUsers({
       if (cache.data.length === 0) {
         cache.fetchUsers && cache.fetchUsers("init", query, path, "users");
       }
-      setModalLoader(false);
     }
     init();
   }, []);

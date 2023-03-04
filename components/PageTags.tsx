@@ -22,7 +22,6 @@ export default function PageTags({
   const router = useRouter();
 
   const cache = useCachedPage("tags", as);
-  const { setModalLoader } = useStatus();
 
   const path = router.asPath;
   const tags = cache.data as any[];
@@ -47,7 +46,6 @@ export default function PageTags({
         if (cache.data.length === 0)
           cache.fetchTags && (await cache.fetchTags("init", query, path, as));
       }
-      setModalLoader(false);
     }
     init();
   }, []);

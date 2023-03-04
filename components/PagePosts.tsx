@@ -30,7 +30,6 @@ export default function PagePosts({
 
   const cache = useCachedPage("posts", as);
   const { curUser } = useUser();
-  const { setModalLoader } = useStatus();
 
   const path = router.asPath;
 
@@ -52,7 +51,6 @@ export default function PagePosts({
         cache.fetchPosts &&
           (await cache.fetchPosts("init", query, path, as, numCols));
       }
-      setModalLoader(false);
     }
     init();
   }, []);

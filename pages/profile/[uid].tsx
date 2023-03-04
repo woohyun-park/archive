@@ -10,10 +10,12 @@ import { useStatus } from "../../stores/useStatus";
 import { updateFollow } from "../../apis/fbUpdate";
 import { useCachedPage } from "../../hooks/useCachedPage";
 import PageTab from "../../components/PageTab";
+import { useLoading } from "../../hooks/useLoading";
 
 export default function Profile() {
+  useLoading(["tags", "scraps", "posts"]);
+
   const { curUser } = useUser();
-  const { setModalLoader } = useStatus();
   const posts = useCachedPage("posts", "tabPosts");
 
   const router = useRouter();
@@ -39,10 +41,6 @@ export default function Profile() {
       setUser(user);
     }
     init();
-  }, []);
-
-  useEffect(() => {
-    setModalLoader(false);
   }, []);
 
   async function handleToggleFollow() {
