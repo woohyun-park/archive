@@ -21,15 +21,23 @@ import Btn from "./atoms/Btn";
 import { readDatasByQuery } from "../apis/fbRead";
 import { deleteAll } from "../apis/fbDelete";
 import { updateUser } from "../apis/fbUpdate";
+import { mergeTailwindClasses } from "../apis/tailwind";
 
 type IProfileProps = {
   user: IUser;
   info?: "time" | "intro";
   action?: "follow" | "modifyAndDelete";
   post?: IPost;
+  className?: string;
 };
 
-export default function Profile({ user, post, info, action }: IProfileProps) {
+export default function Profile({
+  user,
+  post,
+  info,
+  action,
+  className,
+}: IProfileProps) {
   const { curUser } = useUser();
   const [isFollowing, setIsFollowing] = useState(() =>
     curUser.followings.find((elem: string) => elem === user.id) ? true : false
@@ -88,7 +96,12 @@ export default function Profile({ user, post, info, action }: IProfileProps) {
 
   return (
     <>
-      <div className="flex items-center justify-between w-full mt-2 mb-2">
+      <div
+        className={mergeTailwindClasses(
+          "flex items-center justify-between w-full mt-2 mb-2",
+          className || ""
+        )}
+      >
         <div className="flex items-center">
           <ProfileImg
             size="sm"

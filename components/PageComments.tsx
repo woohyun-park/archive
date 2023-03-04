@@ -1,44 +1,45 @@
 import { AnimatePresence } from "framer-motion";
 import { useRouter } from "next/router";
 import React, { Children, useEffect } from "react";
-import { IFetchQueryAlarms } from "../apis/fbDef";
+import { IFetchQueryAlarms, IFetchQueryComments } from "../apis/fbDef";
 import { useCachedPage } from "../hooks/useCachedPage";
 import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
-import { IAlarm, IPost } from "../libs/custom";
+import { IAlarm, IComment, IPost } from "../libs/custom";
 import { useStatus } from "../stores/useStatus";
 import AlarmComment from "./AlarmComment";
 import AlarmFollow from "./AlarmFollow";
 import AlarmLike from "./AlarmLike";
+import Comment from "./Comment";
 import WrapMotion from "./wrappers/WrapMotion";
 import WrapRefreshAndLoad from "./wrappers/WrapRefreshAndReload";
 
-export interface IPageAlarmsProps {
-  query: IFetchQueryAlarms;
+export interface IPageCommentsProps {
+  query: IFetchQueryComments;
   className?: string;
 }
 
-export default function PageAlarms({ query, className }: IPageAlarmsProps) {
+export default function PageAlarms({ query, className }: IPageCommentsProps) {
   const router = useRouter();
 
-  const cache = useCachedPage("alarms");
+  const cache = useCachedPage("comments");
 
   const path = router.asPath;
 
-  const alarms = cache.data as IAlarm[];
+  const comments = cache.data as IComment[];
   function onIntersect() {
-    cache.fetchAlarms && cache.fetchAlarms("load", query, path);
+    cache.fetchComments && cache.fetchComments("load", query, path);
   }
   function onChange() {}
   async function onRefresh() {
-    cache.fetchAlarms && (await cache.fetchAlarms("refresh", query, path));
+    cache.fetchComments && (await cache.fetchComments("refresh", query, path));
   }
-  const changeListener = alarms;
+  const changeListener = comments;
   const isLast = cache.isLast;
 
   useEffect(() => {
     async function init() {
       if (cache.data.length === 0) {
-        cache.fetchAlarms && (await cache.fetchAlarms("init", query, path));
+        cache.fetchComments && (await cache.fetchComments("init", query, path));
       }
     }
     init();
@@ -58,20 +59,11 @@ export default function PageAlarms({ query, className }: IPageAlarmsProps) {
         className={className}
       >
         <AnimatePresence>
-          {alarms.map((alarm, i) => {
-            return (
-              <WrapMotion type="float" key={alarm.id}>
-                <>
-                  {alarm.type === "like" && <AlarmLike alarm={alarm} />}
-                  {alarm.type === "comment" && <AlarmComment alarm={alarm} />}
-                  {alarm.type === "follow" && <AlarmFollow alarm={alarm} />}
-                  {!isLast && i === alarms.length - 1 && (
-                    <div ref={setLastIntersecting}></div>
-                  )}
-                </>
-              </WrapMotion>
-            );
-          })}
+          {Children.toArray(
+            comments.map((comment, i) => {
+              return <Comment comment={comment} />;
+            })
+          )}
         </AnimatePresence>
       </WrapRefreshAndLoad>
     </>

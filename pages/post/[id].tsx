@@ -47,14 +47,19 @@ export default function PostPage() {
         ) : (
           post.author !== undefined && (
             <>
-              <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center justify-between m-4">
                 <BtnIcon icon="back" onClick={router.back} />
                 {curUser.id === post.author?.id && (
                   <ModifyAndDelete post={post} redirect="/" />
                 )}
               </div>
               <Post type="post" post={post} />
-              <CommentBox post={post} user={curUser} setPost={setPost} />
+              <CommentBox
+                post={post}
+                user={curUser}
+                setPost={setPost}
+                className="mx-4"
+              />
             </>
           )
         )}

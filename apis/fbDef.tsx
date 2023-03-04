@@ -16,6 +16,11 @@ export type IFetchQueryAlarms = {
   value: IDict<any>;
 };
 
+export type IFetchQueryComments = {
+  type: "pid";
+  value: IDict<any>;
+};
+
 export type IFetchQueryPosts = {
   type:
     | "none"

@@ -1,9 +1,12 @@
 import { useRouter } from "next/router";
 import BtnIcon from "../../components/atoms/BtnIcon";
 import PageTab from "../../components/PageTab";
+import { useLoading } from "../../hooks/useLoading";
 
 export default function SearchResult() {
   const router = useRouter();
+
+  useLoading(["posts", "tags", "users"]);
 
   const keyword = (router.query.keyword as string) || "";
 

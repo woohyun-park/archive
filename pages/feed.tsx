@@ -9,6 +9,7 @@ import WrapScroll from "../components/wrappers/WrapScroll";
 import WrapLink from "../components/wrappers/WrapLink";
 import PagePosts from "../components/PagePosts";
 import { createHash } from "crypto";
+import { useLoading } from "../hooks/useLoading";
 
 export default function Feed() {
   const router = useRouter();
@@ -16,6 +17,7 @@ export default function Feed() {
   const [debounceTag, setDebounceTag] = useState("");
 
   const { curUser } = useUser();
+  useLoading(["posts"]);
 
   // tag가 바뀔때마다 서버에 요청을 보내지 않도록 debounceTag라는 state을 따로 만들어놓고,
   // tag가 바뀔때마다 debounce를 사용하여 debounceTag를 set하도록 만들었다.

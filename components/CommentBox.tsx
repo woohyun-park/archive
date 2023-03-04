@@ -10,14 +10,21 @@ import Btn from "./atoms/Btn";
 import { createComment } from "../apis/fbCreate";
 import { readComment } from "../apis/fbRead";
 import { FETCH_LIMIT } from "../apis/fbDef";
+import PageComments from "./PageComments";
 
 type ICommentBoxProps = {
   post: IPost;
   user: IUser;
+  className?: string;
   setPost: React.Dispatch<React.SetStateAction<IPost | null | undefined>>;
 };
 
-export default (function CommentBox({ post, user, setPost }: ICommentBoxProps) {
+export default (function CommentBox({
+  post,
+  user,
+  className,
+  setPost,
+}: ICommentBoxProps) {
   const [comment, setComment] = useState("");
   const [page, setPage] = useState(FETCH_LIMIT.comment);
   const [submitListener, setSubmitListener] = useState<boolean | null>(null);
@@ -71,7 +78,7 @@ export default (function CommentBox({ post, user, setPost }: ICommentBoxProps) {
   }
 
   return (
-    <>
+    <div className={className}>
       <Action
         post={post}
         curUser={user}
@@ -80,6 +87,7 @@ export default (function CommentBox({ post, user, setPost }: ICommentBoxProps) {
         }}
         ref={actionRef}
       />
+      <PageComments query={{ type: "pid", value: { pid } }} />
       {/* <Page
         page="post"
         data={post.comments?.slice(0, page) || []}
@@ -109,6 +117,6 @@ export default (function CommentBox({ post, user, setPost }: ICommentBoxProps) {
         />
         <Btn label="게시" onClick={handleSubmit} />
       </div>
-    </>
+    </div>
   );
 });

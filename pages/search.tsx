@@ -3,8 +3,11 @@ import { HiMagnifyingGlass } from "react-icons/hi2";
 import Link from "next/link";
 import WrapMotion from "../components/wrappers/WrapMotion";
 import PagePosts from "../components/PagePosts";
+import { useLoading } from "../hooks/useLoading";
 
 export default function Search() {
+  useLoading(["posts"]);
+
   return (
     <WrapMotion type="fade" className="pt-2 pb-24 bg-white">
       <Link href="/search-modal">

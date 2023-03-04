@@ -11,6 +11,7 @@ import { handleColor, handleImage } from "../libs/formLib";
 import { useFormTag } from "../hooks/useFormTag";
 import FormTag from "../components/atoms/FormTag";
 import ColorBox from "../components/atoms/ColorBox";
+import { useLoading } from "../hooks/useLoading";
 
 export interface IForm {
   file: File[];
@@ -21,11 +22,17 @@ export interface IForm {
 }
 
 export default function Add() {
-  const { curUser } = useUser();
   const router = useRouter();
   const prevPost = router.query.post
     ? (JSON.parse(router.query.post as string) as IPost)
     : undefined;
+
+  const { curUser } = useUser();
+  const { tag, tags, error, onChange, onDelete } = useFormTag(
+    prevPost ? prevPost.tags : []
+  );
+  useLoading([]);
+
   const [status, setStatus] = useState({
     selectedTab: prevPost ? (prevPost.imgs.length !== 0 ? true : false) : true,
     selectedColor: prevPost ? prevPost.color : COLOR.red,
@@ -33,9 +40,8 @@ export default function Add() {
   const [preview, setPreview] = useState<string>(
     prevPost && prevPost.imgs.length !== 0 ? prevPost.imgs[0] : ""
   );
-  const { tag, tags, error, onChange, onDelete } = useFormTag(
-    prevPost ? prevPost.tags : []
-  );
+  const fileRef = useRef<HTMLInputElement | null>(null);
+  const imgRef = useRef<HTMLDivElement | null>(null);
   const {
     register,
     handleSubmit,
@@ -51,8 +57,6 @@ export default function Add() {
     },
   });
   const file = register("file");
-  const fileRef = useRef<HTMLInputElement | null>(null);
-  const imgRef = useRef<HTMLDivElement | null>(null);
 
   async function onValid(data: IForm) {
     if (confirm(`아카이브를 ${prevPost ? "수정" : "생성"}하시겠습니까?`)) {
@@ -94,7 +98,7 @@ export default function Add() {
   }
 
   return (
-    <WrapMotion type="fade">
+    <WrapMotion type="fade" className="p-4 bg-white">
       <div className="flex">
         <BtnIcon
           icon="back"

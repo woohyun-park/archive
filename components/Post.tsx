@@ -25,7 +25,7 @@ export default function Post({ type, post }: IPostProps) {
   function Title() {
     return (
       <div
-        className="mt-4 mb-4 text-5xl font-bold break-words hover:cursor-pointer w-fit"
+        className="p-4 text-5xl font-bold break-words hover:cursor-pointer w-fit"
         onClick={() => {
           router.asPath !== `/post/${post.id}` && setModalLoader(true);
           router.push(`/post/${post.id}`);
@@ -38,18 +38,11 @@ export default function Post({ type, post }: IPostProps) {
 
   function Tags() {
     return (
-      <div className="flex flex-wrap justify-end w-full">
+      <div className="flex flex-wrap justify-end w-full px-4">
         {Children.toArray(
           post.tags.map((tag, i) => (
             <WrapLink href={`/tag/${tag}`} loader={true}>
-              <Btn
-                label={`#${tag}`}
-                // style={{
-                //   margin: "0.125rem",
-                //   paddingRight: "0.5rem",
-                //   paddingLeft: "0.5rem",
-                // }}
-              />
+              <Btn label={`#${tag}`} className="px-2" />
             </WrapLink>
           ))
         )}
@@ -91,12 +84,9 @@ export default function Post({ type, post }: IPostProps) {
         ) : type === "post" ? (
           <>
             {post.imgs.length === 0 ? (
-              <div
-                className="w-[calc(100%+32px)] -translate-x-4 pb-[50%]"
-                id="post_d1"
-              ></div>
+              <div className="w-full pb-[50%]" id="post_d1"></div>
             ) : (
-              <div className="relative pb-[100%] w-[calc(100%+32px)] -translate-x-4">
+              <div className="relative pb-[100%] w-full">
                 <Image
                   src={post.imgs[0]}
                   alt=""
@@ -106,18 +96,24 @@ export default function Post({ type, post }: IPostProps) {
               </div>
             )}
             {curUser.id === post.uid ? (
-              <Profile post={post} user={post.author} info="time" />
+              <Profile
+                post={post}
+                user={post.author}
+                info="time"
+                className="mx-4"
+              />
             ) : (
               <Profile
                 post={post}
                 user={post.author}
                 info="time"
                 action="follow"
+                className="mx-4"
               />
             )}
             <Title />
             <Tags />
-            <div className="mt-1 mb-4 whitespace-pre-wrap">{post.txt}</div>
+            <div className="mx-4 mt-1 mb-4 whitespace-pre-wrap">{post.txt}</div>
           </>
         ) : (
           <></>

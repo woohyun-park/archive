@@ -3,6 +3,7 @@ import { devtools } from "zustand/middleware";
 import { IDict, IPost } from "../libs/custom";
 import {
   fetchAlarmsHelper,
+  fetchCommentsHelper,
   fetchScrapsHelper,
   fetchTagsHelper,
   fetchUsersHelper,
@@ -12,6 +13,7 @@ import {
 import {
   FETCH_LIMIT,
   IFetchQueryAlarms,
+  IFetchQueryComments,
   IFetchQueryPosts,
   IFetchQueryTags,
   IFetchQueryUsers,
@@ -23,12 +25,16 @@ import { getUsersQuery } from "../apis/fbQueryUsers";
 import { getAlarmsQuery } from "../apis/fbQueryAlarms";
 import { getScrapsQuery } from "../apis/fbQueryScraps";
 import {
+  collection,
   DocumentData,
   getDocs,
+  query,
   QueryDocumentSnapshot,
+  where,
 } from "firebase/firestore";
 import { readPost, readPosts, readScraps } from "../apis/fbRead";
 import { combineData, setCursor } from "./libStores";
+import { db } from "../apis/firebase";
 
 type IPage = IDict<ICache>;
 
@@ -61,6 +67,11 @@ export interface IUseCache {
   fetchScraps: (
     type: IFetchType,
     query: IFetchQueryAlarms,
+    pathname: string
+  ) => Promise<void>;
+  fetchComments: (
+    type: IFetchType,
+    query: IFetchQueryComments,
     pathname: string
   ) => Promise<void>;
 }
@@ -183,6 +194,27 @@ export const useCache = create<IUseCache>()(
         prevCache
       );
       set((state: IUseCache) => getNewState("scraps", state, cache, pathname));
+    },
+    fetchComments: async (
+      type: IFetchType,
+      fetchQuery: IFetchQueryComments,
+      pathname: string
+    ) => {
+      const prevCache = get().caches[pathname]
+        ? get().caches[pathname]["scraps"]
+        : undefined;
+      const cache = await fetchCommentsHelper(
+        type,
+        FETCH_LIMIT.comment,
+        query(
+          collection(db, "comments"),
+          where("pid", "==", fetchQuery.value.pid)
+        ),
+        prevCache
+      );
+      set((state: IUseCache) =>
+        getNewState("comments", state, cache, pathname)
+      );
     },
   }))
 );

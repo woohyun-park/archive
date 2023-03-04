@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { IAlarm, IPost, IScrap, ITag, IUser } from "../libs/custom";
+import { IAlarm, IComment, IPost, IScrap, ITag, IUser } from "../libs/custom";
 import { useCache } from "../stores/useCache";
 
 export const useCachedPage = (type: string, as?: string) => {
@@ -11,6 +11,7 @@ export const useCachedPage = (type: string, as?: string) => {
     fetchTags,
     fetchScraps,
     fetchAlarms,
+    fetchComments,
   } = useCache();
 
   const path = router.asPath;
@@ -21,6 +22,9 @@ export const useCachedPage = (type: string, as?: string) => {
   if (type === "posts") {
     const data = cache ? (cache.data as IPost[]) : [];
     return { data, isLast, fetchPosts };
+  } else if (type === "comments") {
+    const data = cache ? (cache.data as IComment[]) : [];
+    return { data, isLast, fetchComments };
   } else if (type === "tags") {
     const data = cache ? (cache.data as ITag[]) : [];
     return { data, isLast, fetchTags };

@@ -5,9 +5,17 @@ import {
   QueryDocumentSnapshot,
 } from "firebase/firestore";
 import { combineData, setCursor } from "./libStores";
-import { readAlarms, readPosts, readScraps, readUsers } from "../apis/fbRead";
+import {
+  readAlarms,
+  readCommentsOfPost,
+  readPosts,
+  readScraps,
+  readUsers,
+} from "../apis/fbRead";
 import { IUseCache } from "./useCache";
 import { IFetchType } from "../apis/fbDef";
+import { convertCreatedAt } from "../apis/firebase";
+import { IComment } from "../libs/custom";
 
 export type ICacheType = "posts" | "tags" | "scraps" | "alarms" | "test";
 
@@ -132,6 +140,42 @@ export async function fetchAlarmsHelper(
     cache = {
       data: combineData([], resAlarms, fetchType),
       isLast: resAlarms.length < fetchLimit ? true : false,
+      lastVisible: newLastVisible,
+    };
+  }
+  return cache;
+}
+
+export async function fetchCommentsHelper(
+  fetchType: IFetchType,
+  fetchLimit: number,
+  query: Query<DocumentData>,
+  cache: ICache | undefined
+) {
+  const snap = await getDocs(query);
+  const resComments: IComment[] = [];
+  snap.forEach((doc) => {
+    const data = doc.data();
+    resComments.push({
+      ...data,
+      createdAt: convertCreatedAt(data.createdAt),
+    } as IComment);
+  });
+  const newLastVisible = setCursor(snap, fetchType);
+  if (!newLastVisible)
+    throw console.error(
+      "Cannot fetch the following comments:",
+      fetchType,
+      query
+    );
+  if (cache) {
+    cache.data = combineData(cache.data, resComments, fetchType);
+    cache.isLast = resComments.length < fetchLimit ? true : false;
+    if (newLastVisible) cache.lastVisible = newLastVisible;
+  } else {
+    cache = {
+      data: combineData([], resComments, fetchType),
+      isLast: resComments.length < fetchLimit ? true : false,
       lastVisible: newLastVisible,
     };
   }
