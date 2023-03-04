@@ -9,6 +9,9 @@ import { useUser } from "../stores/useUser";
 import FormInput from "../components/atoms/FormInput";
 import ProfileImg from "../components/ProfileImg";
 import { updateUser } from "../apis/fbUpdate";
+import { signOut } from "firebase/auth";
+import { auth } from "../apis/firebase";
+import { useLoading } from "../hooks/useLoading";
 
 interface IForm {
   file: File[];
@@ -17,6 +20,7 @@ interface IForm {
 }
 
 export default function Setting() {
+  useLoading([]);
   const { curUser } = useUser();
   const [preview, setPreview] = useState(curUser.photoURL);
   const router = useRouter();
@@ -94,7 +98,7 @@ export default function Setting() {
       {isSubmitting && (
         <div className="absolute top-0 left-0 z-10 w-full h-full bg-black/20"></div>
       )}
-      <div className="flex mb-4">
+      <div className="flex justify-between mb-4">
         <BtnIcon
           icon="back"
           onClick={() => {
@@ -103,6 +107,12 @@ export default function Setting() {
             } else router.back();
           }}
         />
+        <div
+          className="flex items-center text-xs hover:cursor-pointer w-fit"
+          onClick={() => signOut(auth)}
+        >
+          로그아웃
+        </div>
       </div>
       <div className="flex flex-col items-center">
         <ProfileImg size="lg" photoURL={preview} onClick={handleFileClick} />

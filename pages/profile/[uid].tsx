@@ -11,12 +11,14 @@ import { updateFollow } from "../../apis/fbUpdate";
 import { useCachedPage } from "../../hooks/useCachedPage";
 import PageTab from "../../components/PageTab";
 import { useLoading } from "../../hooks/useLoading";
+import { signOut } from "firebase/auth";
+import { auth } from "../../apis/firebase";
+import Btn from "../../components/atoms/Btn";
 
 export default function Profile() {
-  useLoading(["tags", "scraps", "posts"]);
-
   const { curUser } = useUser();
   const posts = useCachedPage("posts", "tabPosts");
+  useLoading(["tags", "scraps", "posts"]);
 
   const router = useRouter();
   const [user, setUser] = useState<IUser>();
@@ -28,11 +30,8 @@ export default function Profile() {
       ? true
       : false,
   });
-  const [initScraps, setInitScraps] = useState<IDict<IPost[]>>({});
-  const [initTags, setInitTags] = useState<IDict<IPost[]>>({});
 
   const uid = user?.id;
-  const path = router.asPath;
 
   useEffect(() => {
     async function init() {
@@ -118,14 +117,7 @@ export default function Profile() {
 
               <div className="h-full py-4 break-all">{user.txt}</div>
 
-              {user.id === curUser.id ? (
-                // <Btn
-                //   label="로그아웃"
-                //   onClick={() => signOut(auth)}
-                //   style={{ width: "100%" }}
-                // />
-                <></>
-              ) : (
+              {user.id !== curUser.id && (
                 <>
                   {(() => {
                     const result = [];
