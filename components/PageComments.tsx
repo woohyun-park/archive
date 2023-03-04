@@ -1,16 +1,14 @@
+import { deleteDoc, doc } from "firebase/firestore";
 import { AnimatePresence } from "framer-motion";
 import { useRouter } from "next/router";
 import React, { Children, useEffect } from "react";
-import { IFetchQueryAlarms, IFetchQueryComments } from "../apis/fbDef";
+import { IFetchQueryComments } from "../apis/fbDef";
+import { db } from "../apis/firebase";
 import { useCachedPage } from "../hooks/useCachedPage";
 import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
-import { IAlarm, IComment, IPost } from "../libs/custom";
-import { useStatus } from "../stores/useStatus";
-import AlarmComment from "./AlarmComment";
-import AlarmFollow from "./AlarmFollow";
-import AlarmLike from "./AlarmLike";
+import { IComment } from "../libs/custom";
+import { useUser } from "../stores/useUser";
 import Comment from "./Comment";
-import WrapMotion from "./wrappers/WrapMotion";
 import WrapRefreshAndLoad from "./wrappers/WrapRefreshAndReload";
 
 export interface IPageCommentsProps {
@@ -18,10 +16,11 @@ export interface IPageCommentsProps {
   className?: string;
 }
 
-export default function PageAlarms({ query, className }: IPageCommentsProps) {
+export default function PageComments({ query, className }: IPageCommentsProps) {
   const router = useRouter();
 
   const cache = useCachedPage("comments");
+  const { curUser } = useUser();
 
   const path = router.asPath;
 
@@ -51,6 +50,15 @@ export default function PageAlarms({ query, className }: IPageCommentsProps) {
     changeListener,
   });
 
+  async function handleDeleteComment(e: React.MouseEvent<HTMLDivElement>) {
+    const id = e.currentTarget.id;
+    const curComment = comments?.find((comment) => comment.id === id);
+    await deleteDoc(doc(db, "comments", id));
+    curUser.id !== curComment?.uid &&
+      (await deleteDoc(doc(db, "alarms", curComment?.aid || "")));
+    onRefresh();
+  }
+
   return (
     <>
       <WrapRefreshAndLoad
@@ -59,11 +67,15 @@ export default function PageAlarms({ query, className }: IPageCommentsProps) {
         className={className}
       >
         <AnimatePresence>
-          {Children.toArray(
-            comments.map((comment, i) => {
-              return <Comment comment={comment} />;
-            })
-          )}
+          {comments.map((comment, i) => {
+            return (
+              <Comment
+                comment={comment}
+                onClick={handleDeleteComment}
+                key={comment.id}
+              />
+            );
+          })}
         </AnimatePresence>
       </WrapRefreshAndLoad>
     </>

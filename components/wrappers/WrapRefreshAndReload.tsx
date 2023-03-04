@@ -25,7 +25,7 @@ export default function WrapRefreshAndLoad({
         pullingContent={<Loader isVisible={true} />}
         refreshingContent={<Loader isVisible={true} />}
         isPullable={isPullable}
-        className={mergeTailwindClasses("min-h-[50vh]", className || "")}
+        className={className}
       >
         <>{children}</>
       </PullToRefresh>

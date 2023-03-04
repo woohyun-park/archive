@@ -32,7 +32,7 @@ export default function PostPage() {
 
   return (
     <>
-      <Motion type="fade">
+      <Motion type="fade" className="bg-white">
         {post === null ? (
           <>
             <div className="flex">
@@ -58,7 +58,7 @@ export default function PostPage() {
                 post={post}
                 user={curUser}
                 setPost={setPost}
-                className="mx-4"
+                className="pb-16 mx-4"
               />
             </>
           )

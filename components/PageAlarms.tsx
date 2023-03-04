@@ -60,7 +60,7 @@ export default function PageAlarms({ query, className }: IPageAlarmsProps) {
         <AnimatePresence>
           {alarms.map((alarm, i) => {
             return (
-              <WrapMotion type="float" key={alarm.id}>
+              <WrapMotion type="float" key={alarm.id} className="min-h-[50vh]">
                 <>
                   {alarm.type === "like" && <AlarmLike alarm={alarm} />}
                   {alarm.type === "comment" && <AlarmComment alarm={alarm} />}
