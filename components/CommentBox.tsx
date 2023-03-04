@@ -7,10 +7,9 @@ import { useRouter } from "next/router";
 import Action from "./Action";
 import Textarea from "./atoms/Textarea";
 import Btn from "./atoms/Btn";
-import Page from "./Page";
 import { createComment } from "../apis/fbCreate";
 import { readComment } from "../apis/fbRead";
-import { FETCH_LIMIT } from "../stores/useCache";
+import { FETCH_LIMIT } from "../apis/fbDef";
 
 type ICommentBoxProps = {
   post: IPost;

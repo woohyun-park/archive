@@ -158,28 +158,44 @@ export default function Profile() {
               )}
             </Motion>
           }
-          tabs={[
-            {
-              type: "posts",
-              label: "posts",
-              query: { type: "uid", value: { uid: curUser.id } },
-              as: "posts",
-              numCols: 2,
-            },
-            {
-              type: "tags",
-              label: "tags",
-              query: { type: "uid", value: { uid: curUser.id } },
-              as: "tags",
-              numCols: 2,
-            },
-            {
-              type: "scraps",
-              fetchType: "scraps",
-              label: "scraps",
-              numCols: 3,
-            },
-          ]}
+          tabs={
+            uid === curUser.id
+              ? [
+                  {
+                    type: "posts",
+                    label: "posts",
+                    query: { type: "uid", value: { uid } },
+                    as: "posts",
+                    numCols: 2,
+                  },
+                  {
+                    type: "tags",
+                    label: "tags",
+                    query: { type: "uid", value: { uid } },
+                    as: "tags",
+                  },
+                  {
+                    type: "scraps",
+                    label: "scraps",
+                    query: { type: "uid", value: { uid } },
+                  },
+                ]
+              : [
+                  {
+                    type: "posts",
+                    label: "posts",
+                    query: { type: "uid", value: { uid } },
+                    as: "posts",
+                    numCols: 2,
+                  },
+                  {
+                    type: "tags",
+                    label: "tags",
+                    query: { type: "uid", value: { uid } },
+                    as: "tags",
+                  },
+                ]
+          }
           className="mt-4"
         />
       ) : (

@@ -4,9 +4,9 @@ import { mergeTailwindClasses } from "../apis/tailwind";
 import { ICacheType } from "../stores/useCacheHelper";
 import { useStatus } from "../stores/useStatus";
 import PagePosts, { IPagePostsProps } from "./PagePosts";
-import PageScraps from "./PageScraps";
 import PageTags, { IPageTagsProps } from "./PageTags";
 import PageUsers, { IPageUsersProps } from "./PageUsers";
+import PageScraps, { IPageScrapsProps } from "./PageScraps";
 import WrapScrollTab from "./wrappers/WrapScrollTab";
 
 // 하나의 route에 tab을 통해서 여러개의 infiniteScrollPage를 만들 수 있는 컴포넌트
@@ -19,11 +19,12 @@ import WrapScrollTab from "./wrappers/WrapScrollTab";
 // ! 각각의 tab의 스크롤을 저장하는 경우는 두가지이다.
 // 다른 탭으로 넘어갈 때, 그리고 다른 상세 페이지로 넘어갔다가 돌아올 때
 
-type IDataType = IPostsType | IUsersType | ITagsType;
+type IDataType = IPostsType | IUsersType | ITagsType | IScrapsType;
 
 type IPostsType = IPagePostsProps & ITabType;
 type IUsersType = IPageUsersProps & ITabType;
 type ITagsType = IPageTagsProps & ITabType;
+type IScrapsType = IPageScrapsProps & ITabType;
 
 type ITabType = {
   type: "posts" | "users" | "tags" | "scraps";
@@ -136,7 +137,7 @@ export default function PageTab({ header, tabs, className }: IPageTapProps) {
                     />
                   )}
                   {tab.type === "scraps" && (
-                    <PageScraps fetchType={tab.fetchType as ICacheType} />
+                    <PageScraps query={(tab as IScrapsType).query} />
                   )}
                 </div>
               </div>

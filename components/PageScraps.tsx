@@ -1,24 +1,23 @@
 import { AnimatePresence } from "framer-motion";
 import { useRouter } from "next/router";
 import React, { Children, useEffect } from "react";
+import { IFetchQueryScraps } from "../apis/fbDef";
 import { useCachedPage } from "../hooks/useCachedPage";
 import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 import { IScrap, ITag, IUser } from "../libs/custom";
 import { ICacheType } from "../stores/useCacheHelper";
 import { useStatus } from "../stores/useStatus";
 import { useUser } from "../stores/useUser";
-import Profile from "./Profile";
-import WrapMotion from "./wrappers/WrapMotion";
 import WrapRefreshAndLoad from "./wrappers/WrapRefreshAndReload";
 
 export interface IPageScrapsProps {
-  fetchType: ICacheType;
+  query: IFetchQueryScraps;
 }
 
-export default function PageScraps({ fetchType = "scraps" }: IPageScrapsProps) {
+export default function PageScraps({ query }: IPageScrapsProps) {
   const router = useRouter();
 
-  const cache = useCachedPage(fetchType);
+  const cache = useCachedPage("scraps");
   const { setModalLoader } = useStatus();
   const { curUser } = useUser();
 
@@ -28,15 +27,11 @@ export default function PageScraps({ fetchType = "scraps" }: IPageScrapsProps) {
 
   const scraps = cache.data as IScrap[];
   function onIntersect() {
-    if (fetchType === "scraps") {
-      cache.fetchScraps && cache.fetchScraps("load", path, curUser.id);
-    }
+    cache.fetchScraps && cache.fetchScraps("load", query, path);
   }
   function onChange() {}
   async function onRefresh() {
-    if (fetchType === "scraps") {
-      cache.fetchScraps && cache.fetchScraps("refresh", path, curUser.id);
-    }
+    cache.fetchScraps && cache.fetchScraps("refresh", query, path);
   }
   const changeListener = scraps;
   const isLast = cache.isLast;
@@ -44,10 +39,7 @@ export default function PageScraps({ fetchType = "scraps" }: IPageScrapsProps) {
   useEffect(() => {
     async function init() {
       if (cache.data.length === 0) {
-        if (fetchType === "scraps") {
-          cache.fetchScraps &&
-            (await cache.fetchScraps("init", path, curUser.id));
-        }
+        cache.fetchScraps && (await cache.fetchScraps("init", query, path));
       }
       setModalLoader(false);
     }

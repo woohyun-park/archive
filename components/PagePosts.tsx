@@ -1,10 +1,10 @@
 import { AnimatePresence } from "framer-motion";
 import { useRouter } from "next/router";
 import React, { Children, useEffect } from "react";
+import { IFetchQueryPosts } from "../apis/fbDef";
 import { useCachedPage } from "../hooks/useCachedPage";
 import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 import { IPost } from "../libs/custom";
-import { IFetchQueryPosts, IFetchType } from "../stores/useCache";
 import { useStatus } from "../stores/useStatus";
 import { useUser } from "../stores/useUser";
 import PostBox from "./PostBox";

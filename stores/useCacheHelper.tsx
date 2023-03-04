@@ -4,10 +4,11 @@ import {
   Query,
   QueryDocumentSnapshot,
 } from "firebase/firestore";
-import { getAlarmQuery, getScrapsQuery } from "../apis/fbQuery";
 import { combineData, setCursor } from "./libStores";
 import { readAlarms, readPosts, readScraps, readUsers } from "../apis/fbRead";
-import { FETCH_LIMIT, IFetchType, IUseCache } from "./useCache";
+import { IUseCache } from "./useCache";
+import { FETCH_LIMIT, IFetchType } from "../apis/fbDef";
+import { getScrapsQuery } from "../apis/fbQueryScraps";
 
 export type ICacheType = "posts" | "tags" | "scraps" | "alarms" | "test";
 
@@ -106,29 +107,50 @@ export async function fetchUsersHelper(
 
 export async function fetchScrapsHelper(
   fetchType: IFetchType,
-  cache: ICache,
-  uid: string
+  fetchLimit: number,
+  query: Query<DocumentData>,
+  cache: ICache | undefined
 ) {
-  const q = getScrapsQuery(fetchType, uid, cache.lastVisible);
-  const snap = await getDocs(q);
+  const snap = await getDocs(query);
   const resScraps = await readScraps(snap.docs);
-  cache.data = combineData(cache.data, resScraps, fetchType);
-  cache.isLast = resScraps.length < FETCH_LIMIT.tag ? true : false;
   const newLastVisible = setCursor(snap, fetchType);
-  if (newLastVisible) cache.lastVisible = newLastVisible;
+  if (!newLastVisible)
+    throw console.error("Cannot fetch the following scraps:", fetchType, query);
+  if (cache) {
+    cache.data = combineData(cache.data, resScraps, fetchType);
+    cache.isLast = resScraps.length < fetchLimit ? true : false;
+    if (newLastVisible) cache.lastVisible = newLastVisible;
+  } else {
+    cache = {
+      data: combineData([], resScraps, fetchType),
+      isLast: resScraps.length < fetchLimit ? true : false,
+      lastVisible: newLastVisible,
+    };
+  }
   return cache;
 }
 
 export async function fetchAlarmsHelper(
   fetchType: IFetchType,
-  cache: ICache,
-  uid: string
+  fetchLimit: number,
+  query: Query<DocumentData>,
+  cache: ICache | undefined
 ) {
-  const snap = await getDocs(getAlarmQuery(fetchType, uid, cache.lastVisible));
+  const snap = await getDocs(query);
   const resAlarms = await readAlarms(snap.docs);
-  cache.data = combineData(cache.data, resAlarms, fetchType);
-  cache.isLast = resAlarms.length < FETCH_LIMIT.alarm ? true : false;
   const newLastVisible = setCursor(snap, fetchType);
-  if (newLastVisible) cache.lastVisible = newLastVisible;
+  if (!newLastVisible)
+    throw console.error("Cannot fetch the following alarms:", fetchType, query);
+  if (cache) {
+    cache.data = combineData(cache.data, resAlarms, fetchType);
+    cache.isLast = resAlarms.length < fetchLimit ? true : false;
+    if (newLastVisible) cache.lastVisible = newLastVisible;
+  } else {
+    cache = {
+      data: combineData([], resAlarms, fetchType),
+      isLast: resAlarms.length < fetchLimit ? true : false,
+      lastVisible: newLastVisible,
+    };
+  }
   return cache;
 }
