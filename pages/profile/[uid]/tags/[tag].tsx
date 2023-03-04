@@ -1,11 +1,11 @@
 import { useRouter } from "next/router";
-import BtnIcon from "../../../components/atoms/BtnIcon";
-import WrapScroll from "../../../components/wrappers/WrapScroll";
-import Motion from "../../../components/wrappers/WrapMotion";
-import PagePosts from "../../../components/PagePosts";
+import BtnIcon from "../../../../components/atoms/BtnIcon";
+import WrapScroll from "../../../../components/wrappers/WrapScroll";
+import Motion from "../../../../components/wrappers/WrapMotion";
+import PagePosts from "../../../../components/PagePosts";
 import { useEffect, useState } from "react";
-import { IUser } from "../../../libs/custom";
-import { readData } from "../../../apis/fbRead";
+import { IUser } from "../../../../libs/custom";
+import { readData } from "../../../../apis/fbRead";
 
 export default function ProfileTag({}) {
   const router = useRouter();

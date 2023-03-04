@@ -96,7 +96,9 @@ export default function PageTags({
                 onClick={() =>
                   query.type === "keyword"
                     ? router.push(`/tag/${tag.name}`)
-                    : router.push(`/profile/${query.value.uid}/${tag.name}`)
+                    : router.push(
+                        `/profile/${query.value.uid}/tags/${tag.name}`
+                      )
                 }
               >
                 <div className="flex items-center justify-center w-8 h-8 mr-2 text-xl rounded-full bg-gray-3 text-bold">
