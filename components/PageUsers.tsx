@@ -1,11 +1,9 @@
-import { AnimatePresence } from "framer-motion";
 import { useRouter } from "next/router";
 import React, { Children, useEffect } from "react";
+import { IFetchQueryUsers } from "../apis/fbDef";
 import { useCachedPage } from "../hooks/useCachedPage";
 import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 import { IUser } from "../libs/custom";
-import { IFetchQueryUsers } from "../stores/useCache";
-import { ICacheType } from "../stores/useCacheHelper";
 import { useStatus } from "../stores/useStatus";
 import { useUser } from "../stores/useUser";
 import Profile from "./Profile";

@@ -3,7 +3,6 @@ import { devtools } from "zustand/middleware";
 import { IDict, IPost } from "../libs/custom";
 import {
   fetchAlarmsHelper,
-  fetchPostsHelper,
   fetchScrapsHelper,
   fetchTagsHelper,
   fetchUsersHelper,

@@ -3,8 +3,8 @@ import {
   QueryDocumentSnapshot,
   QuerySnapshot,
 } from "firebase/firestore";
+import { IFetchType } from "../apis/fbDef";
 import { IDict } from "../libs/custom";
-import { IFetchType } from "../apis/fbQuery";
 
 export async function wrapPromise(
   callback: Function,
