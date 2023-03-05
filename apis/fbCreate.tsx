@@ -11,7 +11,7 @@ import {
 import { IAlarm, IComment, ILike, IScrap, ITag } from "../libs/custom";
 import { db } from "./firebase";
 
-// ALERT:한개의 데이터를 추가하는 create 함수들은 ref를 반환하고,
+// 한개의 데이터를 추가하는 create 함수들은 ref를 반환하고,
 // 여러개의 데이터를 추가하는 create 함수들은 void를 반환한다
 
 export async function createDoc(
