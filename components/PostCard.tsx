@@ -43,7 +43,7 @@ export default function PostCard({ post }: IPostCardProps) {
             post.tags.map((tag, i) => (
               <Btn
                 label={`#${tag}`}
-                className="px-2"
+                className="px-2 ml-1"
                 onClick={() => router.pushWithLoader(`/tag/${tag}`)}
               />
             ))

@@ -17,6 +17,7 @@ import Image from "next/image";
 import WrapMotion from "./wrappers/WrapMotion";
 import { RiGoogleFill } from "react-icons/ri";
 import ScrollTop from "./atoms/ScrollTop";
+import ModalLoader from "./ModalLoader";
 
 interface ILayoutProps {
   children: React.ReactNode;
@@ -137,7 +138,9 @@ export default function Layout({ children }: ILayoutProps) {
   ];
   return (
     <>
-      {login.isLoggedIn ? (
+      {login.isLoggedIn === null ? (
+        <ModalLoader isVisible={true} />
+      ) : login.isLoggedIn ? (
         <>
           <div className="">{children}</div>
           {router.pathname === "/" && <ScrollTop />}

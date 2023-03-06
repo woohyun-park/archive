@@ -80,7 +80,7 @@ export default function PageTab({ header, tabs, className }: IPageTapProps) {
         <div>{header}</div>
         <div
           ref={tabRef}
-          className="box-border sticky top-0 z-10 flex bg-white"
+          className="box-border sticky top-0 z-10 flex bg-white border-b-gray-3 border-b-[1px]"
         >
           {Children.toArray(
             tabs.map((tab, i) => (
