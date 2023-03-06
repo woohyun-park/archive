@@ -41,7 +41,7 @@ export default function PostBox({ type, post }: IPostBoxProps) {
               className={
                 type === "title"
                   ? "absolute m-2 text-xl font-bold break-words hover:cursor-pointer leading-5"
-                  : "absolute m-2 text-4xl font-bold break-words hover:cursor-pointer leading-5"
+                  : "absolute m-2 text-2xl font-bold leading-6 break-words hover:cursor-pointer"
               }
             >
               {post.title}

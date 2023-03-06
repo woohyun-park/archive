@@ -137,11 +137,7 @@ export default function Layout({ children }: ILayoutProps) {
   ];
   return (
     <>
-      {login.isLoggedIn === null ? (
-        <div className="flex items-center justify-center h-[100vh]">
-          loading...
-        </div>
-      ) : login.isLoggedIn ? (
+      {login.isLoggedIn ? (
         <>
           <div className="">{children}</div>
           {router.pathname === "/" && <ScrollTop />}
