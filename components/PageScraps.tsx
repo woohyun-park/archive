@@ -1,18 +1,11 @@
-import { AnimatePresence } from "framer-motion";
 import { useRouter } from "next/router";
 import React, { Children, useEffect } from "react";
 import { IFetchQueryScraps } from "../apis/fbDef";
 import { useCachedPage } from "../hooks/useCachedPage";
-import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 import { IDict, IScrap, ITag, IUser } from "../libs/custom";
-import { ICacheType } from "../stores/useCacheHelper";
-import { useStatus } from "../stores/useStatus";
-import { useUser } from "../stores/useUser";
 import WrapRefreshAndLoad from "./wrappers/WrapRefreshAndReload";
-import Cont from "./Cont";
 import WrapMotion from "./wrappers/WrapMotion";
 import BtnIcon from "./atoms/BtnIcon";
-import WrapScroll from "./wrappers/WrapScroll";
 
 export interface IPageScrapsProps {
   query: IFetchQueryScraps;

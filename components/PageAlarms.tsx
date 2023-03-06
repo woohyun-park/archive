@@ -2,7 +2,7 @@ import { AnimatePresence } from "framer-motion";
 import React from "react";
 import { IFetchQueryAlarms } from "../apis/fbDef";
 import { useCachedPage } from "../hooks/useCachedPage";
-import { IAlarm, IPost } from "../libs/custom";
+import { IAlarm } from "../libs/custom";
 import AlarmComment from "./AlarmComment";
 import AlarmFollow from "./AlarmFollow";
 import AlarmLike from "./AlarmLike";

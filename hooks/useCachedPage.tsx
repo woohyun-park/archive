@@ -11,8 +11,7 @@ import {
   IFetchQueryUsers,
 } from "../apis/fbDef";
 import { IAlarm, IComment, IPost, IScrap, ITag, IUser } from "../libs/custom";
-import { useCache } from "../stores/useCache";
-import { ICacheType } from "../stores/useCacheHelper";
+import { ICacheType, useCache } from "../stores/useCache";
 import { useInfiniteScroll } from "./useInfiniteScroll";
 
 export const useCachedPage = (
@@ -79,13 +78,13 @@ export const useCachedPage = (
       // refresh가 불가능하다면 매번 새롭게 데이터를 init한다.
       // refresh가 가능하다면 저장된 데이터가 없는 경우에만 init한다
       if (!isPullable) {
-        option?.numCols
-          ? fetchCache(type, "init", typedQuery, path, as, option?.numCols)
+        numCols
+          ? fetchCache(type, "init", typedQuery, path, as, numCols)
           : fetchCache(type, "init", typedQuery, path, as);
       } else {
         if (data.length === 0) {
-          option?.numCols
-            ? fetchCache(type, "init", typedQuery, path, as, option?.numCols)
+          numCols
+            ? fetchCache(type, "init", typedQuery, path, as, numCols)
             : fetchCache(type, "init", typedQuery, path, as);
         }
       }
