@@ -14,24 +14,29 @@ import { useLoading } from "../../hooks/useLoading";
 import { signOut } from "firebase/auth";
 import { auth } from "../../apis/firebase";
 import Btn from "../../components/atoms/Btn";
+import { useCache } from "../../stores/useCache";
 
 export default function Profile() {
+  const [user, setUser] = useState<IUser>();
   const { curUser } = useUser();
-  const posts = useCachedPage("posts", "tabPosts");
+  const uid = user?.id || "";
   useLoading(["tags", "scraps", "posts"]);
 
-  const router = useRouter();
-  const [user, setUser] = useState<IUser>();
-  const [status, setStatus] = useState({
-    initIsFollowing: curUser.followings.find((elem) => elem === user?.id)
-      ? true
-      : false,
-    isFollowing: curUser.followings.find((elem) => elem === user?.id)
-      ? true
-      : false,
-  });
+  const { caches } = useCache();
 
-  const uid = user?.id;
+  const router = useRouter();
+  const [status, setStatus] = useState({
+    initIsFollowing: curUser.followings.find((elem) => elem === uid)
+      ? true
+      : false,
+    isFollowing: curUser.followings.find((elem) => elem === uid) ? true : false,
+  });
+  // TODO: posts 총 갯수 따로 가져오기
+  const posts =
+    (caches[router.asPath] &&
+      caches[router.asPath].posts &&
+      caches[router.asPath].posts.data) ||
+    [];
 
   useEffect(() => {
     async function init() {
@@ -82,7 +87,7 @@ export default function Profile() {
                   <div className="flex justify-between w-2/3">
                     <div>
                       <div className="text-gray-2">아카이브</div>
-                      <div className="profileNum">{posts.data.length}</div>
+                      <div className="profileNum">{posts.length}</div>
                     </div>
                     <div>
                       <div className="text-gray-2">팔로워</div>

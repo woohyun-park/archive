@@ -1,7 +1,6 @@
 import { useRouter } from "next/router";
 import { Children, useEffect, useRef } from "react";
 import { mergeTailwindClasses } from "../apis/tailwind";
-import { ICacheType } from "../stores/useCacheHelper";
 import { useStatus } from "../stores/useStatus";
 import PagePosts, { IPagePostsProps } from "./PagePosts";
 import PageTags, { IPageTagsProps } from "./PageTags";
