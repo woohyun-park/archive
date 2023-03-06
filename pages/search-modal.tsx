@@ -6,6 +6,8 @@ import WrapMotion from "../components/wrappers/WrapMotion";
 import { useUser } from "../stores/useUser";
 import InputIcon from "../components/atoms/InputIcon";
 import { updateUser } from "../apis/fbUpdate";
+import WrapRouteLoad from "../hooks/useRoute";
+import useRoute from "../hooks/useRoute";
 
 export default function Search() {
   const router = useRouter();
@@ -14,6 +16,7 @@ export default function Search() {
   const searchRef = useRef<HTMLInputElement>(null);
 
   const { curUser } = useUser();
+  const { pushWithLoader } = useRoute();
 
   function updateHistory(keyword: string) {
     if (curUser.history) {
@@ -118,7 +121,12 @@ export default function Search() {
                   .map((e, i) => (
                     <WrapMotion type="float">
                       <div className="flex items-center justify-between my-4 text-sm text-gray-1">
-                        <div className="w-full hover:cursor-pointer">{e}</div>
+                        <div
+                          className="w-full hover:cursor-pointer"
+                          onClick={() => pushWithLoader(`/search/${e}`)}
+                        >
+                          {e}
+                        </div>
                         <div
                           className="flex items-center hover:cursor-pointer"
                           id={String(i)}

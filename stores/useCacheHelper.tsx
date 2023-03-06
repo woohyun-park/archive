@@ -5,13 +5,7 @@ import {
   QueryDocumentSnapshot,
 } from "firebase/firestore";
 import { combineData, setCursor } from "./libStores";
-import {
-  readAlarms,
-  readCommentsOfPost,
-  readPosts,
-  readScraps,
-  readUsers,
-} from "../apis/fbRead";
+import { readAlarms, readScraps, readUsers } from "../apis/fbRead";
 import { IUseCache } from "./useCache";
 import { IFetchType } from "../apis/fbDef";
 import { convertCreatedAt } from "../apis/firebase";
@@ -37,145 +31,47 @@ export function getNewState(
   return newState;
 }
 
-// export async function fetchPostsHelper(
-//   fetchType: IFetchType,
-//   fetchLimit: number,
-//   cache: ICache | undefined,
-//   data: IPost[]
-// ) {
-
-//   return cache;
-// }
-export async function fetchTagsHelper(
+export async function fetchHelper(
+  dataType: "tags" | "users" | "scraps" | "alarms" | "comments",
   fetchType: IFetchType,
   fetchLimit: number,
   query: Query<DocumentData>,
   cache: ICache | undefined
 ) {
   const snap = await getDocs(query);
-  const resTags: any[] = [];
-  snap.forEach((doc) => resTags.push(doc.data()));
-  const newLastVisible = setCursor(snap, fetchType);
-  if (!newLastVisible)
-    throw console.error("Cannot fetch the following tags:", fetchType, query);
-  if (cache) {
-    cache.data = combineData(cache.data, resTags, fetchType);
-    cache.isLast = resTags.length < fetchLimit ? true : false;
-    if (newLastVisible) cache.lastVisible = newLastVisible;
-  } else {
-    cache = {
-      data: combineData([], resTags, fetchType),
-      isLast: resTags.length < fetchLimit ? true : false,
-      lastVisible: newLastVisible,
-    };
+  let data: any[] = [];
+  if (dataType === "tags") {
+    data = [];
+    snap.forEach((doc) => data.push(doc.data()));
+  } else if (dataType === "users") {
+    data = await readUsers(snap.docs);
+  } else if (dataType === "scraps") {
+    data = await readScraps(snap.docs);
+  } else if (dataType === "alarms") {
+    data = await readAlarms(snap.docs);
+  } else if (dataType === "comments") {
+    snap.forEach((doc) => {
+      data.push({
+        ...doc.data(),
+        createdAt: convertCreatedAt(doc.data().createdAt),
+      } as IComment);
+    });
   }
-  return cache;
-}
-export async function fetchUsersHelper(
-  fetchType: IFetchType,
-  fetchLimit: number,
-  query: Query<DocumentData>,
-  cache: ICache | undefined
-) {
-  const snap = await getDocs(query);
-  const resUsers = await readUsers(snap.docs);
   const newLastVisible = setCursor(snap, fetchType);
   if (!newLastVisible)
-    throw console.error("Cannot fetch the following users:", fetchType, query);
-  if (cache) {
-    cache.data = combineData(cache.data, resUsers, fetchType);
-    cache.isLast = resUsers.length < fetchLimit ? true : false;
-    if (newLastVisible) cache.lastVisible = newLastVisible;
-  } else {
-    cache = {
-      data: combineData([], resUsers, fetchType),
-      isLast: resUsers.length < fetchLimit ? true : false,
-      lastVisible: newLastVisible,
+    return {
+      data: [],
+      isLast: true,
+      lastVisible: undefined,
     };
-  }
-  return cache;
-}
-
-export async function fetchScrapsHelper(
-  fetchType: IFetchType,
-  fetchLimit: number,
-  query: Query<DocumentData>,
-  cache: ICache | undefined
-) {
-  const snap = await getDocs(query);
-  const resScraps = await readScraps(snap.docs);
-  const newLastVisible = setCursor(snap, fetchType);
-  if (!newLastVisible)
-    throw console.error("Cannot fetch the following scraps:", fetchType, query);
   if (cache) {
-    cache.data = combineData(cache.data, resScraps, fetchType);
-    cache.isLast = resScraps.length < fetchLimit ? true : false;
+    cache.data = combineData(cache.data, data, fetchType);
+    cache.isLast = data.length < fetchLimit ? true : false;
     if (newLastVisible) cache.lastVisible = newLastVisible;
   } else {
     cache = {
-      data: combineData([], resScraps, fetchType),
-      isLast: resScraps.length < fetchLimit ? true : false,
-      lastVisible: newLastVisible,
-    };
-  }
-  return cache;
-}
-
-export async function fetchAlarmsHelper(
-  fetchType: IFetchType,
-  fetchLimit: number,
-  query: Query<DocumentData>,
-  cache: ICache | undefined
-) {
-  const snap = await getDocs(query);
-  const resAlarms = await readAlarms(snap.docs);
-  const newLastVisible = setCursor(snap, fetchType);
-  if (!newLastVisible)
-    throw console.error("Cannot fetch the following alarms:", fetchType, query);
-  if (cache) {
-    cache.data = combineData(cache.data, resAlarms, fetchType);
-    cache.isLast = resAlarms.length < fetchLimit ? true : false;
-    if (newLastVisible) cache.lastVisible = newLastVisible;
-  } else {
-    cache = {
-      data: combineData([], resAlarms, fetchType),
-      isLast: resAlarms.length < fetchLimit ? true : false,
-      lastVisible: newLastVisible,
-    };
-  }
-  return cache;
-}
-
-export async function fetchCommentsHelper(
-  fetchType: IFetchType,
-  fetchLimit: number,
-  query: Query<DocumentData>,
-  cache: ICache | undefined
-) {
-  const snap = await getDocs(query);
-  const resComments: IComment[] = [];
-  snap.forEach((doc) => {
-    const data = doc.data();
-    resComments.push({
-      ...data,
-      createdAt: convertCreatedAt(data.createdAt),
-    } as IComment);
-  });
-  const newLastVisible = setCursor(snap, fetchType);
-  if (!newLastVisible)
-    throw console.error(
-      "Cannot fetch the following comments:",
-      fetchType,
-      query
-    );
-  if (cache) {
-    cache.data = combineData(cache.data, resComments, fetchType);
-    cache.isLast = resComments.length < fetchLimit ? true : false;
-    if (newLastVisible) cache.lastVisible = newLastVisible;
-  } else {
-    cache = {
-      data: combineData([], resComments, fetchType),
-      isLast: resComments.length < fetchLimit ? true : false,
+      data: combineData([], data, fetchType),
+      isLast: data.length < fetchLimit ? true : false,
       lastVisible: newLastVisible,
     };
   }

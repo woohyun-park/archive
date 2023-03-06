@@ -33,7 +33,6 @@ interface IBtnIconProps {
   fill?: boolean;
   size?: string;
   stroke?: string;
-  style?: string;
   onClick?: () => void;
 }
 
@@ -42,89 +41,67 @@ export default function BtnIcon({
   fill = false,
   size = SIZE.icon,
   stroke,
-  style,
   onClick,
 }: IBtnIconProps) {
   return (
-    <>
-      <div
-        id="iconBtn_b1"
-        className="flex items-center justify-center transition duration-150 ease-in-out hover:cursor-pointer"
-      >
-        {icon === "like" && (
-          <>
-            {fill ? (
-              <HiHeart size={size} onClick={onClick} strokeWidth={stroke} />
-            ) : (
-              <HiOutlineHeart
-                size={size}
-                onClick={onClick}
-                strokeWidth={stroke}
-              />
-            )}
-          </>
-        )}
-        {icon === "comment" && (
-          <HiOutlineChatBubbleOvalLeft
-            size={size}
-            onClick={onClick}
-            strokeWidth={stroke}
-          />
-        )}
-        {icon === "scrap" && (
-          <>
-            {fill ? (
-              <HiBookmark size={size} onClick={onClick} strokeWidth={stroke} />
-            ) : (
-              <HiOutlineBookmark
-                size={size}
-                onClick={onClick}
-                strokeWidth={stroke}
-              />
-            )}
-          </>
-        )}
-        {icon === "back" && (
-          <HiChevronLeft size={size} onClick={onClick} strokeWidth={stroke} />
-        )}
-        {icon === "delete" && (
-          <HiXMark size={size} onClick={onClick} strokeWidth={stroke} />
-        )}
-        {icon === "modify" && (
-          <HiPencil size={size} onClick={onClick} strokeWidth={stroke} />
-        )}
-        {icon === "refresh" && (
-          <HiArrowUturnLeft
-            size={size}
-            onClick={onClick}
-            strokeWidth={stroke}
-          />
-        )}
-        {icon === "search" && (
-          <HiMagnifyingGlass
-            size={size}
-            onClick={onClick}
-            strokeWidth={stroke}
-          />
-        )}
-        {icon === "alarm" && (
-          <HiOutlineBell size={size} onClick={onClick} strokeWidth={stroke} />
-        )}
-        {icon === "filter" && (
-          <HiOutlineFunnel size={size} onClick={onClick} strokeWidth={stroke} />
-        )}
-        {icon === "setting" && (
-          <HiCog8Tooth size={size} onClick={onClick} strokeWidth={stroke} />
-        )}
-      </div>
-
-      <style jsx>
-        {`
-          #iconBtn_b1 {
-            ${style}
-          }
-        `}
-      </style>
-    </>
+    <div className="flex items-center justify-center transition duration-150 ease-in-out hover:cursor-pointer">
+      {icon === "like" && (
+        <>
+          {fill ? (
+            <HiHeart size={size} onClick={onClick} strokeWidth={stroke} />
+          ) : (
+            <HiOutlineHeart
+              size={size}
+              onClick={onClick}
+              strokeWidth={stroke}
+            />
+          )}
+        </>
+      )}
+      {icon === "comment" && (
+        <HiOutlineChatBubbleOvalLeft
+          size={size}
+          onClick={onClick}
+          strokeWidth={stroke}
+        />
+      )}
+      {icon === "scrap" && (
+        <>
+          {fill ? (
+            <HiBookmark size={size} onClick={onClick} strokeWidth={stroke} />
+          ) : (
+            <HiOutlineBookmark
+              size={size}
+              onClick={onClick}
+              strokeWidth={stroke}
+            />
+          )}
+        </>
+      )}
+      {icon === "back" && (
+        <HiChevronLeft size={size} onClick={onClick} strokeWidth={stroke} />
+      )}
+      {icon === "delete" && (
+        <HiXMark size={size} onClick={onClick} strokeWidth={stroke} />
+      )}
+      {icon === "modify" && (
+        <HiPencil size={size} onClick={onClick} strokeWidth={stroke} />
+      )}
+      {icon === "refresh" && (
+        <HiArrowUturnLeft size={size} onClick={onClick} strokeWidth={stroke} />
+      )}
+      {icon === "search" && (
+        <HiMagnifyingGlass size={size} onClick={onClick} strokeWidth={stroke} />
+      )}
+      {icon === "alarm" && (
+        <HiOutlineBell size={size} onClick={onClick} strokeWidth={stroke} />
+      )}
+      {icon === "filter" && (
+        <HiOutlineFunnel size={size} onClick={onClick} strokeWidth={stroke} />
+      )}
+      {icon === "setting" && (
+        <HiCog8Tooth size={size} onClick={onClick} strokeWidth={stroke} />
+      )}
+    </div>
   );
 }

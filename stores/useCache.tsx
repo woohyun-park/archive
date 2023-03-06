@@ -1,15 +1,7 @@
 import create from "zustand";
 import { devtools } from "zustand/middleware";
 import { IDict, IPost } from "../libs/custom";
-import {
-  fetchAlarmsHelper,
-  fetchCommentsHelper,
-  fetchScrapsHelper,
-  fetchTagsHelper,
-  fetchUsersHelper,
-  getNewState,
-  ICache,
-} from "./useCacheHelper";
+import { fetchHelper, getNewState, ICache } from "./useCacheHelper";
 import {
   FETCH_LIMIT,
   IFetchQueryAlarms,
@@ -36,7 +28,6 @@ import {
 import { readPost, readPosts, readScraps } from "../apis/fbRead";
 import { combineData, setCursor } from "./libStores";
 import { db } from "../apis/firebase";
-import { async } from "@firebase/util";
 
 type IPage = IDict<ICache>;
 
@@ -151,7 +142,8 @@ export const useCache = create<IUseCache>()(
       const prevCache = get().caches[pathname]
         ? get().caches[pathname][as]
         : undefined;
-      const cache = await fetchTagsHelper(
+      const cache = await fetchHelper(
+        "tags",
         type,
         FETCH_LIMIT.tag,
         getTagsQuery(type, query, FETCH_LIMIT.tag, prevCache?.lastVisible),
@@ -168,7 +160,8 @@ export const useCache = create<IUseCache>()(
       const prevCache = get().caches[pathname]
         ? get().caches[pathname][as]
         : undefined;
-      const cache = await fetchUsersHelper(
+      const cache = await fetchHelper(
+        "users",
         type,
         FETCH_LIMIT.user,
         getUsersQuery(type, query, FETCH_LIMIT.tag, prevCache?.lastVisible),
@@ -184,7 +177,8 @@ export const useCache = create<IUseCache>()(
       const prevCache = get().caches[pathname]
         ? get().caches[pathname]["alarms"]
         : undefined;
-      const cache = await fetchAlarmsHelper(
+      const cache = await fetchHelper(
+        "alarms",
         type,
         FETCH_LIMIT.alarm,
         getAlarmsQuery(type, query, FETCH_LIMIT.alarm, prevCache?.lastVisible),
@@ -200,7 +194,8 @@ export const useCache = create<IUseCache>()(
       const prevCache = get().caches[pathname]
         ? get().caches[pathname]["scraps"]
         : undefined;
-      const cache = await fetchScrapsHelper(
+      const cache = await fetchHelper(
+        "scraps",
         type,
         FETCH_LIMIT.scrap,
         getScrapsQuery(type, query, FETCH_LIMIT.scrap, prevCache?.lastVisible),
@@ -216,7 +211,8 @@ export const useCache = create<IUseCache>()(
       const prevCache = get().caches[pathname]
         ? get().caches[pathname]["scraps"]
         : undefined;
-      const cache = await fetchCommentsHelper(
+      const cache = await fetchHelper(
+        "comments",
         type,
         FETCH_LIMIT.comment,
         query(
