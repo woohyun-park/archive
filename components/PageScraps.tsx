@@ -21,38 +21,9 @@ export interface IPageScrapsProps {
 export default function PageScraps({ query }: IPageScrapsProps) {
   const router = useRouter();
 
-  const cache = useCachedPage("scraps");
-  const { curUser } = useUser();
+  const { data, onRefresh, loading } = useCachedPage("scraps", query);
 
-  const path = router.asPath;
-  const keyword = (router.query.keyword as string) || "";
-  const tag = (router.query.tag as string) || "";
-
-  const scraps = cache.data as IScrap[];
-  function onIntersect() {
-    cache.fetchScraps && cache.fetchScraps("load", query, path);
-  }
-  function onChange() {}
-  async function onRefresh() {
-    cache.fetchScraps && cache.fetchScraps("refresh", query, path);
-  }
-  const changeListener = scraps;
-  const isLast = cache.isLast;
-
-  useEffect(() => {
-    async function init() {
-      if (cache.data.length === 0) {
-        cache.fetchScraps && (await cache.fetchScraps("init", query, path));
-      }
-    }
-    init();
-  }, []);
-
-  const { setLastIntersecting, loading } = useInfiniteScroll({
-    handleIntersect: onIntersect,
-    handleChange: onChange,
-    changeListener,
-  });
+  const scraps = data as IScrap[];
 
   function formatScraps(scraps: IScrap[]) {
     const formattedScrap: IDict<IScrap[]> = {};

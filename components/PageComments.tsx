@@ -1,11 +1,9 @@
 import { deleteDoc, doc } from "firebase/firestore";
 import { AnimatePresence } from "framer-motion";
-import { useRouter } from "next/router";
-import React, { Children, useEffect } from "react";
+import React from "react";
 import { IFetchQueryComments } from "../apis/fbDef";
 import { db } from "../apis/firebase";
 import { useCachedPage } from "../hooks/useCachedPage";
-import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 import { IComment } from "../libs/custom";
 import { useUser } from "../stores/useUser";
 import Comment from "./Comment";
@@ -17,38 +15,9 @@ export interface IPageCommentsProps {
 }
 
 export default function PageComments({ query, className }: IPageCommentsProps) {
-  const router = useRouter();
-
-  const cache = useCachedPage("comments");
   const { curUser } = useUser();
-
-  const path = router.asPath;
-
-  const comments = cache.data as IComment[];
-  function onIntersect() {
-    cache.fetchComments && cache.fetchComments("load", query, path);
-  }
-  function onChange() {}
-  async function onRefresh() {
-    cache.fetchComments && (await cache.fetchComments("refresh", query, path));
-  }
-  const changeListener = comments;
-  const isLast = cache.isLast;
-
-  useEffect(() => {
-    async function init() {
-      if (cache.data.length === 0) {
-        cache.fetchComments && (await cache.fetchComments("init", query, path));
-      }
-    }
-    init();
-  }, []);
-
-  const { setLastIntersecting, loading } = useInfiniteScroll({
-    handleIntersect: onIntersect,
-    handleChange: onChange,
-    changeListener,
-  });
+  const { data, onRefresh, loading } = useCachedPage("comments", query);
+  const comments = data as IComment[];
 
   async function handleDeleteComment(e: React.MouseEvent<HTMLDivElement>) {
     const id = e.currentTarget.id;

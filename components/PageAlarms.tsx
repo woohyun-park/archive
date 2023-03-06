@@ -1,11 +1,8 @@
 import { AnimatePresence } from "framer-motion";
-import { useRouter } from "next/router";
-import React, { Children, useEffect } from "react";
+import React from "react";
 import { IFetchQueryAlarms } from "../apis/fbDef";
 import { useCachedPage } from "../hooks/useCachedPage";
-import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 import { IAlarm, IPost } from "../libs/custom";
-import { useStatus } from "../stores/useStatus";
 import AlarmComment from "./AlarmComment";
 import AlarmFollow from "./AlarmFollow";
 import AlarmLike from "./AlarmLike";
@@ -18,37 +15,10 @@ export interface IPageAlarmsProps {
 }
 
 export default function PageAlarms({ query, className }: IPageAlarmsProps) {
-  const router = useRouter();
+  const { data, isLast, onRefresh, setLastIntersecting, loading } =
+    useCachedPage("alarms", query);
 
-  const cache = useCachedPage("alarms");
-
-  const path = router.asPath;
-
-  const alarms = cache.data as IAlarm[];
-  function onIntersect() {
-    cache.fetchAlarms && cache.fetchAlarms("load", query, path);
-  }
-  function onChange() {}
-  async function onRefresh() {
-    cache.fetchAlarms && (await cache.fetchAlarms("refresh", query, path));
-  }
-  const changeListener = alarms;
-  const isLast = cache.isLast;
-
-  useEffect(() => {
-    async function init() {
-      if (cache.data.length === 0) {
-        cache.fetchAlarms && (await cache.fetchAlarms("init", query, path));
-      }
-    }
-    init();
-  }, []);
-
-  const { setLastIntersecting, loading } = useInfiniteScroll({
-    handleIntersect: onIntersect,
-    handleChange: onChange,
-    changeListener,
-  });
+  const alarms = data as IAlarm[];
 
   return (
     <>

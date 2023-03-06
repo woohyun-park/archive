@@ -1,15 +1,25 @@
 import { IDict } from "../libs/custom";
 
 export const FETCH_LIMIT = {
-  alarm: 16,
-  post: { 1: 4, 2: 8, 3: 15 } as IDict<number>,
-  scrap: 15,
-  tag: 16,
-  user: 16,
-  comment: 16,
+  alarms: 16,
+  post: 1,
+  posts: { 1: 4, 2: 8, 3: 15 } as IDict<number>,
+  scraps: 15,
+  tags: 16,
+  users: 16,
+  comments: 16,
 };
 
 export type IFetchType = "init" | "load" | "refresh";
+
+export type IFetchQuery =
+  | IFetchQueryAlarms
+  | IFetchQueryComments
+  | IFetchQueryPost
+  | IFetchQueryPosts
+  | IFetchQueryScraps
+  | IFetchQueryTags
+  | IFetchQueryUsers;
 
 export type IFetchQueryAlarms = {
   type: "uid";

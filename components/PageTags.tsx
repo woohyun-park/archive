@@ -21,34 +21,10 @@ export default function PageTags({
 }: IPageTagsProps) {
   const router = useRouter();
 
-  const cache = useCachedPage("tags", as);
+  const { data, isLast, onRefresh, setLastIntersecting, loading } =
+    useCachedPage("tags", query, { as, isPullable });
 
-  const path = router.asPath;
-  const tags = cache.data as any[];
-  const isLast = cache.isLast;
-  const changeListener = tags;
-
-  function onIntersect() {
-    cache.fetchTags && cache.fetchTags("load", query, path, as);
-  }
-  function onChange() {}
-  async function onRefresh() {
-    cache.fetchTags && cache.fetchTags("refresh", query, path, as);
-  }
-
-  useEffect(() => {
-    async function init() {
-      // refresh가 불가능하다면 매번 새롭게 데이터를 init한다.
-      // refresh가 가능하다면 저장된 데이터가 없는 경우에만 init한다
-      if (!isPullable) {
-        cache.fetchTags && (await cache.fetchTags("init", query, path, as));
-      } else {
-        if (cache.data.length === 0)
-          cache.fetchTags && (await cache.fetchTags("init", query, path, as));
-      }
-    }
-    init();
-  }, []);
+  const tags = data as any[];
 
   // type이 keyword일때와 uid일때 서버에서 가져오는 tags의 데이터가 조금 다르다
   // keyword일 경우 tagCont에서 {name: string, tags: tid[]}[]의 형태로 가져오는 반면,
@@ -69,12 +45,6 @@ export default function PageTags({
     // 만약 type이 keyword라면 그대로 반환한다.
     return tags;
   }
-
-  const { setLastIntersecting, loading } = useInfiniteScroll({
-    handleIntersect: onIntersect,
-    handleChange: onChange,
-    changeListener,
-  });
 
   return (
     <>

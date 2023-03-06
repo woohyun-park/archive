@@ -1,12 +1,8 @@
 import { AnimatePresence } from "framer-motion";
-import { useRouter } from "next/router";
-import React, { Children, useEffect } from "react";
+import React, { Children } from "react";
 import { IFetchQueryPosts } from "../apis/fbDef";
 import { useCachedPage } from "../hooks/useCachedPage";
-import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 import { IPost } from "../libs/custom";
-import { useStatus } from "../stores/useStatus";
-import { useUser } from "../stores/useUser";
 import PostBox from "./PostBox";
 import PostCard from "./PostCard";
 import WrapRefreshAndLoad from "./wrappers/WrapRefreshAndReload";
@@ -26,40 +22,10 @@ export default function PagePosts({
   isPullable = true,
   className,
 }: IPagePostsProps) {
-  const router = useRouter();
+  const { data, isLast, onRefresh, setLastIntersecting, loading } =
+    useCachedPage("posts", query, { as, numCols, isPullable });
 
-  const cache = useCachedPage("posts", as);
-  const { curUser } = useUser();
-
-  const path = router.asPath;
-
-  const posts = cache.data as IPost[];
-  function onIntersect() {
-    cache.fetchPosts && cache.fetchPosts("load", query, path, as, numCols);
-  }
-  function onChange() {}
-  async function onRefresh() {
-    cache.fetchPosts &&
-      (await cache.fetchPosts("refresh", query, path, as, numCols));
-  }
-  const changeListener = posts;
-  const isLast = cache.isLast;
-
-  useEffect(() => {
-    async function init() {
-      if (cache.data.length === 0) {
-        cache.fetchPosts &&
-          (await cache.fetchPosts("init", query, path, as, numCols));
-      }
-    }
-    init();
-  }, []);
-
-  const { setLastIntersecting, loading } = useInfiniteScroll({
-    handleIntersect: onIntersect,
-    handleChange: onChange,
-    changeListener,
-  });
+  const posts = data as IPost[];
 
   return (
     <>

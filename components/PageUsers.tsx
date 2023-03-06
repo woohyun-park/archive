@@ -1,10 +1,8 @@
 import { useRouter } from "next/router";
-import React, { Children, useEffect } from "react";
+import React, { Children } from "react";
 import { IFetchQueryUsers } from "../apis/fbDef";
 import { useCachedPage } from "../hooks/useCachedPage";
-import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 import { IUser } from "../libs/custom";
-import { useStatus } from "../stores/useStatus";
 import { useUser } from "../stores/useUser";
 import Profile from "./Profile";
 import WrapRefreshAndLoad from "./wrappers/WrapRefreshAndReload";
@@ -22,36 +20,11 @@ export default function PageUsers({
 }: IPageUsersProps) {
   const router = useRouter();
 
-  const cache = useCachedPage("users");
+  const { data, isLast, onRefresh, setLastIntersecting, loading } =
+    useCachedPage("users", query, { as, isPullable });
   const { curUser } = useUser();
 
-  const path = router.asPath;
-
-  const users = cache.data as IUser[];
-  function onIntersect() {
-    cache.fetchUsers && cache.fetchUsers("load", query, path, "users");
-  }
-  function onChange() {}
-  async function onRefresh() {
-    cache.fetchUsers && cache.fetchUsers("refresh", query, path, "users");
-  }
-  const changeListener = users;
-  const isLast = cache.isLast;
-
-  useEffect(() => {
-    async function init() {
-      if (cache.data.length === 0) {
-        cache.fetchUsers && cache.fetchUsers("init", query, path, "users");
-      }
-    }
-    init();
-  }, []);
-
-  const { setLastIntersecting, loading } = useInfiniteScroll({
-    handleIntersect: onIntersect,
-    handleChange: onChange,
-    changeListener,
-  });
+  const users = data as IUser[];
 
   return (
     <>
