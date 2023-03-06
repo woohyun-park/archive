@@ -86,7 +86,7 @@ export default function Post({ type, post }: IPostProps) {
             {post.imgs.length === 0 ? (
               <div className="w-full pb-[50%]" id="post_d1"></div>
             ) : (
-              <div className="relative pb-[100%] w-full">
+              <div className="relative pb-[100%] w-full overflow-hidden">
                 <Image
                   src={post.imgs[0]}
                   alt=""

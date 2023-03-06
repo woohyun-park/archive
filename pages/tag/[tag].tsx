@@ -3,9 +3,12 @@ import BtnIcon from "../../components/atoms/BtnIcon";
 import WrapScroll from "../../components/wrappers/WrapScroll";
 import Motion from "../../components/wrappers/WrapMotion";
 import PagePosts from "../../components/PagePosts";
+import { useLoading } from "../../hooks/useLoading";
 
 export default function Tag({}) {
   const router = useRouter();
+
+  useLoading(["posts"]);
 
   const tag = router.query.tag as string;
 

@@ -2,9 +2,7 @@ import { useRouter } from "next/router";
 import React, { Children, useEffect, useState } from "react";
 import { IFetchQueryTags } from "../apis/fbDef";
 import { useCachedPage } from "../hooks/useCachedPage";
-import { useInfiniteScroll } from "../hooks/useInfiniteScroll";
 import { IDict, ITag } from "../libs/custom";
-import { useStatus } from "../stores/useStatus";
 import WrapMotion from "./wrappers/WrapMotion";
 import WrapRefreshAndLoad from "./wrappers/WrapRefreshAndReload";
 

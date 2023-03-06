@@ -6,8 +6,7 @@ import WrapMotion from "../components/wrappers/WrapMotion";
 import { useUser } from "../stores/useUser";
 import InputIcon from "../components/atoms/InputIcon";
 import { updateUser } from "../apis/fbUpdate";
-import WrapRouteLoad from "../hooks/useRoute";
-import useRoute from "../hooks/useRoute";
+import useRoute from "../hooks/useCustomRouter";
 
 export default function Search() {
   const router = useRouter();

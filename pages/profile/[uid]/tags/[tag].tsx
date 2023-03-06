@@ -6,6 +6,7 @@ import PagePosts from "../../../../components/PagePosts";
 import { useEffect, useState } from "react";
 import { IUser } from "../../../../libs/custom";
 import { readData } from "../../../../apis/fbRead";
+import { useLoading } from "../../../../hooks/useLoading";
 
 export default function ProfileTag({}) {
   const router = useRouter();

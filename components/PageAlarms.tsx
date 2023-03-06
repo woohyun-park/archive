@@ -21,29 +21,27 @@ export default function PageAlarms({ query, className }: IPageAlarmsProps) {
   const alarms = data as IAlarm[];
 
   return (
-    <>
-      <WrapRefreshAndLoad
-        onRefresh={onRefresh}
-        loading={loading}
-        className={className}
-      >
-        <AnimatePresence>
-          {alarms.map((alarm, i) => {
-            return (
-              <WrapMotion type="float" key={alarm.id} className="min-h-[50vh]">
-                <>
-                  {alarm.type === "like" && <AlarmLike alarm={alarm} />}
-                  {alarm.type === "comment" && <AlarmComment alarm={alarm} />}
-                  {alarm.type === "follow" && <AlarmFollow alarm={alarm} />}
-                  {!isLast && i === alarms.length - 1 && (
-                    <div ref={setLastIntersecting}></div>
-                  )}
-                </>
-              </WrapMotion>
-            );
-          })}
-        </AnimatePresence>
-      </WrapRefreshAndLoad>
-    </>
+    <WrapRefreshAndLoad
+      onRefresh={onRefresh}
+      loading={loading}
+      className={className}
+    >
+      <AnimatePresence>
+        {alarms.map((alarm, i) => {
+          return (
+            <WrapMotion type="float" key={alarm.id} className="min-h-[50vh]">
+              <>
+                {alarm.type === "like" && <AlarmLike alarm={alarm} />}
+                {alarm.type === "comment" && <AlarmComment alarm={alarm} />}
+                {alarm.type === "follow" && <AlarmFollow alarm={alarm} />}
+                {!isLast && i === alarms.length - 1 && (
+                  <div ref={setLastIntersecting}></div>
+                )}
+              </>
+            </WrapMotion>
+          );
+        })}
+      </AnimatePresence>
+    </WrapRefreshAndLoad>
   );
 }

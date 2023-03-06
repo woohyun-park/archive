@@ -10,9 +10,10 @@ import WrapLink from "../components/wrappers/WrapLink";
 import PagePosts from "../components/PagePosts";
 import { createHash } from "crypto";
 import { useLoading } from "../hooks/useLoading";
+import useCustomRouter from "../hooks/useCustomRouter";
 
 export default function Feed() {
-  const router = useRouter();
+  const router = useCustomRouter();
   const [tag, setTag] = useState("");
   const [debounceTag, setDebounceTag] = useState("");
 

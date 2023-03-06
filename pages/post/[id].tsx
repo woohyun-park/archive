@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { IPost } from "../../libs/custom";
-import React, { useEffect } from "react";
+import React from "react";
 import BtnIcon from "../../components/atoms/BtnIcon";
 import { useUser } from "../../stores/useUser";
 import CommentBox from "../../components/CommentBox";
@@ -9,25 +9,19 @@ import ModifyAndDelete from "../../components/ModifyAndDelete";
 import Post from "../../components/Post";
 import { useCachedPage } from "../../hooks/useCachedPage";
 import { useLoading } from "../../hooks/useLoading";
+import useCustomRouter from "../../hooks/useCustomRouter";
 
 export default function PostPage() {
-  const router = useRouter();
+  const router = useCustomRouter();
 
   const { curUser } = useUser();
-  const { data, fetchPost } = useCachedPage("post");
+  const { data, onRefresh } = useCachedPage("post", {
+    type: "pid",
+    value: { pid: (router.query.id as string) || "" },
+  });
   useLoading(["post"]);
 
-  const pid = (router.query.id as string) || "";
-  const path = router.asPath;
-  const post = data[0] as IPost;
-
-  async function fetch() {
-    fetchPost && (await fetchPost({ type: "pid", value: { pid } }, path));
-  }
-
-  useEffect(() => {
-    fetch();
-  }, []);
+  const post = data ? (data[0] as IPost) : null;
 
   return (
     <>
@@ -56,7 +50,7 @@ export default function PostPage() {
               <CommentBox
                 post={post}
                 user={curUser}
-                onRefresh={fetch}
+                onRefresh={onRefresh}
                 className="pb-16 mx-4"
               />
             </>

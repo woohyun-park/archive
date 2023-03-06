@@ -1,11 +1,10 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export const useFormTag = (initTags: string[] = []) => {
   const [tag, setTag] = useState("");
   const [tags, setTags] = useState<string[]>(initTags ? initTags : []);
   const [error, setError] = useState("");
   function onChange(e: React.ChangeEvent<HTMLInputElement>) {
-    console.log("onChange", tags);
     e.preventDefault();
     const newTag = e.target.value.split(" ")[0];
     if (newTag === " ") {

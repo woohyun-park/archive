@@ -32,27 +32,37 @@ export const useCachedPage = (
   const isLast = cache ? cache.isLast : false;
 
   let data, typedQuery: any;
-  if (type === "post") {
-    data = cache ? (cache.data as IPost[]) : [];
-    typedQuery = query as IFetchQueryPost;
-  } else if (type === "posts") {
-    data = cache ? (cache.data as IPost[]) : [];
-    typedQuery = query as IFetchQueryPosts;
-  } else if (type === "comments") {
-    data = cache ? (cache.data as IComment[]) : [];
-    typedQuery = query as IFetchQueryComments;
-  } else if (type === "tags") {
-    data = cache ? (cache.data as ITag[]) : [];
-    typedQuery = query as IFetchQueryTags;
-  } else if (type === "users") {
-    data = cache ? (cache.data as IUser[]) : [];
-    typedQuery = query as IFetchQueryUsers;
-  } else if (type === "scraps") {
-    data = cache ? (cache.data as IScrap[]) : [];
-    typedQuery = query as IFetchQueryScraps;
-  } /* type === "alarms" */ else {
-    data = cache ? (cache.data as IAlarm[]) : [];
-    typedQuery = query as IFetchQueryAlarms;
+  switch (type) {
+    case "post":
+      data = cache ? (cache.data as IPost[]) : [];
+      typedQuery = query as IFetchQueryPost;
+      break;
+    case "posts":
+      data = cache ? (cache.data as IPost[]) : [];
+      typedQuery = query as IFetchQueryPosts;
+      break;
+    case "comments":
+      data = cache ? (cache.data as IComment[]) : [];
+      typedQuery = query as IFetchQueryComments;
+      break;
+    case "tags":
+      data = cache ? (cache.data as ITag[]) : [];
+      typedQuery = query as IFetchQueryTags;
+      break;
+    case "users":
+      data = cache ? (cache.data as IUser[]) : [];
+      typedQuery = query as IFetchQueryUsers;
+      break;
+    case "scraps":
+      data = cache ? (cache.data as IScrap[]) : [];
+      typedQuery = query as IFetchQueryScraps;
+      break;
+    case "alarms":
+      data = cache ? (cache.data as IAlarm[]) : [];
+      typedQuery = query as IFetchQueryAlarms;
+      break;
+    default:
+      break;
   }
 
   const { setLastIntersecting, loading } = useInfiniteScroll({
@@ -62,15 +72,11 @@ export const useCachedPage = (
   });
 
   function onIntersect() {
-    option?.numCols
-      ? fetchCache(type, "load", typedQuery, path, as, option?.numCols)
-      : fetchCache(type, "load", typedQuery, path, as);
+    fetchCache(type, "load", typedQuery, path, as, numCols);
   }
   function onChange() {}
   async function onRefresh() {
-    option?.numCols
-      ? fetchCache(type, "refresh", typedQuery, path, as, option?.numCols)
-      : fetchCache(type, "refresh", typedQuery, path, as);
+    fetchCache(type, "refresh", typedQuery, path, as, numCols);
   }
 
   useEffect(() => {
@@ -78,14 +84,10 @@ export const useCachedPage = (
       // refresh가 불가능하다면 매번 새롭게 데이터를 init한다.
       // refresh가 가능하다면 저장된 데이터가 없는 경우에만 init한다
       if (!isPullable) {
-        numCols
-          ? fetchCache(type, "init", typedQuery, path, as, numCols)
-          : fetchCache(type, "init", typedQuery, path, as);
+        fetchCache(type, "init", typedQuery, path, as, numCols);
       } else {
         if (data.length === 0) {
-          numCols
-            ? fetchCache(type, "init", typedQuery, path, as, numCols)
-            : fetchCache(type, "init", typedQuery, path, as);
+          fetchCache(type, "init", typedQuery, path, as, numCols);
         }
       }
     }
