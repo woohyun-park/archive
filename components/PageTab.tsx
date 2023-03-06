@@ -73,7 +73,7 @@ export default function PageTab({ header, tabs, className }: IPageTapProps) {
     <>
       <div
         className={mergeTailwindClasses(
-          "static h-[100vh] overflow-y-scroll",
+          "static h-[100vh] overflow-y-scroll overflow-x-hidden",
           className || ""
         )}
       >
