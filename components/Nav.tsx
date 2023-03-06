@@ -68,13 +68,15 @@ export default function Nav() {
               className="flex flex-col items-center mb-1 align-center hover:cursor-pointer"
               onClick={() => router.pushWithLoader("/search")}
             >
-              {path === "/search" || path === "/search-modal" ? (
-                <HiLightBulb size={SIZE.icon} />
-              ) : (
-                <HiOutlineLightBulb size={SIZE.icon} />
-              )}
+              <div className="mb-1">
+                {path === "/search" || path === "/search-modal" ? (
+                  <HiLightBulb size={SIZE.icon} />
+                ) : (
+                  <HiOutlineLightBulb size={SIZE.icon} />
+                )}
+              </div>
+              <div className="text-xs">둘러보기</div>
             </div>
-            <div className="text-xs">둘러보기</div>
           </div>
         </WrapScroll>
       )}
