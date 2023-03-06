@@ -43,7 +43,7 @@ export default function Post({ type, post }: IPostProps) {
           post.tags.map((tag, i) => (
             <Btn
               label={`#${tag}`}
-              className="px-2"
+              className="px-2 ml-1"
               onClick={() => router.pushWithLoader(`/tag/${tag}`)}
             />
           ))
@@ -102,7 +102,7 @@ export default function Post({ type, post }: IPostProps) {
                 post={post}
                 user={post.author}
                 info="time"
-                className="mx-4"
+                className="px-4"
               />
             ) : (
               <Profile
@@ -110,7 +110,7 @@ export default function Post({ type, post }: IPostProps) {
                 user={post.author}
                 info="time"
                 action="follow"
-                className="mx-4"
+                className="px-4"
               />
             )}
             <Title />
