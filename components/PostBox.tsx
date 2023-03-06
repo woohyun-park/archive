@@ -49,7 +49,7 @@ export default function PostBox({ type, post }: IPostBoxProps) {
           </Link>
         )}
         {type === "titleAndTags" && (
-          <div className="absolute bottom-0 right-0 flex flex-row-reverse flex-wrap-reverse w-full mx-2 my-3 text-right">
+          <div className="absolute bottom-0 right-0 flex flex-row-reverse flex-wrap-reverse w-[2/3] mx-2 my-3 text-right">
             {Children.toArray(
               [...post.tags]
                 ?.reverse()

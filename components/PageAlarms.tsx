@@ -1,6 +1,7 @@
 import { AnimatePresence } from "framer-motion";
 import React from "react";
 import { IFetchQueryAlarms } from "../apis/fbDef";
+import { mergeTailwindClasses } from "../apis/tailwind";
 import { useCachedPage } from "../hooks/useCachedPage";
 import { IAlarm } from "../libs/custom";
 import AlarmComment from "./AlarmComment";
@@ -24,12 +25,12 @@ export default function PageAlarms({ query, className }: IPageAlarmsProps) {
     <WrapRefreshAndLoad
       onRefresh={onRefresh}
       loading={loading}
-      className={className}
+      className={mergeTailwindClasses("min-h-[50vh]", className || "")}
     >
       <AnimatePresence>
         {alarms.map((alarm, i) => {
           return (
-            <WrapMotion type="float" key={alarm.id} className="min-h-[50vh]">
+            <WrapMotion type="float" key={alarm.id}>
               <>
                 {alarm.type === "like" && <AlarmLike alarm={alarm} />}
                 {alarm.type === "comment" && <AlarmComment alarm={alarm} />}

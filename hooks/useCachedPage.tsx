@@ -14,6 +14,12 @@ import { IAlarm, IComment, IPost, IScrap, ITag, IUser } from "../libs/custom";
 import { ICacheType, useCache } from "../stores/useCache";
 import { useInfiniteScroll } from "./useInfiniteScroll";
 
+// page를 cache하는데 필요한 함수 및 변수들을 한꺼번에 가져올 수 있도록 도와주는 훅
+
+// type: 가져오고자 하는 데이터 (e.g. posts, users)
+// query: 데이터를 가져올 때 쿼리에 사용될 값들 (e.g. {uid, keyword})
+// option: 그 이외 자잘한 옵션들
+
 export const useCachedPage = (
   type: ICacheType,
   query: IFetchQuery,
@@ -31,6 +37,7 @@ export const useCachedPage = (
   const cache = page && page[as];
   const isLast = cache ? cache.isLast : false;
 
+  // type에 따라서 dat와 query의 type을 정의
   let data, typedQuery: any;
   switch (type) {
     case "post":

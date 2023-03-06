@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { useRouter } from "next/router";
 import useCustomRouter from "../hooks/useCustomRouter";
 import { IAlarm } from "../libs/custom";
 import { displayCreatedAt } from "../libs/timeLib";

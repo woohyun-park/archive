@@ -1,6 +1,5 @@
 import React from "react";
 import PullToRefresh from "react-simple-pull-to-refresh";
-import { mergeTailwindClasses } from "../../apis/tailwind";
 import Loader from "../Loader";
 
 interface IWrapRefreshAndReload {

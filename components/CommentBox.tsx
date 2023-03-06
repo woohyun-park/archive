@@ -9,7 +9,6 @@ import Textarea from "./atoms/Textarea";
 import Btn from "./atoms/Btn";
 import { createComment } from "../apis/fbCreate";
 import { readComment } from "../apis/fbRead";
-import { FETCH_LIMIT } from "../apis/fbDef";
 import { AnimatePresence } from "framer-motion";
 import Comment from "./Comment";
 import { useUser } from "../stores/useUser";
@@ -39,8 +38,12 @@ export default (function CommentBox({
   const pid = post.id || "";
 
   useEffect(() => {
+    console.log(actionRef.current);
     if (submitListener !== null)
-      actionRef.current?.scrollIntoView({ behavior: "smooth" });
+      actionRef.current?.scrollIntoView({
+        behavior: "smooth",
+        // inline: "nearest",
+      });
   }, [submitListener]);
 
   function handleChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
