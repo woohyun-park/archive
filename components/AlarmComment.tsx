@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { useRouter } from "next/router";
+import useCustomRouter from "../hooks/useCustomRouter";
 import { IAlarm } from "../libs/custom";
 import { displayCreatedAt } from "../libs/timeLib";
 import ProfileImg from "./ProfileImg";
@@ -9,7 +10,7 @@ type IAlarmCommentProps = {
 };
 
 export default function AlarmComment({ alarm }: IAlarmCommentProps) {
-  const router = useRouter();
+  const router = useCustomRouter();
   return (
     <>
       <div className="flex justify-between my-2">
@@ -17,7 +18,9 @@ export default function AlarmComment({ alarm }: IAlarmCommentProps) {
           <ProfileImg
             size="sm"
             photoURL={alarm.author?.photoURL || ""}
-            onClick={() => router.push(`/profile/${alarm.author?.id}`)}
+            onClick={() =>
+              router.pushWithLoader(`/profile/${alarm.author?.id}`)
+            }
           />
           <div className="flex items-center min-h-[2rem] ml-1">
             <div className="text-sm leading-[0.875rem] mt-[0.25rem]">

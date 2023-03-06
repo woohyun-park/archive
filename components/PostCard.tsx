@@ -8,7 +8,7 @@ import Profile from "./Profile";
 import WrapMotion from "./wrappers/WrapMotion";
 import { Children } from "react";
 import Btn from "./atoms/Btn";
-import WrapLink from "./wrappers/WrapLink";
+import useCustomRouter from "../hooks/useCustomRouter";
 
 interface IPostCardProps {
   post: IPost;
@@ -18,7 +18,7 @@ export default function PostCard({ post }: IPostCardProps) {
   const { curUser } = useUser();
   const { setModalLoader } = useStatus();
 
-  const router = useRouter();
+  const router = useCustomRouter();
   return (
     <>
       <WrapMotion type="float" className="px-4 py-1 bg-white">
@@ -41,9 +41,11 @@ export default function PostCard({ post }: IPostCardProps) {
         <div className="flex flex-wrap justify-end w-full">
           {Children.toArray(
             post.tags.map((tag, i) => (
-              <WrapLink href={`/tag/${tag}`} loader={true}>
-                <Btn label={`#${tag}`} className="px-2" />
-              </WrapLink>
+              <Btn
+                label={`#${tag}`}
+                className="px-2"
+                onClick={() => router.pushWithLoader(`/tag/${tag}`)}
+              />
             ))
           )}
         </div>

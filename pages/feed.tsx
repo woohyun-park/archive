@@ -6,7 +6,6 @@ import BtnIcon from "../components/atoms/BtnIcon";
 import InputIcon from "../components/atoms/InputIcon";
 import { debounce } from "lodash";
 import WrapScroll from "../components/wrappers/WrapScroll";
-import WrapLink from "../components/wrappers/WrapLink";
 import PagePosts from "../components/PagePosts";
 import { createHash } from "crypto";
 import { useLoading } from "../hooks/useLoading";
@@ -49,12 +48,15 @@ export default function Feed() {
         </h1>
         <WrapScroll>
           <div className="flex items-center justify-center">
-            <WrapLink href="/alarm" loader={true}>
-              <BtnIcon icon="alarm" />
-            </WrapLink>
-            <WrapLink href={`/profile/${curUser.id}`} loader={true}>
-              <ProfileImg size="sm" photoURL={curUser.photoURL} />
-            </WrapLink>
+            <BtnIcon
+              icon="alarm"
+              onClick={() => router.pushWithLoader("/alarm")}
+            />
+            <ProfileImg
+              size="sm"
+              photoURL={curUser.photoURL}
+              onClick={() => router.pushWithLoader(`/profile/${curUser.id}`)}
+            />
           </div>
         </WrapScroll>
       </div>

@@ -1,21 +1,27 @@
 import { NextRouter, useRouter } from "next/router";
+import { wrapPromise } from "../stores/libStores";
+import { useCache } from "../stores/useCache";
 import { useStatus } from "../stores/useStatus";
 
 interface CustomNextRouter {
-  pushWithLoader?: (href: string) => void;
+  pushWithLoader: (href: string) => void;
 }
 
 export default function useCustomRouter() {
-  const router: NextRouter & CustomNextRouter = useRouter();
+  const router = useRouter();
 
   const { setModalLoader } = useStatus();
+  const { caches } = useCache();
 
-  function pushWithLoader(href: string) {
-    setModalLoader(true);
-    router.push(href);
+  const customRouter: NextRouter & CustomNextRouter = {
+    ...router,
+    pushWithLoader,
+  };
+
+  async function pushWithLoader(href: string) {
+    if (!caches[href]) await wrapPromise(() => setModalLoader(true), 500);
+    customRouter.push(href);
   }
 
-  router.pushWithLoader = pushWithLoader;
-
-  return router;
+  return customRouter;
 }

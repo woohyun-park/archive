@@ -1,18 +1,17 @@
-import { useRouter } from "next/router";
 import {
   HiHome,
   HiOutlineHome,
   HiLightBulb,
   HiOutlineLightBulb,
 } from "react-icons/hi2";
+import useCustomRouter from "../hooks/useCustomRouter";
 import { SIZE } from "../libs/custom";
 import { useStatus } from "../stores/useStatus";
 import ModalLoader from "./ModalLoader";
-import WrapLink from "./wrappers/WrapLink";
 import WrapScroll from "./wrappers/WrapScroll";
 
 export default function Nav() {
-  const router = useRouter();
+  const router = useCustomRouter();
   const path = router.pathname;
   const { modalLoader } = useStatus();
 
@@ -65,20 +64,17 @@ export default function Nav() {
                 +
               </div>
             </div>
-            <WrapLink
-              href="/search"
-              loader={true}
-              className="flex flex-col items-center align-center hover:cursor-pointer"
+            <div
+              className="flex flex-col items-center mb-1 align-center hover:cursor-pointer"
+              onClick={() => router.pushWithLoader("/search")}
             >
-              <div className="mb-1">
-                {path === "/search" || path === "/search-modal" ? (
-                  <HiLightBulb size={SIZE.icon} />
-                ) : (
-                  <HiOutlineLightBulb size={SIZE.icon} />
-                )}
-              </div>
-              <div className="text-xs">둘러보기</div>
-            </WrapLink>
+              {path === "/search" || path === "/search-modal" ? (
+                <HiLightBulb size={SIZE.icon} />
+              ) : (
+                <HiOutlineLightBulb size={SIZE.icon} />
+              )}
+            </div>
+            <div className="text-xs">둘러보기</div>
           </div>
         </WrapScroll>
       )}

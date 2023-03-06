@@ -9,7 +9,7 @@ import Profile from "./Profile";
 import WrapMotion from "./wrappers/WrapMotion";
 import { Children } from "react";
 import Btn from "./atoms/Btn";
-import WrapLink from "./wrappers/WrapLink";
+import useCustomRouter from "../hooks/useCustomRouter";
 
 interface IPostProps {
   type: "feed" | "post";
@@ -20,7 +20,7 @@ export default function Post({ type, post }: IPostProps) {
   const { curUser } = useUser();
   const { setModalLoader } = useStatus();
 
-  const router = useRouter();
+  const router = useCustomRouter();
 
   function Title() {
     return (
@@ -41,9 +41,11 @@ export default function Post({ type, post }: IPostProps) {
       <div className="flex flex-wrap justify-end w-full px-4">
         {Children.toArray(
           post.tags.map((tag, i) => (
-            <WrapLink href={`/tag/${tag}`} loader={true}>
-              <Btn label={`#${tag}`} className="px-2" />
-            </WrapLink>
+            <Btn
+              label={`#${tag}`}
+              className="px-2"
+              onClick={() => router.pushWithLoader(`/tag/${tag}`)}
+            />
           ))
         )}
       </div>
