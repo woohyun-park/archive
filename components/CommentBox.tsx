@@ -42,7 +42,7 @@ export default (function CommentBox({
     if (submitListener !== null)
       actionRef.current?.scrollIntoView({
         behavior: "smooth",
-        // inline: "nearest",
+        inline: "nearest",
       });
   }, [submitListener]);
 

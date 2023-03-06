@@ -40,8 +40,8 @@ export default function PostBox({ type, post }: IPostBoxProps) {
             <div
               className={
                 type === "title"
-                  ? "absolute m-2 text-xl font-bold break-words hover:cursor-pointer"
-                  : "absolute m-2 text-4xl font-bold break-words hover:cursor-pointer"
+                  ? "absolute m-2 text-xl font-bold break-words hover:cursor-pointer leading-5"
+                  : "absolute m-2 text-4xl font-bold break-words hover:cursor-pointer leading-5"
               }
             >
               {post.title}

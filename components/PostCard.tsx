@@ -30,7 +30,7 @@ export default function PostCard({ post }: IPostCardProps) {
         />
         <PostBox post={post} type="noText" />
         <div
-          className="mt-4 mb-4 text-5xl font-bold break-words hover:cursor-pointer w-fit"
+          className="mt-4 mb-4 text-5xl font-bold leading-[3rem] break-words hover:cursor-pointer w-fit"
           onClick={() => {
             router.asPath !== `/post/${post.id}` && setModalLoader(true);
             router.push(`/post/${post.id}`);
