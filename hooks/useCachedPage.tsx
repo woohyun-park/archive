@@ -89,9 +89,7 @@ export const useCachedPage = (
       if (!isPullable) {
         onInit();
       } else {
-        if (router.query.refresh) {
-          onRefresh();
-        } else if (data.length === 0) {
+        if (data.length === 0) {
           onInit();
         }
       }
