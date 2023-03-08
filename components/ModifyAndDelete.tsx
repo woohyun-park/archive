@@ -1,18 +1,23 @@
-import { useRouter } from "next/router";
 import { deletePost } from "../apis/fbDelete";
+import useCustomRouter from "../hooks/useCustomRouter";
 import { IPost, SIZE } from "../libs/custom";
+import { useCache } from "../stores/useCache";
+import { useStatus } from "../stores/useStatus";
 import BtnIcon from "./atoms/BtnIcon";
 
 interface IModifyAndDeleteProps {
   post: IPost | null | undefined;
-  redirect?: string;
+  // redirect?: string;
 }
 
 export default function ModifyAndDelete({
   post,
-  redirect,
-}: IModifyAndDeleteProps) {
-  const router = useRouter();
+}: // redirect,
+IModifyAndDeleteProps) {
+  const router = useCustomRouter();
+
+  const { setRefresh } = useStatus();
+  const { deleteCachedPost } = useCache();
 
   return post ? (
     <div>
@@ -36,10 +41,11 @@ export default function ModifyAndDelete({
           onClick={async () => {
             if (confirm("정말 삭제하시겠습니까?")) {
               await deletePost(post?.id || "");
+              deleteCachedPost(router.asPath, "posts", post.id);
             } else {
               console.log(post?.id);
             }
-            redirect && router.push(redirect);
+            router.push("/");
           }}
         />
       </div>

@@ -31,13 +31,6 @@ export default function PostBox({ type, post }: IPostBoxProps) {
           </>
         )}
         {(type === "title" || type === "titleAndTags") && (
-          // <Link
-          //   href={{
-          //     pathname: `/post/${post.id}`,
-          //     query: { post: JSON.stringify(post) },
-          //   }}
-          //   as={`/post/${post.id}`}
-          // >
           <div
             className={
               type === "title"
@@ -56,7 +49,6 @@ export default function PostBox({ type, post }: IPostBoxProps) {
           >
             {post.title}
           </div>
-          // </Link>
         )}
         {type === "titleAndTags" && (
           <div className="absolute bottom-0 right-0 flex flex-row-reverse flex-wrap-reverse w-[2/3] mx-2 my-3 text-right">

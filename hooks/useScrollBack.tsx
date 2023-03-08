@@ -7,20 +7,16 @@ import useCustomRouter from "./useCustomRouter";
 
 export const useScrollBack = () => {
   const router = useCustomRouter();
-  const { scroll, pages } = useStatus();
+  const { scroll, pages, refreshes, setScroll } = useStatus();
 
   const path = router.asPath;
 
   useEffect(() => {
-    if (scroll[path]) {
+    if (refreshes[path]) {
+      setScroll(path, 0);
+    } else if (scroll[path]) {
       if (pages[path]) {
         const selectedPage = pages[path].selectedPage;
-        console.log(
-          document.querySelector(`#refScroll`),
-          document.querySelector(`#refScroll`)?.scrollTop,
-          document.querySelector(`#refScroll`)?.scrollHeight,
-          scroll[path]
-        );
         document.querySelector("#refScroll")?.scrollTo(0, scroll[path]);
         document
           .querySelector(`#refScrollTab${selectedPage}`)

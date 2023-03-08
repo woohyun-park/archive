@@ -12,6 +12,8 @@ import { useFormTag } from "../hooks/useFormTag";
 import FormTag from "../components/atoms/FormTag";
 import ColorBox from "../components/atoms/ColorBox";
 import { useLoading } from "../hooks/useLoading";
+import { useStatus } from "../stores/useStatus";
+import useCustomRouter from "../hooks/useCustomRouter";
 
 export interface IForm {
   file: File[];
@@ -22,7 +24,7 @@ export interface IForm {
 }
 
 export default function Add() {
-  const router = useRouter();
+  const router = useCustomRouter();
   const prevPost = router.query.post
     ? (JSON.parse(router.query.post as string) as IPost)
     : undefined;
@@ -31,6 +33,7 @@ export default function Add() {
   const { tag, tags, error, onChange, onDelete } = useFormTag(
     prevPost ? prevPost.tags : []
   );
+  const { setRefresh } = useStatus();
   useLoading([]);
 
   const [status, setStatus] = useState({
@@ -66,7 +69,8 @@ export default function Add() {
         pid = await handleImage({ watch, prevPost, data, curUser, tags });
       // 색깔인 경우
       else pid = await handleColor({ prevPost, data, curUser, tags });
-      router.replace(`/post/${pid}`);
+      setRefresh("/", true);
+      router.replace("/");
     }
   }
   function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {

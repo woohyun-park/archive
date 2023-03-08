@@ -53,6 +53,7 @@ type IPage = IDict<ICache>;
 
 export interface IUseCache {
   caches: IDict<IPage>;
+  deleteCachedPost: (pathname: string, as: string, pid: string) => void;
   fetchCache: (
     cacheType: ICacheType,
     fetchType: IFetchType,
@@ -66,6 +67,15 @@ export interface IUseCache {
 export const useCache = create<IUseCache>()(
   devtools((set, get) => ({
     caches: {},
+    deleteCachedPost: (pathname: string, as: string, pid: string) => {
+      set((state: IUseCache) => {
+        const newState = { ...state };
+        newState.caches[pathname][as].data = newState.caches[pathname][
+          as
+        ].data.filter((e) => e.id !== pid);
+        return newState;
+      });
+    },
     fetchCache: async (
       cacheType: ICacheType,
       fetchType: IFetchType,

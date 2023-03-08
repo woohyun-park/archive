@@ -5,6 +5,8 @@ import { IFetchQueryPosts } from "../apis/fbDef";
 import { useCachedPage } from "../hooks/useCachedPage";
 import useCustomRouter from "../hooks/useCustomRouter";
 import { IPost } from "../libs/custom";
+import { wrapPromise } from "../stores/libStores";
+import { useStatus } from "../stores/useStatus";
 import Loader from "./Loader";
 import PostBox from "./PostBox";
 import PostCard from "./PostCard";
@@ -30,11 +32,27 @@ export default function PagePosts({
     query,
     { as, numCols, isPullable }
   );
+  const { refreshes, setRefresh } = useStatus();
+
+  const [loading, setLoading] = useState(false);
 
   const posts = data as IPost[];
 
+  useEffect(() => {
+    async function init() {
+      await wrapPromise(() => setLoading(true), 0);
+      await wrapPromise(() => onRefresh(), 0);
+      await wrapPromise(() => {
+        setLoading(false);
+        setRefresh(router.asPath, false);
+      }, 0);
+    }
+    if (refreshes[router.asPath]) init();
+  }, [refreshes[router.asPath]]);
+
   return (
     <>
+      <Loader isVisible={loading} />
       <PullToRefresh
         onRefresh={onRefresh}
         onFetchMore={onFetchMore}
@@ -49,7 +67,7 @@ export default function PagePosts({
             <AnimatePresence>
               {Children.toArray(
                 posts.map((e, i) => (
-                  <div>
+                  <div key={e.id}>
                     <PostCard post={e as IPost} />
                     <hr className="w-full h-4 text-white bg-white" />
                   </div>
@@ -62,6 +80,7 @@ export default function PagePosts({
               {Children.toArray(
                 posts.map((post, i) => (
                   <PostBox
+                    key={post.id}
                     type="titleAndTags"
                     post={{ ...post, id: post.id }}
                   />
@@ -77,9 +96,11 @@ export default function PagePosts({
             >
               {Children.toArray(
                 posts.map((post, i) => (
-                  <div>
-                    <PostBox type="title" post={{ ...post, id: post.id }} />
-                  </div>
+                  <PostBox
+                    key={post.id}
+                    type="title"
+                    post={{ ...post, id: post.id }}
+                  />
                 ))
               )}
             </div>

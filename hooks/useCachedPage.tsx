@@ -12,7 +12,6 @@ import {
 } from "../apis/fbDef";
 import { IAlarm, IComment, IPost, IScrap, ITag, IUser } from "../libs/custom";
 import { ICacheType, useCache } from "../stores/useCache";
-import { useInfiniteScroll } from "./useInfiniteScroll";
 
 // page를 cache하는데 필요한 함수 및 변수들을 한꺼번에 가져올 수 있도록 도와주는 훅
 

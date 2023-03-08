@@ -7,12 +7,14 @@ interface IUseStatus {
   scroll: IDict<number>;
   pages: IDict<IPageStatus>;
   keywords: IDict<string>;
+  refreshes: IDict<boolean>;
 
   setScroll: ISetScroll;
   setSelectedPage: (pathname: string, page: number) => void;
   setPageScrolls: (pathname: string, page: number, scroll: number) => void;
   setKeywords: (path: string, keyword: string) => void;
   setModalLoader: (modalLoader: boolean) => void;
+  setRefresh: (pathname: string, refresh: boolean) => void;
 }
 
 interface IPageStatus {
@@ -31,6 +33,17 @@ export const useStatus = create<IUseStatus>()(
     scroll: {},
     pages: {},
     keywords: {},
+    refreshes: {},
+    setRefresh: (pathname: string, refresh: boolean) => {
+      set((state: IUseStatus) => {
+        const refreshes = state.refreshes;
+        refreshes[pathname] = refresh;
+        return {
+          ...state,
+          refreshes,
+        };
+      });
+    },
     setScroll: (pathname: string | string[], scroll: number | number[]) => {
       if (typeof pathname === "string" && typeof scroll === "number") {
         set((state: IUseStatus) => {

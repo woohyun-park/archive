@@ -43,7 +43,7 @@ export default function PostPage() {
               <div className="flex items-center justify-between m-4">
                 <BtnIcon icon="back" onClick={router.back} />
                 {curUser.id === post.author?.id && (
-                  <ModifyAndDelete post={post} redirect="/" />
+                  <ModifyAndDelete post={post} />
                 )}
               </div>
               <Post type="post" post={post} />
