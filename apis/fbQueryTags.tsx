@@ -80,6 +80,7 @@ function getTagsQueryByUid(
     return query(
       collection(db, "tags"),
       orderBy("createdAt", "desc"),
+      startAfter(lastVisible),
       where("uid", "==", uid),
       limit(fetchLimit)
     );

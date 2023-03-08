@@ -1,4 +1,4 @@
-import { IDict, IPost, IUser } from "../../libs/custom";
+import { IUser } from "../../libs/custom";
 import { useEffect, useState } from "react";
 import Motion from "../../components/wrappers/WrapMotion";
 import { useUser } from "../../stores/useUser";
@@ -6,14 +6,9 @@ import BtnIcon from "../../components/atoms/BtnIcon";
 import { useRouter } from "next/router";
 import ProfileImg from "../../components/ProfileImg";
 import { readData } from "../../apis/fbRead";
-import { useStatus } from "../../stores/useStatus";
 import { updateFollow } from "../../apis/fbUpdate";
-import { useCachedPage } from "../../hooks/useCachedPage";
 import PageTab from "../../components/PageTab";
 import { useLoading } from "../../hooks/useLoading";
-import { signOut } from "firebase/auth";
-import { auth } from "../../apis/firebase";
-import Btn from "../../components/atoms/Btn";
 import { useCache } from "../../stores/useCache";
 
 export default function Profile() {

@@ -7,7 +7,7 @@ import { useCachedPage } from "../hooks/useCachedPage";
 import { IComment } from "../libs/custom";
 import { useUser } from "../stores/useUser";
 import Comment from "./Comment";
-import WrapRefreshAndLoad from "./wrappers/WrapRefreshAndReload";
+import WrapPullToRefresh from "./wrappers/WrapPullToRefresh";
 
 export interface IPageCommentsProps {
   query: IFetchQueryComments;
@@ -16,7 +16,10 @@ export interface IPageCommentsProps {
 
 export default function PageComments({ query, className }: IPageCommentsProps) {
   const { curUser } = useUser();
-  const { data, onRefresh, loading } = useCachedPage("comments", query);
+  const { data, onRefresh, onFetchMore, canFetchMore } = useCachedPage(
+    "comments",
+    query
+  );
   const comments = data as IComment[];
 
   async function handleDeleteComment(e: React.MouseEvent<HTMLDivElement>) {
@@ -30,9 +33,10 @@ export default function PageComments({ query, className }: IPageCommentsProps) {
 
   return (
     <>
-      <WrapRefreshAndLoad
+      <WrapPullToRefresh
         onRefresh={onRefresh}
-        loading={loading}
+        onFetchMore={onFetchMore}
+        canFetchMore={canFetchMore}
         className={className}
       >
         <AnimatePresence>
@@ -46,7 +50,7 @@ export default function PageComments({ query, className }: IPageCommentsProps) {
             );
           })}
         </AnimatePresence>
-      </WrapRefreshAndLoad>
+      </WrapPullToRefresh>
     </>
   );
 }

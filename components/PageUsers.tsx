@@ -5,7 +5,7 @@ import { useCachedPage } from "../hooks/useCachedPage";
 import { IUser } from "../libs/custom";
 import { useUser } from "../stores/useUser";
 import Profile from "./Profile";
-import WrapRefreshAndLoad from "./wrappers/WrapRefreshAndReload";
+import WrapPullToRefresh from "./wrappers/WrapPullToRefresh";
 
 export interface IPageUsersProps {
   query: IFetchQueryUsers;
@@ -20,17 +20,21 @@ export default function PageUsers({
 }: IPageUsersProps) {
   const router = useRouter();
 
-  const { data, isLast, onRefresh, setLastIntersecting, loading } =
-    useCachedPage("users", query, { as, isPullable });
+  const { data, onRefresh, onFetchMore, canFetchMore } = useCachedPage(
+    "users",
+    query,
+    { as, isPullable }
+  );
   const { curUser } = useUser();
 
   const users = data as IUser[];
 
   return (
     <>
-      <WrapRefreshAndLoad
+      <WrapPullToRefresh
         onRefresh={onRefresh}
-        loading={loading}
+        onFetchMore={onFetchMore}
+        canFetchMore={canFetchMore}
         isPullable={isPullable}
       >
         <div className="mx-4">
@@ -42,14 +46,11 @@ export default function PageUsers({
                   info="intro"
                   action={curUser.id !== user.id ? "follow" : undefined}
                 />
-                {!isLast && i === users.length - 1 && (
-                  <div ref={setLastIntersecting}></div>
-                )}
               </>
             ))
           )}
         </div>
-      </WrapRefreshAndLoad>
+      </WrapPullToRefresh>
     </>
   );
 }

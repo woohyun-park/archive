@@ -4,7 +4,7 @@ import { IFetchQueryTags } from "../apis/fbDef";
 import { useCachedPage } from "../hooks/useCachedPage";
 import { IDict, ITag } from "../libs/custom";
 import WrapMotion from "./wrappers/WrapMotion";
-import WrapRefreshAndLoad from "./wrappers/WrapRefreshAndReload";
+import WrapPullToRefresh from "./wrappers/WrapPullToRefresh";
 
 export interface IPageTagsProps {
   query: IFetchQueryTags;
@@ -19,8 +19,11 @@ export default function PageTags({
 }: IPageTagsProps) {
   const router = useRouter();
 
-  const { data, isLast, onRefresh, setLastIntersecting, loading } =
-    useCachedPage("tags", query, { as, isPullable });
+  const { data, onRefresh, onFetchMore, canFetchMore } = useCachedPage(
+    "tags",
+    query,
+    { as, isPullable }
+  );
 
   const tags = data as any[];
 
@@ -46,9 +49,10 @@ export default function PageTags({
 
   return (
     <>
-      <WrapRefreshAndLoad
+      <WrapPullToRefresh
         onRefresh={onRefresh}
-        loading={loading}
+        onFetchMore={onFetchMore}
+        canFetchMore={canFetchMore}
         isPullable={isPullable}
       >
         {Children.toArray(
@@ -76,14 +80,11 @@ export default function PageTags({
                     게시물 {tag.tags.length}개
                   </div>
                 </div>
-                {!isLast && i === tags.length - 1 && (
-                  <div ref={setLastIntersecting}></div>
-                )}
               </WrapMotion>
             );
           })
         )}
-      </WrapRefreshAndLoad>
+      </WrapPullToRefresh>
     </>
   );
 }

@@ -35,7 +35,7 @@ export const useCachedPage = (
   const path = router.asPath;
   const page = caches[path];
   const cache = page && page[as];
-  const isLast = cache ? cache.isLast : false;
+  const canFetchMore = !(cache ? cache.isLast : false);
 
   // type에 따라서 dat와 query의 type을 정의
   let data, typedQuery: any;
@@ -72,18 +72,15 @@ export const useCachedPage = (
       break;
   }
 
-  const { setLastIntersecting, loading } = useInfiniteScroll({
-    handleIntersect: onIntersect,
-    handleChange: onChange,
-    changeListener: data,
-  });
-
-  function onIntersect() {
-    fetchCache(type, "load", typedQuery, path, as, numCols);
+  async function onInit() {
+    await fetchCache(type, "init", typedQuery, path, as, numCols);
   }
-  function onChange() {}
+
+  async function onFetchMore() {
+    await fetchCache(type, "load", typedQuery, path, as, numCols);
+  }
   async function onRefresh() {
-    fetchCache(type, "refresh", typedQuery, path, as, numCols);
+    await fetchCache(type, "refresh", typedQuery, path, as, numCols);
   }
 
   useEffect(() => {
@@ -91,10 +88,12 @@ export const useCachedPage = (
       // refresh가 불가능하다면 매번 새롭게 데이터를 init한다.
       // refresh가 가능하다면 저장된 데이터가 없는 경우에만 init한다
       if (!isPullable) {
-        fetchCache(type, "init", typedQuery, path, as, numCols);
+        onInit();
       } else {
-        if (data.length === 0) {
-          fetchCache(type, "init", typedQuery, path, as, numCols);
+        if (router.query.refresh) {
+          onRefresh();
+        } else if (data.length === 0) {
+          onInit();
         }
       }
     }
@@ -103,9 +102,8 @@ export const useCachedPage = (
 
   return {
     data,
-    isLast,
+    canFetchMore,
     onRefresh,
-    setLastIntersecting,
-    loading,
+    onFetchMore,
   };
 };

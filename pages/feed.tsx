@@ -9,7 +9,6 @@ import PagePosts from "../components/PagePosts";
 import { createHash } from "crypto";
 import { useLoading } from "../hooks/useLoading";
 import useCustomRouter from "../hooks/useCustomRouter";
-import { useStatus } from "../stores/useStatus";
 import { useScrollBack } from "../hooks/useScrollBack";
 
 export default function Feed() {

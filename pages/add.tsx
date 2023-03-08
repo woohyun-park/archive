@@ -60,12 +60,13 @@ export default function Add() {
 
   async function onValid(data: IForm) {
     if (confirm(`아카이브를 ${prevPost ? "수정" : "생성"}하시겠습니까?`)) {
+      let pid;
       // 이미지인 경우
       if (status.selectedTab)
-        await handleImage({ watch, prevPost, data, curUser, tags });
+        pid = await handleImage({ watch, prevPost, data, curUser, tags });
       // 색깔인 경우
-      else await handleColor({ prevPost, data, curUser, tags });
-      router.push({ pathname: "/" });
+      else pid = await handleColor({ prevPost, data, curUser, tags });
+      router.replace(`/post/${pid}`);
     }
   }
   function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {

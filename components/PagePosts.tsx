@@ -1,11 +1,13 @@
 import { AnimatePresence } from "framer-motion";
 import React, { Children, useEffect, useState } from "react";
+import PullToRefresh from "react-simple-pull-to-refresh";
 import { IFetchQueryPosts } from "../apis/fbDef";
 import { useCachedPage } from "../hooks/useCachedPage";
+import useCustomRouter from "../hooks/useCustomRouter";
 import { IPost } from "../libs/custom";
+import Loader from "./Loader";
 import PostBox from "./PostBox";
 import PostCard from "./PostCard";
-import WrapRefreshAndLoad from "./wrappers/WrapRefreshAndReload";
 
 export interface IPagePostsProps {
   query: IFetchQueryPosts;
@@ -22,18 +24,25 @@ export default function PagePosts({
   isPullable = true,
   className,
 }: IPagePostsProps) {
-  const { data, isLast, onRefresh, setLastIntersecting, loading } =
-    useCachedPage("posts", query, { as, numCols, isPullable });
+  const router = useCustomRouter();
+  const { data, canFetchMore, onRefresh, onFetchMore } = useCachedPage(
+    "posts",
+    query,
+    { as, numCols, isPullable }
+  );
 
   const posts = data as IPost[];
 
   return (
     <>
-      <WrapRefreshAndLoad
+      <PullToRefresh
         onRefresh={onRefresh}
-        loading={loading}
-        className={className}
+        onFetchMore={onFetchMore}
+        canFetchMore={canFetchMore}
+        pullingContent={<Loader isVisible={true} />}
+        refreshingContent={<Loader isVisible={true} />}
         isPullable={isPullable}
+        className={className}
       >
         <div>
           {numCols === 1 && (
@@ -42,9 +51,6 @@ export default function PagePosts({
                 posts.map((e, i) => (
                   <div>
                     <PostCard post={e as IPost} />
-                    {!isLast && i === posts.length - 1 && (
-                      <div ref={setLastIntersecting}></div>
-                    )}
                     <hr className="w-full h-4 text-white bg-white" />
                   </div>
                 ))
@@ -55,15 +61,10 @@ export default function PagePosts({
             <div className="grid grid-cols-2 m-4 gap-y-2 gap-x-2">
               {Children.toArray(
                 posts.map((post, i) => (
-                  <>
-                    <PostBox
-                      type="titleAndTags"
-                      post={{ ...post, id: post.id }}
-                    />
-                    {!isLast && i === posts.length - 1 && (
-                      <div ref={setLastIntersecting}></div>
-                    )}
-                  </>
+                  <PostBox
+                    type="titleAndTags"
+                    post={{ ...post, id: post.id }}
+                  />
                 ))
               )}
             </div>
@@ -76,20 +77,15 @@ export default function PagePosts({
             >
               {Children.toArray(
                 posts.map((post, i) => (
-                  <>
-                    <div>
-                      <PostBox type="title" post={{ ...post, id: post.id }} />
-                    </div>
-                    {!isLast && i === posts.length - 1 && (
-                      <div ref={setLastIntersecting}></div>
-                    )}
-                  </>
+                  <div>
+                    <PostBox type="title" post={{ ...post, id: post.id }} />
+                  </div>
                 ))
               )}
             </div>
           )}
         </div>
-      </WrapRefreshAndLoad>
+      </PullToRefresh>
     </>
   );
 }

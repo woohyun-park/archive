@@ -3,9 +3,9 @@ import React, { Children, useEffect } from "react";
 import { IFetchQueryScraps } from "../apis/fbDef";
 import { useCachedPage } from "../hooks/useCachedPage";
 import { IDict, IScrap, ITag, IUser } from "../libs/custom";
-import WrapRefreshAndLoad from "./wrappers/WrapRefreshAndReload";
 import WrapMotion from "./wrappers/WrapMotion";
 import BtnIcon from "./atoms/BtnIcon";
+import WrapPullToRefresh from "./wrappers/WrapPullToRefresh";
 
 export interface IPageScrapsProps {
   query: IFetchQueryScraps;
@@ -14,7 +14,10 @@ export interface IPageScrapsProps {
 export default function PageScraps({ query }: IPageScrapsProps) {
   const router = useRouter();
 
-  const { data, onRefresh, loading } = useCachedPage("scraps", query);
+  const { data, onRefresh, onFetchMore, canFetchMore } = useCachedPage(
+    "scraps",
+    query
+  );
 
   const scraps = data as IScrap[];
 
@@ -29,7 +32,11 @@ export default function PageScraps({ query }: IPageScrapsProps) {
   }
 
   return (
-    <WrapRefreshAndLoad onRefresh={onRefresh} loading={loading}>
+    <WrapPullToRefresh
+      onRefresh={onRefresh}
+      onFetchMore={onFetchMore}
+      canFetchMore={canFetchMore}
+    >
       {Children.toArray(
         formatScraps(scraps).map((scrap, i) => {
           const cont = scrap[0].cont;
@@ -53,6 +60,6 @@ export default function PageScraps({ query }: IPageScrapsProps) {
           );
         })
       )}
-    </WrapRefreshAndLoad>
+    </WrapPullToRefresh>
   );
 }

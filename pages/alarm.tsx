@@ -1,7 +1,6 @@
 import { useRouter } from "next/router";
 import BtnIcon from "../components/atoms/BtnIcon";
 import { useUser } from "../stores/useUser";
-import WrapScroll from "../components/wrappers/WrapScroll";
 import Motion from "../components/wrappers/WrapMotion";
 import PageAlarms from "../components/PageAlarms";
 import { useLoading } from "../hooks/useLoading";
@@ -15,9 +14,7 @@ export default function Alarm() {
   return (
     <Motion type="fade">
       <div className="flex m-4">
-        <WrapScroll className="flex">
-          <BtnIcon icon="back" onClick={() => router.back()} />
-        </WrapScroll>
+        <BtnIcon icon="back" onClick={() => router.back()} />
         <div className="title-page-base">알림</div>
       </div>
       <PageAlarms

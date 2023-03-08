@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import { FieldValue, Timestamp } from "firebase/firestore";
+import { FieldValue } from "firebase/firestore";
 
 export function displayCreatedAt(createdAt: Date | FieldValue) {
   const curDate = dayjs(new Date());

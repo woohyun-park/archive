@@ -45,7 +45,7 @@ export default function PageTab({ header, tabs }: IPageTapProps) {
   const scrollRefs = useRef<HTMLDivElement[]>([]);
   scrollRefs.current = [];
 
-  const { scroll, setScroll, pages, setSelectedPage } = useStatus();
+  const { setScroll, pages, setSelectedPage } = useStatus();
 
   const path = router.asPath;
   const page = pages[path] && pages[path].selectedPage;
@@ -53,11 +53,7 @@ export default function PageTab({ header, tabs }: IPageTapProps) {
   useScrollBack();
 
   // 각각의 tab에 대한 scroll 값을 가지고 있는 container에 대한 ref인 scrollRefs를 init한다
-  // 또한 init과 동시에 만약 현재 tab에 대한 scroll이 저장되어 있다면 해당 tab을 해당 위치로 스크롤시킨다.
   function addScrollRefs(e: HTMLDivElement | null, i: number) {
-    // if (page === i) {
-    //   e?.scrollTo(0, scroll[path + "/" + page]);
-    // }
     e && scrollRefs.current.push(e);
   }
 
@@ -66,13 +62,6 @@ export default function PageTab({ header, tabs }: IPageTapProps) {
     setScroll(path + "/" + page, scrollRefs.current[page]?.scrollTop || 0);
     setSelectedPage(path, i);
   }
-
-  // page가 변경될때 변경되는 tab에 대한 scroll이 저장되어 있다면 해당 tab을 해당 위치로 스크롤시킨다.
-  // useEffect(() => {
-  //   if (page !== undefined && scrollRefs.current[page])
-  //     scrollRefs.current[page].scrollTo(0, scroll[path + "/" + page]);
-  //   else setSelectedPage(path, 0);
-  // }, [page]);
 
   return (
     <>
