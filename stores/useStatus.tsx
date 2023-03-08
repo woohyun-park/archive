@@ -8,7 +8,7 @@ interface IUseStatus {
   pages: IDict<IPageStatus>;
   keywords: IDict<string>;
 
-  setScroll: (pathname: string, scroll: number) => void;
+  setScroll: ISetScroll;
   setSelectedPage: (pathname: string, page: number) => void;
   setPageScrolls: (pathname: string, page: number, scroll: number) => void;
   setKeywords: (path: string, keyword: string) => void;
@@ -20,19 +20,36 @@ interface IPageStatus {
   pageScrolls: IDict<string>;
 }
 
+interface ISetScroll {
+  (pathname: string, scroll: number): void;
+  (pathname: string[], scroll: number[]): void;
+}
+
 export const useStatus = create<IUseStatus>()(
   devtools((set, get) => ({
     modalLoader: true,
     scroll: {},
     pages: {},
     keywords: {},
-    setScroll: (pathname: string, scroll: number) => {
-      set((state: IUseStatus) => {
-        return {
-          ...state,
-          scroll: { ...state.scroll, [pathname]: scroll },
-        };
-      });
+    setScroll: (pathname: string | string[], scroll: number | number[]) => {
+      if (typeof pathname === "string" && typeof scroll === "number") {
+        set((state: IUseStatus) => {
+          return {
+            ...state,
+            scroll: { ...state.scroll, [pathname]: scroll },
+          };
+        });
+      } else {
+        set((state: IUseStatus) => {
+          const tPathname = pathname as string[];
+          const tScroll = scroll as number[];
+          const newState = { ...state };
+          tPathname.forEach((path, i) => {
+            newState.scroll[path] = tScroll[i];
+          });
+          return newState;
+        });
+      }
     },
     setSelectedPage: (pathname: string, selectedPage: number) => {
       set((state: IUseStatus) => {

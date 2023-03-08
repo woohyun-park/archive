@@ -101,6 +101,8 @@ async function fetchHelper(
   query: IFetchQuery,
   cache: ICache | undefined
 ) {
+  console.log("fetchHelper!", cacheType, fetchType, fetchLimit, query, cache);
+
   let snap;
   let data: any[] = [];
 
@@ -183,12 +185,14 @@ async function fetchHelper(
   );
   if (!newLastVisible)
     return {
-      data: [],
+      data: cache?.data || [],
       isLast: true,
       lastVisible: undefined,
     };
+  console.log(cache);
   if (cache) {
     cache.data = combineData(cache.data, data, fetchType);
+    console.log(data, data.length, fetchLimit);
     cache.isLast = data.length < fetchLimit ? true : false;
     if (newLastVisible) cache.lastVisible = newLastVisible;
   } else {

@@ -20,7 +20,9 @@ export default function useCustomRouter() {
 
   const { setModalLoader } = useStatus();
   const { caches } = useCache();
-  const { setScroll } = useStatus();
+  const { pages, setScroll } = useStatus();
+
+  const path = router.asPath;
 
   const customRouter: NextRouter = {
     ...router,
@@ -33,9 +35,25 @@ export default function useCustomRouter() {
     as?: Url | undefined,
     options?: TransitionOptions | undefined
   ) => {
+    if (pages[path]) {
+      const selectedPage = pages[path].selectedPage;
+      console.log(
+        document.querySelector("#refScroll")?.scrollTop,
+        document.querySelector(`#refScrollTab${selectedPage}`)?.scrollTop
+      );
+      setScroll(
+        [path, path + "/" + selectedPage],
+        [
+          document.querySelector("#refScroll")?.scrollTop || 0,
+          document.querySelector(`#refScrollTab${selectedPage}`)?.scrollTop ||
+            0,
+        ]
+      );
+    } else {
+      setScroll(path, window.scrollY);
+    }
     if (!caches[String(url)])
       await wrapPromise(() => setModalLoader(true), 500);
-    setScroll(router.asPath, window.scrollY);
     return router.push(url, as, options);
   };
 

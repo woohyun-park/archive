@@ -6,7 +6,8 @@ import PagePosts, { IPagePostsProps } from "./PagePosts";
 import PageTags, { IPageTagsProps } from "./PageTags";
 import PageUsers, { IPageUsersProps } from "./PageUsers";
 import PageScraps, { IPageScrapsProps } from "./PageScraps";
-import WrapScrollTab from "./wrappers/WrapScrollTab";
+import { useScrollBack } from "../hooks/useScrollBack";
+// import WrapScrollTab from "./wrappers/WrapScrollTab";
 
 // 하나의 route에 tab을 통해서 여러개의 infiniteScrollPage를 만들 수 있는 컴포넌트
 
@@ -33,10 +34,12 @@ type ITabType = {
 interface IPageTapProps {
   header: React.ReactNode;
   tabs: IDataType[];
-  className?: string;
 }
 
-export default function PageTab({ header, tabs, className }: IPageTapProps) {
+// ALERT: className 주지말것 !!!
+// margin이나 padding은 다른 컴포넌트에서 처리
+
+export default function PageTab({ header, tabs }: IPageTapProps) {
   const router = useRouter();
   const tabRef = useRef<HTMLDivElement>(null);
   const scrollRefs = useRef<HTMLDivElement[]>([]);
@@ -47,12 +50,14 @@ export default function PageTab({ header, tabs, className }: IPageTapProps) {
   const path = router.asPath;
   const page = pages[path] && pages[path].selectedPage;
 
+  useScrollBack();
+
   // 각각의 tab에 대한 scroll 값을 가지고 있는 container에 대한 ref인 scrollRefs를 init한다
   // 또한 init과 동시에 만약 현재 tab에 대한 scroll이 저장되어 있다면 해당 tab을 해당 위치로 스크롤시킨다.
   function addScrollRefs(e: HTMLDivElement | null, i: number) {
-    if (page === i) {
-      e?.scrollTo(0, scroll[path + "/" + page]);
-    }
+    // if (page === i) {
+    //   e?.scrollTo(0, scroll[path + "/" + page]);
+    // }
     e && scrollRefs.current.push(e);
   }
 
@@ -63,19 +68,17 @@ export default function PageTab({ header, tabs, className }: IPageTapProps) {
   }
 
   // page가 변경될때 변경되는 tab에 대한 scroll이 저장되어 있다면 해당 tab을 해당 위치로 스크롤시킨다.
-  useEffect(() => {
-    if (page !== undefined && scrollRefs.current[page])
-      scrollRefs.current[page].scrollTo(0, scroll[path + "/" + page]);
-    else setSelectedPage(path, 0);
-  }, [page]);
+  // useEffect(() => {
+  //   if (page !== undefined && scrollRefs.current[page])
+  //     scrollRefs.current[page].scrollTo(0, scroll[path + "/" + page]);
+  //   else setSelectedPage(path, 0);
+  // }, [page]);
 
   return (
     <>
       <div
-        className={mergeTailwindClasses(
-          "static h-[100vh] overflow-y-scroll overflow-x-hidden",
-          className || ""
-        )}
+        id="refScroll"
+        className="static h-[100vh] overflow-y-scroll overflow-x-hidden"
       >
         <div>{header}</div>
         <div
@@ -101,13 +104,13 @@ export default function PageTab({ header, tabs, className }: IPageTapProps) {
           tabs.map((tab, i) => (
             // 각 tab의 가장 상위 div는 relative로 설정하여
             // 하위 div에서 absolute 등을 사용할 때에 해당 div에 종속적이도록 만들어준다.
-            <WrapScrollTab path={path + "/" + page} className="relative">
+            <div className="relative">
               <div
-                id="refScroll"
+                id={`refScrollTab${i}`}
                 className="absolute w-full overflow-auto duration-300 h-[100vh]"
                 style={{
                   // height을 전체 뷰포트 - tabHeight로 설정해서 상단에 sticky한 tab과 겹치지 않도록 한다.
-                  height: `calc(100vh - ${tabRef.current?.clientHeight}px)`,
+                  // height: `calc(100vh - ${tabRef.current?.clientHeight}px)`,
                   transform: `translateX(${(i - page) * 100}%)`,
                 }}
                 ref={(e) => addScrollRefs(e, i)}
@@ -140,7 +143,7 @@ export default function PageTab({ header, tabs, className }: IPageTapProps) {
                   )}
                 </div>
               </div>
-            </WrapScrollTab>
+            </div>
           ))
         )}
       </div>

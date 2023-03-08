@@ -1,7 +1,8 @@
 import Image from "next/image";
-import Link from "next/link";
-import { useRouter } from "next/router";
+// import Link from "next/link";
+// import { useRouter } from "next/router";
 import { Children } from "react";
+import useCustomRouter from "../hooks/useCustomRouter";
 import { COLOR, IPost } from "../libs/custom";
 
 type IPostBoxType = "noText" | "title" | "titleAndTags";
@@ -12,7 +13,7 @@ interface IPostBoxProps {
 }
 
 export default function PostBox({ type, post }: IPostBoxProps) {
-  const router = useRouter();
+  const router = useCustomRouter();
   return (
     <>
       <div className="pb-[100%] relative overflow-hidden rounded-lg w-full duration-500">
@@ -30,23 +31,32 @@ export default function PostBox({ type, post }: IPostBoxProps) {
           </>
         )}
         {(type === "title" || type === "titleAndTags") && (
-          <Link
-            href={{
-              pathname: `/post/${post.id}`,
-              query: { post: JSON.stringify(post) },
-            }}
-            as={`/post/${post.id}`}
+          // <Link
+          //   href={{
+          //     pathname: `/post/${post.id}`,
+          //     query: { post: JSON.stringify(post) },
+          //   }}
+          //   as={`/post/${post.id}`}
+          // >
+          <div
+            className={
+              type === "title"
+                ? "absolute m-2 text-xl font-bold break-words hover:cursor-pointer leading-5"
+                : "absolute m-2 text-2xl font-bold leading-6 break-words hover:cursor-pointer"
+            }
+            onClick={() =>
+              router.push(
+                {
+                  pathname: `/post/${post.id}`,
+                  query: { post: JSON.stringify(post) },
+                },
+                `/post/${post.id}`
+              )
+            }
           >
-            <div
-              className={
-                type === "title"
-                  ? "absolute m-2 text-xl font-bold break-words hover:cursor-pointer leading-5"
-                  : "absolute m-2 text-2xl font-bold leading-6 break-words hover:cursor-pointer"
-              }
-            >
-              {post.title}
-            </div>
-          </Link>
+            {post.title}
+          </div>
+          // </Link>
         )}
         {type === "titleAndTags" && (
           <div className="absolute bottom-0 right-0 flex flex-row-reverse flex-wrap-reverse w-[2/3] mx-2 my-3 text-right">

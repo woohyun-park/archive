@@ -191,7 +191,6 @@ export default function Profile() {
                   },
                 ]
           }
-          className="mt-4"
         />
       ) : (
         <></>

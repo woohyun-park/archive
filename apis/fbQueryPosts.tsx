@@ -207,6 +207,7 @@ function getPostsQueryByUid(
       collection(db, "posts"),
       orderBy("createdAt", "desc"),
       where("uid", "==", uid),
+      startAfter(lastVisible),
       limit(fetchLimit)
     );
   return query(
@@ -239,6 +240,7 @@ function getPostsQueryByUidAndTag(
       orderBy("createdAt", "desc"),
       where("uid", "==", uid),
       where("tags", "array-contains", tag),
+      startAfter(lastVisible),
       limit(fetchLimit)
     );
   return query(
@@ -272,6 +274,7 @@ function getPostsQueryByUidAndScrap(
       orderBy("createdAt", "desc"),
       where("uid", "==", uid),
       where("cont", "==", cont),
+      startAfter(lastVisible),
       limit(fetchLimit)
     );
   return query(
