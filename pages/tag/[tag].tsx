@@ -1,6 +1,5 @@
 import { useRouter } from "next/router";
 import BtnIcon from "../../components/atoms/BtnIcon";
-import WrapScroll from "../../components/wrappers/WrapScroll";
 import Motion from "../../components/wrappers/WrapMotion";
 import PagePosts from "../../components/PagePosts";
 import { useLoading } from "../../hooks/useLoading";
@@ -15,9 +14,7 @@ export default function Tag({}) {
   return (
     <Motion type="fade">
       <div className="flex items-center justify-center mt-2 mb-4">
-        <WrapScroll className="absolute left-0 flex ml-4">
-          <BtnIcon icon="back" onClick={() => router.back()} />
-        </WrapScroll>
+        <BtnIcon icon="back" onClick={() => router.back()} />
         <div className="title-page-sm">#{tag}</div>
       </div>
       <PagePosts

@@ -7,7 +7,6 @@ import PageTags, { IPageTagsProps } from "./PageTags";
 import PageUsers, { IPageUsersProps } from "./PageUsers";
 import PageScraps, { IPageScrapsProps } from "./PageScraps";
 import { useScrollBack } from "../hooks/useScrollBack";
-// import WrapScrollTab from "./wrappers/WrapScrollTab";
 
 // 하나의 route에 tab을 통해서 여러개의 infiniteScrollPage를 만들 수 있는 컴포넌트
 

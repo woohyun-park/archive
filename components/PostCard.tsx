@@ -44,7 +44,7 @@ export default function PostCard({ post }: IPostCardProps) {
               <Btn
                 label={`#${tag}`}
                 className="px-2 ml-1"
-                onClick={() => router.pushWithLoader(`/tag/${tag}`)}
+                onClick={() => router.push(`/tag/${tag}`)}
               />
             ))
           )}

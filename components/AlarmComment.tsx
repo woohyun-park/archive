@@ -17,9 +17,7 @@ export default function AlarmComment({ alarm }: IAlarmCommentProps) {
           <ProfileImg
             size="sm"
             photoURL={alarm.author?.photoURL || ""}
-            onClick={() =>
-              router.pushWithLoader(`/profile/${alarm.author?.id}`)
-            }
+            onClick={() => router.push(`/profile/${alarm.author?.id}`)}
           />
           <div className="flex items-center min-h-[2rem] ml-1">
             <div className="text-sm leading-[0.875rem] mt-[0.25rem]">

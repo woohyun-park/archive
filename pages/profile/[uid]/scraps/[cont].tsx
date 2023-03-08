@@ -2,7 +2,6 @@ import { useRouter } from "next/router";
 import BtnIcon from "../../../../components/atoms/BtnIcon";
 import PagePosts from "../../../../components/PagePosts";
 import PageTab from "../../../../components/PageTab";
-import WrapScroll from "../../../../components/wrappers/WrapScroll";
 import { useUser } from "../../../../stores/useUser";
 
 export default function Scrap() {
@@ -16,9 +15,7 @@ export default function Scrap() {
   return (
     <>
       <div className="flex items-center justify-center mt-2">
-        <WrapScroll className="absolute left-0 flex ml-4">
-          <BtnIcon icon="back" onClick={() => router.back()} />
-        </WrapScroll>
+        <BtnIcon icon="back" onClick={() => router.back()} />
         <div className="title-page-sm">{cont}</div>
       </div>
       <div className="top-0 m-auto text-xs text-center text-gray-2f">
