@@ -5,19 +5,22 @@ import ProfileImg from "../components/ProfileImg";
 import BtnIcon from "../components/atoms/BtnIcon";
 import InputIcon from "../components/atoms/InputIcon";
 import { debounce } from "lodash";
-import WrapScroll from "../components/wrappers/WrapScroll";
 import PagePosts from "../components/PagePosts";
 import { createHash } from "crypto";
 import { useLoading } from "../hooks/useLoading";
 import useCustomRouter from "../hooks/useCustomRouter";
+import { useStatus } from "../stores/useStatus";
+import { useScrollBack } from "../hooks/useScrollBack";
 
 export default function Feed() {
-  const router = useCustomRouter();
   const [tag, setTag] = useState("");
   const [debounceTag, setDebounceTag] = useState("");
 
+  const router = useCustomRouter();
   const { curUser } = useUser();
+
   useLoading(["posts"]);
+  useScrollBack();
 
   // tag가 바뀔때마다 서버에 요청을 보내지 않도록 debounceTag라는 state을 따로 만들어놓고,
   // tag가 바뀔때마다 debounce를 사용하여 debounceTag를 set하도록 만들었다.
@@ -46,19 +49,14 @@ export default function Feed() {
         >
           archive
         </h1>
-        <WrapScroll>
-          <div className="flex items-center justify-center">
-            <BtnIcon
-              icon="alarm"
-              onClick={() => router.pushWithLoader("/alarm")}
-            />
-            <ProfileImg
-              size="sm"
-              photoURL={curUser.photoURL}
-              onClick={() => router.pushWithLoader(`/profile/${curUser.id}`)}
-            />
-          </div>
-        </WrapScroll>
+        <div className="flex items-center justify-center">
+          <BtnIcon icon="alarm" onClick={() => router.push("/alarm")} />
+          <ProfileImg
+            size="sm"
+            photoURL={curUser.photoURL}
+            onClick={() => router.push(`/profile/${curUser.id}`)}
+          />
+        </div>
       </div>
       <InputIcon
         icon="filter"
