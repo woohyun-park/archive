@@ -47,7 +47,7 @@ export default function PageTab({ header, tabs }: IPageTapProps) {
   const { setScroll, pages, setSelectedPage } = useStatus();
 
   const path = router.asPath;
-  const page = pages[path] && pages[path].selectedPage;
+  const page = pages[path] ? pages[path].selectedPage : 0;
 
   useScrollBack();
 

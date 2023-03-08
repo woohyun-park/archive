@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   IFetchQuery,
   IFetchQueryAlarms,
@@ -34,7 +34,7 @@ export const useCachedPage = (
   const path = router.asPath;
   const page = caches[path];
   const cache = page && page[as];
-  const canFetchMore = !(cache ? cache.isLast : false);
+  const canFetchMore = cache ? !cache.isLast : false;
 
   // type에 따라서 dat와 query의 type을 정의
   let data, typedQuery: any;
