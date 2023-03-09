@@ -9,6 +9,7 @@ import WrapMotion from "./wrappers/WrapMotion";
 import { Children } from "react";
 import Btn from "./atoms/Btn";
 import useCustomRouter from "../hooks/useCustomRouter";
+import Tags from "./Tags";
 
 interface IPostCardProps {
   post: IPost;
@@ -38,17 +39,7 @@ export default function PostCard({ post }: IPostCardProps) {
         >
           {post.title}
         </div>
-        <div className="flex flex-wrap justify-end w-full">
-          {Children.toArray(
-            post.tags.map((tag, i) => (
-              <Btn
-                label={`#${tag}`}
-                className="px-2 ml-1"
-                onClick={() => router.push(`/tag/${tag}`)}
-              />
-            ))
-          )}
-        </div>
+        <Tags tags={post.tags} />
         <Action
           post={post}
           curUser={curUser}

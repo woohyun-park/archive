@@ -46,7 +46,7 @@ export default function PostPage() {
                   <ModifyAndDelete post={post} />
                 )}
               </div>
-              <Post type="post" post={post} />
+              <Post post={post} />
               <CommentBox
                 post={post}
                 user={curUser}
