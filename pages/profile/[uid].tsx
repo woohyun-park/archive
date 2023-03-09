@@ -60,7 +60,7 @@ export default function Profile() {
       {user !== undefined ? (
         <PageTab
           header={
-            <Motion type="fade" className="mx-4">
+            <Motion type="fade" className="mx-4 mt-4">
               <div className="flex justify-between">
                 {user.id === curUser.id ? (
                   <>

@@ -12,9 +12,15 @@ export const useScrollBack = () => {
   const path = router.asPath;
 
   useEffect(() => {
+    // 만약 refresh가 설정되어 있다면 가장 상위로 스크롤한다.
     if (refreshes[path]) {
       setScroll(path, 0);
-    } else if (scroll[path]) {
+    }
+    // 만약 scroll이 저장되어 있다면
+    // 1. page가 존재한다면 pageTab으로 구성되는 페이지이므로
+    // refScroll과 refScrollTab 각각을 저장된 위치로 스크롤한다
+    // 2. page가 존재하지 않는다면 window를 저장된 위치로 스크롤한다.
+    else if (scroll[path]) {
       if (pages[path]) {
         const selectedPage = pages[path].selectedPage;
         document.querySelector("#refScroll")?.scrollTo(0, scroll[path]);

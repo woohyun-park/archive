@@ -32,9 +32,9 @@ body {
   /* border: 0.5px solid black; */
 }
 
-/* ::-webkit-scrollbar {
+::-webkit-scrollbar {
   display: none;
-} */
+}
 
 @layer components {
   .title-logo {

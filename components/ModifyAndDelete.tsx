@@ -37,7 +37,7 @@ IModifyAndDeleteProps) {
         />
         <BtnIcon
           icon="delete"
-          size={SIZE.icon}
+          size={SIZE.iconSm}
           onClick={async () => {
             if (confirm("정말 삭제하시겠습니까?")) {
               await deletePost(post?.id || "");

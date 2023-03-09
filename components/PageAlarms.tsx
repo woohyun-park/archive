@@ -8,9 +8,7 @@ import { IAlarm } from "../libs/custom";
 import AlarmComment from "./AlarmComment";
 import AlarmFollow from "./AlarmFollow";
 import AlarmLike from "./AlarmLike";
-import Loader from "./Loader";
 import WrapMotion from "./wrappers/WrapMotion";
-import WrapPullToRefresh from "./wrappers/WrapPullToRefresh";
 
 export interface IPageAlarmsProps {
   query: IFetchQueryAlarms;
@@ -26,7 +24,7 @@ export default function PageAlarms({ query, className }: IPageAlarmsProps) {
   const alarms = data as IAlarm[];
 
   return (
-    <WrapPullToRefresh
+    <PullToRefresh
       onRefresh={onRefresh}
       onFetchMore={onFetchMore}
       canFetchMore={canFetchMore}
@@ -45,6 +43,6 @@ export default function PageAlarms({ query, className }: IPageAlarmsProps) {
           );
         })}
       </AnimatePresence>
-    </WrapPullToRefresh>
+    </PullToRefresh>
   );
 }

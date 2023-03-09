@@ -1,5 +1,4 @@
 import {
-  HiXMark,
   HiHeart,
   HiOutlineHeart,
   HiBookmark,
@@ -12,6 +11,9 @@ import {
   HiArrowUturnLeft,
   HiOutlineFunnel,
   HiCog8Tooth,
+  HiTrash,
+  HiOutlinePencil,
+  HiOutlineTrash,
 } from "react-icons/hi2";
 import { SIZE } from "../../libs/custom";
 
@@ -82,10 +84,10 @@ export default function BtnIcon({
         <HiChevronLeft size={size} onClick={onClick} strokeWidth={stroke} />
       )}
       {icon === "delete" && (
-        <HiXMark size={size} onClick={onClick} strokeWidth={stroke} />
+        <HiOutlineTrash size={size} onClick={onClick} strokeWidth={stroke} />
       )}
       {icon === "modify" && (
-        <HiPencil size={size} onClick={onClick} strokeWidth={stroke} />
+        <HiOutlinePencil size={size} onClick={onClick} strokeWidth={stroke} />
       )}
       {icon === "refresh" && (
         <HiArrowUturnLeft size={size} onClick={onClick} strokeWidth={stroke} />

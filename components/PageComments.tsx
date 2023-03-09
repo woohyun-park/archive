@@ -1,13 +1,13 @@
 import { deleteDoc, doc } from "firebase/firestore";
 import { AnimatePresence } from "framer-motion";
 import React from "react";
+import PullToRefresh from "react-simple-pull-to-refresh";
 import { IFetchQueryComments } from "../apis/fbDef";
 import { db } from "../apis/firebase";
 import { useCachedPage } from "../hooks/useCachedPage";
 import { IComment } from "../libs/custom";
 import { useUser } from "../stores/useUser";
 import Comment from "./Comment";
-import WrapPullToRefresh from "./wrappers/WrapPullToRefresh";
 
 export interface IPageCommentsProps {
   query: IFetchQueryComments;
@@ -33,7 +33,7 @@ export default function PageComments({ query, className }: IPageCommentsProps) {
 
   return (
     <>
-      <WrapPullToRefresh
+      <PullToRefresh
         onRefresh={onRefresh}
         onFetchMore={onFetchMore}
         canFetchMore={canFetchMore}
@@ -50,7 +50,7 @@ export default function PageComments({ query, className }: IPageCommentsProps) {
             );
           })}
         </AnimatePresence>
-      </WrapPullToRefresh>
+      </PullToRefresh>
     </>
   );
 }

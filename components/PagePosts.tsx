@@ -50,8 +50,6 @@ export default function PagePosts({
     if (refreshes[router.asPath]) init();
   }, [refreshes[router.asPath]]);
 
-  console.log(router.asPath, canFetchMore);
-
   return (
     <>
       <Loader isVisible={loading} />
@@ -59,8 +57,6 @@ export default function PagePosts({
         onRefresh={onRefresh}
         onFetchMore={onFetchMore}
         canFetchMore={canFetchMore}
-        pullingContent={<Loader isVisible={true} />}
-        refreshingContent={<Loader isVisible={true} />}
         isPullable={isPullable}
         className={className}
         fetchMoreThreshold={256}

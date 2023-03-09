@@ -16,7 +16,7 @@ export default function SearchResult() {
         header={
           <div className="flex p-4 pb-0 bg-white">
             <BtnIcon icon="back" onClick={() => router.back()} />
-            <h1 className="title-page-sm">{keyword}에 대한 검색결과</h1>
+            <h1 className="title-page-sm">{keyword}에 대한 검색 결과</h1>
           </div>
         }
         // 다른 페이지의 tabs와 다르게 search의 tabs는 isPullable을 false로 설정하여 refresh를 할 수 없도록 한다.

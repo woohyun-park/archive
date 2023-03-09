@@ -1,10 +1,10 @@
 import { useRouter } from "next/router";
 import React, { Children, useEffect, useState } from "react";
+import PullToRefresh from "react-simple-pull-to-refresh";
 import { IFetchQueryTags } from "../apis/fbDef";
 import { useCachedPage } from "../hooks/useCachedPage";
 import { IDict, ITag } from "../libs/custom";
 import WrapMotion from "./wrappers/WrapMotion";
-import WrapPullToRefresh from "./wrappers/WrapPullToRefresh";
 
 export interface IPageTagsProps {
   query: IFetchQueryTags;
@@ -49,42 +49,44 @@ export default function PageTags({
 
   return (
     <>
-      <WrapPullToRefresh
+      <PullToRefresh
         onRefresh={onRefresh}
         onFetchMore={onFetchMore}
         canFetchMore={canFetchMore}
         isPullable={isPullable}
       >
-        {Children.toArray(
-          formatTags(tags).map((tag, i) => {
-            return (
-              <WrapMotion
-                type="float"
-                className="flex items-center mx-4 my-2 hover:cursor-pointer"
-                onClick={() =>
-                  query.type === "keyword"
-                    ? router.push(`/tag/${tag.name}`)
-                    : router.push(
-                        `/profile/${query.value.uid}/tags/${tag.name}`
-                      )
-                }
-              >
-                <div className="flex items-center justify-center w-8 h-8 mr-2 text-xl rounded-full bg-gray-3 text-bold">
-                  #
-                </div>
-                <div>
-                  <div className="text-sm font-bold text-black">
-                    #{tag.name}
+        <>
+          {Children.toArray(
+            formatTags(tags).map((tag, i) => {
+              return (
+                <WrapMotion
+                  type="float"
+                  className="flex items-center mx-4 my-2 hover:cursor-pointer"
+                  onClick={() =>
+                    query.type === "keyword"
+                      ? router.push(`/tag/${tag.name}`)
+                      : router.push(
+                          `/profile/${query.value.uid}/tags/${tag.name}`
+                        )
+                  }
+                >
+                  <div className="flex items-center justify-center w-8 h-8 mr-2 text-xl rounded-full bg-gray-3 text-bold">
+                    #
                   </div>
-                  <div className="w-full overflow-hidden text-xs whitespace-pre-wrap -translate-y-[2px] text-gray-1 text-ellipsis">
-                    게시물 {tag.tags.length}개
+                  <div>
+                    <div className="text-sm font-bold text-black">
+                      #{tag.name}
+                    </div>
+                    <div className="w-full overflow-hidden text-xs whitespace-pre-wrap -translate-y-[2px] text-gray-1 text-ellipsis">
+                      게시물 {tag.tags.length}개
+                    </div>
                   </div>
-                </div>
-              </WrapMotion>
-            );
-          })
-        )}
-      </WrapPullToRefresh>
+                </WrapMotion>
+              );
+            })
+          )}
+        </>
+      </PullToRefresh>
     </>
   );
 }

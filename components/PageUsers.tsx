@@ -1,16 +1,17 @@
 import { useRouter } from "next/router";
 import React, { Children } from "react";
+import PullToRefresh from "react-simple-pull-to-refresh";
 import { IFetchQueryUsers } from "../apis/fbDef";
 import { useCachedPage } from "../hooks/useCachedPage";
 import { IUser } from "../libs/custom";
 import { useUser } from "../stores/useUser";
 import Profile from "./Profile";
-import WrapPullToRefresh from "./wrappers/WrapPullToRefresh";
 
 export interface IPageUsersProps {
   query: IFetchQueryUsers;
   as: string;
   isPullable?: boolean;
+  childrenWhenEmpty?: React.ReactNode;
 }
 
 export default function PageUsers({
@@ -31,7 +32,7 @@ export default function PageUsers({
 
   return (
     <>
-      <WrapPullToRefresh
+      <PullToRefresh
         onRefresh={onRefresh}
         onFetchMore={onFetchMore}
         canFetchMore={canFetchMore}
@@ -50,7 +51,7 @@ export default function PageUsers({
             ))
           )}
         </div>
-      </WrapPullToRefresh>
+      </PullToRefresh>
     </>
   );
 }
