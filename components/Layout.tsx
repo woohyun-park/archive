@@ -18,6 +18,7 @@ import WrapMotion from "./wrappers/WrapMotion";
 import { RiGoogleFill } from "react-icons/ri";
 import ScrollTop from "./atoms/ScrollTop";
 import ModalLoader from "./ModalLoader";
+import { useStatus } from "../stores/useStatus";
 
 interface ILayoutProps {
   children: React.ReactNode;
@@ -35,6 +36,7 @@ export default function Layout({ children }: ILayoutProps) {
   const provider = new GoogleAuthProvider();
   const router = useRouter();
   const { getCurUser } = useUser();
+  const { logoutLoader } = useStatus();
   const [login, setLogin] = useState<ILogin>({
     email: "",
     password: "",
@@ -53,6 +55,17 @@ export default function Layout({ children }: ILayoutProps) {
       }
     });
   }, []);
+
+  useEffect(() => {
+    router.replace("/");
+  }, [login.isLoggedIn]);
+
+  // useEffect(() => {
+  //   console.log("logoutLoader", logoutLoader);
+  //   if (logoutLoader) {
+  //     router.reload();
+  //   }
+  // }, [logoutLoader]);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
@@ -147,53 +160,59 @@ export default function Layout({ children }: ILayoutProps) {
           <Nav />
         </>
       ) : (
-        <div className="flex flex-col w-full h-[100vh] p-4 justify-center">
-          <div className="flex flex-col items-center mt-8 text-3xl">
-            {Children.toArray(
-              message.map((e, i) =>
-                i === page ? (
-                  <WrapMotion type="float">
-                    <div className="mb-4 text-center">{e[0]}</div>
-                    <Image
-                      src={e[1]}
-                      alt=""
-                      className="mb-16 bg-white h-72 w-72"
-                    />
-                  </WrapMotion>
-                ) : (
-                  <></>
-                )
-              )
-            )}
-            <div className="flex justify-between w-20 m-auto mb-16">
-              {Children.toArray(
-                message.map((e, i) =>
-                  i === page ? (
-                    <motion.div
-                      className="w-8 h-4 duration-300 ease-in-out rounded-full bg-gray-2f hover:cursor-pointer"
-                      onClick={() => setPage(i)}
-                    ></motion.div>
-                  ) : (
-                    <motion.div
-                      className="w-4 h-4 duration-300 ease-in-out rounded-full bg-gray-3 hover:cursor-pointer"
-                      onClick={() => setPage(i)}
-                    ></motion.div>
+        <>
+          {logoutLoader ? (
+            <></>
+          ) : (
+            <div className="flex flex-col w-full h-[100vh] p-4 justify-center">
+              <div className="flex flex-col items-center mt-8 text-3xl">
+                {Children.toArray(
+                  message.map((e, i) =>
+                    i === page ? (
+                      <WrapMotion type="float">
+                        <div className="mb-4 text-center">{e[0]}</div>
+                        <Image
+                          src={e[1]}
+                          alt=""
+                          className="mb-16 bg-white h-72 w-72"
+                        />
+                      </WrapMotion>
+                    ) : (
+                      <></>
+                    )
                   )
-                )
-              )}
+                )}
+                <div className="flex justify-between w-20 m-auto mb-16">
+                  {Children.toArray(
+                    message.map((e, i) =>
+                      i === page ? (
+                        <motion.div
+                          className="w-8 h-4 duration-300 ease-in-out rounded-full bg-gray-2f hover:cursor-pointer"
+                          onClick={() => setPage(i)}
+                        ></motion.div>
+                      ) : (
+                        <motion.div
+                          className="w-4 h-4 duration-300 ease-in-out rounded-full bg-gray-3 hover:cursor-pointer"
+                          onClick={() => setPage(i)}
+                        ></motion.div>
+                      )
+                    )
+                  )}
+                </div>
+              </div>
+              <div>
+                <Btn label="카카오톡으로 로그인" />
+                <Btn label="Apple로 로그인" />
+                <button
+                  className="p-1 m-2 text-white bg-black rounded-full"
+                  onClick={handleSocialLogin}
+                >
+                  <RiGoogleFill size={SIZE.icon} />
+                </button>
+              </div>
             </div>
-          </div>
-          <div>
-            <Btn label="카카오톡으로 로그인" />
-            <Btn label="Apple로 로그인" />
-            <button
-              className="p-1 m-2 text-white bg-black rounded-full"
-              onClick={handleSocialLogin}
-            >
-              <RiGoogleFill size={SIZE.icon} />
-            </button>
-          </div>
-        </div>
+          )}
+        </>
       )}
 
       <style jsx global>

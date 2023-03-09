@@ -4,6 +4,7 @@ import { IDict } from "../libs/custom";
 
 interface IUseStatus {
   modalLoader: boolean;
+  logoutLoader: boolean;
   scroll: IDict<number>;
   pages: IDict<IPageStatus>;
   keywords: IDict<string>;
@@ -14,6 +15,7 @@ interface IUseStatus {
   setPageScrolls: (pathname: string, page: number, scroll: number) => void;
   setKeywords: (path: string, keyword: string) => void;
   setModalLoader: (modalLoader: boolean) => void;
+  setLogoutLoader: (logoutLoader: boolean) => void;
   setRefresh: (pathname: string, refresh: boolean) => void;
 }
 
@@ -30,6 +32,7 @@ interface ISetScroll {
 export const useStatus = create<IUseStatus>()(
   devtools((set, get) => ({
     modalLoader: true,
+    logoutLoader: false,
     scroll: {},
     pages: {},
     keywords: {},
@@ -105,6 +108,14 @@ export const useStatus = create<IUseStatus>()(
         return {
           ...state,
           modalLoader,
+        };
+      });
+    },
+    setLogoutLoader: (logoutLoader: boolean) => {
+      set((state: IUseStatus) => {
+        return {
+          ...state,
+          logoutLoader,
         };
       });
     },

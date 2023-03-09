@@ -7,16 +7,21 @@ import {
 import useCustomRouter from "../hooks/useCustomRouter";
 import { SIZE } from "../libs/custom";
 import { useStatus } from "../stores/useStatus";
+import Modal from "./Modal";
 import ModalLoader from "./ModalLoader";
 
 export default function Nav() {
   const router = useCustomRouter();
   const path = router.pathname;
-  const { modalLoader } = useStatus();
+  const { modalLoader, logoutLoader } = useStatus();
 
   return (
     <>
       <ModalLoader isVisible={modalLoader} />
+      <Modal
+        isVisible={logoutLoader}
+        content={<div className="w-full h-full bg-white"></div>}
+      />
       {!(
         router.pathname === "/setting" ||
         router.pathname === "/add" ||

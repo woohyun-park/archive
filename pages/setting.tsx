@@ -12,6 +12,8 @@ import { updateUser } from "../apis/fbUpdate";
 import { signOut } from "firebase/auth";
 import { auth } from "../apis/firebase";
 import { useLoading } from "../hooks/useLoading";
+import { wrapPromise } from "../stores/libStores";
+import { useStatus } from "../stores/useStatus";
 
 interface IForm {
   file: File[];
@@ -23,6 +25,7 @@ export default function Setting() {
   useLoading([]);
   const { curUser } = useUser();
   const [preview, setPreview] = useState(curUser.photoURL);
+  const { setLogoutLoader } = useStatus();
   const router = useRouter();
   const {
     register,
@@ -109,7 +112,12 @@ export default function Setting() {
         />
         <div
           className="flex items-center text-xs hover:cursor-pointer w-fit"
-          onClick={() => signOut(auth)}
+          onClick={async () => {
+            await wrapPromise(() => setLogoutLoader(true), 1000);
+            signOut(auth);
+            router.reload();
+            // router.replace("/");
+          }}
         >
           로그아웃
         </div>
