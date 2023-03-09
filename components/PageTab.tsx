@@ -66,6 +66,7 @@ export default function PageTab({ header, tabs }: IPageTapProps) {
       <div
         id="refScroll"
         className="static h-[100vh] overflow-y-scroll overflow-x-hidden"
+        style={{ height: `calc(100vh + ${tabRef.current?.clientHeight}px)` }}
       >
         <div>{header}</div>
         <div
@@ -87,6 +88,7 @@ export default function PageTab({ header, tabs }: IPageTapProps) {
             ))
           )}
         </div>
+        {/* <div className="h-[60px]"></div> */}
         {Children.toArray(
           tabs.map((tab, i) => (
             // 각 tab의 가장 상위 div는 relative로 설정하여
@@ -97,7 +99,7 @@ export default function PageTab({ header, tabs }: IPageTapProps) {
                 className="absolute w-full overflow-auto duration-300 h-[100vh]"
                 style={{
                   // height을 전체 뷰포트 - tabHeight로 설정해서 상단에 sticky한 tab과 겹치지 않도록 한다.
-                  // height: `calc(100vh - ${tabRef.current?.clientHeight}px)`,
+                  // height: `calc(100vh + ${tabRef.current?.clientHeight}px)`,
                   transform: `translateX(${(i - page) * 100}%)`,
                 }}
                 ref={(e) => addScrollRefs(e, i)}

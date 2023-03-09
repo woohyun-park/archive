@@ -184,19 +184,8 @@ export default function Layout({ children }: ILayoutProps) {
             </div>
           </div>
           <div>
-            <Btn
-              label="카카오톡으로 로그인"
-              // style={{
-              //   width: "100%",
-              //   backgroundColor: "#F3E366",
-              //   color: "black",
-              //   marginBottom: "0.5rem",
-              // }}
-            />
-            <Btn
-              label="Apple로 로그인"
-              // style={{ width: "100%" }}
-            />
+            <Btn label="카카오톡으로 로그인" />
+            <Btn label="Apple로 로그인" />
             <button
               className="p-1 m-2 text-white bg-black rounded-full"
               onClick={handleSocialLogin}
@@ -219,6 +208,10 @@ export default function Layout({ children }: ILayoutProps) {
             background-color: ${COLOR["gray-4f"]};
           }
           body {
+            overflow: ${router.pathname === "/search/[keyword]" ||
+            router.pathname === "/profile/[uid]"
+              ? "hidden"
+              : "scroll"};
             margin: 0;
             width: 100vw;
             max-width: 480px;

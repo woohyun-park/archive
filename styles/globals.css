@@ -33,7 +33,7 @@ body {
 }
 
 ::-webkit-scrollbar {
-  display: none;
+  /* display: none; */
 }
 
 @layer components {
