@@ -75,7 +75,7 @@ export default function Setting() {
           });
         });
     }
-    router.push(`/profile/${curUser.id}`);
+    router.replace(`/profile/${curUser.id}`);
   }
 
   function handleImageOnChange(e: React.ChangeEvent<HTMLInputElement>) {
