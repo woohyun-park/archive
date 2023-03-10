@@ -10,6 +10,7 @@ import { createHash } from "crypto";
 import { useLoading } from "../hooks/useLoading";
 import useCustomRouter from "../hooks/useCustomRouter";
 import { useScrollBack } from "../hooks/useScrollBack";
+import { useStatus } from "../stores/useStatus";
 
 export default function Feed() {
   const [tag, setTag] = useState("");
@@ -17,6 +18,7 @@ export default function Feed() {
 
   const router = useCustomRouter();
   const { curUser } = useUser();
+  const { notifyAlarms } = useStatus();
 
   useLoading(["posts"]);
   useScrollBack();
@@ -49,7 +51,11 @@ export default function Feed() {
           archive
         </h1>
         <div className="flex items-center justify-center">
-          <BtnIcon icon="alarm" onClick={() => router.push("/alarm")} />
+          <BtnIcon
+            icon="alarm"
+            fill={notifyAlarms ? true : false}
+            onClick={() => router.push("/alarm")}
+          />
           <ProfileImg
             size="sm"
             photoURL={curUser.photoURL}

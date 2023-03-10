@@ -22,10 +22,10 @@ export async function updateUser(field: IDict<any>) {
   });
 }
 
-export async function viewAlarms(alarms: IAlarm[]) {
-  for await (const alarm of alarms) {
+export function viewAlarms(alarms: IAlarm[]) {
+  for (const alarm of alarms) {
     if (!alarm.isViewed) {
-      await updateDoc(doc(db, "alarms", alarm.id), {
+      updateDoc(doc(db, "alarms", alarm.id), {
         isViewed: true,
       });
     }

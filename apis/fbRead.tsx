@@ -14,6 +14,7 @@ import {
   IAlarm,
   IComment,
   IDataType,
+  IDict,
   ILike,
   IPost,
   IScrap,
@@ -108,10 +109,54 @@ export async function readAlarm(aid: string) {
 }
 
 export async function readAlarms(docs: QueryDocumentSnapshot<DocumentData>[]) {
+  const postDict: IDict<IPost> = {};
+  const commentDict: IDict<IComment> = {};
+  const authorDict: IDict<IUser> = {};
   const res: IAlarm[] = [];
   for await (const doc of docs) {
-    const alarm = await readAlarm(doc.data().id);
-    res.push(alarm);
+    const alarm = doc.data();
+    alarm.createdAt = convertCreatedAt(alarm.createdAt);
+    const uid = alarm.uid;
+    const pid = alarm.pid || "";
+    const cid = alarm.cid || "";
+
+    if (alarm.type === "like") {
+      let post;
+      if (postDict[pid]) {
+        post = postDict[pid];
+      } else {
+        post = await readData<IPost>("posts", pid || "");
+        postDict[pid] = post;
+      }
+      alarm.post = post;
+    } else if (alarm.type === "comment") {
+      let post;
+      if (postDict[pid]) {
+        post = postDict[pid];
+      } else {
+        post = await readData<IPost>("posts", pid || "");
+        postDict[pid] = post;
+      }
+      let comment;
+      if (commentDict[cid]) {
+        comment = commentDict[cid];
+      } else {
+        comment = await readData<IComment>("comments", cid);
+        commentDict[cid] = comment;
+      }
+      alarm.post = post;
+      alarm.comment = comment;
+    } else if (alarm.type === "follow") {
+    }
+    let author;
+    if (authorDict[uid]) {
+      author = authorDict[uid];
+    } else {
+      author = await readData<IUser>("users", uid);
+      authorDict[cid] = author;
+    }
+    alarm.author = author;
+    res.push(alarm as IAlarm);
   }
   return res;
 }

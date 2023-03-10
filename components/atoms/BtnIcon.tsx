@@ -5,15 +5,16 @@ import {
   HiOutlineBookmark,
   HiOutlineChatBubbleOvalLeft,
   HiChevronLeft,
-  HiPencil,
   HiMagnifyingGlass,
   HiOutlineBell,
   HiArrowUturnLeft,
   HiOutlineFunnel,
   HiCog8Tooth,
-  HiTrash,
   HiOutlinePencil,
   HiOutlineTrash,
+  HiBell,
+  HiBellAlert,
+  HiOutlineBellAlert,
 } from "react-icons/hi2";
 import { SIZE } from "../../libs/custom";
 
@@ -96,7 +97,17 @@ export default function BtnIcon({
         <HiMagnifyingGlass size={size} onClick={onClick} strokeWidth={stroke} />
       )}
       {icon === "alarm" && (
-        <HiOutlineBell size={size} onClick={onClick} strokeWidth={stroke} />
+        <>
+          {fill ? (
+            <HiOutlineBellAlert
+              size={size}
+              onClick={onClick}
+              strokeWidth={stroke}
+            />
+          ) : (
+            <HiOutlineBell size={size} onClick={onClick} strokeWidth={stroke} />
+          )}
+        </>
       )}
       {icon === "filter" && (
         <HiOutlineFunnel size={size} onClick={onClick} strokeWidth={stroke} />

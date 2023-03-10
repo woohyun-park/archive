@@ -9,6 +9,7 @@ interface IUseStatus {
   pages: IDict<IPageStatus>;
   keywords: IDict<string>;
   refreshes: IDict<boolean>;
+  notifyAlarms: boolean;
 
   setScroll: ISetScroll;
   setSelectedPage: (pathname: string, page: number) => void;
@@ -17,6 +18,7 @@ interface IUseStatus {
   setModalLoader: (modalLoader: boolean) => void;
   setLogoutLoader: (logoutLoader: boolean) => void;
   setRefresh: (pathname: string, refresh: boolean) => void;
+  setNotifyAlarms: (notifyAlarms: boolean) => void;
 }
 
 interface IPageStatus {
@@ -37,7 +39,16 @@ export const useStatus = create<IUseStatus>()(
     pages: {},
     keywords: {},
     refreshes: {},
+    notifyAlarms: false,
 
+    setNotifyAlarms: (notifyAlarms: boolean) => {
+      set((state: IUseStatus) => {
+        return {
+          ...state,
+          notifyAlarms,
+        };
+      });
+    },
     setRefresh: (pathname: string, refresh: boolean) => {
       set((state: IUseStatus) => {
         const refreshes = state.refreshes;

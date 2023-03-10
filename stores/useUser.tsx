@@ -6,6 +6,7 @@ import {
   doc,
   getDoc,
   onSnapshot,
+  orderBy,
   query,
   where,
 } from "firebase/firestore";
@@ -78,7 +79,11 @@ export const useUser = create<IState>()(
         }
       );
       const unsubscribeAlarms = onSnapshot(
-        query(collection(db, "alarms"), where("targetUid", "==", id)),
+        query(
+          collection(db, "alarms"),
+          where("targetUid", "==", id),
+          orderBy("createdAt", "desc")
+        ),
         (snap) => {
           const datas: IAlarm[] = [];
           snap.forEach((doc) => {

@@ -38,7 +38,7 @@ export default function Layout({ children }: ILayoutProps) {
   const provider = new GoogleAuthProvider();
   const router = useRouter();
   const { getCurUser } = useUser();
-  const { logoutLoader } = useStatus();
+  const { logoutLoader, setNotifyAlarms } = useStatus();
   const [login, setLogin] = useState<ILogin>({
     email: "",
     password: "",
@@ -64,24 +64,36 @@ export default function Layout({ children }: ILayoutProps) {
     router.replace("/");
   }, [login.isLoggedIn]);
 
+  // curUser.alarms는 listener를 붙여놓아서
   useEffect(() => {
-    if (caches["/alarm"]) {
-      fetchCache(
-        "alarms",
-        "refresh",
-        { type: "uid", value: { uid: curUser.id } },
-        "/alarm",
-        "alarms"
-      );
+    async function refreshAlarms() {
+      if (caches["/alarm"]) {
+        await fetchCache(
+          "alarms",
+          "refresh",
+          { type: "uid", value: { uid: curUser.id } },
+          "/alarm",
+          "alarms"
+        );
+      } else {
+        await fetchCache(
+          "alarms",
+          "init",
+          { type: "uid", value: { uid: curUser.id } },
+          "/alarm",
+          "alarms"
+        );
+      }
+      console.log();
+      if (!curUser.alarms?.reduce((acc, cur) => acc && cur.isViewed, true)) {
+        setNotifyAlarms(true);
+      }
+      // if (caches["/alarm"]["alarms"].data.reduce((e) => console.log(e))) {
+      // setNotifyAlarms(true);
+      // }
     }
+    refreshAlarms();
   }, [curUser.alarms]);
-
-  // useEffect(() => {
-  //   console.log("logoutLoader", logoutLoader);
-  //   if (logoutLoader) {
-  //     router.reload();
-  //   }
-  // }, [logoutLoader]);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;

@@ -6,6 +6,7 @@ import { viewAlarms } from "../apis/fbUpdate";
 import { mergeTailwindClasses } from "../apis/tailwind";
 import { useCachedPage } from "../hooks/useCachedPage";
 import { IAlarm } from "../libs/custom";
+import { useStatus } from "../stores/useStatus";
 import AlarmComment from "./AlarmComment";
 import AlarmFollow from "./AlarmFollow";
 import AlarmLike from "./AlarmLike";
@@ -21,10 +22,12 @@ export default function PageAlarms({ query, className }: IPageAlarmsProps) {
     "alarms",
     query
   );
+  const { setNotifyAlarms } = useStatus();
 
   const alarms = data as IAlarm[];
 
   useEffect(() => {
+    setNotifyAlarms(false);
     viewAlarms(data as IAlarm[]);
   }, []);
 
