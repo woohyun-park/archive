@@ -1,6 +1,6 @@
 import create from "zustand";
 import { devtools } from "zustand/middleware";
-import { ILike, IScrap, IUser } from "../libs/custom";
+import { IAlarm, ILike, IScrap, IUser } from "../libs/custom";
 import {
   collection,
   doc,
@@ -73,6 +73,21 @@ export const useUser = create<IState>()(
             return {
               ...state,
               curUser: { ...state.curUser, scraps: datas },
+            };
+          });
+        }
+      );
+      const unsubscribeAlarms = onSnapshot(
+        query(collection(db, "alarms"), where("targetUid", "==", id)),
+        (snap) => {
+          const datas: IAlarm[] = [];
+          snap.forEach((doc) => {
+            datas.push({ ...(doc.data() as IAlarm) });
+          });
+          set((state: IState) => {
+            return {
+              ...state,
+              curUser: { ...state.curUser, alarms: datas },
             };
           });
         }

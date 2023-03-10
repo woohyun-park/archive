@@ -1,7 +1,8 @@
 import { AnimatePresence } from "framer-motion";
-import React from "react";
+import React, { useEffect } from "react";
 import PullToRefresh from "react-simple-pull-to-refresh";
 import { IFetchQueryAlarms } from "../apis/fbDef";
+import { viewAlarms } from "../apis/fbUpdate";
 import { mergeTailwindClasses } from "../apis/tailwind";
 import { useCachedPage } from "../hooks/useCachedPage";
 import { IAlarm } from "../libs/custom";
@@ -22,6 +23,10 @@ export default function PageAlarms({ query, className }: IPageAlarmsProps) {
   );
 
   const alarms = data as IAlarm[];
+
+  useEffect(() => {
+    viewAlarms(data as IAlarm[]);
+  }, []);
 
   return (
     <PullToRefresh

@@ -22,6 +22,16 @@ export async function updateUser(field: IDict<any>) {
   });
 }
 
+export async function viewAlarms(alarms: IAlarm[]) {
+  for await (const alarm of alarms) {
+    if (!alarm.isViewed) {
+      await updateDoc(doc(db, "alarms", alarm.id), {
+        isViewed: true,
+      });
+    }
+  }
+}
+
 export async function updateFollow(
   curUser: IUser,
   user: IUser,
@@ -49,6 +59,7 @@ export async function updateFollow(
       type: "follow",
       targetUid: user.id,
       createdAt: new Date(),
+      isViewed: false,
     };
     await createDoc("alarms", newAlarm);
   }

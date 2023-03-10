@@ -158,6 +158,7 @@ export interface IAlarm {
   pid?: string;
   cid?: string;
   createdAt: Date | FieldValue;
+  isViewed: boolean;
 
   author?: IUser;
   post?: IPost;

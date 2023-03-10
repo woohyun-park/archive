@@ -12,7 +12,13 @@ export default function AlarmComment({ alarm }: IAlarmCommentProps) {
   const router = useCustomRouter();
   return (
     <>
-      <div className="flex justify-between my-2">
+      <div
+        className={
+          alarm.isViewed
+            ? "flex justify-between px-4 py-2"
+            : "flex justify-between px-4 py-2 bg-gray-3"
+        }
+      >
         <div className="flex">
           <ProfileImg
             size="sm"

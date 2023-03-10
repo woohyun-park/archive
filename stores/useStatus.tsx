@@ -37,6 +37,7 @@ export const useStatus = create<IUseStatus>()(
     pages: {},
     keywords: {},
     refreshes: {},
+
     setRefresh: (pathname: string, refresh: boolean) => {
       set((state: IUseStatus) => {
         const refreshes = state.refreshes;

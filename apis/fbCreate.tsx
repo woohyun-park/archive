@@ -64,6 +64,7 @@ export async function createLike(uid: string, targetUid: string, pid: string) {
     targetUid,
     pid,
     createdAt: serverTimestamp(),
+    isViewed: false,
   };
   const alarmRef = await createDoc("alarms", newAlarm);
   await updateDoc(ref, { aid: alarmRef.id });
@@ -95,6 +96,7 @@ export async function createComment(
     targetUid,
     pid,
     createdAt: serverTimestamp(),
+    isViewed: false,
   };
   const alarmRef = await createDoc("alarms", newAlarm);
   await updateDoc(ref, { aid: alarmRef.id });

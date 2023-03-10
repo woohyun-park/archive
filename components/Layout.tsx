@@ -19,6 +19,8 @@ import { RiGoogleFill } from "react-icons/ri";
 import ScrollTop from "./atoms/ScrollTop";
 import ModalLoader from "./ModalLoader";
 import { useStatus } from "../stores/useStatus";
+import { useCache } from "../stores/useCache";
+import { useCachedPage } from "../hooks/useCachedPage";
 
 interface ILayoutProps {
   children: React.ReactNode;
@@ -44,6 +46,8 @@ export default function Layout({ children }: ILayoutProps) {
     isLoggedIn: null,
     error: "",
   });
+  const { caches, fetchCache } = useCache();
+  const { curUser } = useUser();
 
   useEffect(() => {
     auth.onAuthStateChanged(async (authState) => {
@@ -59,6 +63,18 @@ export default function Layout({ children }: ILayoutProps) {
   useEffect(() => {
     router.replace("/");
   }, [login.isLoggedIn]);
+
+  useEffect(() => {
+    if (caches["/alarm"]) {
+      fetchCache(
+        "alarms",
+        "refresh",
+        { type: "uid", value: { uid: curUser.id } },
+        "/alarm",
+        "alarms"
+      );
+    }
+  }, [curUser.alarms]);
 
   // useEffect(() => {
   //   console.log("logoutLoader", logoutLoader);
