@@ -8,7 +8,6 @@ import {
   Query,
   query,
   QueryDocumentSnapshot,
-  snapshotEqual,
   where,
 } from "firebase/firestore";
 import {

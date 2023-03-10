@@ -46,6 +46,7 @@ export type IFetchQueryPosts = {
     | "uid"
     | "uidAndTag"
     | "uidAndScrap";
+  readType?: "simple";
   value: IDict<any>;
 };
 

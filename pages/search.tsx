@@ -17,7 +17,11 @@ export default function Search() {
           </div>
         </div>
       </Link>
-      <PagePosts query={{ type: "none", value: {} }} as="posts" numCols={3} />
+      <PagePosts
+        query={{ type: "none", readType: "simple", value: {} }}
+        as="posts"
+        numCols={3}
+      />
     </WrapMotion>
   );
 }

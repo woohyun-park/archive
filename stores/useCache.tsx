@@ -166,22 +166,26 @@ async function fetchHelper(
       } as IComment);
     });
   } else if (cacheType === "posts") {
+    const tQuery = query as IFetchQueryPosts;
     snap = await getDocs(
-      getPostsQuery(
-        fetchType,
-        query as IFetchQueryPosts,
-        fetchLimit,
-        cache?.lastVisible
-      )
+      getPostsQuery(fetchType, tQuery, fetchLimit, cache?.lastVisible)
     );
-    if (query.type !== "uidAndScrap") {
-      data = await readPosts(snap.docs);
+    if (tQuery.type !== "uidAndScrap") {
+      if (tQuery.readType === "simple") {
+        for (const doc of snap.docs) {
+          data.push(doc.data());
+        }
+      } else {
+        data = await readPosts(snap.docs);
+      }
     } else {
-      const resScraps = await readScraps(snap.docs);
-      data = [];
-      for await (const res of resScraps) {
-        const post = await readPost(res.pid);
-        data.push(post);
+      for await (const doc of snap.docs) {
+        if (tQuery.readType === "simple") {
+          data.push(doc.data());
+        } else {
+          const post = await readPost(doc.data().pid);
+          data.push(post);
+        }
       }
     }
   } else if (cacheType === "post") {
