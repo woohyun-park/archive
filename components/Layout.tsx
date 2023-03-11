@@ -84,7 +84,6 @@ export default function Layout({ children }: ILayoutProps) {
           "alarms"
         );
       }
-      console.log();
       if (!curUser.alarms?.reduce((acc, cur) => acc && cur.isViewed, true)) {
         setNotifyAlarms(true);
       }
