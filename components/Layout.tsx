@@ -87,9 +87,6 @@ export default function Layout({ children }: ILayoutProps) {
       if (!curUser.alarms?.reduce((acc, cur) => acc && cur.isViewed, true)) {
         setNotifyAlarms(true);
       }
-      // if (caches["/alarm"]["alarms"].data.reduce((e) => console.log(e))) {
-      // setNotifyAlarms(true);
-      // }
     }
     refreshAlarms();
   }, [curUser.alarms]);
