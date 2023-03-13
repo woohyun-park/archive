@@ -12,14 +12,6 @@ export default function Alarm() {
   const { curUser } = useUser();
   useLoading(["alarms"]);
 
-  // useEffect(() => {
-
-  // },[]);
-
-  // useEffect(() => {
-  //   console.log("Alarms!", curUser.alarms);
-  // }, [curUser.alarms]);
-
   return (
     <Motion type="fade">
       <div className="flex m-4">
