@@ -4,7 +4,6 @@ import { useUser } from "../stores/useUser";
 import Motion from "../components/wrappers/WrapMotion";
 import PageAlarms from "../components/PageAlarms";
 import { useLoading } from "../hooks/useLoading";
-import { useEffect } from "react";
 
 export default function Alarm() {
   const router = useRouter();
