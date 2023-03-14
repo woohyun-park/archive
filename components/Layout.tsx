@@ -21,6 +21,9 @@ import ModalLoader from "./ModalLoader";
 import { useStatus } from "../stores/useStatus";
 import { useCache } from "../stores/useCache";
 import { useCachedPage } from "../hooks/useCachedPage";
+import onboarding_1 from "../imgs/onboarding_1.svg";
+import onboarding_2 from "../imgs/onboarding_2.svg";
+import onboarding_3 from "../imgs/onboarding_3.svg";
 
 interface ILayoutProps {
   children: React.ReactNode;
@@ -154,7 +157,7 @@ export default function Layout({ children }: ILayoutProps) {
         <br />
         한곳에 아카이브해요
       </>,
-      "",
+      onboarding_1,
     ],
     [
       <>
@@ -162,7 +165,7 @@ export default function Layout({ children }: ILayoutProps) {
         <br />
         손쉽게 분류하고 검색해요
       </>,
-      "",
+      onboarding_2,
     ],
     [
       <>
@@ -170,7 +173,7 @@ export default function Layout({ children }: ILayoutProps) {
         <br />
         아카이브를 둘러봐요
       </>,
-      "",
+      onboarding_3,
     ],
   ];
   return (
@@ -195,11 +198,7 @@ export default function Layout({ children }: ILayoutProps) {
                     i === page ? (
                       <WrapMotion type="float">
                         <div className="mb-4 text-center">{e[0]}</div>
-                        <Image
-                          src={e[1]}
-                          alt=""
-                          className="mb-16 bg-white h-72 w-72"
-                        />
+                        <Image src={e[1]} alt="" className="mb-4 bg-white " />
                       </WrapMotion>
                     ) : (
                       <></>
@@ -225,8 +224,12 @@ export default function Layout({ children }: ILayoutProps) {
                 </div>
               </div>
               <div>
-                <Btn label="카카오톡으로 로그인" />
-                <Btn label="Apple로 로그인" />
+                <Btn
+                  label="카카오톡으로 로그인"
+                  width="full"
+                  className="mb-2"
+                />
+                <Btn label="Apple로 로그인" width="full" />
                 <button
                   className="p-1 m-2 text-white bg-black rounded-full"
                   onClick={handleSocialLogin}
