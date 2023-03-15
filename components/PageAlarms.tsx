@@ -2,7 +2,6 @@ import { AnimatePresence } from "framer-motion";
 import React, { useEffect, useState } from "react";
 import { viewAlarms } from "../apis/fbUpdate";
 import { mergeTailwindClasses } from "../apis/tailwind";
-import { useStatus } from "../stores/useStatus";
 import { useUser } from "../stores/useUser";
 import AlarmComment from "./AlarmComment";
 import AlarmFollow from "./AlarmFollow";
@@ -16,32 +15,19 @@ export interface IPageAlarmsProps {
 
 export default function PageAlarms({ className }: IPageAlarmsProps) {
   const { curUser } = useUser();
-  const { setNotifyAlarms } = useStatus();
   const [alarms, setAlarms] = useState(curUser.alarms);
 
-  // const alarms = data as IAlarm[];
-
+  // 해당 페이지에 들어오면 먼저 모든 알람을 view한것으로 처리한다.
   useEffect(() => {
-    setNotifyAlarms(false);
     viewAlarms(alarms || []);
   }, []);
 
-  useEffect(() => {
-    if (
-      curUser.alarms &&
-      curUser.alarms.length !== 0 &&
-      curUser.alarms.length !== alarms?.length
-    ) {
-      setNotifyAlarms(false);
-      setAlarms(curUser.alarms);
-      viewAlarms(curUser.alarms);
-    }
-  }, [curUser.alarms]);
-
   return (
     <WrapPullToRefresh
-      isPullable={false}
-      onRefresh={async () => {}}
+      onRefresh={async () => {
+        setAlarms(curUser.alarms);
+        viewAlarms(curUser.alarms || []);
+      }}
       onFetchMore={async () => {}}
       canFetchMore={false}
       className={mergeTailwindClasses("min-h-[50vh] bg-white", className || "")}

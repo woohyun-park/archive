@@ -5,19 +5,19 @@ import {
   collection,
   doc,
   getDoc,
+  getDocs,
   onSnapshot,
   orderBy,
   query,
   where,
 } from "firebase/firestore";
 import { db } from "../apis/firebase";
-import { readAlarms } from "../apis/fbRead";
+import { readAlarm, readAlarms, readDatasByQuery } from "../apis/fbRead";
 
 interface IState {
   curUser: IUser;
   hasNewAlarms: boolean;
   getCurUser: (id: string) => Promise<IUser>;
-  setHasNewAlarms: (hasNewAlarms: boolean) => void;
 }
 
 export const useUser = create<IState>()(
@@ -36,15 +36,24 @@ export const useUser = create<IState>()(
     hasNewAlarms: false,
     getCurUser: async (id: string) => {
       const user = await getDoc(doc(db, "users", id));
+      const docAlarms = await getDocs(
+        query(
+          collection(db, "alarms"),
+          where("targetUid", "==", id),
+          orderBy("createdAt", "desc")
+        )
+      );
+      const alarms = await readAlarms(docAlarms.docs);
       const curUser = {
         ...(user.data() as IUser),
+        alarms,
       };
       const unsubscribeUser = onSnapshot(doc(db, "users", id), (doc) => {
         set((state: IState) => {
           return {
             ...state,
             curUser: {
-              ...(doc.data() as IUser),
+              ...curUser,
               likes: state.curUser.likes,
               scraps: state.curUser.scraps,
               alarms: state.curUser.alarms,
@@ -89,12 +98,22 @@ export const useUser = create<IState>()(
           orderBy("createdAt", "desc")
         ),
         async (snap) => {
-          const alarms = await readAlarms(snap.docs);
+          const prevAlarms = get().curUser.alarms;
+          const alarms: IAlarm[] = [];
+          for await (const doc of snap.docs) {
+            const alarm = prevAlarms?.find((alarm) => alarm.id === doc.id);
+            if (alarm) {
+              alarm.isViewed = (doc.data() as IAlarm).isViewed;
+              alarms.push(alarm);
+            } else {
+              const newAlarm = await readAlarm(doc.id);
+              alarms.push(newAlarm);
+            }
+          }
           const hasNewAlarms =
             alarms.filter((alarm) => !alarm.isViewed).length === 0
               ? false
               : true;
-          console.log("unsubscribeAlarms", alarms, hasNewAlarms);
           set((state: IState) => {
             return {
               ...state,
@@ -111,14 +130,6 @@ export const useUser = create<IState>()(
         };
       });
       return curUser;
-    },
-    setHasNewAlarms: (hasNewAlarms: boolean) => {
-      set((state: IState) => {
-        return {
-          ...state,
-          hasNewAlarms,
-        };
-      });
     },
   }))
 );
