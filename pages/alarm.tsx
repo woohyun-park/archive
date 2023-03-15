@@ -9,7 +9,6 @@ export default function Alarm() {
   const router = useRouter();
 
   const { curUser } = useUser();
-  useLoading(["alarms"]);
 
   return (
     <Motion type="fade">

@@ -11,10 +11,13 @@ import {
   where,
 } from "firebase/firestore";
 import { db } from "../apis/firebase";
+import { readAlarms } from "../apis/fbRead";
 
 interface IState {
   curUser: IUser;
+  hasNewAlarms: boolean;
   getCurUser: (id: string) => Promise<IUser>;
+  setHasNewAlarms: (hasNewAlarms: boolean) => void;
 }
 
 export const useUser = create<IState>()(
@@ -30,6 +33,7 @@ export const useUser = create<IState>()(
       followings: [],
       createdAt: new Date(),
     },
+    hasNewAlarms: false,
     getCurUser: async (id: string) => {
       const user = await getDoc(doc(db, "users", id));
       const curUser = {
@@ -84,15 +88,18 @@ export const useUser = create<IState>()(
           where("targetUid", "==", id),
           orderBy("createdAt", "desc")
         ),
-        (snap) => {
-          const datas: IAlarm[] = [];
-          snap.forEach((doc) => {
-            datas.push({ ...(doc.data() as IAlarm) });
-          });
+        async (snap) => {
+          const alarms = await readAlarms(snap.docs);
+          const hasNewAlarms =
+            alarms.filter((alarm) => !alarm.isViewed).length === 0
+              ? false
+              : true;
+          console.log("unsubscribeAlarms", alarms, hasNewAlarms);
           set((state: IState) => {
             return {
               ...state,
-              curUser: { ...state.curUser, alarms: datas },
+              curUser: { ...state.curUser, alarms },
+              hasNewAlarms,
             };
           });
         }
@@ -104,6 +111,14 @@ export const useUser = create<IState>()(
         };
       });
       return curUser;
+    },
+    setHasNewAlarms: (hasNewAlarms: boolean) => {
+      set((state: IState) => {
+        return {
+          ...state,
+          hasNewAlarms,
+        };
+      });
     },
   }))
 );

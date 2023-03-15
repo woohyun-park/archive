@@ -1,4 +1,3 @@
-import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { useUser } from "../stores/useUser";
 import ProfileImg from "../components/ProfileImg";
@@ -17,8 +16,7 @@ export default function Feed() {
   const [debounceTag, setDebounceTag] = useState("");
 
   const router = useCustomRouter();
-  const { curUser } = useUser();
-  const { notifyAlarms } = useStatus();
+  const { curUser, hasNewAlarms } = useUser();
 
   useLoading(["posts"]);
   useScrollBack();
@@ -53,7 +51,7 @@ export default function Feed() {
         <div className="flex items-center justify-center">
           <BtnIcon
             icon="alarm"
-            fill={notifyAlarms ? true : false}
+            fill={hasNewAlarms ? true : false}
             onClick={() => router.push("/alarm")}
           />
           <ProfileImg
