@@ -179,7 +179,7 @@ export default function Layout({ children }: ILayoutProps) {
   return (
     <>
       {login.isLoggedIn === null ? (
-        <ModalLoader isVisible={true} />
+        <ModalLoader className="w-0" isVisible={true} />
       ) : login.isLoggedIn ? (
         <>
           <div className="">{children}</div>
