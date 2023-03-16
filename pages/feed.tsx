@@ -9,7 +9,6 @@ import { createHash } from "crypto";
 import { useLoading } from "../hooks/useLoading";
 import useCustomRouter from "../hooks/useCustomRouter";
 import { useScrollBack } from "../hooks/useScrollBack";
-import { useStatus } from "../stores/useStatus";
 
 export default function Feed() {
   const [tag, setTag] = useState("");
