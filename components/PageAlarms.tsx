@@ -1,10 +1,9 @@
 import { AnimatePresence } from "framer-motion";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { viewAlarm, viewAlarms } from "../apis/fbUpdate";
 import { mergeTailwindClasses } from "../apis/tailwind";
 import { useLoading } from "../hooks/useLoading";
 import { IAlarm } from "../libs/custom";
-import { wrapPromise } from "../stores/libStores";
 import { useUser } from "../stores/useUser";
 import AlarmComment from "./AlarmComment";
 import AlarmFollow from "./AlarmFollow";
@@ -37,7 +36,7 @@ export default function PageAlarms({ className }: IPageAlarmsProps) {
         onFetchMore={async () => {}}
         canFetchMore={false}
         className={mergeTailwindClasses(
-          "min-h-[50vh] bg-white",
+          "min-h-[75vh] bg-white",
           className || ""
         )}
       >
