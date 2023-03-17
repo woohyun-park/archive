@@ -9,6 +9,7 @@ import { createHash } from "crypto";
 import { useLoading } from "../hooks/useLoading";
 import useCustomRouter from "../hooks/useCustomRouter";
 import { useScrollBack } from "../hooks/useScrollBack";
+import Message from "../components/Message";
 
 export default function Feed() {
   const [tag, setTag] = useState("");
@@ -87,6 +88,16 @@ export default function Feed() {
           as="posts"
           numCols={1}
           paddingBottom="pb-24"
+          displayWhenEmpty={
+            <Message
+              icon="smile"
+              message="아카이브에 오신 것을 환영합니다"
+              detailedMessage="다른 사람을 팔로우하면 피드에서 상대방의 아카이브를 볼 수 있습니다"
+              label="아카이브 둘러보기"
+              onClick={() => router.push("/search")}
+              minHeight="min-h-[60vh]"
+            />
+          }
         />
       ) : (
         <PagePosts

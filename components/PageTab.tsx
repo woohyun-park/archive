@@ -6,6 +6,7 @@ import PageTags, { IPageTagsProps } from "./PageTags";
 import PageUsers, { IPageUsersProps } from "./PageUsers";
 import PageScraps, { IPageScrapsProps } from "./PageScraps";
 import { useScrollBack } from "../hooks/useScrollBack";
+import Message from "./Message";
 
 // 하나의 route에 tab을 통해서 여러개의 infiniteScrollPage를 만들 수 있는 컴포넌트
 
@@ -112,6 +113,12 @@ export default function PageTab({ header, tabs }: IPageTapProps) {
                       numCols={(tab as IPostsType).numCols}
                       isPullable={(tab as IPostsType).isPullable}
                       paddingBottom={"pb-40"}
+                      displayWhenEmpty={
+                        <Message
+                          icon="sad"
+                          detailedMessage="검색 결과가 없습니다"
+                        />
+                      }
                     />
                   )}
                   {tab.type === "tags" && (
@@ -120,6 +127,12 @@ export default function PageTab({ header, tabs }: IPageTapProps) {
                       as={(tab as ITagsType).as}
                       isPullable={(tab as ITagsType).isPullable}
                       paddingBottom={"pb-40"}
+                      displayWhenEmpty={
+                        <Message
+                          icon="sad"
+                          detailedMessage="검색 결과가 없습니다"
+                        />
+                      }
                     />
                   )}
                   {tab.type === "users" && (
@@ -128,12 +141,24 @@ export default function PageTab({ header, tabs }: IPageTapProps) {
                       as={(tab as IUsersType).as}
                       isPullable={(tab as IUsersType).isPullable}
                       paddingBottom={"pb-40"}
+                      displayWhenEmpty={
+                        <Message
+                          icon="sad"
+                          detailedMessage="검색 결과가 없습니다"
+                        />
+                      }
                     />
                   )}
                   {tab.type === "scraps" && (
                     <PageScraps
                       query={(tab as IScrapsType).query}
                       paddingBottom={"pb-40"}
+                      displayWhenEmpty={
+                        <Message
+                          icon="sad"
+                          detailedMessage="검색 결과가 없습니다"
+                        />
+                      }
                     />
                   )}
                 </div>

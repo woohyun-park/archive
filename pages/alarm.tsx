@@ -62,11 +62,7 @@ export default function Alarm() {
               })}
             </>
           ) : (
-            <Message
-              includeIcon={false}
-              includeBtn={false}
-              detailedMessage="알림이 없습니다"
-            />
+            <Message icon="none" detailedMessage="알림이 없습니다" />
           )}
         </AnimatePresence>
       </WrapPullToRefresh>

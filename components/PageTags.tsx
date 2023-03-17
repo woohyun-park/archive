@@ -12,6 +12,7 @@ export interface IPageTagsProps {
   as: string;
   isPullable?: boolean;
   paddingBottom?: string;
+  displayWhenEmpty?: React.ReactNode;
 }
 
 export default function PageTags({
@@ -19,6 +20,7 @@ export default function PageTags({
   as,
   isPullable = true,
   paddingBottom,
+  displayWhenEmpty,
 }: IPageTagsProps) {
   const router = useRouter();
 
@@ -58,37 +60,41 @@ export default function PageTags({
         canFetchMore={canFetchMore}
         isPullable={isPullable}
       >
-        <>
-          {Children.toArray(
-            formatTags(tags).map((tag, i) => {
-              return (
-                <WrapMotion
-                  type="float"
-                  className="flex items-center mx-4 my-2 hover:cursor-pointer"
-                  onClick={() =>
-                    query.type === "keyword"
-                      ? router.push(`/tag/${tag.name}`)
-                      : router.push(
-                          `/profile/${query.value.uid}/tags/${tag.name}`
-                        )
-                  }
-                >
-                  <div className="flex items-center justify-center w-8 h-8 mr-2 text-xl rounded-full bg-gray-3 text-bold">
-                    #
-                  </div>
-                  <div>
-                    <div className="text-sm font-bold text-black">
-                      #{tag.name}
+        {tags.length !== 0 ? (
+          <>
+            {Children.toArray(
+              formatTags(tags).map((tag, i) => {
+                return (
+                  <WrapMotion
+                    type="float"
+                    className="flex items-center mx-4 my-2 hover:cursor-pointer"
+                    onClick={() =>
+                      query.type === "keyword"
+                        ? router.push(`/tag/${tag.name}`)
+                        : router.push(
+                            `/profile/${query.value.uid}/tags/${tag.name}`
+                          )
+                    }
+                  >
+                    <div className="flex items-center justify-center w-8 h-8 mr-2 text-xl rounded-full bg-gray-3 text-bold">
+                      #
                     </div>
-                    <div className="w-full overflow-hidden text-xs whitespace-pre-wrap -translate-y-[2px] text-gray-1 text-ellipsis">
-                      게시물 {tag.tags.length}개
+                    <div>
+                      <div className="text-sm font-bold text-black">
+                        #{tag.name}
+                      </div>
+                      <div className="w-full overflow-hidden text-xs whitespace-pre-wrap -translate-y-[2px] text-gray-1 text-ellipsis">
+                        게시물 {tag.tags.length}개
+                      </div>
                     </div>
-                  </div>
-                </WrapMotion>
-              );
-            })
-          )}
-        </>
+                  </WrapMotion>
+                );
+              })
+            )}
+          </>
+        ) : (
+          displayWhenEmpty
+        )}
       </WrapPullToRefresh>
       <div className={paddingBottom} />
     </>

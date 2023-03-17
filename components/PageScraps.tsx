@@ -11,9 +11,14 @@ import WrapPullToRefresh from "./wrappers/WrapPullToRefresh";
 export interface IPageScrapsProps {
   query: IFetchQueryScraps;
   paddingBottom?: string;
+  displayWhenEmpty?: React.ReactNode;
 }
 
-export default function PageScraps({ query, paddingBottom }: IPageScrapsProps) {
+export default function PageScraps({
+  query,
+  paddingBottom,
+  displayWhenEmpty,
+}: IPageScrapsProps) {
   const router = useRouter();
 
   const { data, onRefresh, onFetchMore, canFetchMore } = useCachedPage(
@@ -40,31 +45,37 @@ export default function PageScraps({ query, paddingBottom }: IPageScrapsProps) {
         onFetchMore={onFetchMore}
         canFetchMore={canFetchMore}
       >
-        <>
-          {Children.toArray(
-            formatScraps(scraps).map((scrap, i) => {
-              const cont = scrap[0].cont;
-              const uid = scrap[0].uid;
-              return (
-                <WrapMotion
-                  type="float"
-                  className="flex items-center mx-4 my-2 hover:cursor-pointer"
-                  onClick={() => router.push(`/profile/${uid}/scraps/${cont}`)}
-                >
-                  <div className="flex items-center justify-center w-8 h-8 mr-2 text-xl rounded-full bg-gray-3 text-bold">
-                    <BtnIcon icon="scrap" size={"16px"} stroke="2" />
-                  </div>
-                  <div>
-                    <div className="text-sm font-bold text-black">{cont}</div>
-                    <div className="w-full overflow-hidden text-xs whitespace-pre-wrap -translate-y-[2px] text-gray-1 text-ellipsis">
-                      게시물 {scrap.length}개
+        {scraps.length !== 0 ? (
+          <>
+            {Children.toArray(
+              formatScraps(scraps).map((scrap, i) => {
+                const cont = scrap[0].cont;
+                const uid = scrap[0].uid;
+                return (
+                  <WrapMotion
+                    type="float"
+                    className="flex items-center mx-4 my-2 hover:cursor-pointer"
+                    onClick={() =>
+                      router.push(`/profile/${uid}/scraps/${cont}`)
+                    }
+                  >
+                    <div className="flex items-center justify-center w-8 h-8 mr-2 text-xl rounded-full bg-gray-3 text-bold">
+                      <BtnIcon icon="scrap" size={"16px"} stroke="2" />
                     </div>
-                  </div>
-                </WrapMotion>
-              );
-            })
-          )}
-        </>
+                    <div>
+                      <div className="text-sm font-bold text-black">{cont}</div>
+                      <div className="w-full overflow-hidden text-xs whitespace-pre-wrap -translate-y-[2px] text-gray-1 text-ellipsis">
+                        게시물 {scrap.length}개
+                      </div>
+                    </div>
+                  </WrapMotion>
+                );
+              })
+            )}
+          </>
+        ) : (
+          displayWhenEmpty
+        )}
       </WrapPullToRefresh>
       <div className={paddingBottom} />
     </>

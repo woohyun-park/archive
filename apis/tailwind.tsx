@@ -12,7 +12,8 @@ import { IDict } from "../libs/custom";
 export function mergeTailwindClasses(...classStrings: string[]) {
   let classHash: IDict<string> = {};
   classStrings.map((str) => {
-    str.split(/\s+/g).map((token) => (classHash[token.split("-")[0]] = token));
+    str.split(/\s+/g).map((token) => (classHash[token] = token));
   });
+  console.log(classHash);
   return Object.values(classHash).sort().join(" ");
 }

@@ -14,6 +14,7 @@ export interface IPageUsersProps {
   isPullable?: boolean;
   childrenWhenEmpty?: React.ReactNode;
   paddingBottom?: string;
+  displayWhenEmpty?: React.ReactNode;
 }
 
 export default function PageUsers({
@@ -21,6 +22,7 @@ export default function PageUsers({
   as,
   isPullable = true,
   paddingBottom,
+  displayWhenEmpty,
 }: IPageUsersProps) {
   const router = useRouter();
 
@@ -41,19 +43,23 @@ export default function PageUsers({
         canFetchMore={canFetchMore}
         isPullable={isPullable}
       >
-        <div className="mx-4">
-          {Children.toArray(
-            users.map((user, i) => (
-              <>
-                <Profile
-                  user={user}
-                  info="intro"
-                  action={curUser.id !== user.id ? "follow" : undefined}
-                />
-              </>
-            ))
-          )}
-        </div>
+        {users.length !== 0 ? (
+          <div className="mx-4">
+            {Children.toArray(
+              users.map((user, i) => (
+                <>
+                  <Profile
+                    user={user}
+                    info="intro"
+                    action={curUser.id !== user.id ? "follow" : undefined}
+                  />
+                </>
+              ))
+            )}
+          </div>
+        ) : (
+          displayWhenEmpty
+        )}
       </WrapPullToRefresh>
       <div className={paddingBottom} />
     </>
