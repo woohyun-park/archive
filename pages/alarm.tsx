@@ -21,7 +21,7 @@ export default function Alarm() {
   useLoading([]);
 
   return (
-    <WrapMotion type="fade" className="mb-24">
+    <WrapMotion type="fade" className="mb-[6.125rem]">
       <div className="flex items-end justify-between m-4">
         <div className="flex">
           <BtnIcon icon="back" onClick={() => router.back()} />

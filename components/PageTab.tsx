@@ -111,7 +111,7 @@ export default function PageTab({ header, tabs }: IPageTapProps) {
                       as={(tab as IPostsType).as}
                       numCols={(tab as IPostsType).numCols}
                       isPullable={(tab as IPostsType).isPullable}
-                      paddingBottom={tab.paddingBottom}
+                      paddingBottom={"pb-40"}
                     />
                   )}
                   {tab.type === "tags" && (
@@ -119,7 +119,7 @@ export default function PageTab({ header, tabs }: IPageTapProps) {
                       query={(tab as ITagsType).query}
                       as={(tab as ITagsType).as}
                       isPullable={(tab as ITagsType).isPullable}
-                      paddingBottom={tab.paddingBottom}
+                      paddingBottom={"pb-40"}
                     />
                   )}
                   {tab.type === "users" && (
@@ -127,13 +127,13 @@ export default function PageTab({ header, tabs }: IPageTapProps) {
                       query={(tab as IUsersType).query}
                       as={(tab as IUsersType).as}
                       isPullable={(tab as IUsersType).isPullable}
-                      paddingBottom={tab.paddingBottom}
+                      paddingBottom={"pb-40"}
                     />
                   )}
                   {tab.type === "scraps" && (
                     <PageScraps
                       query={(tab as IScrapsType).query}
-                      paddingBottom={tab.paddingBottom}
+                      paddingBottom={"pb-40"}
                     />
                   )}
                 </div>

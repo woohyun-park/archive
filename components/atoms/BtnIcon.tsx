@@ -12,9 +12,8 @@ import {
   HiCog8Tooth,
   HiOutlinePencil,
   HiOutlineTrash,
-  HiBell,
-  HiBellAlert,
   HiOutlineBellAlert,
+  HiXMark,
 } from "react-icons/hi2";
 import { SIZE } from "../../libs/custom";
 
@@ -29,7 +28,8 @@ export type IIcon =
   | "search"
   | "alarm"
   | "filter"
-  | "setting";
+  | "setting"
+  | "x";
 
 interface IBtnIconProps {
   icon: IIcon;
@@ -86,6 +86,9 @@ export default function BtnIcon({
       )}
       {icon === "delete" && (
         <HiOutlineTrash size={size} onClick={onClick} strokeWidth={stroke} />
+      )}
+      {icon === "x" && (
+        <HiXMark size={size} onClick={onClick} strokeWidth={stroke} />
       )}
       {icon === "modify" && (
         <HiOutlinePencil size={size} onClick={onClick} strokeWidth={stroke} />

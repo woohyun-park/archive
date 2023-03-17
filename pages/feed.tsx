@@ -73,7 +73,7 @@ export default function Feed() {
           setTag("");
         }}
         keyword={tag}
-        placeholder={"찾고싶은 태그를 입력해보세요!"}
+        placeholder={"태그로 피드를 필터해보세요!"}
         style="margin-left: 1rem; margin-right: 1rem;"
       />
       {tag.length === 0 ? (

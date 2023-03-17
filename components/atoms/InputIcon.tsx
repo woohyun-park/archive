@@ -27,7 +27,7 @@ export default forwardRef<HTMLInputElement, IInputIconProps>(function InputIcon(
         </div>
         {keyword && keyword.length !== 0 && (
           <div className="absolute z-10 scale-75 right-1" onClick={onDelete}>
-            <BtnIcon icon={"delete"} size={SIZE.iconSm} />
+            <BtnIcon icon={"x"} size={SIZE.iconSm} />
           </div>
         )}
         <AnimatePresence>
