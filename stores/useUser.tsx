@@ -62,7 +62,7 @@ export const useUser = create<IState>()(
           return {
             ...state,
             curUser: {
-              ...curUser,
+              ...(doc.data() as IUser),
               likes: state.curUser.likes,
               scraps: state.curUser.scraps,
               alarms: state.curUser.alarms,

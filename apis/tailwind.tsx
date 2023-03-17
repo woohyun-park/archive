@@ -14,6 +14,5 @@ export function mergeTailwindClasses(...classStrings: string[]) {
   classStrings.map((str) => {
     str.split(/\s+/g).map((token) => (classHash[token] = token));
   });
-  console.log(classHash);
   return Object.values(classHash).sort().join(" ");
 }

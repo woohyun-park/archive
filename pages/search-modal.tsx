@@ -7,6 +7,8 @@ import { useUser } from "../stores/useUser";
 import InputIcon from "../components/atoms/InputIcon";
 import { updateUser } from "../apis/fbUpdate";
 import useCustomRouter from "../hooks/useCustomRouter";
+import { AnimatePresence } from "framer-motion";
+import BtnIcon from "../components/atoms/BtnIcon";
 
 export default function Search() {
   const router = useCustomRouter();
@@ -17,6 +19,7 @@ export default function Search() {
   const { curUser } = useUser();
 
   function updateHistory(keyword: string) {
+    console.log("updateHistory", keyword);
     if (curUser.history) {
       const index = curUser.history.indexOf(keyword);
       index === -1
@@ -102,7 +105,7 @@ export default function Search() {
         <div ref={recentRef}>
           <div className="relative">
             <div className="absolute z-10 w-full bg-white">
-              <div className="flex justify-between my-4 text-xs text-gray-1">
+              <div className="flex justify-between my-4 text-xs text-gray-2">
                 <div>최근 검색어</div>
                 <div
                   className="hover:cursor-pointer"
@@ -111,31 +114,33 @@ export default function Search() {
                   모두 삭제
                 </div>
               </div>
-              {Children.toArray(
-                [...(curUser.history || [])]
-                  ?.filter(
-                    (each) => keyword === "" || each.indexOf(keyword) === 0
-                  )
-                  .map((e, i) => (
-                    <WrapMotion type="float">
-                      <div className="flex items-center justify-between my-4 text-sm text-gray-1">
-                        <div
-                          className="w-full hover:cursor-pointer"
-                          onClick={() => router.push(`/search/${e}`)}
-                        >
-                          {e}
+              <AnimatePresence>
+                {Children.toArray(
+                  [...(curUser.history || [])]
+                    ?.filter(
+                      (each) => keyword === "" || each.indexOf(keyword) === 0
+                    )
+                    .map((e, i) => (
+                      <WrapMotion type="float" key={e}>
+                        <div className="flex items-center justify-between my-4 text-sm text-black">
+                          <div
+                            className="w-full hover:cursor-pointer"
+                            onClick={() => router.push(`/search/${e}`)}
+                          >
+                            {e}
+                          </div>
+                          <div
+                            className="flex items-center hover:cursor-pointer"
+                            id={String(i)}
+                            onClick={handleDeleteHistory}
+                          >
+                            <BtnIcon icon="delete" size={SIZE.iconXs} />
+                          </div>
                         </div>
-                        <div
-                          className="flex items-center hover:cursor-pointer"
-                          id={String(i)}
-                          onClick={handleDeleteHistory}
-                        >
-                          <HiX size={SIZE.iconSm} />
-                        </div>
-                      </div>
-                    </WrapMotion>
-                  ))
-              )}
+                      </WrapMotion>
+                    ))
+                )}
+              </AnimatePresence>
             </div>
           </div>
         </div>
