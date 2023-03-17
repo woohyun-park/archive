@@ -79,6 +79,7 @@ export default function Profile({
         type: "follow",
         targetUid: user.id,
         createdAt: new Date(),
+        isViewed: false,
       };
       const ref = await addDoc(collection(db, "alarms"), newAlarm);
       await updateDoc(ref, { id: ref.id });
