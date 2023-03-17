@@ -23,14 +23,19 @@ export async function updateUser(field: IDict<any>) {
 }
 
 export function viewAlarms(alarms: IAlarm[]) {
-  console.log("viewAlarms");
   for (const alarm of alarms) {
-    if (!alarm.isViewed) {
+    !alarm.isViewed &&
       updateDoc(doc(db, "alarms", alarm.id), {
         isViewed: true,
       });
-    }
   }
+}
+
+export function viewAlarm(alarm: IAlarm) {
+  !alarm.isViewed &&
+    updateDoc(doc(db, "alarms", alarm.id), {
+      isViewed: true,
+    });
 }
 
 export async function updateFollow(
