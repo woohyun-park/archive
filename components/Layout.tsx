@@ -81,9 +81,9 @@ export default function Layout({ children }: ILayoutProps) {
     setHasNewAlarms(hasNewAlarms);
   }, [curUser.alarms]);
 
-  useEffect(() => {
-    !login.isLoggedIn && router.replace("/");
-  }, [login.isLoggedIn]);
+  // useEffect(() => {
+  //   !login.isLoggedIn && router.replace("/");
+  // }, [login.isLoggedIn]);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
