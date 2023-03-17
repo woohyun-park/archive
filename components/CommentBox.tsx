@@ -12,6 +12,7 @@ import { readComment } from "../apis/fbRead";
 import { AnimatePresence } from "framer-motion";
 import Comment from "./Comment";
 import { useUser } from "../stores/useUser";
+import ProfileImg from "./ProfileImg";
 
 type ICommentBoxProps = {
   post: IPost;
@@ -90,9 +91,7 @@ export default (function CommentBox({
         })}
       </AnimatePresence>
       <div className="fixed bottom-0 flex items-center justify-between py-4 bg-white w-[calc(100vw_-_2rem)] max-w-[calc(480px_-_2rem)]">
-        <div className="profileImg-sm">
-          <Image src={user.photoURL} alt="" fill />
-        </div>
+        <ProfileImg photoURL={user.photoURL} size="sm" />
         <Textarea
           value={comment}
           placeholder={`${user.displayName}(으)로 댓글 달기...`}

@@ -1,6 +1,3 @@
-import Image from "next/image";
-import icon_black from "../imgs/icon_black.svg";
-
 interface IProfileImgProps {
   size: "sm" | "lg";
   photoURL: string;
