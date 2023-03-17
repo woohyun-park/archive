@@ -182,7 +182,7 @@ export default function Layout({ children }: ILayoutProps) {
           ) : (
             <div className="flex flex-col w-full h-[100vh] p-4 justify-between overflow-hidden">
               <h1 className="hover:cursor-pointer title-logo">archive</h1>
-              <div className="flex flex-col items-center mt-8 mb-24 text-3xl">
+              <div className="flex flex-col items-center mt-8 mb-16 text-3xl">
                 {Children.toArray(
                   message.map((e, i) =>
                     i === page ? (
@@ -192,7 +192,7 @@ export default function Layout({ children }: ILayoutProps) {
                           alt=""
                           className="w-full bg-white min-h-[20rem]"
                         />
-                        <div className="mb-4 -mt-8 text-lg text-center">
+                        <div className="mb-8 -mt-8 text-lg leading-5 text-center">
                           {e[0]}
                         </div>
                       </WrapMotion>
@@ -201,7 +201,7 @@ export default function Layout({ children }: ILayoutProps) {
                     )
                   )
                 )}
-                <div className="flex justify-between w-16 m-auto mb-16">
+                <div className="flex justify-between w-16 m-auto mt-2 mb-20">
                   {Children.toArray(
                     message.map((e, i) =>
                       i === page ? (
@@ -226,7 +226,7 @@ export default function Layout({ children }: ILayoutProps) {
                     onClick={handleSocialLogin}
                   >
                     <RiGoogleFill size={SIZE.iconSm} />
-                    <div className="w-full text-xs -translate-x-2">
+                    <div className="w-full text-sm -translate-x-2">
                       구글로 로그인
                     </div>
                   </button>
@@ -239,7 +239,7 @@ export default function Layout({ children }: ILayoutProps) {
                     <div className="bg-white rounded-full">
                       <SiNaver size={SIZE.iconSm} id="layout_naver" />
                     </div>
-                    <div className="w-full text-xs -translate-x-2">
+                    <div className="w-full text-sm -translate-x-2">
                       네이버로 로그인
                     </div>
                   </button>
