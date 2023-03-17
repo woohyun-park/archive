@@ -6,7 +6,7 @@ import { useStatus } from "../stores/useStatus";
 
 // router에 관련된 여러가지 처리들을 도와주는 custom router를 위한 훅
 
-interface TransitionOptions {
+export interface TransitionOptions {
   locale?: string | false | undefined;
   scroll?: boolean | undefined;
   shallow?: boolean | undefined;

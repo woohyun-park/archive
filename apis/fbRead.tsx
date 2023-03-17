@@ -88,24 +88,28 @@ export async function readTagsOfPost(pid: string) {
 }
 
 export async function readAlarm(aid: string) {
-  const alarm = await readData<IAlarm>("alarms", aid);
-  const uid = alarm.uid;
-  const pid = alarm.pid || "";
-  const cid = alarm.cid || "";
+  try {
+    const alarm = await readData<IAlarm>("alarms", aid);
+    const uid = alarm.uid || "";
+    const pid = alarm.pid || "";
+    const cid = alarm.cid || "";
 
-  if (alarm.type === "like") {
-    const post = await readData<IPost>("posts", pid || "");
-    alarm.post = post;
-  } else if (alarm.type === "comment") {
-    const comment = await readData<IComment>("comments", cid);
-    const post = await readData<IPost>("posts", pid);
-    alarm.post = post;
-    alarm.comment = comment;
-  } else if (alarm.type === "follow") {
+    if (alarm.type === "like") {
+      const post = await readData<IPost>("posts", pid);
+      alarm.post = post;
+    } else if (alarm.type === "comment") {
+      const comment = await readData<IComment>("comments", cid);
+      const post = await readData<IPost>("posts", pid);
+      alarm.post = post;
+      alarm.comment = comment;
+    } else if (alarm.type === "follow") {
+    }
+    const author = await readData<IUser>("users", uid);
+    alarm.author = author;
+    return alarm as IAlarm;
+  } catch (error) {
+    console.log(error);
   }
-  const author = await readData<IUser>("users", uid);
-  alarm.author = author;
-  return alarm as IAlarm;
 }
 
 export async function readAlarms(docs: QueryDocumentSnapshot<DocumentData>[]) {

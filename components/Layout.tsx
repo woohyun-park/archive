@@ -8,8 +8,17 @@ import { useRouter } from "next/router";
 import React, { Children, useEffect, useState } from "react";
 import { auth, db } from "../apis/firebase";
 import Nav from "./Nav";
-import { doc, getDoc, setDoc } from "firebase/firestore";
-import { COLOR, DEFAULT, IDict, IPost, IUser, SIZE } from "../libs/custom";
+import {
+  collection,
+  doc,
+  getDoc,
+  onSnapshot,
+  orderBy,
+  query,
+  setDoc,
+  where,
+} from "firebase/firestore";
+import { COLOR, DEFAULT, IAlarm, IUser, SIZE } from "../libs/custom";
 import { useUser } from "../stores/useUser";
 import Btn from "../components/atoms/Btn";
 import { motion } from "framer-motion";
@@ -19,11 +28,11 @@ import { RiGoogleFill } from "react-icons/ri";
 import ScrollTop from "./atoms/ScrollTop";
 import ModalLoader from "./ModalLoader";
 import { useStatus } from "../stores/useStatus";
-import { useCache } from "../stores/useCache";
-import { useCachedPage } from "../hooks/useCachedPage";
 import onboarding_1 from "../imgs/onboarding_1.svg";
 import onboarding_2 from "../imgs/onboarding_2.svg";
 import onboarding_3 from "../imgs/onboarding_3.svg";
+import { readAlarm } from "../apis/fbRead";
+import useCustomRouter from "../hooks/useCustomRouter";
 
 interface ILayoutProps {
   children: React.ReactNode;
@@ -39,9 +48,9 @@ interface ILogin {
 
 export default function Layout({ children }: ILayoutProps) {
   const provider = new GoogleAuthProvider();
-  const router = useRouter();
+  const router = useCustomRouter();
   const { getCurUser } = useUser();
-  const { logoutLoader, setNotifyAlarms } = useStatus();
+  const { logoutLoader } = useStatus();
   const [login, setLogin] = useState<ILogin>({
     email: "",
     password: "",
@@ -49,8 +58,9 @@ export default function Layout({ children }: ILayoutProps) {
     isLoggedIn: null,
     error: "",
   });
-  const { caches, fetchCache } = useCache();
-  const { curUser } = useUser();
+  const { curUser, hasNewAlarms, setHasNewAlarms } = useUser();
+
+  const path = router.asPath;
 
   useEffect(() => {
     auth.onAuthStateChanged(async (authState) => {
@@ -64,40 +74,22 @@ export default function Layout({ children }: ILayoutProps) {
   }, []);
 
   useEffect(() => {
+    const hasNewAlarms =
+      curUser.alarms?.filter((alarm) => !alarm.isViewed).length === 0
+        ? false
+        : true;
+    setHasNewAlarms(hasNewAlarms);
+  }, [curUser.alarms]);
+
+  useEffect(() => {
     router.replace("/");
   }, [login.isLoggedIn]);
-
-  // curUser.alarms는 listener를 붙여놓아서
-  useEffect(() => {
-    async function refreshAlarms() {
-      if (caches["/alarm"]) {
-        await fetchCache(
-          "alarms",
-          "refresh",
-          { type: "uid", value: { uid: curUser.id } },
-          "/alarm",
-          "alarms"
-        );
-      } else {
-        await fetchCache(
-          "alarms",
-          "init",
-          { type: "uid", value: { uid: curUser.id } },
-          "/alarm",
-          "alarms"
-        );
-      }
-      if (!curUser.alarms?.reduce((acc, cur) => acc && cur.isViewed, true)) {
-        setNotifyAlarms(true);
-      }
-    }
-    refreshAlarms();
-  }, [curUser.alarms]);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
     setLogin({ ...login, [name]: value });
   }
+
   function handleSocialLogin() {
     signInWithPopup(auth, provider)
       .then(async (res) => {

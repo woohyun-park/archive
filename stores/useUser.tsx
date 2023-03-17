@@ -18,6 +18,7 @@ interface IState {
   curUser: IUser;
   hasNewAlarms: boolean;
   getCurUser: (id: string) => Promise<IUser>;
+  setHasNewAlarms: (hasNewAlarms: boolean) => void;
 }
 
 export const useUser = create<IState>()(
@@ -34,6 +35,14 @@ export const useUser = create<IState>()(
       createdAt: new Date(),
     },
     hasNewAlarms: false,
+    setHasNewAlarms: (hasNewAlarms: boolean) => {
+      set((state: IState) => {
+        return {
+          ...state,
+          hasNewAlarms,
+        };
+      });
+    },
     getCurUser: async (id: string) => {
       const user = await getDoc(doc(db, "users", id));
       const docAlarms = await getDocs(
@@ -103,22 +112,23 @@ export const useUser = create<IState>()(
           for await (const doc of snap.docs) {
             const alarm = prevAlarms?.find((alarm) => alarm.id === doc.id);
             if (alarm) {
+              // if (!get().hasNewAlarms)
               alarm.isViewed = (doc.data() as IAlarm).isViewed;
               alarms.push(alarm);
             } else {
               const newAlarm = await readAlarm(doc.id);
-              alarms.push(newAlarm);
+              newAlarm && alarms.push(newAlarm);
             }
           }
-          const hasNewAlarms =
-            alarms.filter((alarm) => !alarm.isViewed).length === 0
-              ? false
-              : true;
+          // const hasNewAlarms =
+          //   alarms.filter((alarm) => !alarm.isViewed).length === 0
+          //     ? false
+          //     : true;
           set((state: IState) => {
             return {
               ...state,
               curUser: { ...state.curUser, alarms },
-              hasNewAlarms,
+              // hasNewAlarms,
             };
           });
         }
