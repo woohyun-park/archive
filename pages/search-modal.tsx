@@ -19,9 +19,9 @@ export default function Search() {
   const { curUser } = useUser();
 
   function updateHistory(keyword: string) {
-    console.log("updateHistory", keyword);
     if (curUser.history) {
       const index = curUser.history.indexOf(keyword);
+      console.log("updateHistory", index, curUser.history[index]);
       index === -1
         ? updateUser({
             ...curUser,
@@ -125,7 +125,10 @@ export default function Search() {
                         <div className="flex items-center justify-between my-4 text-sm text-black">
                           <div
                             className="w-full hover:cursor-pointer"
-                            onClick={() => router.push(`/search/${e}`)}
+                            onClick={() => {
+                              updateHistory(e);
+                              router.push(`/search/${e}`);
+                            }}
                           >
                             {e}
                           </div>
