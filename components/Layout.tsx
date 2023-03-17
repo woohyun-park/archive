@@ -4,7 +4,6 @@ import {
   signInWithEmailAndPassword,
   signInWithPopup,
 } from "firebase/auth";
-import { useRouter } from "next/router";
 import React, { Children, useEffect, useState } from "react";
 import { auth, db } from "../apis/firebase";
 import Nav from "./Nav";
@@ -24,7 +23,8 @@ import Btn from "../components/atoms/Btn";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import WrapMotion from "./wrappers/WrapMotion";
-import { RiGoogleFill } from "react-icons/ri";
+import { RiAppleFill, RiGoogleFill, RiKakaoTalkLine } from "react-icons/ri";
+import { SiNaver } from "react-icons/si";
 import ScrollTop from "./atoms/ScrollTop";
 import ModalLoader from "./ModalLoader";
 import { useStatus } from "../stores/useStatus";
@@ -82,7 +82,7 @@ export default function Layout({ children }: ILayoutProps) {
   }, [curUser.alarms]);
 
   useEffect(() => {
-    // router.replace("/");
+    !login.isLoggedIn && router.replace("/");
   }, [login.isLoggedIn]);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -180,51 +180,70 @@ export default function Layout({ children }: ILayoutProps) {
           {logoutLoader ? (
             <></>
           ) : (
-            <div className="flex flex-col w-full h-[100vh] p-4 justify-center">
-              <div className="flex flex-col items-center mt-8 text-3xl">
+            <div className="flex flex-col w-full h-[100vh] p-4 justify-between overflow-hidden">
+              <h1 className="hover:cursor-pointer title-logo">archive</h1>
+              <div className="flex flex-col items-center mt-8 mb-24 text-3xl">
                 {Children.toArray(
                   message.map((e, i) =>
                     i === page ? (
                       <WrapMotion type="float">
-                        <div className="mb-4 text-center">{e[0]}</div>
-                        <Image src={e[1]} alt="" className="mb-4 bg-white " />
+                        <Image
+                          src={e[1]}
+                          alt=""
+                          className="w-full bg-white min-h-[20rem]"
+                        />
+                        <div className="mb-4 -mt-8 text-lg text-center">
+                          {e[0]}
+                        </div>
                       </WrapMotion>
                     ) : (
                       <></>
                     )
                   )
                 )}
-                <div className="flex justify-between w-20 m-auto mb-16">
+                <div className="flex justify-between w-16 m-auto mb-16">
                   {Children.toArray(
                     message.map((e, i) =>
                       i === page ? (
                         <motion.div
-                          className="w-8 h-4 duration-300 ease-in-out rounded-full bg-gray-2f hover:cursor-pointer"
+                          className="w-6 h-3 duration-300 ease-in-out rounded-full bg-gray-2f hover:cursor-pointer"
                           onClick={() => setPage(i)}
                         ></motion.div>
                       ) : (
                         <motion.div
-                          className="w-4 h-4 duration-300 ease-in-out rounded-full bg-gray-3 hover:cursor-pointer"
+                          className="w-3 h-3 duration-300 ease-in-out rounded-full bg-gray-3 hover:cursor-pointer"
                           onClick={() => setPage(i)}
                         ></motion.div>
                       )
                     )
                   )}
                 </div>
-              </div>
-              <div>
-                <Btn
-                  label="카카오톡으로 로그인"
-                  width="full"
-                  className="mb-2"
-                />
-                <Btn label="Apple로 로그인" width="full" />
-                <button
-                  className="p-1 m-2 text-white bg-black rounded-full"
-                  onClick={handleSocialLogin}
-                >
-                  <RiGoogleFill size={SIZE.icon} />
-                </button>
+                <div className="flex justify-center mt-4">
+                  {/* <Btn label="카카오톡으로 로그인" width="fit" className="mb-2" />
+                <Btn label="Apple로 로그인" width="fit" /> */}
+                  <button
+                    className="relative flex items-center justify-between w-48 p-2 m-2 text-white bg-black rounded-full"
+                    onClick={handleSocialLogin}
+                  >
+                    <RiGoogleFill size={SIZE.iconSm} />
+                    <div className="w-full text-xs -translate-x-2">
+                      구글로 로그인
+                    </div>
+                  </button>
+                </div>
+                <div className="flex justify-center">
+                  <button
+                    className="relative flex items-center justify-between w-48 p-2 text-white bg-black rounded-full"
+                    onClick={handleSocialLogin}
+                  >
+                    <div className="bg-white rounded-full">
+                      <SiNaver size={SIZE.iconSm} id="layout_naver" />
+                    </div>
+                    <div className="w-full text-xs -translate-x-2">
+                      네이버로 로그인
+                    </div>
+                  </button>
+                </div>
               </div>
             </div>
           )}
@@ -235,6 +254,10 @@ export default function Layout({ children }: ILayoutProps) {
         {`
           #__next {
             width: 100%;
+          }
+          #layout_naver {
+            color: ${COLOR["black"]};
+            transform: scale(1.2);
           }
           :root {
             display: flex;
