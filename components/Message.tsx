@@ -30,7 +30,7 @@ export default function Message({
   const router = useCustomRouter();
   return (
     <>
-      <div className="flex items-center w-full min-h-[75vh]">
+      <div className="flex items-center w-full min-h-[75vh] h-full">
         <div className="flex flex-col items-center w-full ">
           {includeIcon && (
             <div className="w-24">

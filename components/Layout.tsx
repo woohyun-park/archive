@@ -82,7 +82,7 @@ export default function Layout({ children }: ILayoutProps) {
   }, [curUser.alarms]);
 
   useEffect(() => {
-    router.replace("/");
+    // router.replace("/");
   }, [login.isLoggedIn]);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -139,9 +139,6 @@ export default function Layout({ children }: ILayoutProps) {
   }
 
   const [page, setPage] = useState(0);
-  function test() {
-    return <></>;
-  }
   const message: [JSX.Element, string][] = [
     [
       <>
