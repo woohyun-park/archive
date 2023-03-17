@@ -157,6 +157,7 @@ export default function Profile() {
                     query: { type: "uid", value: { uid } },
                     as: "posts",
                     numCols: 2,
+                    className: "mb-16",
                   },
                   {
                     type: "tags",

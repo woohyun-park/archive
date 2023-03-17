@@ -9,7 +9,7 @@ export default function Search() {
   useLoading(["posts"]);
 
   return (
-    <WrapMotion type="fade" className="pt-2 pb-24 bg-white">
+    <WrapMotion type="fade" className="pt-2 bg-white">
       <Link href="/search-modal">
         <div className="flex mx-4">
           <div className="flex items-center w-full px-[0.25rem] py-[0.375rem] my-[0.75rem] mb-1 rounded-md bg-gray-3 hover:cursor-pointer">

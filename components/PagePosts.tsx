@@ -2,6 +2,7 @@ import { AnimatePresence } from "framer-motion";
 import React, { Children, useEffect, useState } from "react";
 import PullToRefresh from "react-simple-pull-to-refresh";
 import { IFetchQueryPosts } from "../apis/fbDef";
+import { mergeTailwindClasses } from "../apis/tailwind";
 import { useCachedPage } from "../hooks/useCachedPage";
 import useCustomRouter from "../hooks/useCustomRouter";
 import { IPost } from "../libs/custom";
@@ -58,24 +59,25 @@ export default function PagePosts({
         onFetchMore={onFetchMore}
         canFetchMore={canFetchMore}
         isPullable={isPullable}
-        className={className}
         fetchMoreThreshold={256}
       >
         <div>
           {numCols === 1 && (
             <AnimatePresence>
-              {Children.toArray(
-                posts.map((e, i) => (
-                  <div key={e.id}>
-                    <PostCard post={e as IPost} />
-                    <hr className="w-full h-4 text-white bg-white" />
-                  </div>
-                ))
-              )}
+              <div className="pb-40">
+                {Children.toArray(
+                  posts.map((e, i) => (
+                    <div key={e.id}>
+                      <PostCard post={e as IPost} />
+                      <hr className="w-full h-4 text-white bg-white" />
+                    </div>
+                  ))
+                )}
+              </div>
             </AnimatePresence>
           )}
           {numCols === 2 && (
-            <div className="grid grid-cols-2 m-4 gap-y-2 gap-x-2">
+            <div className="grid grid-cols-2 pb-40 m-4 gap-y-2 gap-x-2">
               {Children.toArray(
                 posts.map((post, i) => (
                   <PostBox
@@ -90,7 +92,9 @@ export default function PagePosts({
           {numCols === 3 && (
             <div
               className={
-                posts.length !== 0 ? "grid grid-cols-3 m-4 gap-y-2 gap-x-2" : ""
+                posts.length !== 0
+                  ? "pb-24 grid grid-cols-3 m-4 gap-y-2 gap-x-2"
+                  : ""
               }
             >
               {Children.toArray(

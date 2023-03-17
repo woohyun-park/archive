@@ -21,13 +21,8 @@ export default function Message({
   label,
   onClick,
 }: IMessage) {
-  //   message={"원하시는 페이지를 찾을 수 없습니다"}
-  //   detailedMessage={`찾으려는 페이지의 주소가 잘못 입력되었거나,
-  // 주소의 변경 혹은 삭제로 인해 사용하실 수 없습니다.
-  // 입력하신 페이지의 주소가 정확한지 다시 한번 확인해 주세요`}
-  //   label="아카이브 홈 가기"
-  //   onClick={() => router.push("/")}
   const router = useCustomRouter();
+
   return (
     <>
       <div className="flex items-center w-full min-h-[75vh] h-full">
@@ -37,9 +32,8 @@ export default function Message({
               <Image src={icon_sad} alt="" />
             </div>
           )}
-
           <div className="mb-1 text-xl text-bold">{message}</div>
-          <div className="mb-6 text-sm text-center whitespace-pre-wrap text-gray-2">
+          <div className="mb-6 text-sm leading-4 text-center whitespace-pre-wrap text-gray-2">
             {detailedMessage}
           </div>
           {includeBtn && <Btn label={label || ""} onClick={onClick} />}

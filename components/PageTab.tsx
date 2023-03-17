@@ -111,6 +111,7 @@ export default function PageTab({ header, tabs }: IPageTapProps) {
                       as={(tab as IPostsType).as}
                       numCols={(tab as IPostsType).numCols}
                       isPullable={(tab as IPostsType).isPullable}
+                      className={(tab as IPostsType).className}
                     />
                   )}
                   {tab.type === "tags" && (
