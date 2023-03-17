@@ -11,10 +11,13 @@ import Comment from "./Comment";
 
 export interface IPageCommentsProps {
   query: IFetchQueryComments;
-  className?: string;
+  paddingBottom?: string;
 }
 
-export default function PageComments({ query, className }: IPageCommentsProps) {
+export default function PageComments({
+  query,
+  paddingBottom,
+}: IPageCommentsProps) {
   const { curUser } = useUser();
   const { data, onRefresh, onFetchMore, canFetchMore } = useCachedPage(
     "comments",
@@ -37,7 +40,6 @@ export default function PageComments({ query, className }: IPageCommentsProps) {
         onRefresh={onRefresh}
         onFetchMore={onFetchMore}
         canFetchMore={canFetchMore}
-        className={className}
       >
         <AnimatePresence>
           {comments.map((comment, i) => {
@@ -51,6 +53,7 @@ export default function PageComments({ query, className }: IPageCommentsProps) {
           })}
         </AnimatePresence>
       </PullToRefresh>
+      <div className={paddingBottom} />
     </>
   );
 }

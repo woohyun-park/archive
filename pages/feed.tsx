@@ -86,6 +86,7 @@ export default function Feed() {
           }}
           as="posts"
           numCols={1}
+          paddingBottom="pb-24"
         />
       ) : (
         <PagePosts
@@ -101,7 +102,6 @@ export default function Feed() {
           numCols={1}
         />
       )}
-      <div className="mb-24"></div>
     </div>
   );
 }

@@ -5,17 +5,20 @@ import { IFetchQueryTags } from "../apis/fbDef";
 import { useCachedPage } from "../hooks/useCachedPage";
 import { IDict, ITag } from "../libs/custom";
 import WrapMotion from "./wrappers/WrapMotion";
+import WrapPullToRefresh from "./wrappers/WrapPullToRefresh";
 
 export interface IPageTagsProps {
   query: IFetchQueryTags;
   as: string;
   isPullable?: boolean;
+  paddingBottom?: string;
 }
 
 export default function PageTags({
   query,
   as,
   isPullable = true,
+  paddingBottom,
 }: IPageTagsProps) {
   const router = useRouter();
 
@@ -49,7 +52,7 @@ export default function PageTags({
 
   return (
     <>
-      <PullToRefresh
+      <WrapPullToRefresh
         onRefresh={onRefresh}
         onFetchMore={onFetchMore}
         canFetchMore={canFetchMore}
@@ -86,7 +89,8 @@ export default function PageTags({
             })
           )}
         </>
-      </PullToRefresh>
+      </WrapPullToRefresh>
+      <div className={paddingBottom} />
     </>
   );
 }

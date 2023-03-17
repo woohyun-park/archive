@@ -19,13 +19,21 @@ export default function WrapPullToRefresh({
   isPullable = true,
   className,
 }: IWrapPullToRefresh) {
+  function LoaderWithPadding() {
+    return (
+      <>
+        <Loader isVisible={true} />
+        <div className="pb-6" />
+      </>
+    );
+  }
   return (
     <PullToRefresh
       onRefresh={onRefresh}
       onFetchMore={onFetchMore}
       canFetchMore={canFetchMore}
-      pullingContent={<Loader isVisible={true} />}
-      refreshingContent={<Loader isVisible={true} />}
+      pullingContent={<LoaderWithPadding />}
+      refreshingContent={<LoaderWithPadding />}
       isPullable={isPullable}
       className={className}
     >

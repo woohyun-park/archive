@@ -6,18 +6,21 @@ import { useCachedPage } from "../hooks/useCachedPage";
 import { IUser } from "../libs/custom";
 import { useUser } from "../stores/useUser";
 import Profile from "./Profile";
+import WrapPullToRefresh from "./wrappers/WrapPullToRefresh";
 
 export interface IPageUsersProps {
   query: IFetchQueryUsers;
   as: string;
   isPullable?: boolean;
   childrenWhenEmpty?: React.ReactNode;
+  paddingBottom?: string;
 }
 
 export default function PageUsers({
   query,
   as,
   isPullable = true,
+  paddingBottom,
 }: IPageUsersProps) {
   const router = useRouter();
 
@@ -32,7 +35,7 @@ export default function PageUsers({
 
   return (
     <>
-      <PullToRefresh
+      <WrapPullToRefresh
         onRefresh={onRefresh}
         onFetchMore={onFetchMore}
         canFetchMore={canFetchMore}
@@ -51,7 +54,8 @@ export default function PageUsers({
             ))
           )}
         </div>
-      </PullToRefresh>
+      </WrapPullToRefresh>
+      <div className={paddingBottom} />
     </>
   );
 }

@@ -21,6 +21,7 @@ export default function Search() {
         query={{ type: "none", readType: "simple", value: {} }}
         as="posts"
         numCols={3}
+        paddingBottom="pb-24"
       />
     </WrapMotion>
   );

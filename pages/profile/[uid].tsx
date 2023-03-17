@@ -157,18 +157,20 @@ export default function Profile() {
                     query: { type: "uid", value: { uid } },
                     as: "posts",
                     numCols: 2,
-                    className: "mb-16",
+                    paddingBottom: "pb-40",
                   },
                   {
                     type: "tags",
                     label: "tags",
                     query: { type: "uid", value: { uid } },
                     as: "tags",
+                    paddingBottom: "pb-40",
                   },
                   {
                     type: "scraps",
                     label: "scraps",
                     query: { type: "uid", value: { uid } },
+                    paddingBottom: "pb-40",
                   },
                 ]
               : [
@@ -178,12 +180,14 @@ export default function Profile() {
                     query: { type: "uid", value: { uid } },
                     as: "posts",
                     numCols: 2,
+                    paddingBottom: "pb-40",
                   },
                   {
                     type: "tags",
                     label: "tags",
                     query: { type: "uid", value: { uid } },
                     as: "tags",
+                    paddingBottom: "pb-40",
                   },
                 ]
           }

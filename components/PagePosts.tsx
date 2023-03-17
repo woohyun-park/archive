@@ -1,6 +1,5 @@
 import { AnimatePresence } from "framer-motion";
 import React, { Children, useEffect, useState } from "react";
-import PullToRefresh from "react-simple-pull-to-refresh";
 import { IFetchQueryPosts } from "../apis/fbDef";
 import { mergeTailwindClasses } from "../apis/tailwind";
 import { useCachedPage } from "../hooks/useCachedPage";
@@ -11,13 +10,14 @@ import { useStatus } from "../stores/useStatus";
 import Loader from "./Loader";
 import PostBox from "./PostBox";
 import PostCard from "./PostCard";
+import WrapPullToRefresh from "./wrappers/WrapPullToRefresh";
 
 export interface IPagePostsProps {
   query: IFetchQueryPosts;
   as: string;
   numCols: 1 | 2 | 3;
   isPullable?: boolean;
-  className?: string;
+  paddingBottom?: string;
 }
 
 export default function PagePosts({
@@ -25,7 +25,7 @@ export default function PagePosts({
   as,
   numCols = 1,
   isPullable = true,
-  className,
+  paddingBottom,
 }: IPagePostsProps) {
   const router = useCustomRouter();
   const { data, canFetchMore, onRefresh, onFetchMore } = useCachedPage(
@@ -54,30 +54,27 @@ export default function PagePosts({
   return (
     <>
       <Loader isVisible={loading} />
-      <PullToRefresh
+      <WrapPullToRefresh
         onRefresh={onRefresh}
         onFetchMore={onFetchMore}
         canFetchMore={canFetchMore}
         isPullable={isPullable}
-        fetchMoreThreshold={256}
       >
         <div>
           {numCols === 1 && (
             <AnimatePresence>
-              <div className="pb-40">
-                {Children.toArray(
-                  posts.map((e, i) => (
-                    <div key={e.id}>
-                      <PostCard post={e as IPost} />
-                      <hr className="w-full h-4 text-white bg-white" />
-                    </div>
-                  ))
-                )}
-              </div>
+              {Children.toArray(
+                posts.map((e, i) => (
+                  <div key={e.id}>
+                    <PostCard post={e as IPost} />
+                    <hr className="w-full h-4 text-white bg-white" />
+                  </div>
+                ))
+              )}
             </AnimatePresence>
           )}
           {numCols === 2 && (
-            <div className="grid grid-cols-2 pb-40 m-4 gap-y-2 gap-x-2">
+            <div className="grid grid-cols-2 m-4 gap-y-2 gap-x-2">
               {Children.toArray(
                 posts.map((post, i) => (
                   <PostBox
@@ -92,9 +89,7 @@ export default function PagePosts({
           {numCols === 3 && (
             <div
               className={
-                posts.length !== 0
-                  ? "pb-24 grid grid-cols-3 m-4 gap-y-2 gap-x-2"
-                  : ""
+                posts.length !== 0 ? "grid grid-cols-3 m-4 gap-y-2 gap-x-2" : ""
               }
             >
               {Children.toArray(
@@ -109,7 +104,8 @@ export default function PagePosts({
             </div>
           )}
         </div>
-      </PullToRefresh>
+      </WrapPullToRefresh>
+      <div className={paddingBottom} />
     </>
   );
 }
