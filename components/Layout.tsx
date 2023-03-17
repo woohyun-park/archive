@@ -201,7 +201,7 @@ export default function Layout({ children }: ILayoutProps) {
                     )
                   )
                 )}
-                <div className="flex justify-between w-16 m-auto mt-2 mb-20">
+                <div className="flex justify-between m-auto mt-2 mb-20 w-14">
                   {Children.toArray(
                     message.map((e, i) =>
                       i === page ? (
