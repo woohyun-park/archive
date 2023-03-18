@@ -218,9 +218,7 @@ export default function Layout({ children }: ILayoutProps) {
                     )
                   )}
                 </div>
-                <div className="flex justify-center mt-4">
-                  {/* <Btn label="카카오톡으로 로그인" width="fit" className="mb-2" />
-                <Btn label="Apple로 로그인" width="fit" /> */}
+                <div className="flex justify-center mt-4 mb-8">
                   <button
                     className="relative flex items-center justify-between w-48 p-2 m-2 text-white bg-black rounded-full"
                     onClick={handleSocialLogin}
@@ -231,7 +229,7 @@ export default function Layout({ children }: ILayoutProps) {
                     </div>
                   </button>
                 </div>
-                <div className="flex justify-center">
+                {/* <div className="flex justify-center">
                   <button
                     className="relative flex items-center justify-between w-48 p-2 text-white bg-black rounded-full"
                     onClick={handleSocialLogin}
@@ -243,7 +241,7 @@ export default function Layout({ children }: ILayoutProps) {
                       네이버로 로그인
                     </div>
                   </button>
-                </div>
+                </div> */}
               </div>
             </div>
           )}

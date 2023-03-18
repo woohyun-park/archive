@@ -27,12 +27,14 @@ export default function Alarm() {
           <BtnIcon icon="back" onClick={() => router.back()} />
           <div className="title-page-base">알림</div>
         </div>
-        <div
-          className="text-xs w-fit text-gray-2f hover:cursor-pointer h-fit"
-          onClick={() => viewAlarms(alarms)}
-        >
-          전체 읽음
-        </div>
+        {alarms.length !== 0 && (
+          <div
+            className="text-xs w-fit text-gray-2f hover:cursor-pointer h-fit"
+            onClick={() => viewAlarms(alarms)}
+          >
+            전체 읽음
+          </div>
+        )}
       </div>
       <WrapPullToRefresh
         onRefresh={async () => setAlarms(curUser.alarms || [])}
