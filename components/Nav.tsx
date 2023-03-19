@@ -65,12 +65,7 @@ export default function Nav() {
             className="flex items-center justify-center"
             onClick={() => router.push("/add")}
           >
-            <div className="flex items-center justify-center text-3xl text-white -translate-y-5 rounded-full hover:cursor-pointer w-14 h-14">
-              <Image
-                className="absolute scale-125 -z-10"
-                src={icon_empty}
-                alt=""
-              />
+            <div className="flex items-center justify-center text-3xl text-white -translate-y-5 bg-black rounded-full hover:cursor-pointer w-14 h-14">
               +
             </div>
           </div>
