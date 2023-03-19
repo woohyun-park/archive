@@ -9,6 +9,8 @@ import { SIZE } from "../libs/custom";
 import { useStatus } from "../stores/useStatus";
 import Modal from "./Modal";
 import ModalLoader from "./ModalLoader";
+import icon_empty from "../imgs/icon_empty.svg";
+import Image from "next/image";
 
 export default function Nav() {
   const router = useCustomRouter();
@@ -63,7 +65,12 @@ export default function Nav() {
             className="flex items-center justify-center"
             onClick={() => router.push("/add")}
           >
-            <div className="flex items-center justify-center text-3xl text-white -translate-y-5 bg-black rounded-full hover:cursor-pointer w-14 h-14">
+            <div className="flex items-center justify-center text-3xl text-white -translate-y-5 rounded-full hover:cursor-pointer w-14 h-14">
+              <Image
+                className="absolute scale-125 -z-10"
+                src={icon_empty}
+                alt=""
+              />
               +
             </div>
           </div>

@@ -5,10 +5,11 @@ import useCustomRouter from "../hooks/useCustomRouter";
 import icon_sad from "../imgs/icon_sad.svg";
 import icon_smile from "../imgs/icon_smile.svg";
 import icon_wink from "../imgs/icon_wink.svg";
+import icon_empty from "../imgs/icon_empty.svg";
 import Btn from "./atoms/Btn";
 
 interface IMessage {
-  icon: "none" | "sad" | "smile" | "wink";
+  icon: "none" | "sad" | "smile" | "wink" | "empty";
   message?: string;
   detailedMessage?: string;
   label?: string;
@@ -47,6 +48,7 @@ export default function Message({
               {icon === "sad" && <Image src={icon_sad} alt="" />}
               {icon === "smile" && <Image src={icon_smile} alt="" />}
               {icon === "wink" && <Image src={icon_wink} alt="" />}
+              {icon == "empty" && <Image src={icon_empty} alt="" />}
             </div>
           )}
           <div className="mb-1 text-xl text-bold">{message}</div>

@@ -229,19 +229,6 @@ export default function Layout({ children }: ILayoutProps) {
                     </div>
                   </button>
                 </div>
-                {/* <div className="flex justify-center">
-                  <button
-                    className="relative flex items-center justify-between w-48 p-2 text-white bg-black rounded-full"
-                    onClick={handleSocialLogin}
-                  >
-                    <div className="bg-white rounded-full">
-                      <SiNaver size={SIZE.iconSm} id="layout_naver" />
-                    </div>
-                    <div className="w-full text-sm -translate-x-2">
-                      네이버로 로그인
-                    </div>
-                  </button>
-                </div> */}
               </div>
             </div>
           )}
