@@ -1,5 +1,4 @@
-import React, { ReactNode, useEffect, useState } from "react";
-import { mergeTailwindClasses } from "../apis/tailwind";
+import React from "react";
 import Modal from "./Modal";
 
 interface IModalLoaderProps {
