@@ -33,6 +33,7 @@ import onboarding_2 from "../imgs/onboarding_2.svg";
 import onboarding_3 from "../imgs/onboarding_3.svg";
 import { readAlarm } from "../apis/fbRead";
 import useCustomRouter from "../hooks/useCustomRouter";
+import Modal from "./Modal";
 
 interface ILayoutProps {
   children: React.ReactNode;
@@ -50,7 +51,7 @@ export default function Layout({ children }: ILayoutProps) {
   const provider = new GoogleAuthProvider();
   const router = useCustomRouter();
   const { getCurUser } = useUser();
-  const { logoutLoader } = useStatus();
+  const { modalLoader, logoutLoader } = useStatus();
   const [login, setLogin] = useState<ILogin>({
     email: "",
     password: "",
@@ -167,8 +168,16 @@ export default function Layout({ children }: ILayoutProps) {
   ];
   return (
     <>
+      <Modal
+        isVisible={modalLoader || logoutLoader}
+        content={
+          <div className="flex items-center justify-center w-full h-full max-w-[480px] bg-white">
+            LOADING
+          </div>
+        }
+      />
       {login.isLoggedIn === null ? (
-        <ModalLoader className="w-0" isVisible={true} />
+        <></>
       ) : login.isLoggedIn ? (
         <>
           <div className="">{children}</div>
@@ -234,7 +243,6 @@ export default function Layout({ children }: ILayoutProps) {
           )}
         </>
       )}
-
       <style jsx global>
         {`
           #__next {

@@ -1,7 +1,6 @@
 import { AnimatePresence } from "framer-motion";
 import React, { ReactNode, useEffect, useState } from "react";
 import ReactDOM from "react-dom";
-import { mergeTailwindClasses } from "../apis/tailwind";
 import WrapMotion from "./wrappers/WrapMotion";
 
 interface IModal {
@@ -21,15 +20,12 @@ export default function Modal({ isVisible, content, className }: IModal) {
     return ReactDOM.createPortal(
       <AnimatePresence>
         {isVisible && (
-          <WrapMotion type="fade" key={"modal"}>
-            <div
-              className={mergeTailwindClasses(
-                "top-0 w-full max-w-[480px] h-[100vh] fixed bg-black/50",
-                className || ""
-              )}
-            >
-              {content}
-            </div>
+          <WrapMotion
+            type="fade"
+            key={"modal"}
+            className="w-full h-[100vh] fixed flex items-center justify-center"
+          >
+            {content}
           </WrapMotion>
         )}
       </AnimatePresence>,
