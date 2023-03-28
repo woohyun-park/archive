@@ -10,7 +10,7 @@ type IWrapMotion = {
   onClick?: MouseEventHandler<HTMLDivElement>;
 };
 
-export type IWrapMotionType = "float" | "fade" | "swipeLeft";
+export type IWrapMotionType = "float" | "fade" | "swipeLeft" | "roll";
 
 export default function WrapMotion({
   children,
@@ -54,6 +54,20 @@ export default function WrapMotion({
                 initial: { opacity: 0 },
                 animate: { opacity: 1 },
                 exit: { opacity: 0 },
+              }
+            : type == "roll"
+            ? {
+                animate: {
+                  scale: [1, 1, 1, 1, 1, 1],
+                  rotate: [0, 90, 180, 270, 360, 0],
+                  transition: {
+                    duration: 2,
+                    ease: "easeInOut",
+                    times: [0, 0.15, 0.3, 0.45, 0.6, 1],
+                    repeat: Infinity,
+                    repeatDelay: 1,
+                  },
+                },
               }
             : {}
         }

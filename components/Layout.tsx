@@ -34,6 +34,7 @@ import onboarding_3 from "../imgs/onboarding_3.svg";
 import { readAlarm } from "../apis/fbRead";
 import useCustomRouter from "../hooks/useCustomRouter";
 import Modal from "./Modal";
+import icon_smile from "../imgs/icon_smile.svg";
 
 interface ILayoutProps {
   children: React.ReactNode;
@@ -170,9 +171,15 @@ export default function Layout({ children }: ILayoutProps) {
     <>
       <Modal
         isVisible={modalLoader || logoutLoader}
+        // isVisible={true}
         content={
-          <div className="flex items-center justify-center w-full h-full max-w-[480px] bg-white">
-            LOADING
+          <div className="flex flex-col items-center justify-center w-full h-full max-w-[480px] bg-white -mt-4">
+            <WrapMotion type="roll">
+              <div className="w-16">
+                <Image src={icon_smile} alt="" />
+              </div>
+            </WrapMotion>
+            <div className="-mt-1 text-sm">LOADING</div>
           </div>
         }
       />
