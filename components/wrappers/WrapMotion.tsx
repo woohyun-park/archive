@@ -12,6 +12,46 @@ type IWrapMotion = {
 
 export type IWrapMotionType = "float" | "fade" | "swipeLeft" | "roll";
 
+const getVariants = (duration: number) => {
+  return {
+    float: {
+      initial: {
+        transform: `translateY(16px)`,
+        opacity: 0,
+        transition: { duration },
+      },
+      animate: {
+        transform: `translateY(0px)`,
+        opacity: 1,
+        transition: { duration },
+      },
+      exit: {
+        transform: `translateY(16px)`,
+        opacity: 0,
+        transition: { duration },
+      },
+    },
+    fade: {
+      initial: { opacity: 0 },
+      animate: { opacity: 1 },
+      exit: { opacity: 0 },
+    },
+    roll: {
+      animate: {
+        scale: [1, 1, 1, 1, 1, 1],
+        rotate: [0, 90, 180, 270, 360, 0],
+        transition: {
+          duration: 2,
+          ease: "easeInOut",
+          times: [0, 0.15, 0.3, 0.45, 0.6, 1],
+          repeat: Infinity,
+          repeatDelay: 1,
+        },
+      },
+    },
+  };
+};
+
 export default function WrapMotion({
   children,
   type,
@@ -20,6 +60,8 @@ export default function WrapMotion({
   className,
   onClick,
 }: IWrapMotion) {
+  const { float, fade, roll } = getVariants(duration);
+
   return (
     <>
       <motion.div
@@ -32,43 +74,11 @@ export default function WrapMotion({
         viewport={{ once: true, amount: 0.1 }}
         variants={
           type === "float"
-            ? {
-                initial: {
-                  transform: `translateY(16px)`,
-                  opacity: 0,
-                  transition: { duration },
-                },
-                animate: {
-                  transform: `translateY(0px)`,
-                  opacity: 1,
-                  transition: { duration },
-                },
-                exit: {
-                  transform: `translateY(16px)`,
-                  opacity: 0,
-                  transition: { duration },
-                },
-              }
+            ? float
             : type === "fade"
-            ? {
-                initial: { opacity: 0 },
-                animate: { opacity: 1 },
-                exit: { opacity: 0 },
-              }
+            ? fade
             : type == "roll"
-            ? {
-                animate: {
-                  scale: [1, 1, 1, 1, 1, 1],
-                  rotate: [0, 90, 180, 270, 360, 0],
-                  transition: {
-                    duration: 2,
-                    ease: "easeInOut",
-                    times: [0, 0.15, 0.3, 0.45, 0.6, 1],
-                    repeat: Infinity,
-                    repeatDelay: 1,
-                  },
-                },
-              }
+            ? roll
             : {}
         }
       >
