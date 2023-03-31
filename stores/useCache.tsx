@@ -30,7 +30,7 @@ import { IDict, IComment } from "../apis/def";
 import { getTagsQuery } from "../apis/firebase/fbQueryTags";
 import { getUsersQuery } from "../apis/firebase/fbQueryUsers";
 import { getScrapsQuery } from "../apis/firebase/fbQueryScraps";
-import { getAlarmsQuery } from "../apis/firebase/fbQueryAlarms";
+import { getAlarmsQuery } from "../apis/firebase/query/fbQueryAlarms";
 import { getCommentsQuery } from "../apis/firebase/fbQueryComments";
 import { getPostsQuery } from "../apis/firebase/fbQueryPosts";
 

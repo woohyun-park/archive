@@ -1,17 +1,12 @@
 import {
   collection,
   DocumentData,
-  endAt,
-  limit,
-  orderBy,
   query,
   Query,
-  QueryDocumentSnapshot,
-  startAfter,
   where,
 } from "firebase/firestore";
-import { db } from "./fb";
-import { IFetchQueryAlarms, IFetchQueryComments, IFetchType } from "./fbDef";
+import { db } from "../fb";
+import { IFetchQueryComments } from "../fbDef";
 
 export function getCommentsQuery(
   fetchQuery: IFetchQueryComments

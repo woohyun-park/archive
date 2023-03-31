@@ -5,39 +5,37 @@ import {
   limit,
   orderBy,
   query,
-  Query,
   QueryDocumentSnapshot,
-  startAfter,
   where,
 } from "firebase/firestore";
-import { db } from "./fb";
-import { IFetchQueryAlarms, IFetchType } from "./fbDef";
+import { db } from "../fb";
+import { IFetchQueryScraps, IFetchType } from "../fbDef";
 
-export function getAlarmsQuery(
+export function getScrapsQuery(
   fetchType: IFetchType,
-  fetchQuery: IFetchQueryAlarms,
+  fetchQuery: IFetchQueryScraps,
   fetchLimit: number,
   lastVisible: QueryDocumentSnapshot<DocumentData> | undefined
-): Query<DocumentData> {
+) {
+  console.log("getScrapsQuery", fetchType, fetchQuery, fetchLimit, lastVisible);
   const uid = fetchQuery.value.uid;
   if (fetchType === "init")
     return query(
-      collection(db, "alarms"),
-      where("targetUid", "==", uid),
+      collection(db, "scraps"),
+      where("uid", "==", uid),
       orderBy("createdAt", "desc"),
       limit(fetchLimit)
     );
   if (fetchType === "load")
     return query(
-      collection(db, "alarms"),
-      where("targetUid", "==", uid),
+      collection(db, "scraps"),
+      where("uid", "==", uid),
       orderBy("createdAt", "desc"),
-      startAfter(lastVisible),
       limit(fetchLimit)
     );
   return query(
-    collection(db, "alarms"),
-    where("targetUid", "==", uid),
+    collection(db, "scraps"),
+    where("uid", "==", uid),
     orderBy("createdAt", "desc"),
     endAt(lastVisible)
   );

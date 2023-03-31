@@ -11,8 +11,8 @@ import {
   startAt,
   where,
 } from "firebase/firestore";
-import { db } from "./fb";
-import { IFetchQueryTags, IFetchType } from "./fbDef";
+import { db } from "../fb";
+import { IFetchQueryTags, IFetchType } from "../fbDef";
 
 export function getTagsQuery(
   fetchType: IFetchType,
