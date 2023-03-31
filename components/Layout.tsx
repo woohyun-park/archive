@@ -83,10 +83,6 @@ export default function Layout({ children }: ILayoutProps) {
     setHasNewAlarms(hasNewAlarms);
   }, [curUser.alarms]);
 
-  // useEffect(() => {
-  //   !login.isLoggedIn && router.replace("/");
-  // }, [login.isLoggedIn]);
-
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
     setLogin({ ...login, [name]: value });
@@ -171,7 +167,6 @@ export default function Layout({ children }: ILayoutProps) {
     <>
       <Modal
         isVisible={modalLoader || logoutLoader}
-        // isVisible={true}
         content={
           <div className="flex flex-col items-center justify-center w-full h-full max-w-[480px] bg-white -mt-4">
             <WrapMotion type="roll">

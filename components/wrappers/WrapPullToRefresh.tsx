@@ -2,6 +2,8 @@ import React from "react";
 import PullToRefresh from "react-simple-pull-to-refresh";
 import Loader from "../Loader";
 
+// PullToRefresh를 손쉽게 사용하기 위한 wrapper 컴포넌트
+
 interface IWrapPullToRefresh {
   children: React.ReactNode;
   onRefresh: () => Promise<void>;
@@ -27,6 +29,7 @@ export default function WrapPullToRefresh({
       </>
     );
   }
+
   return (
     <PullToRefresh
       onRefresh={onRefresh}
