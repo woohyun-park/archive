@@ -7,11 +7,11 @@ import {
   updateDoc,
   where,
 } from "firebase/firestore";
-import { IAlarm, IDict, IUser } from "../libs/custom";
+import { IAlarm, IDict, IUser } from "../custom";
 import { createDoc } from "./fbCreate";
 import { deleteAll } from "./fbDelete";
 import { readDatasByQuery } from "./fbRead";
-import { db } from "./firebase";
+import { db } from "./fb";
 
 export async function updateUser(field: IDict<any>) {
   const filteredField = Object.fromEntries(

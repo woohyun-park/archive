@@ -10,7 +10,7 @@ import {
   startAfter,
   where,
 } from "firebase/firestore";
-import { db } from "./firebase";
+import { db } from "./fb";
 import { IFetchQueryAlarms, IFetchQueryComments, IFetchType } from "./fbDef";
 
 export function getCommentsQuery(

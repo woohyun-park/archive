@@ -1,5 +1,5 @@
 import { arrayRemove, deleteDoc, doc, updateDoc } from "firebase/firestore";
-import { IData, ITag } from "../libs/custom";
+import { IData, ITag } from "../custom";
 import {
   readAlarmsOfPost,
   readCommentsOfPost,
@@ -7,7 +7,7 @@ import {
   readScrapsOfPost,
   readTagsOfPost,
 } from "./fbRead";
-import { db } from "./firebase";
+import { db } from "./fb";
 
 export async function deleteAll(datas: IData[], type: string) {
   for await (const data of datas) {

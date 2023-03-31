@@ -6,11 +6,11 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { UseFormWatch } from "react-hook-form";
-import { createTags } from "../apis/fbCreate";
+import { createTags } from "../apis/firebase/fbCreate";
 import { deleteTags } from "../apis/fbDelete";
 import { readTagsOfPost } from "../apis/fbRead";
 import { uploadImage } from "../apis/fileApi";
-import { db } from "../apis/firebase";
+import { db } from "../apis/firebase/fb";
 import { IForm } from "../pages/add";
 import { IPost, ITag, IUser } from "./custom";
 

@@ -10,7 +10,7 @@ import FormInput from "../components/atoms/FormInput";
 import ProfileImg from "../components/ProfileImg";
 import { updateUser } from "../apis/fbUpdate";
 import { signOut } from "firebase/auth";
-import { auth } from "../apis/firebase";
+import { auth } from "../apis/firebase/fb";
 import { useLoading } from "../hooks/useLoading";
 import { wrapPromise } from "../stores/libStores";
 import { useStatus } from "../stores/useStatus";

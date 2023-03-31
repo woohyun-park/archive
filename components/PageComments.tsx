@@ -3,9 +3,9 @@ import { AnimatePresence } from "framer-motion";
 import React from "react";
 import PullToRefresh from "react-simple-pull-to-refresh";
 import { IFetchQueryComments } from "../apis/fbDef";
-import { db } from "../apis/firebase";
+import { db } from "../apis/firebase/fb";
 import { useCachedPage } from "../hooks/useCachedPage";
-import { IComment } from "../libs/custom";
+import { IComment } from "../apis/custom";
 import { useUser } from "../stores/useUser";
 import Comment from "./Comment";
 

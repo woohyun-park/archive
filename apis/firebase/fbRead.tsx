@@ -21,7 +21,7 @@ import {
   ITag,
   IUser,
 } from "../libs/custom";
-import { convertCreatedAt, db } from "./firebase";
+import { convertCreatedAt, db } from "./fb";
 
 export async function readData<T>(type: IDataType, id: string) {
   const data = (await getDoc(doc(db, type, id))).data();

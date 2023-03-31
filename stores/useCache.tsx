@@ -13,7 +13,7 @@ import {
   readPosts,
   readScraps,
   readUsers,
-} from "../apis/fbRead";
+} from "../apis/firebase/fbRead";
 import {
   FETCH_LIMIT,
   IFetchQueryPosts,
@@ -24,15 +24,15 @@ import {
   IFetchQueryScraps,
   IFetchQueryTags,
   IFetchQueryUsers,
-} from "../apis/fbDef";
-import { convertCreatedAt } from "../apis/firebase";
-import { IDict, IComment } from "../libs/custom";
-import { getTagsQuery } from "../apis/fbQueryTags";
-import { getUsersQuery } from "../apis/fbQueryUsers";
-import { getScrapsQuery } from "../apis/fbQueryScraps";
-import { getAlarmsQuery } from "../apis/fbQueryAlarms";
-import { getCommentsQuery } from "../apis/fbQueryComments";
-import { getPostsQuery } from "../apis/fbQueryPosts";
+} from "../apis/firebase/fbDef";
+import { convertCreatedAt } from "../apis/firebase/fb";
+import { IDict, IComment } from "../apis/custom";
+import { getTagsQuery } from "../apis/firebase/fbQueryTags";
+import { getUsersQuery } from "../apis/firebase/fbQueryUsers";
+import { getScrapsQuery } from "../apis/firebase/fbQueryScraps";
+import { getAlarmsQuery } from "../apis/firebase/fbQueryAlarms";
+import { getCommentsQuery } from "../apis/firebase/fbQueryComments";
+import { getPostsQuery } from "../apis/firebase/fbQueryPosts";
 
 export type ICacheType =
   | "post"

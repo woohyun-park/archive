@@ -1,6 +1,6 @@
 import { forwardRef } from "react";
 import ReactTextareaAutosize from "react-textarea-autosize";
-import { IDict } from "../../libs/custom";
+import { IDict } from "../../apis/custom";
 interface ITextareaProps {
   value?: string;
   placeholder?: string;

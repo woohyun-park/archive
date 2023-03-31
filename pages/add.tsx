@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { COLOR, IPost, IDict } from "../libs/custom";
+import { COLOR, IPost, IDict } from "../apis/custom";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 import Image from "next/image";

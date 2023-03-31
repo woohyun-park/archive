@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { Children } from "react";
-import { IPost } from "../libs/custom";
+import { IPost } from "../apis/custom";
 import ContImage from "./ContImage";
 
 interface IImageProps {

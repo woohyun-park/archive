@@ -5,7 +5,7 @@ import {
   HiOutlineLightBulb,
 } from "react-icons/hi2";
 import useCustomRouter from "../hooks/useCustomRouter";
-import { SIZE } from "../libs/custom";
+import { SIZE } from "../apis/custom";
 
 export default function Nav() {
   const router = useCustomRouter();

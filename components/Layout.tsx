@@ -5,7 +5,7 @@ import {
   signInWithPopup,
 } from "firebase/auth";
 import React, { Children, useEffect, useState } from "react";
-import { auth, db } from "../apis/firebase";
+import { auth, db } from "../apis/firebase/fb";
 import Nav from "./Nav";
 import {
   collection,
@@ -17,7 +17,7 @@ import {
   setDoc,
   where,
 } from "firebase/firestore";
-import { COLOR, DEFAULT, IAlarm, IUser, SIZE } from "../libs/custom";
+import { COLOR, DEFAULT, IAlarm, IUser, SIZE } from "../apis/custom";
 import { useUser } from "../stores/useUser";
 import Btn from "../components/atoms/Btn";
 import { motion } from "framer-motion";

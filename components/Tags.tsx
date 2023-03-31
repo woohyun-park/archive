@@ -1,7 +1,7 @@
 import { Children } from "react";
 import { mergeTailwindClasses } from "../apis/tailwind";
 import useCustomRouter from "../hooks/useCustomRouter";
-import { ITag } from "../libs/custom";
+import { ITag } from "../apis/custom";
 import Btn from "./atoms/Btn";
 
 interface ITagsProps {

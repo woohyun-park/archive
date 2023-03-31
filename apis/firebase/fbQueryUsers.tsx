@@ -11,7 +11,7 @@ import {
   startAt,
 } from "firebase/firestore";
 import { IFetchQueryTags, IFetchType } from "./fbDef";
-import { db } from "./firebase";
+import { db } from "./fb";
 
 export function getUsersQuery(
   fetchType: IFetchType,

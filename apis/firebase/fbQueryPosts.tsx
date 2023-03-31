@@ -11,7 +11,7 @@ import {
   startAt,
   where,
 } from "firebase/firestore";
-import { db } from "./firebase";
+import { db } from "./fb";
 import { IFetchQueryPosts, IFetchType } from "./fbDef";
 
 export function getPostsQuery(

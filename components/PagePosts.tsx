@@ -3,7 +3,7 @@ import React, { Children, useEffect, useState } from "react";
 import { IFetchQueryPosts } from "../apis/fbDef";
 import { useCachedPage } from "../hooks/useCachedPage";
 import useCustomRouter from "../hooks/useCustomRouter";
-import { IPost } from "../libs/custom";
+import { IPost } from "../apis/custom";
 import { wrapPromise } from "../stores/libStores";
 import { useStatus } from "../stores/useStatus";
 import Loader from "./Loader";

@@ -1,5 +1,5 @@
 import { HiChevronDown, HiChevronUp } from "react-icons/hi2";
-import { SIZE } from "../../libs/custom";
+import { SIZE } from "../../apis/custom";
 
 export default function ScrollTop() {
   return (

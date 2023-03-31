@@ -1,12 +1,12 @@
-import { IUser } from "../../libs/custom";
+import { IUser } from "../../apis/custom";
 import { useEffect, useState } from "react";
 import Motion from "../../components/wrappers/WrapMotion";
 import { useUser } from "../../stores/useUser";
 import BtnIcon from "../../components/atoms/BtnIcon";
 import { useRouter } from "next/router";
 import ProfileImg from "../../components/ProfileImg";
-import { readData } from "../../apis/fbRead";
-import { updateFollow } from "../../apis/fbUpdate";
+import { readData } from "../../apis/firebase/fbRead";
+import { updateFollow } from "../../apis/firebase/fbUpdate";
 import PageTab from "../../components/PageTab";
 import { useLoading } from "../../hooks/useLoading";
 import { useCache } from "../../stores/useCache";

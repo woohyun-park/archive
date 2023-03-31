@@ -1,4 +1,4 @@
-import { IDict } from "../libs/custom";
+import { IDict } from "./custom";
 
 // className을 props로 전달할 때 props로 들어온 것들을 덮어쓰기 위한 함수
 

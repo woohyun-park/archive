@@ -3,7 +3,7 @@ import React, { Children, useEffect, useState } from "react";
 import PullToRefresh from "react-simple-pull-to-refresh";
 import { IFetchQueryTags } from "../apis/fbDef";
 import { useCachedPage } from "../hooks/useCachedPage";
-import { IDict, ITag } from "../libs/custom";
+import { IDict, ITag } from "../apis/custom";
 import WrapMotion from "./wrappers/WrapMotion";
 import WrapPullToRefresh from "./wrappers/WrapPullToRefresh";
 

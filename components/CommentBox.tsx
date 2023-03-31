@@ -1,13 +1,13 @@
 import { deleteDoc, doc } from "firebase/firestore";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import { db } from "../apis/firebase";
-import { IPost, IUser } from "../libs/custom";
+import { db } from "../apis/firebase/fb";
+import { IPost, IUser } from "../apis/custom";
 import { useRouter } from "next/router";
 import Action from "./Action";
 import Textarea from "./atoms/Textarea";
 import Btn from "./atoms/Btn";
-import { createComment } from "../apis/fbCreate";
+import { createComment } from "../apis/firebase/fbCreate";
 import { readComment } from "../apis/fbRead";
 import { AnimatePresence } from "framer-motion";
 import Comment from "./Comment";

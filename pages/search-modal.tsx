@@ -1,4 +1,4 @@
-import { SIZE } from "../libs/custom";
+import { SIZE } from "../apis/custom";
 import { HiX } from "react-icons/hi";
 import React, { Children, useRef, useState } from "react";
 import { useRouter } from "next/router";

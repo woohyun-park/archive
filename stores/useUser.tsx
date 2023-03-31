@@ -1,6 +1,6 @@
 import create from "zustand";
 import { devtools } from "zustand/middleware";
-import { IAlarm, ILike, IScrap, IUser } from "../libs/custom";
+import { IAlarm, ILike, IScrap, IUser } from "../apis/custom";
 import {
   collection,
   doc,
@@ -11,8 +11,12 @@ import {
   query,
   where,
 } from "firebase/firestore";
-import { db } from "../apis/firebase";
-import { readAlarm, readAlarms, readDatasByQuery } from "../apis/fbRead";
+import { db } from "../apis/firebase/fb";
+import {
+  readAlarm,
+  readAlarms,
+  readDatasByQuery,
+} from "../apis/firebase/fbRead";
 
 interface IState {
   curUser: IUser;

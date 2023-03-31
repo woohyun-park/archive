@@ -8,8 +8,8 @@ import {
   setDoc,
   updateDoc,
 } from "firebase/firestore";
-import { IAlarm, IComment, ILike, IScrap, ITag } from "../libs/custom";
-import { db } from "./firebase";
+import { IAlarm, IComment, ILike, IScrap, ITag } from "../custom";
+import { db } from "./fb";
 
 // 한개의 데이터를 추가하는 create 함수들은 ref를 반환하고,
 // 여러개의 데이터를 추가하는 create 함수들은 void를 반환한다

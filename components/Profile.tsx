@@ -9,18 +9,18 @@ import {
   where,
 } from "firebase/firestore";
 import Link from "next/link";
-import { db } from "../apis/firebase";
-import { IAlarm, IPost, IUser } from "../libs/custom";
+import { db } from "../apis/firebase/fb";
+import { IAlarm, IPost, IUser } from "../apis/custom";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { displayCreatedAt } from "../libs/timeLib";
+import { displayCreatedAt } from "../apis/timeLib";
 import { useUser } from "../stores/useUser";
 import ProfileImg from "./ProfileImg";
 import ModifyAndDelete from "./ModifyAndDelete";
 import Btn from "./atoms/Btn";
-import { readDatasByQuery } from "../apis/fbRead";
-import { deleteAll } from "../apis/fbDelete";
-import { updateUser } from "../apis/fbUpdate";
+import { readDatasByQuery } from "../apis/firebase/fbRead";
+import { deleteAll } from "../apis/firebase/fbDelete";
+import { updateUser } from "../apis/firebase/fbUpdate";
 import { mergeTailwindClasses } from "../apis/tailwind";
 
 type IProfileProps = {
