@@ -1,4 +1,4 @@
-import { IUser } from "../../apis/interface";
+import { IUser } from "../../apis/def";
 import { useEffect, useState } from "react";
 import Motion from "../../components/wrappers/WrapMotion";
 import { useUser } from "../../stores/useUser";

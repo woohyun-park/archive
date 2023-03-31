@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
-import { IDict } from "../apis/interface";
+import { IDict } from "../apis/def";
 
 interface IUseStatus {
   modalLoader: boolean;

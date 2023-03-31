@@ -1,6 +1,6 @@
 import { Children } from "react";
 import { HiCheck } from "react-icons/hi2";
-import { COLOR, SIZE } from "../../apis/interface";
+import { COLOR, SIZE } from "../../apis/def";
 
 interface IColorBoxProps {
   selectedColor: string;

@@ -14,7 +14,7 @@ import { deleteTags } from "../apis/firebase/fbDelete";
 import { readTagsOfPost } from "../apis/firebase/fbRead";
 import { db } from "../apis/firebase/fb";
 import { IForm } from "../pages/add";
-import { IPost, IUser } from "./interface";
+import { IPost, IUser } from "./def";
 
 type IHandleImage = IHandleColor & {
   watch: UseFormWatch<IForm>;

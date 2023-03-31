@@ -3,7 +3,7 @@ import BtnIcon from "../../../../components/atoms/BtnIcon";
 import Motion from "../../../../components/wrappers/WrapMotion";
 import PagePosts from "../../../../components/PagePosts";
 import { useEffect, useState } from "react";
-import { IUser } from "../../../../apis/interface";
+import { IUser } from "../../../../apis/def";
 import { readData } from "../../../../apis/fbRead";
 import { useLoading } from "../../../../hooks/useLoading";
 

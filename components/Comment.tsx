@@ -2,7 +2,7 @@ import { doc, getDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { HiX } from "react-icons/hi";
 import { db } from "../apis/firebase/fb";
-import { IComment, IUser } from "../apis/interface";
+import { IComment, IUser } from "../apis/def";
 import WrapMotion from "./wrappers/WrapMotion";
 import { displayCreatedAt } from "../libs/timeLib";
 import { useUser } from "../stores/useUser";

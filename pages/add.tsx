@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
-import { IPost, IDict } from "../apis/interface";
-import { COLOR } from "../apis/setting";
+import { IPost, IDict } from "../apis/def";
+import { COLOR } from "../apis/def";
 import { useForm } from "react-hook-form";
 import Image from "next/image";
 import WrapMotion from "../components/wrappers/WrapMotion";

@@ -8,7 +8,7 @@ import BtnIcon from "../components/atoms/BtnIcon";
 import { useUser } from "../stores/useUser";
 import FormInput from "../components/atoms/FormInput";
 import ProfileImg from "../components/ProfileImg";
-import { updateUser } from "../apis/fbUpdate";
+import { updateUser } from "../apis/firebase/fbUpdate";
 import { signOut } from "firebase/auth";
 import { auth } from "../apis/firebase/fb";
 import { useLoading } from "../hooks/useLoading";

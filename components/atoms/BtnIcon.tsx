@@ -15,7 +15,7 @@ import {
   HiOutlineBellAlert,
   HiXMark,
 } from "react-icons/hi2";
-import { SIZE } from "../../apis/setting";
+import { SIZE } from "../../apis/def";
 
 export type IIcon =
   | "like"

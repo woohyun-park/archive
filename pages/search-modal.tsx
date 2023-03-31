@@ -1,4 +1,4 @@
-import { SIZE } from "../apis/interface";
+import { SIZE } from "../apis/def";
 import { HiX } from "react-icons/hi";
 import React, { Children, useRef, useState } from "react";
 import { useRouter } from "next/router";

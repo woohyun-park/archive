@@ -1,3 +1,5 @@
+// firebase에 데이터 업데이트를 위한 api
+
 import {
   arrayRemove,
   arrayUnion,
@@ -7,7 +9,7 @@ import {
   updateDoc,
   where,
 } from "firebase/firestore";
-import { IAlarm, IDict, IUser } from "../interface";
+import { IAlarm, IDict, IUser } from "../def";
 import { createDoc } from "./fbCreate";
 import { deleteAll } from "./fbDelete";
 import { readDatasByQuery } from "./fbRead";
@@ -20,22 +22,6 @@ export async function updateUser(field: IDict<any>) {
   await updateDoc(doc(db, "users", field.id), {
     ...filteredField,
   });
-}
-
-export function viewAlarms(alarms: IAlarm[]) {
-  for (const alarm of alarms) {
-    !alarm.isViewed &&
-      updateDoc(doc(db, "alarms", alarm.id), {
-        isViewed: true,
-      });
-  }
-}
-
-export function viewAlarm(alarm: IAlarm) {
-  !alarm.isViewed &&
-    updateDoc(doc(db, "alarms", alarm.id), {
-      isViewed: true,
-    });
 }
 
 export async function updateFollow(
@@ -68,5 +54,21 @@ export async function updateFollow(
       isViewed: false,
     };
     await createDoc("alarms", newAlarm);
+  }
+}
+
+export function viewAlarm(alarm: IAlarm) {
+  !alarm.isViewed &&
+    updateDoc(doc(db, "alarms", alarm.id), {
+      isViewed: true,
+    });
+}
+
+export function viewAlarms(alarms: IAlarm[]) {
+  for (const alarm of alarms) {
+    !alarm.isViewed &&
+      updateDoc(doc(db, "alarms", alarm.id), {
+        isViewed: true,
+      });
   }
 }

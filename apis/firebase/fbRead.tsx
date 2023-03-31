@@ -1,3 +1,5 @@
+// firebase에서 데이터를 읽어오기 위한 api
+
 import {
   collection,
   doc,
@@ -13,37 +15,19 @@ import {
 import {
   IAlarm,
   IComment,
-  IDataType,
+  ICollectionType,
   IDict,
   ILike,
   IPost,
   IScrap,
   ITag,
   IUser,
-} from "../libs/custom";
+} from "../def";
 import { convertCreatedAt, db } from "./fb";
 
-export async function readData<T>(type: IDataType, id: string) {
+export async function readData<T>(type: ICollectionType, id: string) {
   const data = (await getDoc(doc(db, type, id))).data();
   return { ...data, createdAt: convertCreatedAt(data?.createdAt) } as T;
-}
-
-export async function readUsers(docs: QueryDocumentSnapshot<DocumentData>[]) {
-  const res: IUser[] = [];
-  for await (const doc of docs) {
-    const user = await readData<IUser>("users", doc.data().id);
-    res.push(user);
-  }
-  return res;
-}
-
-export async function readScraps(docs: QueryDocumentSnapshot<DocumentData>[]) {
-  const res: IScrap[] = [];
-  for await (const doc of docs) {
-    const scrap = await readData<IScrap>("scraps", doc.data().id);
-    res.push(scrap);
-  }
-  return res;
 }
 
 export async function readDatasByQuery<T>(q: Query) {
@@ -57,6 +41,49 @@ export async function readDatasByQuery<T>(q: Query) {
     } as T);
   });
   return datas;
+}
+
+export async function readUsers(docs: QueryDocumentSnapshot<DocumentData>[]) {
+  const res: IUser[] = [];
+  for await (const doc of docs) {
+    const user = await readData<IUser>("users", doc.data().id);
+    res.push(user);
+  }
+  return res;
+}
+
+export async function readTagsOfPost(pid: string) {
+  return await readDatasByQuery<ITag>(
+    query(collection(db, "tags"), where("pid", "==", pid))
+  );
+}
+
+export async function readLikesOfPost(pid: string) {
+  return await readDatasByQuery<ILike>(
+    query(collection(db, "likes"), where("pid", "==", pid))
+  );
+}
+
+export async function readCommentsOfPost(pid: string) {
+  return await readDatasByQuery<IComment>(
+    query(
+      collection(db, "comments"),
+      where("pid", "==", pid),
+      orderBy("createdAt", "desc")
+    )
+  );
+}
+
+export async function readScrapsOfPost(pid: string) {
+  return await readDatasByQuery<IScrap>(
+    query(collection(db, "scraps"), where("pid", "==", pid))
+  );
+}
+
+export async function readAlarmsOfPost(pid: string) {
+  return await readDatasByQuery<IAlarm>(
+    query(collection(db, "alarms"), where("pid", "==", pid))
+  );
 }
 
 export async function readPost(pid: string) {
@@ -79,12 +106,6 @@ export async function readPosts(docs: QueryDocumentSnapshot<DocumentData>[]) {
     res.push(post);
   }
   return res;
-}
-
-export async function readTagsOfPost(pid: string) {
-  return await readDatasByQuery<ITag>(
-    query(collection(db, "tags"), where("pid", "==", pid))
-  );
 }
 
 export async function readAlarm(aid: string) {
@@ -165,34 +186,6 @@ export async function readAlarms(docs: QueryDocumentSnapshot<DocumentData>[]) {
   return res;
 }
 
-export async function readAlarmsOfPost(pid: string) {
-  return await readDatasByQuery<IAlarm>(
-    query(collection(db, "alarms"), where("pid", "==", pid))
-  );
-}
-
-export async function readLikesOfPost(pid: string) {
-  return await readDatasByQuery<ILike>(
-    query(collection(db, "likes"), where("pid", "==", pid))
-  );
-}
-
 export async function readComment(cid: string) {
   return await readData<IComment>("comments", cid);
-}
-
-export async function readCommentsOfPost(pid: string) {
-  return await readDatasByQuery<IComment>(
-    query(
-      collection(db, "comments"),
-      where("pid", "==", pid),
-      orderBy("createdAt", "desc")
-    )
-  );
-}
-
-export async function readScrapsOfPost(pid: string) {
-  return await readDatasByQuery<IScrap>(
-    query(collection(db, "scraps"), where("pid", "==", pid))
-  );
 }

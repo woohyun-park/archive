@@ -1,6 +1,6 @@
 import create from "zustand";
 import { devtools } from "zustand/middleware";
-import { IAlarm, ILike, IScrap, IUser } from "../apis/interface";
+import { IAlarm, ILike, IScrap, IUser } from "../apis/def";
 import {
   collection,
   doc,

@@ -1,6 +1,6 @@
 import { deletePost } from "../apis/firebase/fbDelete";
 import useCustomRouter from "../hooks/useCustomRouter";
-import { IPost, SIZE } from "../apis/interface";
+import { IPost, SIZE } from "../apis/def";
 import { useCache } from "../stores/useCache";
 import { useStatus } from "../stores/useStatus";
 import BtnIcon from "./atoms/BtnIcon";

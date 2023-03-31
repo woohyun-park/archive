@@ -3,7 +3,7 @@ import React, { Children } from "react";
 import PullToRefresh from "react-simple-pull-to-refresh";
 import { IFetchQueryUsers } from "../apis/fbDef";
 import { useCachedPage } from "../hooks/useCachedPage";
-import { IUser } from "../apis/interface";
+import { IUser } from "../apis/def";
 import { useUser } from "../stores/useUser";
 import Profile from "./Profile";
 import WrapPullToRefresh from "./wrappers/WrapPullToRefresh";

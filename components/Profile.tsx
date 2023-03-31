@@ -10,7 +10,7 @@ import {
 } from "firebase/firestore";
 import Link from "next/link";
 import { db } from "../apis/firebase/fb";
-import { IAlarm, IPost, IUser } from "../apis/interface";
+import { IAlarm, IPost, IUser } from "../apis/def";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { displayCreatedAt } from "../apis/time";

@@ -1,5 +1,7 @@
+// firebase에 데이터 삭제를 위한 api
+
 import { arrayRemove, deleteDoc, doc, updateDoc } from "firebase/firestore";
-import { IData, ITag } from "../interface";
+import { IData, ITag } from "../def";
 import {
   readAlarmsOfPost,
   readCommentsOfPost,
@@ -12,18 +14,6 @@ import { db } from "./fb";
 export async function deleteAll(datas: IData[], type: string) {
   for await (const data of datas) {
     await deleteDoc(doc(db, type, data.id));
-  }
-}
-
-export async function deleteTag(tag: string, tid: string) {
-  const ref = doc(db, "tagConts", tag);
-  await deleteDoc(doc(db, "tags", tid));
-  await updateDoc(ref, { tags: arrayRemove(tid) });
-}
-
-export async function deleteTags(tags: ITag[]) {
-  for await (const tag of tags) {
-    await deleteTag(tag.name, tag.id);
   }
 }
 
@@ -43,14 +33,26 @@ export async function deletePost(pid: string) {
   return ref;
 }
 
-export async function deleteLike(lid: string, aid: string) {
-  await deleteDoc(doc(db, "likes", lid));
-  aid && (await deleteDoc(doc(db, "alarms", aid)));
+export async function deleteTag(tag: string, tid: string) {
+  const ref = doc(db, "tagConts", tag);
+  await deleteDoc(doc(db, "tags", tid));
+  await updateDoc(ref, { tags: arrayRemove(tid) });
+}
+
+export async function deleteTags(tags: ITag[]) {
+  for await (const tag of tags) {
+    await deleteTag(tag.name, tag.id);
+  }
 }
 
 export async function deleteComment(cid: string, aid: string) {
   await deleteDoc(doc(db, "comments", cid));
   aid && (await deleteDoc(doc(db, "comments", aid)));
+}
+
+export async function deleteLike(lid: string, aid: string) {
+  await deleteDoc(doc(db, "likes", lid));
+  aid && (await deleteDoc(doc(db, "alarms", aid)));
 }
 
 export async function deleteScrap(sid: string) {

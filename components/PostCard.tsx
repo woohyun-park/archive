@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { IPost, IUser } from "../apis/interface";
+import { IPost, IUser } from "../apis/def";
 import { useStatus } from "../stores/useStatus";
 import { useUser } from "../stores/useUser";
 import Action from "./Action";

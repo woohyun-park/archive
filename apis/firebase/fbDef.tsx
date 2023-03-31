@@ -1,4 +1,6 @@
-import { IDict } from "../interface";
+// firebase에 관련된 definition이 저장되어있는 api
+
+import { IDict } from "../def";
 
 export const FETCH_LIMIT = {
   alarms: 16,
@@ -13,21 +15,16 @@ export const FETCH_LIMIT = {
 export type IFetchType = "init" | "load" | "refresh";
 
 export type IFetchQuery =
-  | IFetchQueryAlarms
-  | IFetchQueryComments
+  | IFetchQueryUsers
   | IFetchQueryPost
   | IFetchQueryPosts
-  | IFetchQueryScraps
   | IFetchQueryTags
-  | IFetchQueryUsers;
+  | IFetchQueryComments
+  | IFetchQueryScraps
+  | IFetchQueryAlarms;
 
-export type IFetchQueryAlarms = {
-  type: "uid";
-  value: IDict<any>;
-};
-
-export type IFetchQueryComments = {
-  type: "pid";
+export type IFetchQueryUsers = {
+  type: "keyword";
   value: IDict<any>;
 };
 
@@ -50,17 +47,22 @@ export type IFetchQueryPosts = {
   value: IDict<any>;
 };
 
-export type IFetchQueryScraps = {
-  type: "uid";
-  value: IDict<any>;
-};
-
 export type IFetchQueryTags = {
   type: "keyword" | "uid";
   value: IDict<any>;
 };
 
-export type IFetchQueryUsers = {
-  type: "keyword";
+export type IFetchQueryComments = {
+  type: "pid";
+  value: IDict<any>;
+};
+
+export type IFetchQueryScraps = {
+  type: "uid";
+  value: IDict<any>;
+};
+
+export type IFetchQueryAlarms = {
+  type: "uid";
   value: IDict<any>;
 };

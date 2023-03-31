@@ -7,13 +7,8 @@ import {
 import React, { Children, useEffect, useState } from "react";
 import { auth, db } from "../apis/firebase/fb";
 import Nav from "./Nav";
-import {
-  doc,
-  getDoc,
-  onSnapshot,
-  orderBy,
-} from "firebase/firestore";
-import { IUser } from "../apis/interface";
+import { doc, getDoc, setDoc } from "firebase/firestore";
+import { IUser } from "../apis/def";
 import { useUser } from "../stores/useUser";
 import { motion } from "framer-motion";
 import Image from "next/image";
@@ -27,7 +22,7 @@ import onboarding_3 from "../imgs/onboarding_3.svg";
 import useCustomRouter from "../hooks/useCustomRouter";
 import Modal from "./Modal";
 import icon_smile from "../imgs/icon_smile.svg";
-import { COLOR, SIZE } from "../apis/setting";
+import { COLOR, SIZE } from "../apis/def";
 
 interface ILayoutProps {
   children: React.ReactNode;
@@ -88,10 +83,15 @@ export default function Layout({ children }: ILayoutProps) {
         const snap = await getDoc(doc(db, "users", user.uid));
         if (!snap.data()) {
           const tempUser: IUser = {
-            ...DEFAULT.user,
             id: user.uid,
             email: String(user.email),
             displayName: `아카이버-${user.uid.slice(0, 11)}`,
+            photoURL:
+              "https://res.cloudinary.com/dl5qaj6le/image/upload/v1672976914/archive/static/default_user_photoURL.png",
+            txt: "",
+            followers: [],
+            followings: [],
+            createdAt: new Date(),
           };
           await setDoc(doc(db, "users", user.uid), tempUser);
         }

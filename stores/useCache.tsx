@@ -26,7 +26,7 @@ import {
   IFetchQueryUsers,
 } from "../apis/firebase/fbDef";
 import { convertCreatedAt } from "../apis/firebase/fb";
-import { IDict, IComment } from "../apis/interface";
+import { IDict, IComment } from "../apis/def";
 import { getTagsQuery } from "../apis/firebase/fbQueryTags";
 import { getUsersQuery } from "../apis/firebase/fbQueryUsers";
 import { getScrapsQuery } from "../apis/firebase/fbQueryScraps";

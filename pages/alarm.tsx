@@ -5,7 +5,7 @@ import React, { useState } from "react";
 import { viewAlarm, viewAlarms } from "../apis/fbUpdate";
 import useCustomRouter from "../hooks/useCustomRouter";
 import { useLoading } from "../hooks/useLoading";
-import { IAlarm } from "../apis/interface";
+import { IAlarm } from "../apis/def";
 import { useUser } from "../stores/useUser";
 import WrapPullToRefresh from "../components/wrappers/WrapPullToRefresh";
 import AlarmLike from "../components/AlarmLike";

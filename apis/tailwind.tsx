@@ -1,5 +1,5 @@
 // tailwindcss를 손쉽게 적용하게 하기 위한 api
-import { IDict } from "./interface";
+import { IDict } from "./def";
 
 export function mergeTailwindClasses(...classStrings: string[]) {
   /* className을 props로 전달할 때 props로 들어온 것들을 덮어쓰기 위한 함수

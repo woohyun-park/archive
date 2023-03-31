@@ -5,7 +5,7 @@ import PullToRefresh from "react-simple-pull-to-refresh";
 import { IFetchQueryComments } from "../apis/fbDef";
 import { db } from "../apis/firebase/fb";
 import { useCachedPage } from "../hooks/useCachedPage";
-import { IComment } from "../apis/interface";
+import { IComment } from "../apis/def";
 import { useUser } from "../stores/useUser";
 import Comment from "./Comment";
 

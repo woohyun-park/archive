@@ -3,8 +3,8 @@ import Image from "next/image";
 // import { useRouter } from "next/router";
 import { Children } from "react";
 import useCustomRouter from "../hooks/useCustomRouter";
-import { IPost } from "../apis/interface";
-import { COLOR } from "../apis/setting";
+import { IPost } from "../apis/def";
+import { COLOR } from "../apis/def";
 
 type IPostBoxType = "noText" | "title" | "titleAndTags";
 
