@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { IPost } from "../../apis/custom";
+import { IPost } from "../../apis/interface";
 import React from "react";
 import BtnIcon from "../../components/atoms/BtnIcon";
 import { useUser } from "../../stores/useUser";

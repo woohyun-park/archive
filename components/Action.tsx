@@ -1,7 +1,7 @@
 import React, { forwardRef } from "react";
 import { createLike, createScrap } from "../apis/firebase/fbCreate";
 import { deleteLike, deleteScrap } from "../apis/firebase/fbDelete";
-import { IPost, IUser } from "../apis/custom";
+import { IPost, IUser } from "../apis/interface";
 import BtnIcon from "./atoms/BtnIcon";
 
 interface IActionProps {

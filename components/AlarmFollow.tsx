@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { updateFollow } from "../apis/fbUpdate";
-import { IAlarm } from "../apis/custom";
+import { IAlarm } from "../apis/interface";
 import { displayCreatedAt } from "../libs/timeLib";
 import { useUser } from "../stores/useUser";
 import Btn from "./atoms/Btn";

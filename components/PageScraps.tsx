@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import React, { Children, useEffect } from "react";
 import { IFetchQueryScraps } from "../apis/fbDef";
 import { useCachedPage } from "../hooks/useCachedPage";
-import { IDict, IScrap, ITag, IUser } from "../apis/custom";
+import { IDict, IScrap, ITag, IUser } from "../apis/interface";
 import WrapMotion from "./wrappers/WrapMotion";
 import BtnIcon from "./atoms/BtnIcon";
 import PullToRefresh from "react-simple-pull-to-refresh";

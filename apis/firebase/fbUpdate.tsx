@@ -7,7 +7,7 @@ import {
   updateDoc,
   where,
 } from "firebase/firestore";
-import { IAlarm, IDict, IUser } from "../custom";
+import { IAlarm, IDict, IUser } from "../interface";
 import { createDoc } from "./fbCreate";
 import { deleteAll } from "./fbDelete";
 import { readDatasByQuery } from "./fbRead";

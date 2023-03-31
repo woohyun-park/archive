@@ -8,33 +8,26 @@ import React, { Children, useEffect, useState } from "react";
 import { auth, db } from "../apis/firebase/fb";
 import Nav from "./Nav";
 import {
-  collection,
   doc,
   getDoc,
   onSnapshot,
   orderBy,
-  query,
-  setDoc,
-  where,
 } from "firebase/firestore";
-import { COLOR, DEFAULT, IAlarm, IUser, SIZE } from "../apis/custom";
+import { IUser } from "../apis/interface";
 import { useUser } from "../stores/useUser";
-import Btn from "../components/atoms/Btn";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import WrapMotion from "./wrappers/WrapMotion";
-import { RiAppleFill, RiGoogleFill, RiKakaoTalkLine } from "react-icons/ri";
-import { SiNaver } from "react-icons/si";
+import { RiGoogleFill } from "react-icons/ri";
 import ScrollTop from "./atoms/ScrollTop";
-import ModalLoader from "./ModalLoader";
 import { useStatus } from "../stores/useStatus";
 import onboarding_1 from "../imgs/onboarding_1.svg";
 import onboarding_2 from "../imgs/onboarding_2.svg";
 import onboarding_3 from "../imgs/onboarding_3.svg";
-import { readAlarm } from "../apis/fbRead";
 import useCustomRouter from "../hooks/useCustomRouter";
 import Modal from "./Modal";
 import icon_smile from "../imgs/icon_smile.svg";
+import { COLOR, SIZE } from "../apis/setting";
 
 interface ILayoutProps {
   children: React.ReactNode;

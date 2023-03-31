@@ -1,4 +1,4 @@
-import { SIZE } from "../apis/custom";
+import { SIZE } from "../apis/interface";
 import { HiMagnifyingGlass } from "react-icons/hi2";
 import Link from "next/link";
 import WrapMotion from "../components/wrappers/WrapMotion";

@@ -4,7 +4,7 @@ import {
   QuerySnapshot,
 } from "firebase/firestore";
 import { IFetchType } from "../apis/fbDef";
-import { IDict } from "../apis/custom";
+import { IDict } from "../apis/interface";
 
 export async function wrapPromise(
   callback: Function,

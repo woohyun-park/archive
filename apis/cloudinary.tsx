@@ -1,3 +1,6 @@
+// cloudinary로 이미지를 손쉽게 업로드하기 위한 api
+
+import axios, { AxiosRequestConfig } from "axios";
 import {
   addDoc,
   collection,
@@ -7,12 +10,11 @@ import {
 } from "firebase/firestore";
 import { UseFormWatch } from "react-hook-form";
 import { createTags } from "../apis/firebase/fbCreate";
-import { deleteTags } from "../apis/fbDelete";
-import { readTagsOfPost } from "../apis/fbRead";
-import { uploadImage } from "../apis/fileApi";
+import { deleteTags } from "../apis/firebase/fbDelete";
+import { readTagsOfPost } from "../apis/firebase/fbRead";
 import { db } from "../apis/firebase/fb";
 import { IForm } from "../pages/add";
-import { IPost, ITag, IUser } from "./custom";
+import { IPost, IUser } from "./interface";
 
 type IHandleImage = IHandleColor & {
   watch: UseFormWatch<IForm>;
@@ -123,4 +125,23 @@ async function deleteAndCreateTags(
   const tagsToDelete = await readTagsOfPost(pid);
   deleteTags(tagsToDelete);
   createTags(tags, uid, pid);
+}
+
+async function uploadImage(file: File[]) {
+  const formData = new FormData();
+  const config: AxiosRequestConfig<FormData> = {
+    headers: { "Content-Type": "multipart/form-data" },
+  };
+  formData.append("api_key", process.env.NEXT_PUBLIC_CD_API_KEY || "");
+  formData.append(
+    "upload_preset",
+    process.env.NEXT_PUBLIC_CD_UPLOADE_PRESET || ""
+  );
+  formData.append(`file`, file[0]);
+
+  return await axios.post(
+    `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CD_CLOUD_NAME}/image/upload`,
+    formData,
+    config
+  );
 }

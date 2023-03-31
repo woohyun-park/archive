@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { IPost } from "../apis/custom";
+import { IPost } from "../apis/interface";
 import { useStatus } from "../stores/useStatus";
 import { useUser } from "../stores/useUser";
 import Profile from "./Profile";

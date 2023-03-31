@@ -1,5 +1,5 @@
 import { AnimatePresence } from "framer-motion";
-import { SIZE } from "../../apis/custom";
+import { SIZE } from "../../apis/interface";
 import BtnIcon from "./BtnIcon";
 import { ChangeEvent, forwardRef, MouseEvent } from "react";
 import WrapMotion from "../wrappers/WrapMotion";

@@ -8,7 +8,7 @@ import {
   setDoc,
   updateDoc,
 } from "firebase/firestore";
-import { IAlarm, IComment, ILike, IScrap, ITag } from "../custom";
+import { IAlarm, IComment, ILike, IScrap, ITag } from "../interface";
 import { db } from "./fb";
 
 // 한개의 데이터를 추가하는 create 함수들은 ref를 반환하고,

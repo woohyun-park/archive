@@ -10,10 +10,10 @@ import {
 } from "firebase/firestore";
 import Link from "next/link";
 import { db } from "../apis/firebase/fb";
-import { IAlarm, IPost, IUser } from "../apis/custom";
+import { IAlarm, IPost, IUser } from "../apis/interface";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { displayCreatedAt } from "../apis/timeLib";
+import { displayCreatedAt } from "../apis/time";
 import { useUser } from "../stores/useUser";
 import ProfileImg from "./ProfileImg";
 import ModifyAndDelete from "./ModifyAndDelete";

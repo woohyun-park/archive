@@ -1,13 +1,13 @@
 import React, { useRef, useState } from "react";
-import { COLOR, IPost, IDict } from "../apis/custom";
-import { useRouter } from "next/router";
+import { IPost, IDict } from "../apis/interface";
+import { COLOR } from "../apis/setting";
 import { useForm } from "react-hook-form";
 import Image from "next/image";
 import WrapMotion from "../components/wrappers/WrapMotion";
 import BtnIcon from "../components/atoms/BtnIcon";
 import { useUser } from "../stores/useUser";
 import FormInput from "../components/atoms/FormInput";
-import { handleColor, handleImage } from "../libs/formLib";
+import { handleColor, handleImage } from "../apis/cloudinary";
 import { useFormTag } from "../hooks/useFormTag";
 import FormTag from "../components/atoms/FormTag";
 import ColorBox from "../components/atoms/ColorBox";

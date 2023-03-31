@@ -2,7 +2,7 @@ import { deleteDoc, doc } from "firebase/firestore";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { db } from "../apis/firebase/fb";
-import { IPost, IUser } from "../apis/custom";
+import { IPost, IUser } from "../apis/interface";
 import { useRouter } from "next/router";
 import Action from "./Action";
 import Textarea from "./atoms/Textarea";

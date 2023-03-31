@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { IAlarm } from "../apis/custom";
+import { IAlarm } from "../apis/interface";
 import { displayCreatedAt } from "../libs/timeLib";
 import ProfileImg from "./ProfileImg";
 

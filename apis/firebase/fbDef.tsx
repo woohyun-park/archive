@@ -1,4 +1,4 @@
-import { IDict } from "../custom";
+import { IDict } from "../interface";
 
 export const FETCH_LIMIT = {
   alarms: 16,

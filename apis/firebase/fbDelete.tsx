@@ -1,5 +1,5 @@
 import { arrayRemove, deleteDoc, doc, updateDoc } from "firebase/firestore";
-import { IData, ITag } from "../custom";
+import { IData, ITag } from "../interface";
 import {
   readAlarmsOfPost,
   readCommentsOfPost,
