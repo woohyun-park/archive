@@ -1,1 +1,1 @@
-Project Link: https://archive-everything.netlify.app/
+Project Link: https://archiveeverything.netlify.app/
