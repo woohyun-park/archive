@@ -1,11 +1,10 @@
 import { useRouter } from "next/router";
-import React, { Children, useEffect } from "react";
-import { IFetchQueryScraps } from "../apis/fbDef";
+import React, { Children } from "react";
+import { IFetchQueryScraps } from "../apis/firebase/fbDef";
 import { useCachedPage } from "../hooks/useCachedPage";
 import { IDict, IScrap, ITag, IUser } from "../apis/def";
 import WrapMotion from "./wrappers/WrapMotion";
 import BtnIcon from "./atoms/BtnIcon";
-import PullToRefresh from "react-simple-pull-to-refresh";
 import WrapPullToRefresh from "./wrappers/WrapPullToRefresh";
 
 export interface IPageScrapsProps {

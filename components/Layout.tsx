@@ -8,7 +8,7 @@ import React, { Children, useEffect, useState } from "react";
 import { auth, db } from "../apis/firebase/fb";
 import Nav from "./Nav";
 import { doc, getDoc, setDoc } from "firebase/firestore";
-import { IUser } from "../apis/def";
+import { DEFAULT, IUser } from "../apis/def";
 import { useUser } from "../stores/useUser";
 import { motion } from "framer-motion";
 import Image from "next/image";
@@ -23,6 +23,7 @@ import useCustomRouter from "../hooks/useCustomRouter";
 import Modal from "./Modal";
 import icon_smile from "../imgs/icon_smile.svg";
 import { COLOR, SIZE } from "../apis/def";
+import { useLoading } from "../hooks/useLoading";
 
 interface ILayoutProps {
   children: React.ReactNode;
@@ -51,6 +52,8 @@ export default function Layout({ children }: ILayoutProps) {
   const { curUser, hasNewAlarms, setHasNewAlarms } = useUser();
 
   const path = router.asPath;
+
+  useLoading([]);
 
   useEffect(() => {
     auth.onAuthStateChanged(async (authState) => {

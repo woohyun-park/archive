@@ -11,7 +11,6 @@ import {
   readAlarms,
   readPost,
   readPosts,
-  readScraps,
   readUsers,
 } from "../apis/firebase/fbRead";
 import {
@@ -26,13 +25,13 @@ import {
   IFetchQueryUsers,
 } from "../apis/firebase/fbDef";
 import { convertCreatedAt } from "../apis/firebase/fb";
-import { IDict, IComment } from "../apis/def";
-import { getTagsQuery } from "../apis/firebase/fbQueryTags";
-import { getUsersQuery } from "../apis/firebase/fbQueryUsers";
-import { getScrapsQuery } from "../apis/firebase/fbQueryScraps";
+import { IDict, IComment, IScrap } from "../apis/def";
+import { getTagsQuery } from "../apis/firebase/query/fbQueryTags";
+import { getUsersQuery } from "../apis/firebase/query/fbQueryUsers";
+import { getScrapsQuery } from "../apis/firebase/query/fbQueryScraps";
 import { getAlarmsQuery } from "../apis/firebase/query/fbQueryAlarms";
-import { getCommentsQuery } from "../apis/firebase/fbQueryComments";
-import { getPostsQuery } from "../apis/firebase/fbQueryPosts";
+import { getCommentsQuery } from "../apis/firebase/query/fbQueryComments";
+import { getPostsQuery } from "../apis/firebase/query/fbQueryPosts";
 
 export type ICacheType =
   | "post"
@@ -146,7 +145,14 @@ async function fetchHelper(
         cache?.lastVisible
       )
     );
-    data = await readScraps(snap.docs);
+    data = [];
+    snap.forEach((doc) => {
+      const each = doc.data();
+      data.push({
+        ...each,
+        createdAt: convertCreatedAt(each.createdAt),
+      } as IScrap);
+    });
   } else if (cacheType === "alarms") {
     snap = await getDocs(
       getAlarmsQuery(
