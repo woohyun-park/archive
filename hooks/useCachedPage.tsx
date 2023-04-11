@@ -9,7 +9,7 @@ import {
   IFetchQueryScraps,
   IFetchQueryTags,
   IFetchQueryUsers,
-} from "../apis/fbDef";
+} from "../apis/firebase/fbDef";
 import { IAlarm, IComment, IPost, IScrap, ITag, IUser } from "../apis/def";
 import { ICacheType, useCache } from "../stores/useCache";
 

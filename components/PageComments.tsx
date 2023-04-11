@@ -2,7 +2,7 @@ import { deleteDoc, doc } from "firebase/firestore";
 import { AnimatePresence } from "framer-motion";
 import React from "react";
 import PullToRefresh from "react-simple-pull-to-refresh";
-import { IFetchQueryComments } from "../apis/fbDef";
+import { IFetchQueryComments } from "../apis/firebase/fbDef";
 import { db } from "../apis/firebase/fb";
 import { useCachedPage } from "../hooks/useCachedPage";
 import { IComment } from "../apis/def";

@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import WrapMotion from "../components/wrappers/WrapMotion";
 import { useUser } from "../stores/useUser";
 import InputIcon from "../components/atoms/InputIcon";
-import { updateUser } from "../apis/fbUpdate";
+import { updateUser } from "../apis/firebase/fbUpdate";
 import useCustomRouter from "../hooks/useCustomRouter";
 import { AnimatePresence } from "framer-motion";
 import BtnIcon from "../components/atoms/BtnIcon";

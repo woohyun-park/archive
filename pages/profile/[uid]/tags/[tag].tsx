@@ -4,7 +4,7 @@ import Motion from "../../../../components/wrappers/WrapMotion";
 import PagePosts from "../../../../components/PagePosts";
 import { useEffect, useState } from "react";
 import { IUser } from "../../../../apis/def";
-import { readData } from "../../../../apis/fbRead";
+import { readData } from "../../../../apis/firebase/fbRead";
 import { useLoading } from "../../../../hooks/useLoading";
 
 export default function ProfileTag({}) {

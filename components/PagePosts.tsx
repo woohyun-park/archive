@@ -1,6 +1,6 @@
 import { AnimatePresence } from "framer-motion";
 import React, { Children, useEffect, useState } from "react";
-import { IFetchQueryPosts } from "../apis/fbDef";
+import { IFetchQueryPosts } from "../apis/firebase/fbDef";
 import { useCachedPage } from "../hooks/useCachedPage";
 import useCustomRouter from "../hooks/useCustomRouter";
 import { IPost } from "../apis/def";

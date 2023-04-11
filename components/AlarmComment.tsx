@@ -1,8 +1,8 @@
 import Image from "next/image";
 import useCustomRouter from "../hooks/useCustomRouter";
 import { IAlarm } from "../apis/def";
-import { displayCreatedAt } from "../libs/timeLib";
 import ProfileImg from "./ProfileImg";
+import { displayCreatedAt } from "../apis/time";
 
 type IAlarmCommentProps = {
   alarm: IAlarm;

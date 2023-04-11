@@ -2,7 +2,7 @@ import BtnIcon from "../components/atoms/BtnIcon";
 import WrapMotion from "../components/wrappers/WrapMotion";
 import { AnimatePresence } from "framer-motion";
 import React, { useState } from "react";
-import { viewAlarm, viewAlarms } from "../apis/fbUpdate";
+import { viewAlarm, viewAlarms } from "../apis/firebase/fbUpdate";
 import useCustomRouter from "../hooks/useCustomRouter";
 import { useLoading } from "../hooks/useLoading";
 import { IAlarm } from "../apis/def";

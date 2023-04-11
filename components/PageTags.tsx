@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import React, { Children, useEffect, useState } from "react";
 import PullToRefresh from "react-simple-pull-to-refresh";
-import { IFetchQueryTags } from "../apis/fbDef";
+import { IFetchQueryTags } from "../apis/firebase/fbDef";
 import { useCachedPage } from "../hooks/useCachedPage";
 import { IDict, ITag } from "../apis/def";
 import WrapMotion from "./wrappers/WrapMotion";

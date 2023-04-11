@@ -8,7 +8,7 @@ import Action from "./Action";
 import Textarea from "./atoms/Textarea";
 import Btn from "./atoms/Btn";
 import { createComment } from "../apis/firebase/fbCreate";
-import { readComment } from "../apis/fbRead";
+import { readComment } from "../apis/firebase/fbRead";
 import { AnimatePresence } from "framer-motion";
 import Comment from "./Comment";
 import { useUser } from "../stores/useUser";

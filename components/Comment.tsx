@@ -4,7 +4,7 @@ import { HiX } from "react-icons/hi";
 import { db } from "../apis/firebase/fb";
 import { IComment, IUser } from "../apis/def";
 import WrapMotion from "./wrappers/WrapMotion";
-import { displayCreatedAt } from "../libs/timeLib";
+import { displayCreatedAt } from "../apis/time";
 import { useUser } from "../stores/useUser";
 import ProfileImg from "./ProfileImg";
 import { useRouter } from "next/router";
