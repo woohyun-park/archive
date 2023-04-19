@@ -188,8 +188,8 @@ export default function Layout({ children }: ILayoutProps) {
             <></>
           ) : (
             <div className="flex flex-col w-full h-[100vh] p-4 justify-between overflow-hidden">
-              <h1 className="hover:cursor-pointer title-logo">archive</h1>
-              <div className="flex flex-col items-center mt-8 mb-16 text-3xl">
+              <h1 className="z-10 hover:cursor-pointer title-logo">archive</h1>
+              <div className="flex flex-col items-center mt-8 mb-16 text-3xl absolute left-[50%] top-[50%] -translate-x-[50%] -translate-y-[50%]">
                 {Children.toArray(
                   message.map((e, i) =>
                     i === page ? (
@@ -208,7 +208,7 @@ export default function Layout({ children }: ILayoutProps) {
                     )
                   )
                 )}
-                <div className="flex justify-between m-auto mt-2 mb-20 w-14">
+                <div className="flex justify-between m-auto mt-2 mb-[4rem] w-14">
                   {Children.toArray(
                     message.map((e, i) =>
                       i === page ? (
