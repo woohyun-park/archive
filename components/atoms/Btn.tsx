@@ -12,7 +12,7 @@ interface IButtonProps {
 }
 
 const btn_base = [
-  "flex items-center justify-center h-10 px-4 py-2 text-base text-center text-white transition duration-150 ease-in-out bg-black rounded-lg hover:bg-black-f focus:bg-black-f focus:outline-none focus:ring-0 active:bg-black-f min-w-fit",
+  "flex items-center justify-center h-10 px-2 py-2 text-base text-center text-white transition duration-150 ease-in-out bg-black rounded-lg hover:bg-black-f focus:bg-black-f focus:outline-none focus:ring-0 active:bg-black-f min-w-fit",
 ];
 const btn_sm = [...btn_base, "h-8 px-4 text-sm"];
 const btn_inactive = [
