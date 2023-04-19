@@ -28,7 +28,7 @@ IModifyAndDeleteProps) {
           onClick={() => {
             router.push(
               {
-                pathname: "/add",
+                pathname: "/modify",
                 query: { post: JSON.stringify(post) },
               },
               "/modify"
