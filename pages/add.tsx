@@ -30,9 +30,8 @@ export default function Add() {
     : undefined;
 
   const { curUser } = useUser();
-  const { tag, tags, error, onChange, onDelete } = useFormTag(
-    prevPost ? prevPost.tags : []
-  );
+  const { tag, tags, error, onChange, onDelete, onKeyDown, onClick } =
+    useFormTag(prevPost ? prevPost.tags : []);
   const { setRefresh } = useStatus();
   useLoading([]);
 
@@ -97,10 +96,6 @@ export default function Add() {
     setValue("color", color);
     setStatus({ ...status, selectedColor: color });
   }
-  function checkKeyDown(e: React.KeyboardEvent<HTMLFormElement>) {
-    if (e.key === "Enter" && (e.target as HTMLElement).id !== "txt")
-      e.preventDefault();
-  }
 
   return (
     <WrapMotion type="fade" className="p-4 bg-white">
@@ -119,7 +114,7 @@ export default function Add() {
       </div>
       <form
         className="flex flex-col mt-4"
-        onKeyDown={checkKeyDown}
+        onKeyDown={onKeyDown}
         onSubmit={handleSubmit(
           (data) => onValid(data),
           (e: IDict<any>) => {
@@ -205,6 +200,8 @@ export default function Add() {
           error={error}
           onChange={onChange}
           onDelete={onDelete}
+          onClick={onClick}
+          isActive={tag !== ""}
         />
         <FormInput
           type="textarea"
