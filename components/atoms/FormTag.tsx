@@ -1,4 +1,4 @@
-import { Children } from "react";
+import React, { Children } from "react";
 import { HiX } from "react-icons/hi";
 
 interface IFormTag {
@@ -7,7 +7,8 @@ interface IFormTag {
   error: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onDelete: (e: React.MouseEvent<HTMLSpanElement, MouseEvent>) => void;
-  orderFirst?: "tag" | "input";
+  onClick: (e: React.MouseEvent<HTMLDivElement>) => void;
+  isActive: boolean;
 }
 
 export default function FormTag({
@@ -16,13 +17,15 @@ export default function FormTag({
   error,
   onChange,
   onDelete,
+  onClick,
+  isActive,
 }: IFormTag) {
   return (
     <>
       <div className="inputForm">
         <div className="inputForm_left">
           <label className="mr-1 inputForm_label">태그</label>
-          <div className="inputForm_txt">{!error && `${tags.length}/5`}</div>
+          <div className="inputForm_txt">{`${tags.length}/5`}</div>
         </div>
         <div
           className={
@@ -46,13 +49,25 @@ export default function FormTag({
           ))
         )}
       </div>
-      <input
-        onChange={onChange}
-        value={tag}
-        maxLength={17}
-        id="tag"
-        className="mb-4 input-base"
-      />
+      <div className="flex items-center justify-end w-full mb-4">
+        <input
+          onChange={onChange}
+          value={tag}
+          maxLength={16}
+          id="tag"
+          className="input-base"
+        />
+        <div
+          className={
+            isActive
+              ? "absolute m-2 text-2xl font-bold hover:cursor-pointer text-black"
+              : "absolute m-2 text-2xl font-bold hover:cursor-pointer text-gray-2"
+          }
+          onClick={onClick}
+        >
+          +
+        </div>
+      </div>
     </>
   );
 }
