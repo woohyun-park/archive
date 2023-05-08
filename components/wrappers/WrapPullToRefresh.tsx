@@ -32,8 +32,8 @@ export default function WrapPullToRefresh({
 
   return (
     <PullToRefresh
-      onRefresh={onRefresh}
-      onFetchMore={onFetchMore}
+      onRefresh={async () => await onRefresh()}
+      onFetchMore={async () => await onFetchMore()}
       canFetchMore={canFetchMore}
       pullingContent={<LoaderWithPadding />}
       refreshingContent={<LoaderWithPadding />}

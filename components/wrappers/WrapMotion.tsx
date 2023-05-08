@@ -1,12 +1,10 @@
 import { motion } from "framer-motion";
 import { MouseEventHandler } from "react";
 
-// framer-motion을 손쉽게 사용하기 위한 wrapper 컴포넌트
-
 type IMotion = "float" | "fade" | "swipeLeft" | "roll";
 
 type IWrapMotion = {
-  children: React.ReactNode;
+  children?: React.ReactNode;
   type: IMotion;
   key?: string;
   duration?: number;
