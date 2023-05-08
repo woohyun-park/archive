@@ -16,12 +16,12 @@ import WrapMotion from "./wrappers/WrapMotion";
 import { RiGoogleFill } from "react-icons/ri";
 import ScrollTop from "./atoms/ScrollTop";
 import { useStatus } from "../stores/useStatus";
-import onboarding_1 from "../imgs/onboarding_1.svg";
-import onboarding_2 from "../imgs/onboarding_2.svg";
-import onboarding_3 from "../imgs/onboarding_3.svg";
-import useCustomRouter from "../hooks/useCustomRouter";
+import onboarding_1 from "../assets/onboarding_1.svg";
+import onboarding_2 from "../assets/onboarding_2.svg";
+import onboarding_3 from "../assets/onboarding_3.svg";
 import icon_smile from "../imgs/icon_smile.svg";
 import { COLOR, SIZE } from "../apis/def";
+import { useCustomRouter } from "hooks";
 
 interface ILayoutProps {
   children: React.ReactNode;

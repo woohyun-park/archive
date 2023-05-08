@@ -8,8 +8,8 @@ import Profile from "./Profile";
 import WrapMotion from "./wrappers/WrapMotion";
 import { Children } from "react";
 import Btn from "./atoms/Btn";
-import useCustomRouter from "../hooks/useCustomRouter";
 import Tags from "./Tags";
+import { useCustomRouter } from "hooks";
 
 interface IPostCardProps {
   post: IPost;

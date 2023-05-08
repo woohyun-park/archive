@@ -1,4 +1,4 @@
-import { useRouter } from "next/router";
+import { NextRouter, useRouter } from "next/router";
 import { Url } from "url";
 import { wrapPromise } from "../stores/libStores";
 import { useCache } from "../stores/useCache";
@@ -13,7 +13,7 @@ export interface TransitionOptions {
   unstable_skipClientCache?: boolean | undefined;
 }
 
-export default function useCustomRouter() {
+export const useCustomRouter = () => {
   const router = useRouter();
 
   const { setModalLoader } = useStatus();
@@ -22,7 +22,7 @@ export default function useCustomRouter() {
 
   const path = router.asPath;
 
-  const customRouter = {
+  const customRouter: NextRouter = {
     ...router,
   };
 
@@ -54,4 +54,4 @@ export default function useCustomRouter() {
   };
 
   return customRouter;
-}
+};

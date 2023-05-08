@@ -1,6 +1,5 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { IPageParam } from "./types";
-import { formatPages } from "./utils/formatPages";
+import { IPageParam } from "hooks/pages/types";
 import {
   DocumentData,
   getDocs,
@@ -8,8 +7,9 @@ import {
   QueryDocumentSnapshot,
 } from "firebase/firestore";
 import { uniqueId } from "lodash";
+import { formatPages } from "./pages/utils/formatPages";
 
-const useService = (
+export const useInfinitePage = (
   queryKey: string[],
   queryFn: (docs: QueryDocumentSnapshot<DocumentData>[]) => Promise<any>,
   query: (pageParam: IPageParam) => {
@@ -39,12 +39,14 @@ const useService = (
       },
     }) => fetch(pageParam),
     getNextPageParam: (lastPage, allPages) => {
-      return {
-        id: lastPage.id,
-        isFirstPage: lastPage.id === allPages[0].id,
-        prevCursor: lastPage.prevCursor,
-        nextCursor: lastPage.nextCursor,
-      };
+      return lastPage.nextCursor
+        ? {
+            id: lastPage.id,
+            isFirstPage: lastPage.id === allPages[0].id,
+            prevCursor: lastPage.prevCursor,
+            nextCursor: lastPage.nextCursor,
+          }
+        : null;
     },
     refetchOnMount: false,
     refetchOnWindowFocus: false,
@@ -92,4 +94,3 @@ const useService = (
     error,
   };
 };
-export default useService;

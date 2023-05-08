@@ -1,6 +1,5 @@
 import { useRouter } from "next/router";
 import React, { Children } from "react";
-import PullToRefresh from "react-simple-pull-to-refresh";
 import { IFetchQueryUsers } from "../apis/firebase/fbDef";
 import { useCachedPage } from "../hooks/useCachedPage";
 import { IUser } from "../apis/def";

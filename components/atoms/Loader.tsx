@@ -1,44 +1,20 @@
-import { useEffect, useRef } from "react";
-import WrapMotion from "./wrappers/WrapMotion";
+import WrapMotion from "components/wrappers/WrapMotion";
 
-interface ILoaderProps {
-  isVisible?: boolean;
-  scrollIntoView?: boolean;
-}
-
-export default function Loader({
-  isVisible = true,
-  scrollIntoView = false,
-}: ILoaderProps) {
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    setTimeout(() => {
-      isVisible &&
-        scrollIntoView &&
-        ref.current?.scrollIntoView({ behavior: "smooth" });
-    }, 300);
-  }, [isVisible, scrollIntoView]);
-
+export default function Loader() {
   return (
     <>
-      <div
-        className={
-          isVisible
-            ? "flex justify-center h-[82px] duration-500 overflow-hidden bg-white"
-            : "flex justify-center h-0 duration-500 overflow-hidden bg-white"
-        }
-        ref={ref}
+      <WrapMotion
+        className="flex justify-center h-32 mb-24 overflow-hidden duration-500"
+        type="float"
+        key={crypto.randomUUID()}
       >
-        <WrapMotion type="float" key="loader_m1">
-          <div className="lds-ellipsis">
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-          </div>
-        </WrapMotion>
-      </div>
+        <div className="lds-ellipsis">
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+      </WrapMotion>
 
       <style jsx>
         {`

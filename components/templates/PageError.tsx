@@ -1,4 +1,4 @@
-import useCustomRouter from "../../hooks/useCustomRouter";
+import { useCustomRouter } from "hooks";
 import Message from "../Message";
 
 export default function PageError() {

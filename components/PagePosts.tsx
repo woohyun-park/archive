@@ -6,7 +6,7 @@ import useCustomRouter from "../hooks/useCustomRouter";
 import { IPost } from "../apis/def";
 import { wrapPromise } from "../stores/libStores";
 import { useStatus } from "../stores/useStatus";
-import Loader from "./Loader";
+import Loader from "./atoms/Loader";
 import PostBox from "./PostBox";
 import PostCard from "./PostCard";
 import WrapPullToRefresh from "./wrappers/WrapPullToRefresh";

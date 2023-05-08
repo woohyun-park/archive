@@ -8,17 +8,17 @@ import {
   startAt,
   where,
 } from "firebase/firestore";
-import { db } from "../apis/fb";
-import { FETCH_LIMIT } from "../apis/firebase/fbDef";
-import { readPosts } from "../apis/firebase/fbRead";
-import { useUser } from "../stores/useUser";
-import useService from "./useService";
-
-const fetchLimit = FETCH_LIMIT.postsCol1;
+import { db } from "apis/fb";
+import { readPosts } from "apis/firebase";
+import { useUser } from "stores/useUser";
+import { useInfinitePage } from "hooks";
+import { FETCH_LIMIT } from "consts/firebase";
 
 export default function useFeed() {
   const { curUser } = useUser();
   const { followings } = curUser;
+
+  const fetchLimit = FETCH_LIMIT.postsCol1;
 
   const {
     data,
@@ -29,7 +29,7 @@ export default function useFeed() {
     refetch,
     fetchNextPage,
     error,
-  } = useService(["feed"], readPosts, (pageParams) => {
+  } = useInfinitePage(["feed"], readPosts, (pageParams) => {
     return {
       init: query(
         collection(db, "posts"),

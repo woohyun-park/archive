@@ -1,46 +1,62 @@
-import React from "react";
+import Message from "components/atoms/Message";
+import React, { useEffect, useRef } from "react";
 import PullToRefresh from "react-simple-pull-to-refresh";
-import Loader from "../Loader";
+import { wrapPromise } from "stores/libStores";
+import Loader from "../atoms/Loader";
 
-// PullToRefresh를 손쉽게 사용하기 위한 wrapper 컴포넌트
-
-interface IWrapPullToRefresh {
+type Props = {
   children: React.ReactNode;
-  onRefresh: () => Promise<void>;
-  onFetchMore: () => Promise<void>;
-  canFetchMore?: boolean;
+  refetch: () => Promise<void>;
+  fetchNextPage: () => Promise<void>;
+  hasNextPage: boolean;
+  isFetchingNextPage: boolean;
   isPullable?: boolean;
   className?: string;
-}
+};
 
 export default function WrapPullToRefresh({
   children,
-  onRefresh,
-  onFetchMore,
-  canFetchMore = true,
+  refetch,
+  fetchNextPage,
+  hasNextPage,
+  isFetchingNextPage,
   isPullable = true,
-  className,
-}: IWrapPullToRefresh) {
-  function LoaderWithPadding() {
-    return (
-      <>
-        <Loader isVisible={true} />
-        <div className="pb-6" />
-      </>
-    );
-  }
+  className = "",
+}: Props) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (isFetchingNextPage) {
+      wrapPromise(
+        () => ref.current?.scrollIntoView({ behavior: "smooth", block: "end" }),
+        300
+      );
+    }
+  }, [isFetchingNextPage]);
 
   return (
-    <PullToRefresh
-      onRefresh={async () => await onRefresh()}
-      onFetchMore={async () => await onFetchMore()}
-      canFetchMore={canFetchMore}
-      pullingContent={<LoaderWithPadding />}
-      refreshingContent={<LoaderWithPadding />}
-      isPullable={isPullable}
-      className={className}
-    >
-      <>{children}</>
-    </PullToRefresh>
+    <>
+      <div ref={ref} className="bg-white">
+        <PullToRefresh
+          onRefresh={refetch}
+          onFetchMore={fetchNextPage}
+          canFetchMore={hasNextPage}
+          pullingContent={<Loader />}
+          refreshingContent={<Loader />}
+          isPullable={isPullable}
+          className={className}
+        >
+          <>{children}</>
+        </PullToRefresh>
+        {isFetchingNextPage && <Loader />}
+        {!hasNextPage && (
+          <Message
+            icon="wink"
+            message="모두 확인했습니다"
+            detailedMessage="팔로잉중인 아카이버들의 게시물을 모두 확인했습니다"
+          />
+        )}
+      </div>
+    </>
   );
 }

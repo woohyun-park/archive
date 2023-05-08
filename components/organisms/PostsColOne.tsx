@@ -7,6 +7,7 @@ import WrapPullToRefresh from "../wrappers/WrapPullToRefresh";
 export type IPostsColOne = {
   data: IPost[] | undefined;
   hasNextPage: boolean | undefined;
+  isFetchingNextPage: boolean;
   refetch: () => Promise<any>;
   fetchNextPage: () => Promise<any>;
 };
@@ -14,16 +15,17 @@ export type IPostsColOne = {
 export default function PostsColOne({
   data = [],
   hasNextPage = false,
+  isFetchingNextPage,
   refetch,
   fetchNextPage,
 }: IPostsColOne) {
   return (
     <>
       <WrapPullToRefresh
-        onRefresh={refetch}
-        onFetchMore={fetchNextPage}
-        canFetchMore={hasNextPage}
-        isPullable={true}
+        refetch={refetch}
+        fetchNextPage={fetchNextPage}
+        hasNextPage={hasNextPage}
+        isFetchingNextPage={isFetchingNextPage}
       >
         <AnimatePresence>
           {Children.toArray(

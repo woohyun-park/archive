@@ -1,16 +1,9 @@
+import BtnIcon from "components/atoms/BtnIcon";
+import ProfileImg from "components/ProfileImg";
 import { useCustomRouter } from "hooks";
-import { useUser } from "../../stores/useUser";
-import BtnIcon from "../atoms/BtnIcon";
-import PostsColOne, { IPostsColOne } from "../organisms/PostsColOne";
-import ProfileImg from "../ProfileImg";
+import { useUser } from "stores/useUser";
 
-export default function PageFeed({
-  data,
-  hasNextPage,
-  isFetchingNextPage,
-  refetch,
-  fetchNextPage,
-}: IPostsColOne) {
+export default function HeaderFeed({}) {
   const router = useCustomRouter();
   const { curUser, hasNewAlarms } = useUser();
 
@@ -36,13 +29,6 @@ export default function PageFeed({
           />
         </div>
       </div>
-      <PostsColOne
-        data={data}
-        hasNextPage={hasNextPage}
-        isFetchingNextPage={isFetchingNextPage}
-        refetch={refetch}
-        fetchNextPage={fetchNextPage}
-      />
     </div>
   );
 }

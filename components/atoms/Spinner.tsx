@@ -1,6 +1,6 @@
 import Image from "next/image";
 import WrapMotion from "../wrappers/WrapMotion";
-import icon_smile from "../../imgs/icon_smile.svg";
+import icon_smile from "../../assets/icon_smile.svg";
 
 export default function Spinner() {
   return (

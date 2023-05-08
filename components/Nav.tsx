@@ -1,10 +1,10 @@
+import { useCustomRouter } from "hooks";
 import {
   HiHome,
   HiOutlineHome,
   HiLightBulb,
   HiOutlineLightBulb,
 } from "react-icons/hi2";
-import useCustomRouter from "../hooks/useCustomRouter";
 import { SIZE } from "../apis/def";
 
 export default function Nav() {

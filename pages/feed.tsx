@@ -1,24 +1,35 @@
 import React from "react";
-import { useScrollBack } from "../hooks/useScrollBack";
-import useFeed from "../services/useFeed";
-import PageSpinner from "../components/templates/PageSpinner";
-import PageError from "../components/templates/PageError";
-import PageFeed from "../components/templates/PageFeed";
+import { useScrollBack } from "hooks";
+import { ModalSpinner, PageError } from "components/templates";
+import { HeaderFeed, PostsColOne } from "components/organisms";
+import { useFeed } from "hooks/pages";
 
 export default function Feed() {
-  const { isLoading, hasNextPage, error, data, fetchNextPage, refetch } =
-    useFeed();
+  const {
+    data,
+    isLoading,
+    isRefetching,
+    isFetchingNextPage,
+    hasNextPage,
+    error,
+    refetch,
+    fetchNextPage,
+  } = useFeed();
   useScrollBack();
 
-  if (isLoading) return <PageSpinner />;
-  if (error) return <PageError />;
+  if (isLoading) return <ModalSpinner />;
+  // if (error) return <PageError />;
 
   return (
-    <PageFeed
-      data={data}
-      hasNextPage={hasNextPage}
-      refetch={refetch}
-      fetchNextPage={fetchNextPage}
-    />
+    <>
+      <HeaderFeed />
+      <PostsColOne
+        data={data}
+        hasNextPage={hasNextPage}
+        isFetchingNextPage={isFetchingNextPage}
+        refetch={refetch}
+        fetchNextPage={fetchNextPage}
+      />
+    </>
   );
 }
