@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
+    "build": "carco build",
+    "start": "carco start",
     "lint": "next lint"
   },
   "dependencies": {
@@ -19,6 +19,7 @@
     "@types/react-router": "^5.1.20",
     "@types/react-router-transition": "^2.1.2",
     "axios": "^1.2.2",
+    "craco-alias": "^3.0.1",
     "eslint": "8.31.0",
     "eslint-config-next": "13.1.1",
     "firebase": "^9.15.0",
