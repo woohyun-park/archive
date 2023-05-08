@@ -1,15 +1,14 @@
 ---
-name: Feature
+name: Feat
 about: Suggest an idea for this project
-title: "[Feature]"
+title: "[Feat]"
 labels: enhancement
-assignees: ''
-
+assignees: ""
 ---
 
-## 이슈 내용
+## 기능 내용
 
-> 이슈 내용 요약 설명
+> 기능 내용 요약 설명
 
 ## 체크리스트
 
