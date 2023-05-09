@@ -1,4 +1,4 @@
-import Spinner from "../atoms/Spinner";
+import Spinner from "./Spinner";
 import WrapFullScreen from "../wrappers/WrapFullScreen";
 import ReactDOM from "react-dom";
 

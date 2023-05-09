@@ -1,6 +1,6 @@
 import { icon_sad, icon_smile, icon_wink, icon_empty } from "assets";
 import Image from "next/image";
-import WrapMotion from "components/wrappers/WrapMotion";
+import WrapMotion from "components/wrappers/motion/WrapMotionFloat";
 
 type Props = {
   icon: "none" | "sad" | "smile" | "wink" | "empty";

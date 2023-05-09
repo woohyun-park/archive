@@ -1,10 +1,9 @@
 import BtnIcon from "../components/atoms/BtnIcon";
-import WrapMotion from "../components/wrappers/WrapMotion";
+import WrapMotion from "../components/wrappers/motion/WrapMotionFloat";
 import { AnimatePresence } from "framer-motion";
 import React, { useState } from "react";
 import { viewAlarm, viewAlarms } from "../apis/firebase/fbUpdate";
 import useCustomRouter from "../hooks/useCustomRouter";
-import { useLoading } from "../hooks/useLoading";
 import { IAlarm } from "../apis/def";
 import { useUser } from "../stores/useUser";
 import WrapPullToRefresh from "../components/wrappers/WrapPullToRefresh";
@@ -17,8 +16,6 @@ export default function Alarm() {
   const { curUser } = useUser();
   const [alarms, setAlarms] = useState<IAlarm[]>(curUser.alarms || []);
   const router = useCustomRouter();
-
-  useLoading([]);
 
   return (
     <WrapMotion type="fade" className="mb-[6.125rem]">

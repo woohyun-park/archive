@@ -9,7 +9,7 @@ import {
 import { uniqueId } from "lodash";
 import { formatPages } from "./pages/utils/formatPages";
 
-export const useInfinitePage = (
+export const useInfiniteScroll = (
   queryKey: string[],
   queryFn: (docs: QueryDocumentSnapshot<DocumentData>[]) => Promise<any>,
   query: (pageParam: IPageParam) => {

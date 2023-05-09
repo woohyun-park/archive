@@ -4,7 +4,7 @@ import PullToRefresh from "react-simple-pull-to-refresh";
 import { IFetchQueryTags } from "../apis/firebase/fbDef";
 import { useCachedPage } from "../hooks/useCachedPage";
 import { IDict, ITag } from "../apis/def";
-import WrapMotion from "./wrappers/WrapMotion";
+import WrapMotion from "./wrappers/motion/WrapMotionFloat";
 import WrapPullToRefresh from "./wrappers/WrapPullToRefresh";
 
 export interface IPageTagsProps {

@@ -43,6 +43,10 @@ export async function readDatasByQuery<T>(q: Query) {
   return datas;
 }
 
+export async function readUser(id: string) {
+  return await readData<IUser>("users", id);
+}
+
 export async function readUsers(docs: QueryDocumentSnapshot<DocumentData>[]) {
   const res: IUser[] = [];
   for await (const doc of docs) {

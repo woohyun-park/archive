@@ -1,4 +1,4 @@
-import WrapMotion from "../components/wrappers/WrapMotion";
+import WrapMotion from "../components/wrappers/motion/WrapMotionFloat";
 import Feed from "./feed";
 
 export default function Index() {

@@ -1,5 +1,3 @@
-import WrapMotion from "./WrapMotion";
-
 type Props = {
   children?: React.ReactNode;
 };

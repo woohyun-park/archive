@@ -16,11 +16,8 @@ import { readDatasByQuery } from "./fbRead";
 import { db } from "./fb";
 
 export async function updateUser(field: IDict<any>) {
-  const filteredField = Object.fromEntries(
-    Object.entries(field).filter(([key, value]) => value)
-  );
-  await updateDoc(doc(db, "users", field.id), {
-    ...filteredField,
+  return await updateDoc(doc(db, "users", field.id), {
+    ...field,
   });
 }
 

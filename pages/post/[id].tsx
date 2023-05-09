@@ -4,7 +4,7 @@ import React from "react";
 import BtnIcon from "../../components/atoms/BtnIcon";
 import { useUser } from "../../stores/useUser";
 import CommentBox from "../../components/CommentBox";
-import Motion from "../../components/wrappers/WrapMotion";
+import Motion from "../../components/wrappers/motion/WrapMotionFloat";
 import ModifyAndDelete from "../../components/ModifyAndDelete";
 import Post from "../../components/Post";
 import { useCachedPage } from "../../hooks/useCachedPage";

@@ -6,19 +6,14 @@ import {
   query,
   startAfter,
   startAt,
-  where,
 } from "firebase/firestore";
 import { db } from "apis/fb";
 import { readPosts } from "apis/firebase";
-import { useUser } from "stores/useUser";
 import { useInfiniteScroll } from "hooks";
 import { FETCH_LIMIT } from "consts/firebase";
 
-export default function useFeed() {
-  const { curUser } = useUser();
-  const { followings } = curUser;
-
-  const fetchLimit = FETCH_LIMIT.postsCol1;
+export default function useDiscover() {
+  const fetchLimit = FETCH_LIMIT.postsCol3;
 
   const {
     data,
@@ -29,31 +24,27 @@ export default function useFeed() {
     refetch,
     fetchNextPage,
     error,
-  } = useInfiniteScroll(["feed"], readPosts, (pageParams) => {
+  } = useInfiniteScroll(["discover"], readPosts, (pageParams) => {
     return {
       init: query(
         collection(db, "posts"),
-        where("uid", "in", followings),
         orderBy("createdAt", "desc"),
         limit(fetchLimit)
       ),
       load: query(
         collection(db, "posts"),
-        where("uid", "in", followings),
         orderBy("createdAt", "desc"),
         startAfter(pageParams.nextCursor),
         limit(fetchLimit)
       ),
       refresh: query(
         collection(db, "posts"),
-        where("uid", "in", followings),
         orderBy("createdAt", "desc"),
         startAt(pageParams.prevCursor),
         limit(fetchLimit)
       ),
       refreshNew: query(
         collection(db, "posts"),
-        where("uid", "in", followings),
         orderBy("createdAt", "desc"),
         endAt(pageParams.nextCursor)
       ),

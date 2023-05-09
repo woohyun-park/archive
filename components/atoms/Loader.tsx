@@ -1,4 +1,4 @@
-import WrapMotion from "components/wrappers/WrapMotion";
+import WrapMotion from "components/wrappers/motion/WrapMotionFloat";
 
 export default function Loader() {
   return (

@@ -3,7 +3,7 @@ import { IPost, IDict } from "../apis/def";
 import { COLOR } from "../apis/def";
 import { useForm } from "react-hook-form";
 import Image from "next/image";
-import WrapMotion from "../components/wrappers/WrapMotion";
+import WrapMotion from "../components/wrappers/motion/WrapMotionFloat";
 import BtnIcon from "../components/atoms/BtnIcon";
 import { useUser } from "../stores/useUser";
 import FormInput from "../components/atoms/FormInput";
@@ -11,9 +11,8 @@ import { handleColor, handleImage } from "../apis/cloudinary";
 import { useFormTag } from "../hooks/useFormTag";
 import FormTag from "../components/atoms/FormTag";
 import ColorBox from "../components/atoms/ColorBox";
-import { useLoading } from "../hooks/useLoading";
 import { useStatus } from "../stores/useStatus";
-import useCustomRouter from "../hooks/useCustomRouter";
+import { useCustomRouter } from "hooks";
 
 export interface IForm {
   file: File[];
@@ -33,7 +32,6 @@ export default function Add() {
   const { tag, tags, error, onChange, onDelete, onKeyDown, onClick } =
     useFormTag(prevPost ? prevPost.tags : []);
   const { setRefresh } = useStatus();
-  useLoading([]);
 
   const [status, setStatus] = useState({
     selectedTab: prevPost ? (prevPost.imgs.length !== 0 ? true : false) : true,

@@ -2,7 +2,7 @@ import axios, { AxiosRequestConfig } from "axios";
 import { useRouter } from "next/router";
 import React, { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import WrapMotion from "../components/wrappers/WrapMotion";
+import WrapMotion from "../components/wrappers/motion/WrapMotionFloat";
 import Btn from "../components/atoms/Btn";
 import BtnIcon from "../components/atoms/BtnIcon";
 import { useUser } from "../stores/useUser";
@@ -11,7 +11,6 @@ import ProfileImg from "../components/ProfileImg";
 import { updateUser } from "../apis/firebase/fbUpdate";
 import { signOut } from "firebase/auth";
 import { auth } from "../apis/firebase/fb";
-import { useLoading } from "../hooks/useLoading";
 import { wrapPromise } from "../stores/libStores";
 import { useStatus } from "../stores/useStatus";
 
@@ -22,7 +21,6 @@ interface IForm {
 }
 
 export default function Setting() {
-  useLoading([]);
   const { curUser } = useUser();
   const [preview, setPreview] = useState(curUser.photoURL);
   const { setLogoutLoader } = useStatus();

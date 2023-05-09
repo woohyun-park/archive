@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import BtnIcon from "../../components/atoms/BtnIcon";
-import Motion from "../../components/wrappers/WrapMotion";
+import Motion from "../../components/wrappers/motion/WrapMotionFloat";
 import PagePosts from "../../components/PagePosts";
 import { useLoading } from "../../hooks/useLoading";
 

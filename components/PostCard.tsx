@@ -5,7 +5,7 @@ import { useUser } from "../stores/useUser";
 import Action from "./Action";
 import PostBox from "./PostBox";
 import Profile from "./Profile";
-import WrapMotion from "./wrappers/WrapMotion";
+import WrapMotion from "./wrappers/motion/WrapMotionFloat";
 import { Children } from "react";
 import Btn from "./atoms/Btn";
 import Tags from "./Tags";

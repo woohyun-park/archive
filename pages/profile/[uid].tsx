@@ -1,6 +1,6 @@
 import { IUser } from "../../apis/def";
 import { useEffect, useState } from "react";
-import Motion from "../../components/wrappers/WrapMotion";
+import Motion from "../../components/wrappers/motion/WrapMotionFloat";
 import { useUser } from "../../stores/useUser";
 import BtnIcon from "../../components/atoms/BtnIcon";
 import { useRouter } from "next/router";
@@ -8,14 +8,12 @@ import ProfileImg from "../../components/ProfileImg";
 import { readData } from "../../apis/firebase/fbRead";
 import { updateFollow } from "../../apis/firebase/fbUpdate";
 import PageTab from "../../components/PageTab";
-import { useLoading } from "../../hooks/useLoading";
 import { useCache } from "../../stores/useCache";
 
 export default function Profile() {
   const [user, setUser] = useState<IUser>();
   const { curUser } = useUser();
   const uid = user?.id || "";
-  useLoading(["tags", "scraps", "posts"]);
 
   const { caches } = useCache();
 

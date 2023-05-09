@@ -10,9 +10,9 @@ import Nav from "./Nav";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { DEFAULT, IUser } from "../apis/def";
 import { useUser } from "../stores/useUser";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
-import WrapMotion from "./wrappers/WrapMotion";
+import WrapMotion from "./wrappers/motion/WrapMotionFloat";
 import { RiGoogleFill } from "react-icons/ri";
 import ScrollTop from "./atoms/ScrollTop";
 import { useStatus } from "../stores/useStatus";
@@ -22,6 +22,8 @@ import onboarding_3 from "../assets/onboarding_3.svg";
 import icon_smile from "../imgs/icon_smile.svg";
 import { COLOR, SIZE } from "../apis/def";
 import { useCustomRouter } from "hooks";
+import { WrapMotionFade } from "./wrappers/motion";
+import { UserProvider } from "contexts/UserProvider";
 
 interface ILayoutProps {
   children: React.ReactNode;
@@ -50,10 +52,12 @@ export default function Layout({ children }: ILayoutProps) {
   const { curUser, hasNewAlarms, setHasNewAlarms } = useUser();
 
   const path = router.asPath;
+  const [id, setId] = useState("");
 
   useEffect(() => {
     auth.onAuthStateChanged(async (authState) => {
       if (authState) {
+        setId(authState.uid);
         const user = await getCurUser(authState.uid);
         setLogin({ ...login, isLoggedIn: true });
       } else {
@@ -160,11 +164,11 @@ export default function Layout({ children }: ILayoutProps) {
       {login.isLoggedIn === null ? (
         <></>
       ) : login.isLoggedIn ? (
-        <>
-          <div className="">{children}</div>
+        <UserProvider id={id}>
+          <WrapMotionFade key={router.asPath}>{children}</WrapMotionFade>
           {router.pathname === "/" && <ScrollTop />}
           <Nav />
-        </>
+        </UserProvider>
       ) : (
         <>
           {logoutLoader ? (

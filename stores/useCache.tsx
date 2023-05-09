@@ -14,7 +14,6 @@ import {
   readUsers,
 } from "../apis/firebase/fbRead";
 import {
-  FETCH_LIMIT,
   IFetchQueryPosts,
   IFetchType,
   IFetchQuery,
@@ -32,6 +31,7 @@ import { getScrapsQuery } from "../apis/firebase/query/fbQueryScraps";
 import { getAlarmsQuery } from "../apis/firebase/query/fbQueryAlarms";
 import { getCommentsQuery } from "../apis/firebase/query/fbQueryComments";
 import { getPostsQuery } from "../apis/firebase/query/fbQueryPosts";
+import { FETCH_LIMIT } from "consts/firebase";
 
 export type ICacheType =
   | "post"

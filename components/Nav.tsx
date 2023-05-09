@@ -63,7 +63,7 @@ export default function Nav() {
             onClick={() => router.push("/search")}
           >
             <div className="mb-1">
-              {path === "/search" || path === "/search-modal" ? (
+              {path === "/search" ? (
                 <HiLightBulb size={SIZE.icon} />
               ) : (
                 <HiOutlineLightBulb size={SIZE.icon} />

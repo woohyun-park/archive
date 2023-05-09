@@ -1,7 +1,6 @@
 import { useRouter } from "next/router";
 import BtnIcon from "../../../../components/atoms/BtnIcon";
 import PagePosts from "../../../../components/PagePosts";
-import PageTab from "../../../../components/PageTab";
 import { useUser } from "../../../../stores/useUser";
 
 export default function Scrap() {

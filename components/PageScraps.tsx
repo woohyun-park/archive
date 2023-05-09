@@ -3,7 +3,7 @@ import React, { Children } from "react";
 import { IFetchQueryScraps } from "../apis/firebase/fbDef";
 import { useCachedPage } from "../hooks/useCachedPage";
 import { IDict, IScrap, ITag, IUser } from "../apis/def";
-import WrapMotion from "./wrappers/WrapMotion";
+import WrapMotion from "./wrappers/motion/WrapMotionFloat";
 import BtnIcon from "./atoms/BtnIcon";
 import WrapPullToRefresh from "./wrappers/WrapPullToRefresh";
 

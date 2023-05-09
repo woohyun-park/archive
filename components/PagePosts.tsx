@@ -2,7 +2,6 @@ import { AnimatePresence } from "framer-motion";
 import React, { Children, useEffect, useState } from "react";
 import { IFetchQueryPosts } from "../apis/firebase/fbDef";
 import { useCachedPage } from "../hooks/useCachedPage";
-import useCustomRouter from "../hooks/useCustomRouter";
 import { IPost } from "../apis/def";
 import { wrapPromise } from "../stores/libStores";
 import { useStatus } from "../stores/useStatus";
@@ -10,6 +9,7 @@ import Loader from "./atoms/Loader";
 import PostBox from "./PostBox";
 import PostCard from "./PostCard";
 import WrapPullToRefresh from "./wrappers/WrapPullToRefresh";
+import { useCustomRouter } from "hooks";
 
 export interface IPagePostsProps {
   query: IFetchQueryPosts;

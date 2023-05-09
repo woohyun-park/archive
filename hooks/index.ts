@@ -3,12 +3,12 @@ import { useCustomRouter } from "./useCustomRouter";
 import { useFormTag } from "./useFormTag";
 import { useScrollBack } from "./useScrollBack";
 
-import { useInfinitePage } from "./useInfinitePage";
+import { useInfiniteScroll } from "./useInfiniteScroll";
 
 export {
   useCachedPage,
   useCustomRouter,
   useFormTag,
   useScrollBack,
-  useInfinitePage,
+  useInfiniteScroll,
 };
