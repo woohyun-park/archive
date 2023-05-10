@@ -1,3 +1,5 @@
+import { IDict } from "apis/def";
+
 export const FETCH_LIMIT = {
   alarms: 16,
   post: 1,
@@ -10,3 +12,5 @@ export const FETCH_LIMIT = {
   users: 16,
   comments: 16,
 };
+
+export type IField = { id: string } & IDict<any>;

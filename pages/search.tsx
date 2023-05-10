@@ -1,18 +1,17 @@
 import { SIZE } from "../apis/def";
 import React, { Children, useRef, useState } from "react";
-import WrapMotion from "../components/wrappers/motion/WrapMotionFloat";
-import InputIcon from "../components/atoms/InputIcon";
-import { updateUser } from "../apis/firebase/fbUpdate";
 import { AnimatePresence } from "framer-motion";
 import BtnIcon from "../components/atoms/BtnIcon";
 import { useCustomRouter } from "hooks";
-import SearchBarSearch from "components/pages/search/SearchBarSearch";
 import { InfinitePosts } from "components/common";
-import { useDiscover } from "hooks/pages";
 import { ModalSpinner } from "components/templates";
-import WrapMotionAccordion from "components/wrappers/motion/WrapMotionAccordion";
-import WrapMotionFade from "components/wrappers/motion/WrapMotionFade";
+import {
+  WrapMotionAccordion,
+  WrapMotionFade,
+} from "components/wrappers/motion";
 import { useUser } from "contexts/UserProvider";
+import useSearch from "hooks/pages/useSearch";
+import { SearchBar } from "components/pages/search";
 
 export default function Search() {
   const router = useCustomRouter();
@@ -79,14 +78,14 @@ export default function Search() {
     error,
     refetch,
     fetchNextPage,
-  } = useDiscover();
+  } = useSearch();
 
   if (isLoading) return <ModalSpinner />;
 
   return (
     <>
       <div className="relative overflow-hidden">
-        <SearchBarSearch
+        <SearchBar
           ref={searchBarRef}
           keyword={keyword}
           setKeyword={setKeyword}

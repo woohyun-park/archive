@@ -14,6 +14,7 @@ import { createDoc } from "./fbCreate";
 import { deleteAll } from "./fbDelete";
 import { readDatasByQuery } from "./fbRead";
 import { db } from "./fb";
+import { IField } from "consts/firebase";
 
 export async function updateUser(field: IDict<any>) {
   return await updateDoc(doc(db, "users", field.id), {
@@ -67,5 +68,13 @@ export function viewAlarms(alarms: IAlarm[]) {
       updateDoc(doc(db, "alarms", alarm.id), {
         isViewed: true,
       });
+  }
+}
+
+export async function updateAlarms(fields: IField[]) {
+  for (let field of fields) {
+    await updateDoc(doc(db, "alarms", field.id), {
+      ...field,
+    });
   }
 }

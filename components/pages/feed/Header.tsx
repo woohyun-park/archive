@@ -3,7 +3,7 @@ import ProfileImg from "components/ProfileImg";
 import { useCustomRouter } from "hooks";
 import { useUser } from "stores/useUser";
 
-export default function FeedHeader({}) {
+export default function Header({}) {
   const router = useCustomRouter();
   const { curUser, hasNewAlarms } = useUser();
 

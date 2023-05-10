@@ -12,7 +12,7 @@ import { readPosts } from "apis/firebase";
 import { useInfiniteScroll } from "hooks";
 import { FETCH_LIMIT } from "consts/firebase";
 
-export default function useDiscover() {
+export default function useSearch() {
   const fetchLimit = FETCH_LIMIT.postsCol3;
 
   const {

@@ -1,11 +1,11 @@
+import { IAlarm } from "apis/def";
+import { updateFollow } from "apis/firebase";
+import { displayCreatedAt } from "apis/time";
+import Btn from "components/atoms/Btn";
+import ProfileImg from "components/ProfileImg";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { updateFollow } from "../apis/firebase/fbUpdate";
-import { IAlarm } from "../apis/def";
-import { useUser } from "../stores/useUser";
-import Btn from "./atoms/Btn";
-import ProfileImg from "./ProfileImg";
-import { displayCreatedAt } from "../apis/time";
+import { useUser } from "stores/useUser";
 
 type IAlarmFollowProps = {
   alarm: IAlarm;

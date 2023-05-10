@@ -1,4 +1,4 @@
 import useFeed from "./useFeed";
-import useDiscover from "./useDiscover";
+import useSearch from "./useSearch";
 
-export { useFeed, useDiscover };
+export { useFeed, useSearch };

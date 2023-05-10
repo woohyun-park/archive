@@ -4,12 +4,18 @@ import {
   signInWithEmailAndPassword,
   signInWithPopup,
 } from "firebase/auth";
-import React, { Children, useEffect, useState } from "react";
+import React, {
+  Children,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { auth, db } from "../apis/firebase/fb";
 import Nav from "./Nav";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { DEFAULT, IUser } from "../apis/def";
-import { useUser } from "../stores/useUser";
+// import { useUser } from "../stores/useUser";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import WrapMotion from "./wrappers/motion/WrapMotionFloat";
@@ -22,7 +28,11 @@ import onboarding_3 from "../assets/onboarding_3.svg";
 import icon_smile from "../imgs/icon_smile.svg";
 import { COLOR, SIZE } from "../apis/def";
 import { useCustomRouter } from "hooks";
-import { WrapMotionFade } from "./wrappers/motion";
+import { WrapMotionFade, WrapMotionFloat } from "./wrappers/motion";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { readUser, updateUser } from "apis/firebase";
+import { USER_DEFAULT } from "consts/user";
+import { useUser } from "stores/useUser";
 import { UserProvider } from "contexts/UserProvider";
 
 interface ILayoutProps {
@@ -38,9 +48,18 @@ interface ILogin {
 }
 
 export default function Layout({ children }: ILayoutProps) {
+  const { data, refetch } = useQuery({
+    queryKey: ["user"],
+    queryFn: () => readUser(id),
+  });
+  const { mutate } = useMutation({
+    mutationFn: updateUser,
+    // onSuccess: () => refetch(),
+  });
+
   const provider = new GoogleAuthProvider();
   const router = useCustomRouter();
-  const { getCurUser } = useUser();
+  // const { getCurUser } = useUser();
   const { modalLoader, logoutLoader } = useStatus();
   const [login, setLogin] = useState<ILogin>({
     email: "",
@@ -49,7 +68,7 @@ export default function Layout({ children }: ILayoutProps) {
     isLoggedIn: null,
     error: "",
   });
-  const { curUser, hasNewAlarms, setHasNewAlarms } = useUser();
+  const { curUser, getCurUser, hasNewAlarms, setHasNewAlarms } = useUser();
 
   const path = router.asPath;
   const [id, setId] = useState("");
@@ -180,7 +199,7 @@ export default function Layout({ children }: ILayoutProps) {
                 {Children.toArray(
                   message.map((e, i) =>
                     i === page ? (
-                      <WrapMotion type="float">
+                      <WrapMotionFloat>
                         <Image
                           src={e[1]}
                           alt=""
@@ -189,7 +208,7 @@ export default function Layout({ children }: ILayoutProps) {
                         <div className="mb-8 -mt-8 text-lg leading-5 text-center">
                           {e[0]}
                         </div>
-                      </WrapMotion>
+                      </WrapMotionFloat>
                     ) : (
                       <></>
                     )

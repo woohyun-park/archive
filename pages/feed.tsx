@@ -1,9 +1,8 @@
 import React from "react";
 import { ModalSpinner } from "components/templates";
-import { InfinitePosts } from "components/common";
+import { InfinitePosts, Message } from "components/common";
 import { useFeed } from "hooks/pages";
-import Message from "components/common/Message";
-import FeedHeader from "components/pages/feed/HeaderFeed";
+import { Header } from "components/pages/feed";
 
 export default function Feed() {
   const {
@@ -23,7 +22,7 @@ export default function Feed() {
 
   return (
     <>
-      <FeedHeader />
+      <Header />
       <InfinitePosts
         numCols={1}
         data={data}

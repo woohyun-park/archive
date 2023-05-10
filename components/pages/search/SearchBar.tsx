@@ -1,10 +1,8 @@
 import InputIcon from "components/atoms/InputIcon";
 import useForwardRef from "hooks/useForwardRef";
-import { forwardRef, Ref, useState } from "react";
+import { forwardRef, Ref } from "react";
 import { AnimatePresence } from "framer-motion";
 import { WrapMotionSlide } from "components/wrappers/motion";
-import { useUser } from "contexts/UserProvider";
-import Router from "next/router";
 import { useCustomRouter } from "hooks";
 type Props = {
   keyword: string;
@@ -15,7 +13,7 @@ type Props = {
   refetch: Function;
 };
 
-const SearchBarSearch = (
+const SearchBar = (
   {
     keyword,
     setKeyword,
@@ -75,4 +73,4 @@ const SearchBarSearch = (
     </div>
   );
 };
-export default forwardRef<HTMLDivElement, Props>(SearchBarSearch);
+export default forwardRef<HTMLDivElement, Props>(SearchBar);
