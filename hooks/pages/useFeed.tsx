@@ -8,15 +8,15 @@ import {
   startAt,
   where,
 } from "firebase/firestore";
-import { db } from "apis/fb";
-import { readPosts } from "apis/firebase";
-import { useUser } from "stores/useUser";
+import { db, readPosts } from "apis/firebase";
 import { useInfiniteScroll } from "hooks";
 import { FETCH_LIMIT } from "consts/firebase";
+import { useUser } from "contexts/UserProvider";
 
 export default function useFeed() {
-  const { curUser } = useUser();
-  const { followings } = curUser;
+  const userContext = useUser();
+  const { followings } = userContext.data;
+  console.log(followings);
 
   const fetchLimit = FETCH_LIMIT.postsCol1;
 

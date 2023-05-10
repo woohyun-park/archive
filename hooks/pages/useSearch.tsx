@@ -7,8 +7,7 @@ import {
   startAfter,
   startAt,
 } from "firebase/firestore";
-import { db } from "apis/fb";
-import { readPosts } from "apis/firebase";
+import { db, readPosts } from "apis/firebase";
 import { useInfiniteScroll } from "hooks";
 import { FETCH_LIMIT } from "consts/firebase";
 

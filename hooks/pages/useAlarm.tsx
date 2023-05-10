@@ -8,8 +8,7 @@ import {
   startAt,
   where,
 } from "firebase/firestore";
-import { db } from "apis/fb";
-import { readAlarms, readPosts, updateAlarms } from "apis/firebase";
+import { readAlarms, readPosts, updateAlarms, db } from "apis/firebase";
 import { useInfiniteScroll } from "hooks";
 import { FETCH_LIMIT } from "consts/firebase";
 import { useUser } from "contexts/UserProvider";
