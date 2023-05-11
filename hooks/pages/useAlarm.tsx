@@ -8,16 +8,17 @@ import {
   startAt,
   where,
 } from "firebase/firestore";
-import { readAlarms, readPosts, updateAlarms, db } from "apis/firebase";
-import { useInfiniteScroll } from "hooks";
-import { FETCH_LIMIT } from "consts/firebase";
-import { useUser } from "contexts/UserProvider";
-import { useMutation } from "@tanstack/react-query";
-import { useEffect } from "react";
+import { db, readAlarms, updateAlarms } from "apis/firebase";
 
-export default function useAlarm() {
+import { FETCH_LIMIT } from "consts/firebase";
+import { IInfiniteScrollMutate } from "consts/infiniteScroll";
+import { useInfiniteScroll } from "hooks";
+import { useMutation } from "@tanstack/react-query";
+import { useUser } from "contexts/UserProvider";
+
+export default function useAlarm(): IInfiniteScrollMutate {
   const userContext = useUser();
-  const uid = userContext.data.id;
+  const uid = userContext.data?.id;
 
   const fetchLimit = FETCH_LIMIT.alarms;
 

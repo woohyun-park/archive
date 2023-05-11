@@ -1,6 +1,6 @@
+import ReactDOM from "react-dom";
 import Spinner from "./Spinner";
 import WrapFullScreen from "../wrappers/WrapFullScreen";
-import ReactDOM from "react-dom";
 
 export default function ModalSpinner() {
   return ReactDOM.createPortal(

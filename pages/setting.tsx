@@ -1,18 +1,17 @@
 import axios, { AxiosRequestConfig } from "axios";
+import { signOut } from "firebase/auth";
 import { useRouter } from "next/router";
 import React, { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import WrapMotion from "../components/wrappers/motion/WrapMotionFloat";
+import { auth, updateUser } from "../apis/firebase";
 import Btn from "../components/atoms/Btn";
 import BtnIcon from "../components/atoms/BtnIcon";
-import { useUser } from "../stores/useUser";
 import FormInput from "../components/atoms/FormInput";
 import ProfileImg from "../components/ProfileImg";
-import { updateUser } from "../apis/firebase/fbUpdate";
-import { signOut } from "firebase/auth";
-import { auth } from "../apis/firebase/fb";
+import WrapMotion from "../components/wrappers/motion/WrapMotionFloat";
 import { wrapPromise } from "../stores/libStores";
 import { useStatus } from "../stores/useStatus";
+import { useUser } from "../stores/useUser";
 
 interface IForm {
   file: File[];

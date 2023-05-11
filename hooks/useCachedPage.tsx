@@ -19,11 +19,11 @@ import { ICacheType, useCache } from "../stores/useCache";
 // query: 데이터를 가져올 때 쿼리에 사용될 값들 (e.g. {uid, keyword})
 // option: 그 이외 자잘한 옵션들
 
-export const useCachedPage = (
+export default function useCachedPage(
   type: ICacheType,
   query: IFetchQuery,
   option?: { as?: string; numCols?: number; isPullable?: boolean }
-) => {
+) {
   const router = useRouter();
   const { caches, fetchCache } = useCache();
 
@@ -103,4 +103,4 @@ export const useCachedPage = (
     onRefresh,
     onFetchMore,
   };
-};
+}

@@ -9,15 +9,16 @@ import {
   where,
 } from "firebase/firestore";
 import { db, readPosts } from "apis/firebase";
-import { useInfiniteScroll } from "hooks";
+
 import { FETCH_LIMIT } from "consts/firebase";
+import { IInfiniteScroll } from "consts/infiniteScroll";
+import { useInfiniteScroll } from "hooks";
 import { useUser } from "contexts/UserProvider";
 
-export default function useFeed() {
+export default function useFeed(): IInfiniteScroll {
   const userContext = useUser();
-  const { followings } = userContext.data;
-  console.log(followings);
 
+  const followings = userContext.data?.followings || [];
   const fetchLimit = FETCH_LIMIT.postsCol1;
 
   const {

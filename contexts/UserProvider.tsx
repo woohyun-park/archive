@@ -1,7 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { IUser } from "apis/def";
 import { readUser, updateUser } from "apis/firebase";
-import { USER_DEFAULT } from "consts/auth";
 import React, { createContext, useContext } from "react";
 
 type IUserContext = {
@@ -12,8 +11,8 @@ type IUserContext = {
 
 const UserContext = createContext<IUserContext>({
   data: undefined,
-  mutate: () => {},
-  refetch: () => {},
+  mutate: () => Promise<any>,
+  refetch: () => Promise<any>,
 });
 
 export const useUser = () => useContext(UserContext);
@@ -25,10 +24,9 @@ export function UserProvider({
   children: React.ReactNode;
   id: string;
 }) {
-  console.log("UserProvider", id);
   const { data, refetch } = useQuery({
     queryKey: ["user"],
-    queryFn: () => readUser(id),
+    queryFn: async () => await readUser(id),
   });
   const { mutate } = useMutation({
     mutationFn: updateUser,

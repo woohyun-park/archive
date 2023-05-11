@@ -1,31 +1,17 @@
-import useAlarm from "hooks/pages/useAlarm";
-import InfiniteAlarms from "components/common/InfiniteAlarms";
 import { Header } from "components/pages/alarm";
+import InfiniteAlarms from "components/common/InfiniteAlarms";
+import { ModalSpinner } from "components/templates";
+import useAlarm from "hooks/pages/useAlarm";
 
 export default function Alarm() {
-  const {
-    data,
-    isLoading,
-    isRefetching,
-    isFetchingNextPage,
-    hasNextPage,
-    error,
-    refetch,
-    fetchNextPage,
-    mutate,
-  } = useAlarm();
+  const infiniteScroll = useAlarm();
+
+  if (infiniteScroll.isLoading) return <ModalSpinner />;
 
   return (
     <>
-      <Header alarms={data} mutate={mutate} />
-      <InfiniteAlarms
-        data={data}
-        hasNextPage={hasNextPage}
-        isFetchingNextPage={isFetchingNextPage}
-        mutate={mutate}
-        refetch={refetch}
-        fetchNextPage={fetchNextPage}
-      />
+      <Header alarms={infiniteScroll.data} mutate={infiniteScroll.mutate} />
+      <InfiniteAlarms infiniteScroll={infiniteScroll} />
     </>
   );
 }

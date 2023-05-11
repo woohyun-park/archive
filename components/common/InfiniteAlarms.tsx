@@ -1,38 +1,37 @@
-import Message from "components/Message";
 import { AlarmComment, AlarmFollow, AlarmLike } from "components/pages/alarm";
 import { WrapMotionFade, WrapMotionFloat } from "components/wrappers/motion";
+
+import { IInfiniteScrollMutate } from "consts/infiniteScroll";
+import Message from "components/Message";
 import React from "react";
-import { IAlarm } from "apis/def";
-import { IField } from "consts/firebase";
 import WrapPullToRefresh from "components/wrappers/WrapPullToRefresh";
 
 type Props = {
-  data: IAlarm[] | undefined;
-  hasNextPage: boolean | undefined;
-  isFetchingNextPage: boolean;
-  refetch: () => Promise<any>;
-  fetchNextPage: () => Promise<any>;
-  mutate: (fields: IField[]) => void;
+  infiniteScroll: IInfiniteScrollMutate;
+
   lastPage?: React.ReactNode;
   className?: string;
 };
 
 export default function InfiniteAlarms({
-  data = [],
-  hasNextPage = false,
-  isFetchingNextPage,
-  refetch,
-  mutate,
-  fetchNextPage,
+  infiniteScroll,
   lastPage,
   className,
 }: Props) {
+  const {
+    refetch,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    data,
+    mutate,
+  } = infiniteScroll;
   return (
     <WrapMotionFade className={className}>
       <WrapPullToRefresh
         refetch={refetch}
         fetchNextPage={fetchNextPage}
-        hasNextPage={hasNextPage}
+        hasNextPage={hasNextPage || false}
         isFetchingNextPage={isFetchingNextPage}
         lastPage={lastPage}
       >

@@ -8,10 +8,12 @@ import {
   startAt,
 } from "firebase/firestore";
 import { db, readPosts } from "apis/firebase";
-import { useInfiniteScroll } from "hooks";
-import { FETCH_LIMIT } from "consts/firebase";
 
-export default function useSearch() {
+import { FETCH_LIMIT } from "consts/firebase";
+import { IInfiniteScroll } from "consts/infiniteScroll";
+import { useInfiniteScroll } from "hooks";
+
+export default function useSearch(): IInfiniteScroll {
   const fetchLimit = FETCH_LIMIT.postsCol3;
 
   const {

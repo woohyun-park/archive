@@ -1,9 +1,9 @@
 import InputIcon from "components/atoms/InputIcon";
-import useForwardRef from "hooks/useForwardRef";
-import { forwardRef, Ref } from "react";
-import { AnimatePresence } from "framer-motion";
 import { WrapMotionSlide } from "components/wrappers/motion";
-import { useCustomRouter } from "hooks";
+import { AnimatePresence } from "framer-motion";
+import { useForwardRef } from "hooks";
+import { forwardRef, Ref } from "react";
+
 type Props = {
   keyword: string;
   setKeyword: Function;
@@ -26,21 +26,16 @@ const SearchBar = (
 ) => {
   const forwardRef = useForwardRef<HTMLDivElement>(ref);
 
-  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setKeyword(e.currentTarget.value);
-  }
-
-  function handleClear() {
+  };
+  const handleClear = () => {
     setKeyword("");
     forwardRef.current.focus();
-  }
-
-  const router = useCustomRouter();
-  async function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
-    if (e.key === "Enter") {
-      onSearch();
-    }
-  }
+  };
+  const handleKeyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {
+    e.key === "Enter" && onSearch();
+  };
 
   return (
     <div className="flex p-4" ref={forwardRef}>

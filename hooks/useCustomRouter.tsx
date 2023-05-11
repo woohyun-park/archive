@@ -13,7 +13,7 @@ export interface TransitionOptions {
   unstable_skipClientCache?: boolean | undefined;
 }
 
-export const useCustomRouter = () => {
+export default function useCustomRouter() {
   const router = useRouter();
 
   const { setModalLoader } = useStatus();
@@ -54,4 +54,4 @@ export const useCustomRouter = () => {
   };
 
   return customRouter;
-};
+}

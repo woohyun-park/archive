@@ -1,9 +1,10 @@
-import { useCachedPage } from "./useCachedPage";
-import { useCustomRouter } from "./useCustomRouter";
-import { useFormTag } from "./useFormTag";
-import { useScrollBack } from "./useScrollBack";
-
-import { useInfiniteScroll } from "./useInfiniteScroll";
+import useCachedPage from "./useCachedPage";
+import useCustomRouter from "./useCustomRouter";
+import useFormTag from "./useFormTag";
+import useForwardRef from "./useForwardRef";
+import useInfiniteScroll from "./useInfiniteScroll";
+import useOutsideClick from "./useOutsideClick";
+import useScrollBack from "./useScrollBack";
 
 export {
   useCachedPage,
@@ -11,4 +12,6 @@ export {
   useFormTag,
   useScrollBack,
   useInfiniteScroll,
+  useOutsideClick,
+  useForwardRef,
 };

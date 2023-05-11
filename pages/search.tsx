@@ -1,89 +1,45 @@
-import { SIZE } from "../apis/def";
-import React, { Children, useRef, useState } from "react";
-import { AnimatePresence } from "framer-motion";
-import BtnIcon from "../components/atoms/BtnIcon";
-import { useCustomRouter } from "hooks";
-import { InfinitePosts } from "components/common";
+import { Discover, RecentSearchList, SearchBar } from "components/pages/search";
 import { ModalSpinner } from "components/templates";
-import {
-  WrapMotionAccordion,
-  WrapMotionFade,
-} from "components/wrappers/motion";
-import { useUser } from "contexts/UserProvider";
-import useSearch from "hooks/pages/useSearch";
-import { SearchBar } from "components/pages/search";
-import useOutsideClick from "hooks/useOutsideClick";
+import { useUser } from "contexts";
+import { useCustomRouter, useOutsideClick } from "hooks";
+import { useSearch } from "hooks/pages";
+import { useRef, useState } from "react";
 
 export default function Search() {
-  const router = useCustomRouter();
-  const searchBarRef = useRef<HTMLDivElement>(null);
-  const recentRef = useRef<HTMLDivElement>(null);
   const [isSearching, setIsSearching] = useState(false);
   const [keyword, setKeyword] = useState("");
+  const searchBarRef = useRef<HTMLDivElement>(null);
   const contRef = useRef<HTMLDivElement>(null);
+
+  const router = useCustomRouter();
+  const { data: user, mutate: mutateUser, refetch: refetchUser } = useUser();
+  const infiniteScroll = useSearch();
 
   useOutsideClick(contRef, () => setIsSearching(false));
 
-  const userContext = useUser();
+  const getNewSearchHistory = (arr: string[] | undefined, keyword: string) => {
+    if (arr) {
+      const index = arr.indexOf(keyword);
+      return index === -1
+        ? [keyword, ...arr]
+        : [
+            keyword,
+            ...arr.slice(0, index),
+            ...arr.slice(index + 1, arr.length),
+          ];
+    }
+    return [keyword];
+  };
 
-  function handleDeleteHistoryAll(e: React.MouseEvent<HTMLElement>) {
-    userContext.mutate({
-      ...userContext.data,
-      history: [],
+  const handleSearch = () => {
+    mutateUser({
+      id: user?.id,
+      history: getNewSearchHistory(user?.history, keyword),
     });
-  }
-
-  function handleDeleteHistory(e: React.MouseEvent<HTMLElement>) {
-    const history = userContext.data?.history;
-    const id = e.currentTarget.id;
-    if (history) {
-      userContext.mutate({
-        ...userContext.data,
-        history: [
-          ...history.slice(0, Number(id)),
-          ...history.slice(Number(id) + 1, history.length),
-        ],
-      });
-    }
-  }
-
-  function handleSearch() {
-    const newUser: { id: string; history: string[] } = {
-      id: userContext.data?.id || "",
-      history: [],
-    };
-    if (userContext.data?.history) {
-      const index = userContext.data.history.indexOf(keyword);
-      newUser.history =
-        index === -1
-          ? [keyword, ...userContext.data.history]
-          : [
-              keyword,
-              ...userContext.data.history.slice(0, index),
-              ...userContext.data.history.slice(
-                index + 1,
-                userContext.data.history.length
-              ),
-            ];
-    } else {
-      newUser.history = [keyword];
-    }
-    userContext.mutate(newUser);
     router.push(`/search/${keyword}`);
-  }
+  };
 
-  const {
-    data,
-    isLoading,
-    isRefetching,
-    isFetchingNextPage,
-    hasNextPage,
-    error,
-    refetch,
-    fetchNextPage,
-  } = useSearch();
-
-  if (isLoading) return <ModalSpinner />;
+  if (infiniteScroll.isLoading) return <ModalSpinner />;
 
   return (
     <>
@@ -95,75 +51,21 @@ export default function Search() {
           isSearching={isSearching}
           setIsSearching={setIsSearching}
           onSearch={handleSearch}
-          refetch={userContext.refetch}
+          refetch={refetchUser}
         />
         {!isSearching ? (
-          <div className="overflow-scroll" id="search_posts">
-            <InfinitePosts
-              numCols={3}
-              data={data}
-              hasNextPage={hasNextPage}
-              isFetchingNextPage={isFetchingNextPage}
-              refetch={refetch}
-              fetchNextPage={fetchNextPage}
-              className="mx-4 mb-32"
-            />
-          </div>
+          <Discover
+            infiniteScroll={infiniteScroll}
+            searchBarRef={searchBarRef}
+          />
         ) : (
-          <WrapMotionFade key="search">
-            <div
-              ref={recentRef}
-              className={`overflow-scroll bg-white h-[calc(100vh-${searchBarRef.current?.clientHeight}px)]`}
-              id="search_searchBar"
-            >
-              <div className="flex justify-between mx-4 mb-2 text-xs text-gray-2">
-                <div>최근 검색어</div>
-                <div
-                  className="hover:cursor-pointer"
-                  onClick={handleDeleteHistoryAll}
-                >
-                  모두 삭제
-                </div>
-              </div>
-              <AnimatePresence>
-                {Children.toArray(
-                  [...(userContext.data?.history || [])]
-                    ?.filter(
-                      (each) => keyword === "" || each.indexOf(keyword) === 0
-                    )
-                    .map((e, i) => (
-                      <WrapMotionAccordion
-                        className="flex items-center justify-between mx-4 hover:cursor-pointer"
-                        direction="y"
-                        offset="3rem"
-                        key={e}
-                      >
-                        <div className="" onClick={handleSearch}>
-                          {e}
-                        </div>
-                        <div
-                          className="flex items-center hover:cursor-pointer"
-                          id={String(i)}
-                          onClick={handleDeleteHistory}
-                        >
-                          <BtnIcon icon="delete" size={SIZE.iconXs} />
-                        </div>
-                      </WrapMotionAccordion>
-                    ))
-                )}
-              </AnimatePresence>
-            </div>
-          </WrapMotionFade>
+          <RecentSearchList
+            keyword={keyword}
+            searchBarRef={searchBarRef}
+            onSearch={handleSearch}
+          />
         )}
       </div>
-      <style jsx>{`
-        #search_posts {
-          height: calc(100vh - ${searchBarRef.current?.clientHeight}px);
-        }
-        #search_searchBar {
-          height: calc(100vh - ${searchBarRef.current?.clientHeight}px);
-        }
-      `}</style>
     </>
   );
 }

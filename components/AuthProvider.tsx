@@ -1,13 +1,13 @@
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { GoogleAuthProvider, User, signInWithPopup } from "firebase/auth";
 import React, { useEffect, useState } from "react";
-import { auth, db } from "../apis/firebase/fb";
+import { auth, db } from "../apis/firebase";
 import { doc, getDoc, setDoc } from "firebase/firestore";
-import { useCustomRouter } from "hooks";
-import { UserProvider, useUser } from "contexts/UserProvider";
+
+import { AUTH_USER_DEFAULT } from "consts/auth";
 import Login from "./pages/login/Login";
-import { ProtectRoute } from "routes/ProtectedRoute";
-import Layout from "./common/Layout";
-import { getNewUser } from "utils/auth";
+import { ProtectedRoute } from "routes";
+import { UserProvider } from "contexts/UserProvider";
+import { useCustomRouter } from "hooks";
 
 type Props = {
   children: React.ReactNode;
@@ -15,24 +15,18 @@ type Props = {
 
 type ILogin = {
   id: string;
-  email: string;
-  password: string;
-  isNewAccount: boolean;
   isLoggedIn: boolean | null;
-  error: string;
 };
 
 export default function AuthProvider({ children }: Props) {
   const provider = new GoogleAuthProvider();
-  const router = useCustomRouter();
+
   const [login, setLogin] = useState<ILogin>({
     id: "",
-    email: "",
-    password: "",
-    isNewAccount: false,
     isLoggedIn: null,
-    error: "",
   });
+
+  const router = useCustomRouter();
 
   useEffect(() => {
     auth.onAuthStateChanged(async (authState) => {
@@ -45,7 +39,17 @@ export default function AuthProvider({ children }: Props) {
     });
   }, []);
 
-  function handleSocialLogin() {
+  const getNewUser = (user: User) => {
+    return {
+      ...AUTH_USER_DEFAULT,
+      id: user.uid,
+      email: String(user.email),
+      displayName: `아카이버-${user.uid.slice(0, 11)}`,
+      createdAt: new Date(),
+    };
+  };
+
+  const handleSocialLogin = () => {
     signInWithPopup(auth, provider)
       .then(async ({ user }) => {
         const snap = await getDoc(doc(db, "users", user.uid));
@@ -56,7 +60,7 @@ export default function AuthProvider({ children }: Props) {
       .catch((e) => {
         console.log(e.message);
       });
-  }
+  };
 
   return (
     <>
@@ -64,9 +68,7 @@ export default function AuthProvider({ children }: Props) {
         <></>
       ) : login.isLoggedIn ? (
         <UserProvider id={login.id}>
-          <ProtectRoute>
-            <Layout>{children}/</Layout>
-          </ProtectRoute>
+          <ProtectedRoute>{children}</ProtectedRoute>
         </UserProvider>
       ) : (
         <Login onSocialLogin={handleSocialLogin} />
