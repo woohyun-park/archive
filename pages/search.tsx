@@ -12,14 +12,17 @@ import {
 import { useUser } from "contexts/UserProvider";
 import useSearch from "hooks/pages/useSearch";
 import { SearchBar } from "components/pages/search";
+import useOutsideClick from "hooks/useOutsideClick";
 
 export default function Search() {
   const router = useCustomRouter();
   const searchBarRef = useRef<HTMLDivElement>(null);
   const recentRef = useRef<HTMLDivElement>(null);
   const [isSearching, setIsSearching] = useState(false);
-  const [isRouting, setIsRouting] = useState(false);
   const [keyword, setKeyword] = useState("");
+  const contRef = useRef<HTMLDivElement>(null);
+
+  useOutsideClick(contRef, () => setIsSearching(false));
 
   const userContext = useUser();
 
@@ -31,7 +34,7 @@ export default function Search() {
   }
 
   function handleDeleteHistory(e: React.MouseEvent<HTMLElement>) {
-    const history = userContext.data.history;
+    const history = userContext.data?.history;
     const id = e.currentTarget.id;
     if (history) {
       userContext.mutate({
@@ -46,10 +49,10 @@ export default function Search() {
 
   function handleSearch() {
     const newUser: { id: string; history: string[] } = {
-      id: userContext.data.id,
+      id: userContext.data?.id || "",
       history: [],
     };
-    if (userContext.data.history) {
+    if (userContext.data?.history) {
       const index = userContext.data.history.indexOf(keyword);
       newUser.history =
         index === -1
@@ -84,7 +87,7 @@ export default function Search() {
 
   return (
     <>
-      <div className="relative overflow-hidden">
+      <div className="relative overflow-hidden" ref={contRef}>
         <SearchBar
           ref={searchBarRef}
           keyword={keyword}
@@ -124,7 +127,7 @@ export default function Search() {
               </div>
               <AnimatePresence>
                 {Children.toArray(
-                  [...(userContext.data.history || [])]
+                  [...(userContext.data?.history || [])]
                     ?.filter(
                       (each) => keyword === "" || each.indexOf(keyword) === 0
                     )

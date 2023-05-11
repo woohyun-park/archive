@@ -52,7 +52,7 @@ const SearchBar = (
           onClear={handleClear}
           onKeyDown={handleKeyDown}
           onFocus={async () => {
-            console.log(await refetch());
+            await refetch();
             setIsSearching(true);
           }}
         />
