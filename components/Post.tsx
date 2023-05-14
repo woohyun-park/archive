@@ -1,17 +1,17 @@
-import Image from "next/image";
 import { IPost } from "../apis/def";
-import { useStatus } from "../stores/useStatus";
-import { useUser } from "../stores/useUser";
+import Image from "next/image";
 import Profile from "./Profile";
-import useCustomRouter from "../hooks/useCustomRouter";
 import Tags from "./Tags";
+import useCustomRouter from "../hooks/useCustomRouter";
+import { useStatus } from "../stores/useStatus";
+import { useUser } from "providers";
 
 interface IPostProps {
   post: IPost;
 }
 
 export default function Post({ post }: IPostProps) {
-  const { curUser } = useUser();
+  const { data: curUser } = useUser();
   const { setModalLoader } = useStatus();
 
   const router = useCustomRouter();

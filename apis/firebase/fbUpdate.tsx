@@ -1,5 +1,6 @@
 // firebase에 데이터 업데이트를 위한 api
 
+import { IAlarm, IDict, IUser } from "../def";
 import {
   arrayRemove,
   arrayUnion,
@@ -9,12 +10,12 @@ import {
   updateDoc,
   where,
 } from "firebase/firestore";
-import { IAlarm, IDict, IUser } from "../def";
+
+import { IField } from "consts/firebase";
 import { createDoc } from "./fbCreate";
+import { db } from "./fb";
 import { deleteAll } from "./fbDelete";
 import { readDatasByQuery } from "./fbRead";
-import { db } from "./fb";
-import { IField } from "consts/firebase";
 
 export async function updateUser(field: IDict<any>) {
   return await updateDoc(doc(db, "users", field.id), {

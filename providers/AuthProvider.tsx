@@ -4,9 +4,9 @@ import { auth, db } from "../apis/firebase";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 
 import { AUTH_USER_DEFAULT } from "consts/auth";
-import Login from "./pages/login/Login";
-import { ProtectedRoute } from "routes";
-import { UserProvider } from "contexts/UserProvider";
+import { Layout } from "components/common";
+import Login from "../components/pages/login/Login";
+import { UserProvider } from "providers/UserProvider";
 import { useCustomRouter } from "hooks";
 
 type Props = {
@@ -68,7 +68,7 @@ export default function AuthProvider({ children }: Props) {
         <></>
       ) : login.isLoggedIn ? (
         <UserProvider id={login.id}>
-          <ProtectedRoute>{children}</ProtectedRoute>
+          <Layout>{children}</Layout>
         </UserProvider>
       ) : (
         <Login onSocialLogin={handleSocialLogin} />

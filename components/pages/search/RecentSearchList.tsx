@@ -1,12 +1,13 @@
-import { SIZE } from "apis/def";
-import BtnIcon from "components/atoms/BtnIcon";
+import { Children, RefObject, useRef } from "react";
 import {
   WrapMotionAccordion,
   WrapMotionFade,
 } from "components/wrappers/motion";
-import { useUser } from "contexts/UserProvider";
+
 import { AnimatePresence } from "framer-motion";
-import { Children, RefObject, useRef } from "react";
+import BtnIcon from "components/atoms/BtnIcon";
+import { SIZE } from "apis/def";
+import { useUser } from "providers/UserProvider";
 
 type Props = {
   keyword: string;

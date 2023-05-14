@@ -1,6 +1,8 @@
 import { onboarding_1, onboarding_2, onboarding_3 } from "assets";
 
-export const AUTH_USER_DEFAULT = {
+import { IUser } from "apis/def";
+
+export const AUTH_USER_DEFAULT: IUser = {
   id: "",
   email: "",
   displayName: "",

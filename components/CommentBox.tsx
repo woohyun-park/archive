@@ -1,27 +1,27 @@
-import { deleteDoc, doc } from "firebase/firestore";
-import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
-import { db } from "../apis/firebase/fb";
 import { IPost, IUser } from "../apis/def";
-import { useRouter } from "next/router";
+import { deleteDoc, doc } from "firebase/firestore";
+import { useEffect, useRef, useState } from "react";
+
 import Action from "./Action";
-import Textarea from "./atoms/Textarea";
-import Btn from "./atoms/Btn";
-import { createComment } from "../apis/firebase/fbCreate";
-import { readComment } from "../apis/firebase/fbRead";
 import { AnimatePresence } from "framer-motion";
+import Btn from "./atoms/Btn";
 import Comment from "./Comment";
-import { useUser } from "../stores/useUser";
 import ProfileImg from "./ProfileImg";
+import Textarea from "./atoms/Textarea";
+import { createComment } from "../apis/firebase/fbCreate";
+import { db } from "../apis/firebase/fb";
+import { readComment } from "../apis/firebase/fbRead";
+import { useRouter } from "next/router";
+import { useUser } from "providers";
 
 type ICommentBoxProps = {
   post: IPost;
   user: IUser;
   className?: string;
-  onRefresh: () => Promise<void>;
+  onRefresh: Function;
 };
 
-export default (function CommentBox({
+export default function CommentBox({
   post,
   user,
   className,
@@ -32,7 +32,7 @@ export default (function CommentBox({
   const router = useRouter();
   const commentRef = useRef<HTMLTextAreaElement>(null);
   const actionRef = useRef<HTMLDivElement>(null);
-  const { curUser } = useUser();
+  const { data: curUser } = useUser();
 
   const uid = user.id;
   const targetUid = post.uid;
@@ -107,4 +107,4 @@ export default (function CommentBox({
       </div>
     </div>
   );
-});
+}

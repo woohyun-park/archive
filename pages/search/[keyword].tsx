@@ -1,11 +1,30 @@
+import {
+  InfinitePosts,
+  InfiniteTags,
+  InfiniteUsers,
+  PageTab,
+} from "components/common";
+import { useFirebaseQuery, useInfiniteScroll } from "hooks";
+
+import BtnIcon from "components/atoms/BtnIcon";
 import { useRouter } from "next/router";
-import BtnIcon from "../../components/atoms/BtnIcon";
-import PageTab from "../../components/PageTab";
 
 export default function SearchResult() {
   const router = useRouter();
+  const { keyword } = router.query;
 
-  const keyword = (router.query.keyword as string) || "";
+  const infinitePosts = useInfiniteScroll({
+    queryKey: [`search/${keyword}/posts`],
+    ...useFirebaseQuery("search/keyword/posts"),
+  });
+  const infiniteTags = useInfiniteScroll({
+    queryKey: [`search/${keyword}/tags`],
+    ...useFirebaseQuery("search/keyword/tags"),
+  });
+  const infiniteUsers = useInfiniteScroll({
+    queryKey: [`search/${keyword}/users`],
+    ...useFirebaseQuery("search/keyword/users"),
+  });
 
   return (
     <>
@@ -23,26 +42,29 @@ export default function SearchResult() {
         // 따라서 동작하지 않는 refresh를 방지하고자 isPulalble을 false로 설정하며, 재검색시에만 새롭게 추가된 결과들이 나타나게 될 것이다.
         tabs={[
           {
-            type: "posts",
             label: "posts",
-            query: { type: "keyword", value: { keyword } },
-            as: "posts",
-            numCols: 1,
-            isPullable: false,
+            children: (
+              <InfinitePosts
+                numCols={1}
+                infiniteScroll={infinitePosts}
+                isPullable={false}
+              />
+            ),
           },
           {
-            type: "tags",
             label: "tags",
-            query: { type: "keyword", value: { keyword } },
-            as: "tags",
-            isPullable: false,
+            children: (
+              <InfiniteTags infiniteScroll={infiniteTags} isPullable={false} />
+            ),
           },
           {
-            type: "users",
             label: "users",
-            query: { type: "keyword", value: { keyword } },
-            as: "users",
-            isPullable: false,
+            children: (
+              <InfiniteUsers
+                infiniteScroll={infiniteUsers}
+                isPullable={false}
+              />
+            ),
           },
         ]}
       />

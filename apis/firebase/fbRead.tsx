@@ -1,21 +1,21 @@
 // firebase에서 데이터를 읽어오기 위한 api
 
 import {
+  DocumentData,
+  Query,
+  QueryDocumentSnapshot,
   collection,
   doc,
-  DocumentData,
   getDoc,
   getDocs,
   orderBy,
-  Query,
   query,
-  QueryDocumentSnapshot,
   where,
 } from "firebase/firestore";
 import {
   IAlarm,
-  IComment,
   ICollectionType,
+  IComment,
   IDict,
   ILike,
   IPost,
@@ -106,10 +106,55 @@ export async function readPost(pid: string) {
 export async function readPosts(docs: QueryDocumentSnapshot<DocumentData>[]) {
   const res: IPost[] = [];
   for await (const doc of docs) {
-    const post = await readPost(doc.data().id);
+    const data = doc.data();
+    const id = data.pid ? data.pid : data.id;
+    const post = await readPost(id);
     res.push(post);
   }
   return res;
+}
+
+// export async function readPostsOfScraps(
+//   docs: QueryDocumentSnapshot<DocumentData>[]
+// ) {
+//   const res: IPost[] = [];
+//   for await (const doc of docs) {
+//     const post = await readPost(doc.data().pid);
+//     res.push(post);
+//   }
+//   return res;
+// }
+
+// export async function readPostsOfTags(
+//   docs: QueryDocumentSnapshot<DocumentData>[]
+// ) {
+//   const res: IPost[] = [];
+//   for await (const doc of docs) {
+//     const post = await readPost(doc.data().pid);
+//     console.log(doc.data());
+//     res.push(post);
+//   }
+//   return res;
+// }
+
+export async function readScraps(docs: QueryDocumentSnapshot<DocumentData>[]) {
+  const res: IScrap[] = [];
+  for await (const doc of docs) {
+    res.push(doc.data() as IScrap);
+  }
+  return res;
+}
+
+export async function readTags(docs: QueryDocumentSnapshot<DocumentData>[]) {
+  const result: IDict<any> = {};
+  for await (const doc of docs) {
+    const tag = doc.data();
+    const name = tag.name;
+    const tid = tag.id;
+    if (result[name]) result[name].tags.push(tid);
+    else result[name] = { name, tags: [tid] };
+  }
+  return Object.values(result);
 }
 
 export async function readAlarm(aid: string) {

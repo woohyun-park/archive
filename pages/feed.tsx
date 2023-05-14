@@ -1,35 +1,24 @@
-import React from "react";
-import { ModalSpinner } from "components/templates";
 import { InfinitePosts, Message } from "components/common";
-import { useFeed } from "hooks/pages";
+
 import { Header } from "components/pages/feed";
+import { ModalSpinner } from "components/templates";
+import useFirebaseQuery from "hooks/useFirebaseQuery";
+import { useInfiniteScroll } from "hooks";
 
 export default function Feed() {
-  const {
-    data,
-    isLoading,
-    isRefetching,
-    isFetchingNextPage,
-    hasNextPage,
-    error,
-    refetch,
-    fetchNextPage,
-  } = useFeed();
-  // useScrollBack();
+  const infiniteScroll = useInfiniteScroll({
+    queryKey: ["feed"],
+    ...useFirebaseQuery("feed/posts"),
+  });
 
-  if (isLoading) return <ModalSpinner />;
-  // if (error) return <PageError />;
+  if (infiniteScroll.isLoading) return <ModalSpinner />;
 
   return (
     <>
       <Header />
       <InfinitePosts
         numCols={1}
-        data={data}
-        hasNextPage={hasNextPage}
-        isFetchingNextPage={isFetchingNextPage}
-        refetch={refetch}
-        fetchNextPage={fetchNextPage}
+        infiniteScroll={infiniteScroll}
         lastPage={
           <Message
             icon="wink"

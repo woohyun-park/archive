@@ -1,30 +1,26 @@
-import { useRouter } from "next/router";
+import { useFirebaseQuery, useInfiniteScroll } from "hooks";
+
 import BtnIcon from "../../components/atoms/BtnIcon";
-import Motion from "../../components/wrappers/motion/WrapMotionFloat";
-import PagePosts from "../../components/PagePosts";
-import { useLoading } from "../../hooks/useLoading";
+import { InfinitePosts } from "components/common";
+import { WrapMotionFade } from "components/wrappers/motion";
+import { useRouter } from "next/router";
 
 export default function Tag({}) {
   const router = useRouter();
+  const { tag } = router.query;
 
-  useLoading(["posts"]);
-
-  const tag = router.query.tag as string;
+  const infiniteScroll = useInfiniteScroll({
+    queryKey: [`tag/${tag}`],
+    ...useFirebaseQuery("tag/posts"),
+  });
 
   return (
-    <Motion type="fade">
+    <WrapMotionFade>
       <div className="flex items-center justify-center mt-2 mb-4">
         <BtnIcon icon="back" onClick={() => router.back()} />
         <div className="title-page-sm">#{tag}</div>
       </div>
-      <PagePosts
-        query={{
-          type: "tag",
-          value: { tag },
-        }}
-        as="posts"
-        numCols={1}
-      />
-    </Motion>
+      <InfinitePosts infiniteScroll={infiniteScroll} numCols={1} />
+    </WrapMotionFade>
   );
 }

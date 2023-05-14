@@ -3,7 +3,7 @@ import Nav from "components/Nav";
 import ScrollTop from "components/atoms/ScrollTop";
 import { WrapMotionFade } from "components/wrappers/motion";
 import { useCustomRouter } from "hooks";
-import { useUser } from "contexts/UserProvider";
+import { useUser } from "providers/UserProvider";
 
 type Props = {
   children: React.ReactNode;

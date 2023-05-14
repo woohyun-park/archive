@@ -1,11 +1,11 @@
-import { IAlarm } from "apis/def";
-import { updateFollow } from "apis/firebase";
-import { displayCreatedAt } from "apis/time";
 import Btn from "components/atoms/Btn";
+import { IAlarm } from "apis/def";
 import ProfileImg from "components/ProfileImg";
+import { displayCreatedAt } from "apis/time";
+import { updateFollow } from "apis/firebase";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { useUser } from "stores/useUser";
+import { useUser } from "providers";
 
 type IAlarmFollowProps = {
   alarm: IAlarm;
@@ -13,7 +13,7 @@ type IAlarmFollowProps = {
 
 export default function AlarmFollow({ alarm }: IAlarmFollowProps) {
   const router = useRouter();
-  const { curUser } = useUser();
+  const { data: curUser } = useUser();
   const [isFollowing, setIsFollowing] = useState(() =>
     curUser.followings.find((elem: string) => elem === alarm.uid) ? true : false
   );

@@ -1,32 +1,27 @@
-import { useRouter } from "next/router";
-import { IPost } from "../../apis/def";
-import React from "react";
 import BtnIcon from "../../components/atoms/BtnIcon";
-import { useUser } from "../../stores/useUser";
 import CommentBox from "../../components/CommentBox";
-import Motion from "../../components/wrappers/motion/WrapMotionFloat";
 import ModifyAndDelete from "../../components/ModifyAndDelete";
 import Post from "../../components/Post";
-import { useCachedPage } from "../../hooks/useCachedPage";
-import { useLoading } from "../../hooks/useLoading";
+import { WrapMotionFade } from "components/wrappers/motion";
+import { readPost } from "apis/firebase";
 import useCustomRouter from "../../hooks/useCustomRouter";
+import { useQuery } from "@tanstack/react-query";
+import { useUser } from "providers";
 
 export default function PostPage() {
   const router = useCustomRouter();
+  const { id } = router.query;
 
-  const { curUser } = useUser();
-  const { data, onRefresh } = useCachedPage("post", {
-    type: "pid",
-    value: { pid: (router.query.id as string) || "" },
+  const { data: curUser } = useUser();
+  const { data, refetch } = useQuery({
+    queryKey: [`post/${id}`],
+    queryFn: async () => await readPost(id as string),
   });
-  useLoading(["post"]);
-
-  const post = data ? (data[0] as IPost) : null;
 
   return (
     <>
-      <Motion type="fade" className="bg-white">
-        {post === null ? (
+      <WrapMotionFade className="bg-white">
+        {data === null ? (
           <>
             <div className="flex">
               <BtnIcon icon="back" onClick={router.back} />
@@ -35,28 +30,28 @@ export default function PostPage() {
               존재하지 않는 페이지입니다
             </div>
           </>
-        ) : post === undefined ? (
+        ) : data === undefined ? (
           <></>
         ) : (
-          post.author !== undefined && (
+          data.author !== undefined && (
             <>
               <div className="flex items-center justify-between m-4">
                 <BtnIcon icon="back" onClick={router.back} />
-                {curUser.id === post.author?.id && (
-                  <ModifyAndDelete post={post} />
+                {curUser.id === data.author?.id && (
+                  <ModifyAndDelete post={data} />
                 )}
               </div>
-              <Post post={post} />
+              <Post post={data} />
               <CommentBox
-                post={post}
+                post={data}
                 user={curUser}
-                onRefresh={onRefresh}
+                onRefresh={async () => await refetch()}
                 className="pb-16 mx-4"
               />
             </>
           )
         )}
-      </Motion>
+      </WrapMotionFade>
     </>
   );
 }

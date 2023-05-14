@@ -18,8 +18,5 @@ export type IInfiniteScroll = {
     options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
   ) => Promise<any>;
   fetchNextPage: (options?: FetchNextPageOptions | undefined) => Promise<any>;
+  mutate?: UseMutateFunction<void, unknown, IField[], unknown>;
 };
-
-export type IInfiniteScrollMutate = {
-  mutate: UseMutateFunction<void, unknown, IField[], unknown>;
-} & IInfiniteScroll;

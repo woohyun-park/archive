@@ -1,19 +1,23 @@
-import { Discover, RecentSearchList, SearchBar } from "components/pages/search";
-import { ModalSpinner } from "components/templates";
-import { useUser } from "contexts";
-import { useCustomRouter, useOutsideClick } from "hooks";
-import { useSearch } from "hooks/pages";
+import { RecentSearchList, SearchBar } from "components/pages/search";
+import { useCustomRouter, useInfiniteScroll, useOutsideClick } from "hooks";
 import { useRef, useState } from "react";
+
+import { InfinitePosts } from "components/common";
+import { ModalSpinner } from "components/templates";
+import useFirebaseQuery from "hooks/useFirebaseQuery";
+import { useUser } from "providers";
 
 export default function Search() {
   const [isSearching, setIsSearching] = useState(false);
   const [keyword, setKeyword] = useState("");
   const searchBarRef = useRef<HTMLDivElement>(null);
   const contRef = useRef<HTMLDivElement>(null);
-
   const router = useCustomRouter();
   const { data: user, mutate: mutateUser, refetch: refetchUser } = useUser();
-  const infiniteScroll = useSearch();
+  const infiniteScroll = useInfiniteScroll({
+    queryKey: ["search/posts"],
+    ...useFirebaseQuery("search/posts"),
+  });
 
   useOutsideClick(contRef, () => setIsSearching(false));
 
@@ -54,9 +58,10 @@ export default function Search() {
           refetch={refetchUser}
         />
         {!isSearching ? (
-          <Discover
+          <InfinitePosts
+            numCols={3}
             infiniteScroll={infiniteScroll}
-            searchBarRef={searchBarRef}
+            className="mx-4"
           />
         ) : (
           <RecentSearchList

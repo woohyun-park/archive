@@ -1,18 +1,19 @@
 import {
-  collection,
   DocumentData,
+  Query,
+  QueryDocumentSnapshot,
+  collection,
   endAt,
   limit,
   orderBy,
   query,
-  Query,
-  QueryDocumentSnapshot,
   startAfter,
   startAt,
   where,
 } from "firebase/firestore";
-import { db } from "../fb";
 import { IFetchQueryPosts, IFetchType } from "../fbDef";
+
+import { db } from "../fb";
 
 export function getPostsQuery(
   fetchType: IFetchType,

@@ -1,41 +1,39 @@
-import PostBox from "components/PostBox";
-import { WrapMotionFade } from "components/wrappers/motion";
-import WrapMotion from "components/wrappers/motion/WrapMotionFloat";
-import { AnimatePresence } from "framer-motion";
 import React, { Children } from "react";
+
+import { IInfiniteScroll } from "consts/infiniteScroll";
 import { IPost } from "../../apis/def";
+import PostBox from "components/PostBox";
 import PostCard from "../PostCard";
+import { WrapMotionFade } from "components/wrappers/motion";
 import WrapPullToRefresh from "../wrappers/WrapPullToRefresh";
 
 export type IInfinitePosts = {
   numCols: 1 | 2 | 3;
-  data: IPost[] | undefined;
-  hasNextPage: boolean | undefined;
-  isFetchingNextPage: boolean;
-  refetch: () => Promise<any>;
-  fetchNextPage: () => Promise<any>;
+  infiniteScroll: IInfiniteScroll;
+
   lastPage?: React.ReactNode;
   className?: string;
+  isPullable?: boolean;
 };
 
 export default function InfinitePosts({
   numCols,
-  data = [],
-  hasNextPage = false,
-  isFetchingNextPage,
-  refetch,
-  fetchNextPage,
+  infiniteScroll,
   lastPage,
   className,
+  isPullable = true,
 }: IInfinitePosts) {
+  const { data, hasNextPage, isFetchingNextPage, refetch, fetchNextPage } =
+    infiniteScroll;
   return (
     <WrapMotionFade className={className}>
       <WrapPullToRefresh
         refetch={refetch}
         fetchNextPage={fetchNextPage}
-        hasNextPage={hasNextPage}
+        hasNextPage={hasNextPage || false}
         isFetchingNextPage={isFetchingNextPage}
         lastPage={lastPage}
+        isPullable={isPullable}
       >
         {numCols === 1 &&
           Children.toArray(

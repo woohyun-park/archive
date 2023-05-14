@@ -1,3 +1,5 @@
+import { DocumentData, QueryDocumentSnapshot } from "firebase/firestore";
+
 import { IDict } from "apis/def";
 
 export const FETCH_LIMIT = {
@@ -14,3 +16,11 @@ export const FETCH_LIMIT = {
 };
 
 export type IField = { id: string } & IDict<any>;
+
+export type IPageParam = {
+  id: string;
+  data: any[];
+  isFirstPage: boolean;
+  prevCursor: QueryDocumentSnapshot<DocumentData> | null;
+  nextCursor: QueryDocumentSnapshot<DocumentData> | null;
+};

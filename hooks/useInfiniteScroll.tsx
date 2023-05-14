@@ -1,24 +1,25 @@
-import { useInfiniteQuery } from "@tanstack/react-query";
-import { IPageParam } from "hooks/pages/types";
 import {
   DocumentData,
-  getDocs,
   Query,
   QueryDocumentSnapshot,
+  getDocs,
 } from "firebase/firestore";
-import { uniqueId } from "lodash";
-import { formatPages } from "./pages/utils/formatPages";
 
-export default function useInfiniteScroll(
-  queryKey: string[],
-  queryFn: (docs: QueryDocumentSnapshot<DocumentData>[]) => Promise<any>,
+import { IPageParam } from "consts/firebase";
+import { uniqueId } from "lodash";
+import { useInfiniteQuery } from "@tanstack/react-query";
+
+export default function useInfiniteScroll(params: {
+  queryKey: string[];
+  queryFn: (docs: QueryDocumentSnapshot<DocumentData>[]) => Promise<any>;
   query: (pageParam: IPageParam) => {
     init: Query<DocumentData>;
     load: Query<DocumentData>;
     refresh: Query<DocumentData>;
     refreshNew: Query<DocumentData>;
-  }
-) {
+  };
+}) {
+  const { queryKey, queryFn, query } = params;
   const {
     isLoading,
     isRefetching,
@@ -39,7 +40,7 @@ export default function useInfiniteScroll(
       },
     }) => fetch(pageParam),
     getNextPageParam: (lastPage, allPages) => {
-      return lastPage.nextCursor
+      return lastPage && allPages[0] && lastPage.nextCursor
         ? {
             id: lastPage.id,
             isFirstPage: lastPage.id === allPages[0].id,
@@ -53,34 +54,45 @@ export default function useInfiniteScroll(
     refetchOnReconnect: false,
   });
 
+  const formatPages = (pages: any[] | undefined) => {
+    if (!pages || !pages[0]) return [];
+    return pages?.reduce((acc: any[], cur) => [...acc, ...cur.data], []);
+  };
+
   async function fetch(pageParam: IPageParam) {
-    const { isFirstPage, nextCursor, prevCursor } = pageParam;
-    const { init, load, refresh, refreshNew } = query(pageParam);
-    let q;
-    if (isRefetching) {
-      if (isFirstPage) {
-        q = refreshNew;
+    try {
+      console.log(`Started Fetching ${queryKey}...`);
+      const { isFirstPage, nextCursor, prevCursor } = pageParam;
+      const { init, load, refresh, refreshNew } = query(pageParam);
+      let q;
+      if (isRefetching) {
+        if (isFirstPage) {
+          q = refreshNew;
+        } else {
+          q = refresh;
+        }
       } else {
-        q = refresh;
+        if (nextCursor) {
+          q = load;
+        } else {
+          q = init;
+        }
       }
-    } else {
-      if (nextCursor) {
-        q = load;
-      } else {
-        q = init;
-      }
+      const snap = await getDocs(q);
+      const data = await queryFn(snap.docs);
+      const newPrevCursor = snap.docs[0];
+      const newNextCursor = snap.docs[snap.docs.length - 1];
+      console.log(`Done Fetching ${queryKey}!`, data);
+      return {
+        id: uniqueId(),
+        isFirstPage,
+        data,
+        prevCursor: newPrevCursor,
+        nextCursor: newNextCursor,
+      };
+    } catch (e) {
+      console.log(e);
     }
-    const snap = await getDocs(q);
-    const data = await queryFn(snap.docs);
-    const newPrevCursor = snap.docs[0];
-    const newNextCursor = snap.docs[snap.docs.length - 1];
-    return {
-      id: uniqueId(),
-      isFirstPage,
-      data,
-      prevCursor: newPrevCursor,
-      nextCursor: newNextCursor,
-    };
   }
 
   return {

@@ -1,13 +1,12 @@
-import { doc, getDoc } from "firebase/firestore";
-import { useEffect, useState } from "react";
 import { HiX } from "react-icons/hi";
-import { db } from "../apis/firebase/fb";
-import { IComment, IUser } from "../apis/def";
-import WrapMotion from "./wrappers/motion/WrapMotionFloat";
-import { displayCreatedAt } from "../apis/time";
-import { useUser } from "../stores/useUser";
+import { IComment } from "../apis/def";
 import ProfileImg from "./ProfileImg";
+import WrapMotionFloat from "./wrappers/motion/WrapMotionFloat";
+import { displayCreatedAt } from "../apis/time";
+import { readUser } from "apis/firebase";
+import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/router";
+import { useUser } from "providers";
 
 type ICommentProps = {
   comment: IComment;
@@ -15,23 +14,16 @@ type ICommentProps = {
 };
 
 export default function Comment({ comment, onClick }: ICommentProps) {
-  const { curUser } = useUser();
   const router = useRouter();
-  const [user, setUser] = useState<IUser | null>(null);
-
-  useEffect(() => {
-    async function init() {
-      const userRef = doc(db, "users", comment.uid);
-      const userSnap = await getDoc(userRef);
-      const tempUser = { ...(userSnap.data() as IUser) };
-      setUser(tempUser);
-    }
-    init();
-  }, []);
+  const { data: curUser } = useUser();
+  const { data: user } = useQuery({
+    queryKey: [`users/${comment.uid}`],
+    queryFn: () => readUser(comment.uid),
+  });
 
   return (
     <>
-      <WrapMotion type="float">
+      <WrapMotionFloat>
         <div className="flex items-end justify-between my-1">
           <div className="flex items-center mt-2 mb-1">
             <ProfileImg
@@ -53,7 +45,7 @@ export default function Comment({ comment, onClick }: ICommentProps) {
               </div>
             </div>
           </div>
-          {user?.id === curUser.id ? (
+          {user?.id === curUser.id && (
             <div
               className="mx-2 mt-5 hover:cursor-pointer self-baseline"
               onClick={onClick}
@@ -61,11 +53,9 @@ export default function Comment({ comment, onClick }: ICommentProps) {
             >
               <HiX />
             </div>
-          ) : (
-            <></>
           )}
         </div>
-      </WrapMotion>
+      </WrapMotionFloat>
     </>
   );
 }

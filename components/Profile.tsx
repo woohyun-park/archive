@@ -1,3 +1,4 @@
+import { IAlarm, IPost, IUser } from "../apis/def";
 import {
   addDoc,
   arrayRemove,
@@ -8,20 +9,20 @@ import {
   updateDoc,
   where,
 } from "firebase/firestore";
-import Link from "next/link";
-import { db } from "../apis/firebase/fb";
-import { IAlarm, IPost, IUser } from "../apis/def";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
-import { displayCreatedAt } from "../apis/time";
-import { useUser } from "../stores/useUser";
-import ProfileImg from "./ProfileImg";
-import ModifyAndDelete from "./ModifyAndDelete";
+
 import Btn from "./atoms/Btn";
-import { readDatasByQuery } from "../apis/firebase/fbRead";
+import Link from "next/link";
+import ModifyAndDelete from "./ModifyAndDelete";
+import ProfileImg from "./ProfileImg";
+import { db } from "../apis/firebase/fb";
 import { deleteAll } from "../apis/firebase/fbDelete";
-import { updateUser } from "../apis/firebase/fbUpdate";
+import { displayCreatedAt } from "../apis/time";
 import { mergeTailwindClasses } from "../apis/tailwind";
+import { readDatasByQuery } from "../apis/firebase/fbRead";
+import { updateUser } from "../apis/firebase/fbUpdate";
+import { useRouter } from "next/router";
+import { useUser } from "providers";
 
 type IProfileProps = {
   user: IUser;
@@ -38,7 +39,7 @@ export default function Profile({
   action,
   className,
 }: IProfileProps) {
-  const { curUser } = useUser();
+  const { data: curUser } = useUser();
   const [isFollowing, setIsFollowing] = useState(() =>
     curUser.followings.find((elem: string) => elem === user.id) ? true : false
   );

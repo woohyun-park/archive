@@ -3,7 +3,7 @@ import "../styles/globals.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import type { AppProps } from "next/app";
-import AuthProvider from "components/AuthProvider";
+import AuthProvider from "providers/AuthProvider";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
