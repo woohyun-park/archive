@@ -11,15 +11,15 @@ import {
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
 
-import Btn from "./atoms/Btn";
+import Btn from "./atoms/Button/Button";
 import Link from "next/link";
 import ModifyAndDelete from "./ModifyAndDelete";
 import ProfileImg from "./ProfileImg";
 import { db } from "../apis/firebase/fb";
 import { deleteAll } from "../apis/firebase/fbDelete";
 import { displayCreatedAt } from "../apis/time";
-import { mergeTailwindClasses } from "../apis/tailwind";
 import { readDatasByQuery } from "../apis/firebase/fbRead";
+import { twMerge } from "tailwind-merge";
 import { updateUser } from "../apis/firebase/fbUpdate";
 import { useRouter } from "next/router";
 import { useUser } from "providers";
@@ -99,7 +99,7 @@ export default function Profile({
   return (
     <>
       <div
-        className={mergeTailwindClasses(
+        className={twMerge(
           "flex items-center justify-between w-full mt-2 mb-2",
           className || ""
         )}

@@ -1,4 +1,4 @@
-import Btn from "components/atoms/Btn";
+import Button from "components/atoms/Button/Button";
 import { IAlarm } from "apis/def";
 import ProfileImg from "components/ProfileImg";
 import { displayCreatedAt } from "apis/time";
@@ -54,7 +54,7 @@ export default function AlarmFollow({ alarm }: IAlarmFollowProps) {
               </span>
             </div>
           </div>
-          <Btn
+          <Button
             label={isFollowing ? "팔로잉" : "팔로우"}
             onClick={handleToggleFollow}
             isActive={!isFollowing}

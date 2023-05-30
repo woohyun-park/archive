@@ -1,7 +1,6 @@
+import Btn from "./atoms/Button/Button";
 import { Children } from "react";
-import { mergeTailwindClasses } from "../apis/tailwind";
-import { ITag } from "../apis/def";
-import Btn from "./atoms/Btn";
+import { twMerge } from "tailwind-merge";
 import { useCustomRouter } from "hooks";
 
 interface ITagsProps {
@@ -13,12 +12,7 @@ export default function Tags({ tags, className }: ITagsProps) {
   const router = useCustomRouter();
 
   return (
-    <div
-      className={mergeTailwindClasses(
-        "flex justify-end w-full",
-        className || ""
-      )}
-    >
+    <div className={twMerge("flex justify-end w-full", className || "")}>
       <div className="flex flex-row-reverse flex-wrap-reverse justify-start w-2/3">
         {Children.toArray(
           [...tags].reverse().map((tag, i) => {

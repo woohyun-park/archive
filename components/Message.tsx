@@ -1,11 +1,11 @@
+import Btn from "./atoms/Button/Button";
 import Image from "next/image";
 import { MouseEventHandler } from "react";
-import { mergeTailwindClasses } from "../apis/tailwind";
+import icon_empty from "../assets/icon_empty.svg";
 import icon_sad from "../assets/icon_sad.svg";
 import icon_smile from "../assets/icon_smile.svg";
 import icon_wink from "../assets/icon_wink.svg";
-import icon_empty from "../assets/icon_empty.svg";
-import Btn from "./atoms/Btn";
+import { twMerge } from "tailwind-merge";
 import { useCustomRouter } from "hooks";
 
 interface IMessage {
@@ -32,13 +32,13 @@ export default function Message({
   return (
     <>
       <div
-        className={mergeTailwindClasses(
+        className={twMerge(
           "flex items-center w-full min-h-[75vh] h-full",
           minHeight || ""
         )}
       >
         <div
-          className={mergeTailwindClasses(
+          className={twMerge(
             "items-center w-full flex-col flex",
             className || ""
           )}

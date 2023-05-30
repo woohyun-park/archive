@@ -1,6 +1,7 @@
+import { CSSProperties, Children, MouseEventHandler } from "react";
+
+import Btn from "./atoms/Button";
 import { useRouter } from "next/router";
-import { Children, CSSProperties, MouseEventHandler } from "react";
-import Btn from "./atoms/Btn";
 
 interface ITabProps {
   tabs: ITab[];

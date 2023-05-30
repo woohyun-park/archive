@@ -1,7 +1,7 @@
-import { mergeTailwindClasses } from "apis/tailwind";
-import React from "react";
-import PullToRefresh from "react-simple-pull-to-refresh";
 import Loader from "../atoms/Loader";
+import PullToRefresh from "react-simple-pull-to-refresh";
+import React from "react";
+import { twMerge } from "tailwind-merge";
 
 type Props = {
   children: React.ReactNode;
@@ -32,7 +32,7 @@ export default function WrapPullToRefresh({
       pullingContent={<Loader />}
       refreshingContent={<Loader />}
       isPullable={isPullable}
-      className={mergeTailwindClasses("bg-white", className)}
+      className={twMerge("bg-white", className)}
     >
       <>
         {children}

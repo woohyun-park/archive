@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 
 import Action from "./Action";
 import { AnimatePresence } from "framer-motion";
-import Btn from "./atoms/Btn";
+import Btn from "./atoms/Button";
 import Comment from "./Comment";
 import ProfileImg from "./ProfileImg";
 import Textarea from "./atoms/Textarea";

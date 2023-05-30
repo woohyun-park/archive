@@ -2,7 +2,7 @@ import React, { useRef, useState } from "react";
 import { auth, updateUser } from "../apis/firebase";
 import axios, { AxiosRequestConfig } from "axios";
 
-import Btn from "../components/atoms/Btn";
+import Btn from "../components/atoms/Button";
 import BtnIcon from "../components/atoms/BtnIcon";
 import FormInput from "../components/atoms/FormInput";
 import ProfileImg from "../components/ProfileImg";
