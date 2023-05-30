@@ -1,6 +1,7 @@
-import { icon_sad, icon_smile, icon_wink, icon_empty } from "assets";
+import { icon_empty, icon_sad, icon_smile, icon_wink } from "assets";
+
 import Image from "next/image";
-import WrapMotion from "components/wrappers/motion/WrapMotionFloat";
+import WrapMotionFloat from "components/wrappers/motion/WrapMotionFloat";
 
 type Props = {
   icon: "none" | "sad" | "smile" | "wink" | "empty";
@@ -10,9 +11,8 @@ type Props = {
 
 export default function Message({ icon, message, detailedMessage }: Props) {
   return (
-    <WrapMotion
+    <WrapMotionFloat
       className="flex flex-col items-center w-full pb-8 mb-24"
-      type="float"
       key={crypto.randomUUID()}
     >
       {icon !== "none" && (
@@ -27,6 +27,6 @@ export default function Message({ icon, message, detailedMessage }: Props) {
       <div className="mb-6 text-xs leading-4 text-center whitespace-pre-wrap text-gray-2">
         {detailedMessage}
       </div>
-    </WrapMotion>
+    </WrapMotionFloat>
   );
 }

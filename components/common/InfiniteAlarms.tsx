@@ -1,13 +1,14 @@
 import { AlarmComment, AlarmFollow, AlarmLike } from "components/pages/alarm";
 import { WrapMotionFade, WrapMotionFloat } from "components/wrappers/motion";
 
-import { IInfiniteScrollMutate } from "consts/infiniteScroll";
+import { IAlarm } from "apis/def";
+import { IInfiniteScroll } from "consts/infiniteScroll";
 import Message from "components/Message";
 import React from "react";
 import WrapPullToRefresh from "components/wrappers/WrapPullToRefresh";
 
 type Props = {
-  infiniteScroll: IInfiniteScrollMutate;
+  infiniteScroll: IInfiniteScroll;
 
   lastPage?: React.ReactNode;
   className?: string;
@@ -37,11 +38,13 @@ export default function InfiniteAlarms({
       >
         {data.length !== 0 ? (
           <>
-            {data?.map((alarm, i) => {
+            {data?.map((alarm: IAlarm) => {
               return (
                 <WrapMotionFloat
                   key={alarm.id}
-                  onClick={() => mutate([{ id: alarm.id, isViewed: true }])}
+                  onClick={() =>
+                    mutate && mutate([{ id: alarm.id, isViewed: true }])
+                  }
                 >
                   <>
                     {alarm.type === "like" && <AlarmLike alarm={alarm} />}

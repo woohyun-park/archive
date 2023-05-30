@@ -1,11 +1,10 @@
-import WrapMotion from "components/wrappers/motion/WrapMotionFloat";
+import WrapMotionFloat from "components/wrappers/motion/WrapMotionFloat";
 
 export default function Loader() {
   return (
     <>
-      <WrapMotion
+      <WrapMotionFloat
         className="flex justify-center h-32 mb-24 overflow-hidden duration-500"
-        type="float"
         key={crypto.randomUUID()}
       >
         <div className="lds-ellipsis">
@@ -14,7 +13,7 @@ export default function Loader() {
           <div></div>
           <div></div>
         </div>
-      </WrapMotion>
+      </WrapMotionFloat>
 
       <style jsx>
         {`
