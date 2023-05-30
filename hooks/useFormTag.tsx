@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-export const useFormTag = (initTags: string[] = []) => {
+export default function useFormTag(initTags: string[] = []) {
   const [tag, setTag] = useState("");
   const [tags, setTags] = useState<string[]>(initTags ? initTags : []);
   const [error, setError] = useState("");
@@ -59,4 +59,4 @@ export const useFormTag = (initTags: string[] = []) => {
   }
 
   return { tag, tags, error, onChange, onDelete, onKeyDown, onClick, setTag };
-};
+}

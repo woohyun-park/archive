@@ -1,11 +1,12 @@
 import {
   HiHome,
-  HiOutlineHome,
   HiLightBulb,
+  HiOutlineHome,
   HiOutlineLightBulb,
 } from "react-icons/hi2";
-import useCustomRouter from "../hooks/useCustomRouter";
+
 import { SIZE } from "../apis/def";
+import { useCustomRouter } from "hooks";
 
 export default function Nav() {
   const router = useCustomRouter();
@@ -13,11 +14,7 @@ export default function Nav() {
 
   return (
     <>
-      {!(
-        router.pathname === "/setting" ||
-        router.pathname === "/add" ||
-        router.pathname === "/post/[id]"
-      ) && (
+      {!(path === "/setting" || path === "/add" || path === "/post/[id]") && (
         <div className="box-border fixed bottom-0 grid grid-cols-3 justify-around w-full pt-1 pb-8 px-8 bg-white max-w-[480px] z-10">
           {path !== "/" ? (
             <div
@@ -63,7 +60,7 @@ export default function Nav() {
             onClick={() => router.push("/search")}
           >
             <div className="mb-1">
-              {path === "/search" || path === "/search-modal" ? (
+              {path === "/search" ? (
                 <HiLightBulb size={SIZE.icon} />
               ) : (
                 <HiOutlineLightBulb size={SIZE.icon} />

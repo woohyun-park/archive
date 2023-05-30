@@ -1,28 +1,82 @@
-import { SIZE } from "../apis/def";
-import { HiMagnifyingGlass } from "react-icons/hi2";
-import Link from "next/link";
-import WrapMotion from "../components/wrappers/WrapMotion";
-import PagePosts from "../components/PagePosts";
-import { useLoading } from "../hooks/useLoading";
+import { RecentSearchList, SearchBar } from "components/pages/search";
+import {
+  useCustomRouter,
+  useInfiniteScroll,
+  useOutsideClick,
+  useScrollBack,
+} from "hooks";
+import { useRef, useState } from "react";
+
+import { InfinitePosts } from "components/common";
+import { ModalSpinner } from "components/templates";
+import useFirebaseQuery from "hooks/useFirebaseQuery";
+import { useUser } from "providers";
 
 export default function Search() {
-  useLoading(["posts"]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [keyword, setKeyword] = useState("");
+  const searchBarRef = useRef<HTMLDivElement>(null);
+  const contRef = useRef<HTMLDivElement>(null);
+  const router = useCustomRouter();
+  const { data: user, mutate: mutateUser, refetch: refetchUser } = useUser();
+  const infiniteScroll = useInfiniteScroll({
+    queryKey: ["search/posts"],
+    ...useFirebaseQuery("search/posts"),
+  });
+
+  useOutsideClick(contRef, () => setIsSearching(false));
+  useScrollBack();
+
+  const getNewSearchHistory = (arr: string[] | undefined, keyword: string) => {
+    if (arr) {
+      const index = arr.indexOf(keyword);
+      return index === -1
+        ? [keyword, ...arr]
+        : [
+            keyword,
+            ...arr.slice(0, index),
+            ...arr.slice(index + 1, arr.length),
+          ];
+    }
+    return [keyword];
+  };
+
+  const handleSearch = () => {
+    mutateUser({
+      id: user?.id,
+      history: getNewSearchHistory(user?.history, keyword),
+    });
+    router.push(`/search/${keyword}`);
+  };
+
+  if (infiniteScroll.isLoading) return <ModalSpinner />;
 
   return (
-    <WrapMotion type="fade" className="pt-2 bg-white">
-      <Link href="/search-modal">
-        <div className="flex mx-4">
-          <div className="flex items-center w-full px-[0.25rem] py-[0.375rem] my-[0.75rem] mb-1 rounded-md bg-gray-3 hover:cursor-pointer">
-            <HiMagnifyingGlass size={SIZE.iconSm} className="scale-75" />
-          </div>
-        </div>
-      </Link>
-      <PagePosts
-        query={{ type: "none", readType: "simple", value: {} }}
-        as="posts"
-        numCols={3}
-        paddingBottom="pb-24"
-      />
-    </WrapMotion>
+    <>
+      <div className="relative overflow-hidden" ref={contRef}>
+        <SearchBar
+          ref={searchBarRef}
+          keyword={keyword}
+          setKeyword={setKeyword}
+          isSearching={isSearching}
+          setIsSearching={setIsSearching}
+          onSearch={handleSearch}
+          refetch={refetchUser}
+        />
+        {!isSearching ? (
+          <InfinitePosts
+            numCols={3}
+            infiniteScroll={infiniteScroll}
+            className="mx-4"
+          />
+        ) : (
+          <RecentSearchList
+            keyword={keyword}
+            searchBarRef={searchBarRef}
+            onSearch={handleSearch}
+          />
+        )}
+      </div>
+    </>
   );
 }

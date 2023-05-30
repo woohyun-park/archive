@@ -1,12 +1,12 @@
 import Image from "next/image";
 import { MouseEventHandler } from "react";
 import { mergeTailwindClasses } from "../apis/tailwind";
-import useCustomRouter from "../hooks/useCustomRouter";
-import icon_sad from "../imgs/icon_sad.svg";
-import icon_smile from "../imgs/icon_smile.svg";
-import icon_wink from "../imgs/icon_wink.svg";
-import icon_empty from "../imgs/icon_empty.svg";
+import icon_sad from "../assets/icon_sad.svg";
+import icon_smile from "../assets/icon_smile.svg";
+import icon_wink from "../assets/icon_wink.svg";
+import icon_empty from "../assets/icon_empty.svg";
 import Btn from "./atoms/Btn";
+import { useCustomRouter } from "hooks";
 
 interface IMessage {
   icon: "none" | "sad" | "smile" | "wink" | "empty";

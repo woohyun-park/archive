@@ -1,19 +1,18 @@
-import axios, { AxiosRequestConfig } from "axios";
-import { useRouter } from "next/router";
 import React, { useRef, useState } from "react";
-import { useForm } from "react-hook-form";
-import WrapMotion from "../components/wrappers/WrapMotion";
+import { auth, updateUser } from "../apis/firebase";
+import axios, { AxiosRequestConfig } from "axios";
+
 import Btn from "../components/atoms/Btn";
 import BtnIcon from "../components/atoms/BtnIcon";
-import { useUser } from "../stores/useUser";
 import FormInput from "../components/atoms/FormInput";
 import ProfileImg from "../components/ProfileImg";
-import { updateUser } from "../apis/firebase/fbUpdate";
+import { WrapMotionFade } from "components/wrappers/motion";
 import { signOut } from "firebase/auth";
-import { auth } from "../apis/firebase/fb";
-import { useLoading } from "../hooks/useLoading";
-import { wrapPromise } from "../stores/libStores";
+import { useForm } from "react-hook-form";
+import { useRouter } from "next/router";
 import { useStatus } from "../stores/useStatus";
+import { useUser } from "providers";
+import { wrapPromise } from "../libs/common";
 
 interface IForm {
   file: File[];
@@ -22,8 +21,7 @@ interface IForm {
 }
 
 export default function Setting() {
-  useLoading([]);
-  const { curUser } = useUser();
+  const { data: curUser } = useUser();
   const [preview, setPreview] = useState(curUser.photoURL);
   const { setLogoutLoader } = useStatus();
   const router = useRouter();
@@ -97,7 +95,7 @@ export default function Setting() {
   }
 
   return (
-    <WrapMotion type="fade" className="m-4">
+    <WrapMotionFade className="m-4">
       {isSubmitting && (
         <div className="absolute top-0 left-0 z-10 w-full h-full bg-black/20"></div>
       )}
@@ -165,6 +163,6 @@ export default function Setting() {
         />
         <Btn label="변경" type="submit" />
       </form>
-    </WrapMotion>
+    </WrapMotionFade>
   );
 }
