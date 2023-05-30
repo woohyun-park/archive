@@ -4,7 +4,7 @@ import {
   InfiniteUsers,
   PageTab,
 } from "components/common";
-import { useFirebaseQuery, useInfiniteScroll } from "hooks";
+import { useFirebaseQuery, useInfiniteScroll, useScrollBack } from "hooks";
 
 import BtnIcon from "components/atoms/BtnIcon";
 import { useRouter } from "next/router";
@@ -25,6 +25,8 @@ export default function SearchResult() {
     queryKey: [`search/${keyword}/users`],
     ...useFirebaseQuery("search/keyword/users"),
   });
+
+  useScrollBack();
 
   return (
     <>

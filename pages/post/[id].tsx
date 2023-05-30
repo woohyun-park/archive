@@ -6,6 +6,7 @@ import { WrapMotionFade } from "components/wrappers/motion";
 import { readPost } from "apis/firebase";
 import useCustomRouter from "../../hooks/useCustomRouter";
 import { useQuery } from "@tanstack/react-query";
+import { useScrollBack } from "hooks";
 import { useUser } from "providers";
 
 export default function PostPage() {
@@ -17,6 +18,8 @@ export default function PostPage() {
     queryKey: [`post/${id}`],
     queryFn: async () => await readPost(id as string),
   });
+
+  useScrollBack();
 
   return (
     <>

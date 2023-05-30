@@ -1,5 +1,5 @@
 import { ITag, IUser } from "apis/def";
-import { useCustomRouter, useInfiniteScroll } from "hooks";
+import { useCustomRouter, useInfiniteScroll, useScrollBack } from "hooks";
 
 import Header from "components/pages/profile/Header";
 import { InfinitePosts } from "components/common";
@@ -17,7 +17,7 @@ export default function Profile() {
   const uid = router.query.uid as string;
 
   const { data: curUser } = useUser();
-  const { data: user } = useQuery({
+  const { data: user, isLoading: isUserLoading } = useQuery({
     queryKey: [`profile/${uid}`, "user"],
     queryFn: () => readData<IUser>("users", uid),
   });
@@ -34,6 +34,8 @@ export default function Profile() {
     ...useFirebaseQuery("profile/tags"),
   });
 
+  useScrollBack();
+
   // // TODO: posts 총 갯수 따로 가져오기
   // const posts =
   //   (caches[router.asPath] &&
@@ -41,8 +43,9 @@ export default function Profile() {
   //     caches[router.asPath].posts.data) ||
   //   [];
 
-  if (!curUser || !user) return;
   if (
+    !user ||
+    isUserLoading ||
     infinitePosts.isLoading ||
     infiniteScraps.isLoading ||
     infiniteTags.isLoading

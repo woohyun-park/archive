@@ -15,7 +15,6 @@ export interface TransitionOptions {
 export default function useCustomRouter() {
   const router = useRouter();
 
-  const { setModalLoader } = useStatus();
   const { pages, setScroll } = useStatus();
 
   const path = router.asPath;
@@ -44,10 +43,6 @@ export default function useCustomRouter() {
     } else {
       setScroll(path, window.scrollY);
     }
-    // 만약 이동하고자 하는 페이지의 cache가 존재하지 않는다면,
-    // 로딩창을 띄운 뒤 애니메이션을 500ms 기다린 후 route로 push를 하여 자연스러운 페이지 이동을 디스플레이한다.
-    // if (!caches[String(url)])
-    //   await wrapPromise(() => setModalLoader(true), 500);
     return router.push(url, as, options);
   };
 

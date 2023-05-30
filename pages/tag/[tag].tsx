@@ -1,4 +1,4 @@
-import { useFirebaseQuery, useInfiniteScroll } from "hooks";
+import { useFirebaseQuery, useInfiniteScroll, useScrollBack } from "hooks";
 
 import BtnIcon from "../../components/atoms/BtnIcon";
 import { InfinitePosts } from "components/common";
@@ -13,6 +13,8 @@ export default function Tag({}) {
     queryKey: [`tag/${tag}`],
     ...useFirebaseQuery("tag/posts"),
   });
+
+  useScrollBack();
 
   return (
     <WrapMotionFade>

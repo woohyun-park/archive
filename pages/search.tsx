@@ -1,5 +1,10 @@
 import { RecentSearchList, SearchBar } from "components/pages/search";
-import { useCustomRouter, useInfiniteScroll, useOutsideClick } from "hooks";
+import {
+  useCustomRouter,
+  useInfiniteScroll,
+  useOutsideClick,
+  useScrollBack,
+} from "hooks";
 import { useRef, useState } from "react";
 
 import { InfinitePosts } from "components/common";
@@ -20,6 +25,7 @@ export default function Search() {
   });
 
   useOutsideClick(contRef, () => setIsSearching(false));
+  useScrollBack();
 
   const getNewSearchHistory = (arr: string[] | undefined, keyword: string) => {
     if (arr) {

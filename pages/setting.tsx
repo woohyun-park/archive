@@ -12,7 +12,7 @@ import { useForm } from "react-hook-form";
 import { useRouter } from "next/router";
 import { useStatus } from "../stores/useStatus";
 import { useUser } from "providers";
-import { wrapPromise } from "../stores/libStores";
+import { wrapPromise } from "../libs/common";
 
 interface IForm {
   file: File[];

@@ -1,10 +1,11 @@
+import { useInfiniteScroll, useScrollBack } from "hooks";
+
 import BtnIcon from "components/atoms/BtnIcon";
 import { IUser } from "apis/def";
 import { InfinitePosts } from "components/common";
 import { WrapMotionFade } from "components/wrappers/motion";
 import { readData } from "apis/firebase/fbRead";
 import useFirebaseQuery from "hooks/useFirebaseQuery";
-import { useInfiniteScroll } from "hooks";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 
@@ -19,6 +20,8 @@ export default function ProfileTag({}) {
     queryKey: [`profile/${uid}/tags/${tag}`],
     ...useFirebaseQuery("profile/tags/detail"),
   });
+
+  useScrollBack();
 
   return (
     <WrapMotionFade>

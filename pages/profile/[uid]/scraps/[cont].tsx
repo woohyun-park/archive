@@ -1,4 +1,4 @@
-import { useCustomRouter, useInfiniteScroll } from "hooks";
+import { useCustomRouter, useInfiniteScroll, useScrollBack } from "hooks";
 
 import { AUTH_USER_DEFAULT } from "consts/auth";
 import BtnIcon from "components/atoms/BtnIcon";
@@ -16,6 +16,8 @@ export default function Scrap() {
     ...useFirebaseQuery("profile/scraps/detail"),
   });
   const curUser = userContext.data || AUTH_USER_DEFAULT;
+
+  useScrollBack();
 
   if (infiniteScroll.isLoading) return <ModalSpinner />;
 

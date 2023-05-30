@@ -1,9 +1,9 @@
+import useCustomRouter from "./useCustomRouter";
 import { useEffect } from "react";
 import { useStatus } from "../stores/useStatus";
-import useCustomRouter from "./useCustomRouter";
 
 // 페이지를 이동할 때 scroll 값이 저장되어있는 경우 해당 scroll 위치로 자동으로 이동하도록 도와주는 훅
-// 해당 functionality를 사용하고자 하는 페이지에서 useScrollBack()을 실행해주기만 하면 된다.
+// 사용법: 해당 기능을 사용하고자 하는 페이지에서 useScrollBack()을 실행
 
 export default function useScrollBack() {
   const router = useCustomRouter();

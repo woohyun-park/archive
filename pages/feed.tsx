@@ -1,15 +1,17 @@
 import { InfinitePosts, Message } from "components/common";
+import { useInfiniteScroll, useScrollBack } from "hooks";
 
 import { Header } from "components/pages/feed";
 import { ModalSpinner } from "components/templates";
 import useFirebaseQuery from "hooks/useFirebaseQuery";
-import { useInfiniteScroll } from "hooks";
 
 export default function Feed() {
   const infiniteScroll = useInfiniteScroll({
     queryKey: ["feed"],
     ...useFirebaseQuery("feed/posts"),
   });
+
+  useScrollBack();
 
   if (infiniteScroll.isLoading) return <ModalSpinner />;
 
