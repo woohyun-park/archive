@@ -1,4 +1,4 @@
-import Document, { Html, Head, Main, NextScript } from "next/document";
+import Document, { Head, Html, Main, NextScript } from "next/document";
 
 class MainDocument extends Document {
   static async getInitialProps(ctx) {
@@ -25,7 +25,7 @@ class MainDocument extends Document {
         <body>
           <Main />
           <NextScript />
-          <div id="modal-root" className="fixed top-0 left-0 z-50"></div>
+          <div id="modal-root" className="fixed z-50" />
         </body>
       </Html>
     );

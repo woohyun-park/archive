@@ -1,19 +1,17 @@
+import { COLOR, IDict, IPost } from "../apis/def";
 import React, { useRef, useState } from "react";
-import { IPost, IDict } from "../apis/def";
-import { COLOR } from "../apis/def";
-import { useForm } from "react-hook-form";
-import Image from "next/image";
-import WrapMotion from "../components/wrappers/WrapMotion";
-import BtnIcon from "../components/atoms/BtnIcon";
-import { useUser } from "../stores/useUser";
-import FormInput from "../components/atoms/FormInput";
 import { handleColor, handleImage } from "../apis/cloudinary";
-import { useFormTag } from "../hooks/useFormTag";
-import FormTag from "../components/atoms/FormTag";
+import { useCustomRouter, useFormTag } from "hooks";
+
+import BtnIcon from "../components/atoms/BtnIcon";
 import ColorBox from "../components/atoms/ColorBox";
-import { useLoading } from "../hooks/useLoading";
+import FormInput from "../components/atoms/FormInput";
+import FormTag from "../components/atoms/FormTag";
+import Image from "next/image";
+import { WrapMotionFade } from "components/wrappers/motion";
+import { useForm } from "react-hook-form";
 import { useStatus } from "../stores/useStatus";
-import useCustomRouter from "../hooks/useCustomRouter";
+import { useUser } from "providers";
 
 export interface IForm {
   file: File[];
@@ -29,11 +27,11 @@ export default function Add() {
     ? (JSON.parse(router.query.post as string) as IPost)
     : undefined;
 
-  const { curUser } = useUser();
+  const userContext = useUser();
+  const curUser = userContext.data;
   const { tag, tags, error, onChange, onDelete, onKeyDown, onClick } =
     useFormTag(prevPost ? prevPost.tags : []);
   const { setRefresh } = useStatus();
-  useLoading([]);
 
   const [status, setStatus] = useState({
     selectedTab: prevPost ? (prevPost.imgs.length !== 0 ? true : false) : true,
@@ -98,7 +96,7 @@ export default function Add() {
   }
 
   return (
-    <WrapMotion type="fade" className="p-4 bg-white">
+    <WrapMotionFade className="p-4 bg-white">
       <div className="flex">
         <BtnIcon
           icon="back"
@@ -215,6 +213,6 @@ export default function Add() {
           {prevPost ? "완료" : "생성"}
         </button>
       </form>
-    </WrapMotion>
+    </WrapMotionFade>
   );
 }

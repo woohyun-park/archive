@@ -1,195 +1,89 @@
-import { IUser } from "../../apis/def";
-import { useEffect, useState } from "react";
-import Motion from "../../components/wrappers/WrapMotion";
-import { useUser } from "../../stores/useUser";
-import BtnIcon from "../../components/atoms/BtnIcon";
-import { useRouter } from "next/router";
-import ProfileImg from "../../components/ProfileImg";
-import { readData } from "../../apis/firebase/fbRead";
-import { updateFollow } from "../../apis/firebase/fbUpdate";
-import PageTab from "../../components/PageTab";
-import { useLoading } from "../../hooks/useLoading";
-import { useCache } from "../../stores/useCache";
+import { ITag, IUser } from "apis/def";
+import { useCustomRouter, useInfiniteScroll, useScrollBack } from "hooks";
+
+import Header from "components/pages/profile/Header";
+import { InfinitePosts } from "components/common";
+import InfiniteScraps from "components/common/InfiniteScraps";
+import InfiniteTags from "components/common/InfiniteTags";
+import { ModalSpinner } from "components/templates";
+import PageTabNew from "components/common/PageTab";
+import { readData } from "apis/firebase";
+import useFirebaseQuery from "hooks/useFirebaseQuery";
+import { useQuery } from "@tanstack/react-query";
+import { useUser } from "providers";
 
 export default function Profile() {
-  const [user, setUser] = useState<IUser>();
-  const { curUser } = useUser();
-  const uid = user?.id || "";
-  useLoading(["tags", "scraps", "posts"]);
+  const router = useCustomRouter();
+  const uid = router.query.uid as string;
 
-  const { caches } = useCache();
-
-  const router = useRouter();
-  const [status, setStatus] = useState({
-    initIsFollowing: curUser.followings.find((elem) => elem === uid)
-      ? true
-      : false,
-    isFollowing: curUser.followings.find((elem) => elem === uid) ? true : false,
+  const { data: curUser } = useUser();
+  const { data: user, isLoading: isUserLoading } = useQuery({
+    queryKey: [`profile/${uid}`, "user"],
+    queryFn: () => readData<IUser>("users", uid),
   });
-  // TODO: posts 총 갯수 따로 가져오기
-  const posts =
-    (caches[router.asPath] &&
-      caches[router.asPath].posts &&
-      caches[router.asPath].posts.data) ||
-    [];
+  const infinitePosts = useInfiniteScroll({
+    queryKey: [`profile/${uid}`, "posts"],
+    ...useFirebaseQuery("profile/posts"),
+  });
+  const infiniteScraps = useInfiniteScroll({
+    queryKey: [`profile/${uid}`, "scraps"],
+    ...useFirebaseQuery("profile/scraps"),
+  });
+  const infiniteTags = useInfiniteScroll({
+    queryKey: [`profile/${uid}`, "tags"],
+    ...useFirebaseQuery("profile/tags"),
+  });
 
-  useEffect(() => {
-    async function init() {
-      const uid = router.query.uid as string;
-      const user = await readData<IUser>("users", uid);
-      setUser(user);
-    }
-    init();
-  }, []);
+  useScrollBack();
 
-  async function handleToggleFollow() {
-    if (!user) return;
-    await updateFollow(curUser, user, status.isFollowing);
-    let len = user.followers.length;
-    if (status.initIsFollowing === status.isFollowing) {
-    } else if (status.initIsFollowing) {
-      len--;
-    } else {
-      len++;
-    }
-    setStatus({ ...status, isFollowing: !status.isFollowing });
-  }
+  // // TODO: posts 총 갯수 따로 가져오기
+  // const posts =
+  //   (caches[router.asPath] &&
+  //     caches[router.asPath].posts &&
+  //     caches[router.asPath].posts.data) ||
+  //   [];
+
+  if (
+    !user ||
+    isUserLoading ||
+    infinitePosts.isLoading ||
+    infiniteScraps.isLoading ||
+    infiniteTags.isLoading
+  )
+    return <ModalSpinner />;
 
   return (
     <>
-      {user !== undefined ? (
-        <PageTab
-          header={
-            <Motion type="fade" className="mx-4 mt-4">
-              <div className="flex justify-between">
-                {user.id === curUser.id ? (
-                  <>
-                    <BtnIcon icon="back" onClick={() => router.back()} />
-                    <BtnIcon
-                      icon="setting"
-                      onClick={() => router.push("/setting")}
-                    />
-                  </>
-                ) : (
-                  <BtnIcon icon="back" onClick={() => router.back()} />
-                )}
-              </div>
-              <div className="flex items-start justify-between mt-8">
-                <div className="w-2/3">
-                  <h1 className="text-xl font-bold break-all">
-                    {user.displayName}
-                  </h1>
-                  <div className="flex justify-between w-2/3">
-                    <div>
-                      <div className="text-gray-2">아카이브</div>
-                      <div className="profileNum">{posts.length}</div>
-                    </div>
-                    <div>
-                      <div className="text-gray-2">팔로워</div>
-                      <div className="profileNum">
-                        {(() => {
-                          if (user.id === curUser.id) {
-                            return curUser.followers.length;
-                          }
-                          const len = user.followers.length;
-                          if (status.initIsFollowing === status.isFollowing) {
-                            return len;
-                          } else if (status.initIsFollowing) {
-                            return len - 1;
-                          } else {
-                            return len + 1;
-                          }
-                        })()}
-                      </div>
-                    </div>
-                    <div>
-                      <div className="text-gray-2">팔로잉</div>
-                      <div className="profileNum">
-                        {user.id === curUser.id
-                          ? curUser.followings.length
-                          : user.followings.length}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <ProfileImg size="lg" photoURL={user.photoURL} />
-              </div>
-
-              <div className="h-full py-4 break-all">{user.txt}</div>
-
-              {user.id !== curUser.id && (
-                <>
-                  {(() => {
-                    const result = [];
-                    if (curUser.id !== user.id) {
-                      if (curUser.followings.find((elem) => elem === user.id)) {
-                        result.push(
-                          <button
-                            onClick={handleToggleFollow}
-                            className="w-full my-4 button-gray"
-                          >
-                            팔로잉
-                          </button>
-                        );
-                      } else {
-                        result.push(
-                          <button
-                            onClick={handleToggleFollow}
-                            className="w-full my-4 button-black"
-                          >
-                            팔로우
-                          </button>
-                        );
-                      }
-                    }
-                    return result;
-                  })()}
-                </>
-              )}
-            </Motion>
-          }
-          tabs={
-            uid === curUser.id
-              ? [
-                  {
-                    type: "posts",
-                    label: "posts",
-                    query: { type: "uid", value: { uid } },
-                    as: "posts",
-                    numCols: 2,
-                  },
-                  {
-                    type: "tags",
-                    label: "tags",
-                    query: { type: "uid", value: { uid } },
-                    as: "tags",
-                  },
-                  {
-                    type: "scraps",
-                    label: "scraps",
-                    query: { type: "uid", value: { uid } },
-                  },
-                ]
-              : [
-                  {
-                    type: "posts",
-                    label: "posts",
-                    query: { type: "uid", value: { uid } },
-                    as: "posts",
-                    numCols: 2,
-                  },
-                  {
-                    type: "tags",
-                    label: "tags",
-                    query: { type: "uid", value: { uid } },
-                    as: "tags",
-                  },
-                ]
-          }
-        />
-      ) : (
-        <></>
-      )}
+      <PageTabNew
+        header={<Header curUser={curUser} user={user} />}
+        tabs={[
+          {
+            label: "posts",
+            children: (
+              <InfinitePosts
+                numCols={3}
+                infiniteScroll={infinitePosts}
+                className="m-4"
+              />
+            ),
+          },
+          {
+            label: "scraps",
+            children: <InfiniteScraps infiniteScroll={infiniteScraps} />,
+          },
+          {
+            label: "tags",
+            children: (
+              <InfiniteTags
+                infiniteScroll={infiniteTags}
+                onClick={(tag: ITag) =>
+                  router.push(`/profile/${uid}/tags/${tag.name}`)
+                }
+              />
+            ),
+          },
+        ]}
+      />
     </>
   );
 }

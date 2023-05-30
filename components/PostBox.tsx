@@ -1,8 +1,6 @@
+import { useCustomRouter } from "hooks";
 import Image from "next/image";
-// import Link from "next/link";
-// import { useRouter } from "next/router";
 import { Children } from "react";
-import useCustomRouter from "../hooks/useCustomRouter";
 import { IPost } from "../apis/def";
 import { COLOR } from "../apis/def";
 

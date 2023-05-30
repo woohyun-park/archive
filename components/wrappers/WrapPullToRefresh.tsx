@@ -1,46 +1,44 @@
+import { mergeTailwindClasses } from "apis/tailwind";
 import React from "react";
 import PullToRefresh from "react-simple-pull-to-refresh";
-import Loader from "../Loader";
+import Loader from "../atoms/Loader";
 
-// PullToRefresh를 손쉽게 사용하기 위한 wrapper 컴포넌트
-
-interface IWrapPullToRefresh {
+type Props = {
   children: React.ReactNode;
-  onRefresh: () => Promise<void>;
-  onFetchMore: () => Promise<void>;
-  canFetchMore?: boolean;
+  refetch: () => Promise<void>;
+  fetchNextPage: () => Promise<void>;
+  hasNextPage: boolean;
+  isFetchingNextPage: boolean;
   isPullable?: boolean;
   className?: string;
-}
+  lastPage?: React.ReactNode;
+};
 
 export default function WrapPullToRefresh({
   children,
-  onRefresh,
-  onFetchMore,
-  canFetchMore = true,
+  refetch,
+  fetchNextPage,
+  hasNextPage,
+  isFetchingNextPage,
   isPullable = true,
-  className,
-}: IWrapPullToRefresh) {
-  function LoaderWithPadding() {
-    return (
-      <>
-        <Loader isVisible={true} />
-        <div className="pb-6" />
-      </>
-    );
-  }
-
+  className = "",
+  lastPage = <></>,
+}: Props) {
   return (
     <PullToRefresh
-      onRefresh={onRefresh}
-      onFetchMore={onFetchMore}
-      canFetchMore={canFetchMore}
-      pullingContent={<LoaderWithPadding />}
-      refreshingContent={<LoaderWithPadding />}
+      onRefresh={refetch}
+      onFetchMore={fetchNextPage}
+      canFetchMore={hasNextPage}
+      pullingContent={<Loader />}
+      refreshingContent={<Loader />}
       isPullable={isPullable}
-      className={className}
+      className={mergeTailwindClasses("bg-white", className)}
     >
-      <>{children}</>
+      <>
+        {children}
+        {isFetchingNextPage && <Loader />}
+        {!hasNextPage && lastPage}
+      </>
     </PullToRefresh>
   );
 }

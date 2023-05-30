@@ -1,28 +1,29 @@
-import { useRouter } from "next/router";
 import { IPost, IUser } from "../apis/def";
-import { useStatus } from "../stores/useStatus";
-import { useUser } from "../stores/useUser";
+
+import { AUTH_USER_DEFAULT } from "consts/auth";
 import Action from "./Action";
 import PostBox from "./PostBox";
 import Profile from "./Profile";
-import WrapMotion from "./wrappers/WrapMotion";
-import { Children } from "react";
-import Btn from "./atoms/Btn";
-import useCustomRouter from "../hooks/useCustomRouter";
 import Tags from "./Tags";
+import WrapMotionFloat from "./wrappers/motion/WrapMotionFloat";
+import { useCustomRouter } from "hooks";
+import { useStatus } from "../stores/useStatus";
+import { useUser } from "providers";
 
 interface IPostCardProps {
   post: IPost;
 }
 
 export default function PostCard({ post }: IPostCardProps) {
-  const { curUser } = useUser();
+  const userContext = useUser();
+  const curUser = userContext.data || AUTH_USER_DEFAULT;
+
   const { setModalLoader } = useStatus();
 
   const router = useCustomRouter();
   return (
     <>
-      <WrapMotion type="float" className="px-4 py-1 bg-white">
+      <WrapMotionFloat className="px-4 py-1 bg-white">
         <Profile
           post={post}
           user={post.author as IUser}
@@ -54,7 +55,7 @@ export default function PostCard({ post }: IPostCardProps) {
             );
           }}
         />
-      </WrapMotion>
+      </WrapMotionFloat>
 
       <style jsx>{`
         #post_d1 {

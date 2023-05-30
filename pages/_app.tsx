@@ -1,10 +1,14 @@
-import { AnimatePresence } from "framer-motion";
-import type { AppProps } from "next/app";
-import Head from "next/head";
-import { useRouter } from "next/router";
-import { useEffect } from "react";
-import Layout from "../components/Layout";
 import "../styles/globals.css";
+
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+import type { AppProps } from "next/app";
+import AuthProvider from "providers/AuthProvider";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
+
+const queryClient = new QueryClient();
 
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
@@ -19,17 +23,33 @@ export default function App({ Component, pageProps }: AppProps) {
     storage.setItem("currentPath", globalThis.location.pathname);
   }
 
+  // const [loading, setLoading] = useState(false);
+  // useEffect(() => {
+  //   // Used for page transition
+  //   const start = () => {
+  //     setLoading(true);
+  //   };
+  //   const end = () => {
+  //     setLoading(false);
+  //   };
+  //   Router.events.on("routeChangeStart", start);
+  //   Router.events.on("routeChangeComplete", end);
+  //   Router.events.on("routeChangeError", end);
+  //   return () => {
+  //     Router.events.off("routeChangeStart", start);
+  //     Router.events.off("routeChangeComplete", end);
+  //     Router.events.off("routeChangeError", end);
+  //   };
+  // }, []);
+
   return (
     <>
-      <Layout>
-        {/*
-        TODO: framer-motion router간 exit animation이 동작하지 않는 이슈
-        스레드 참조: [BUG] Exit animation with Next.js #1375
-        */}
-        <AnimatePresence>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
           <Component {...pageProps} />
-        </AnimatePresence>
-      </Layout>
+        </AuthProvider>
+        <ReactQueryDevtools initialIsOpen={false} />
+      </QueryClientProvider>
     </>
   );
 }

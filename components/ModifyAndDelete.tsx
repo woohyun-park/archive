@@ -1,9 +1,9 @@
-import { deletePost } from "../apis/firebase/fbDelete";
-import useCustomRouter from "../hooks/useCustomRouter";
 import { IPost, SIZE } from "../apis/def";
-import { useCache } from "../stores/useCache";
-import { useStatus } from "../stores/useStatus";
+
 import BtnIcon from "./atoms/BtnIcon";
+import { deletePost } from "../apis/firebase/fbDelete";
+import { useCustomRouter } from "hooks";
+import { useStatus } from "../stores/useStatus";
 
 interface IModifyAndDeleteProps {
   post: IPost | null | undefined;
@@ -17,7 +17,6 @@ IModifyAndDeleteProps) {
   const router = useCustomRouter();
 
   const { setRefresh } = useStatus();
-  const { deleteCachedPost } = useCache();
 
   return post ? (
     <div>
@@ -41,7 +40,7 @@ IModifyAndDeleteProps) {
           onClick={async () => {
             if (confirm("정말 삭제하시겠습니까?")) {
               await deletePost(post?.id || "");
-              deleteCachedPost(router.asPath, "posts", post.id);
+              //refetch
             } else {
               console.log(post?.id);
             }
