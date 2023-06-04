@@ -1,12 +1,7 @@
-import {
-  InfinitePosts,
-  InfiniteTags,
-  InfiniteUsers,
-  PageTab,
-} from "components/common";
+import { InfinitePosts, InfiniteTags, InfiniteUsers, PageTab } from "components/common";
 import { useFirebaseQuery, useInfiniteScroll, useScrollBack } from "hooks";
 
-import BtnIcon from "components/atoms/BtnIcon";
+import { Icon } from "components/atoms";
 import { useRouter } from "next/router";
 
 export default function SearchResult() {
@@ -33,7 +28,7 @@ export default function SearchResult() {
       <PageTab
         header={
           <div className="flex p-4 pb-0 bg-white">
-            <BtnIcon icon="back" onClick={() => router.back()} />
+            <Icon icon="back" onClick={() => router.back()} />
             <h1 className="title-page-sm">{keyword}에 대한 검색 결과</h1>
           </div>
         }
@@ -46,27 +41,16 @@ export default function SearchResult() {
           {
             label: "posts",
             children: (
-              <InfinitePosts
-                numCols={1}
-                infiniteScroll={infinitePosts}
-                isPullable={false}
-              />
+              <InfinitePosts numCols={1} infiniteScroll={infinitePosts} isPullable={false} />
             ),
           },
           {
             label: "tags",
-            children: (
-              <InfiniteTags infiniteScroll={infiniteTags} isPullable={false} />
-            ),
+            children: <InfiniteTags infiniteScroll={infiniteTags} isPullable={false} />,
           },
           {
             label: "users",
-            children: (
-              <InfiniteUsers
-                infiniteScroll={infiniteUsers}
-                isPullable={false}
-              />
-            ),
+            children: <InfiniteUsers infiniteScroll={infiniteUsers} isPullable={false} />,
           },
         ]}
       />

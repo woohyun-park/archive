@@ -1,14 +1,10 @@
-import { RecentSearchList, SearchBar } from "components/pages/search";
-import {
-  useCustomRouter,
-  useInfiniteScroll,
-  useOutsideClick,
-  useScrollBack,
-} from "hooks";
+import { useCustomRouter, useInfiniteScroll, useOutsideClick, useScrollBack } from "hooks";
 import { useRef, useState } from "react";
 
 import { InfinitePosts } from "components/common";
+import InputBar from "components/molecules/InputBar/InputBar";
 import { ModalSpinner } from "components/templates";
+import { RecentSearchList } from "components/pages/search";
 import useFirebaseQuery from "hooks/useFirebaseQuery";
 import { useUser } from "providers";
 
@@ -32,11 +28,7 @@ export default function Search() {
       const index = arr.indexOf(keyword);
       return index === -1
         ? [keyword, ...arr]
-        : [
-            keyword,
-            ...arr.slice(0, index),
-            ...arr.slice(index + 1, arr.length),
-          ];
+        : [keyword, ...arr.slice(0, index), ...arr.slice(index + 1, arr.length)];
     }
     return [keyword];
   };
@@ -54,27 +46,21 @@ export default function Search() {
   return (
     <>
       <div className="relative overflow-hidden" ref={contRef}>
-        <SearchBar
+        <InputBar
+          className="p-4"
+          icon="search"
           ref={searchBarRef}
           keyword={keyword}
           setKeyword={setKeyword}
-          isSearching={isSearching}
-          setIsSearching={setIsSearching}
-          onSearch={handleSearch}
+          isActive={isSearching}
+          setIsActive={setIsSearching}
+          onSubmit={handleSearch}
           refetch={refetchUser}
         />
         {!isSearching ? (
-          <InfinitePosts
-            numCols={3}
-            infiniteScroll={infiniteScroll}
-            className="mx-4"
-          />
+          <InfinitePosts numCols={3} infiniteScroll={infiniteScroll} className="mx-4" />
         ) : (
-          <RecentSearchList
-            keyword={keyword}
-            searchBarRef={searchBarRef}
-            onSearch={handleSearch}
-          />
+          <RecentSearchList keyword={keyword} searchBarRef={searchBarRef} onSearch={handleSearch} />
         )}
       </div>
     </>
