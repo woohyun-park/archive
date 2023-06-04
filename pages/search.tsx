@@ -3,7 +3,7 @@ import { useRef, useState } from "react";
 
 import { InfinitePosts } from "components/common";
 import InputBar from "components/molecules/InputBar/InputBar";
-import { ModalSpinner } from "components/templates";
+import { PageSpinner } from "components/templates";
 import { RecentSearchList } from "components/pages/search";
 import useFirebaseQuery from "hooks/useFirebaseQuery";
 import { useUser } from "providers";
@@ -41,7 +41,7 @@ export default function Search() {
     router.push(`/search/${keyword}`);
   };
 
-  if (infiniteScroll.isLoading) return <ModalSpinner />;
+  if (infiniteScroll.isLoading) return <PageSpinner />;
 
   return (
     <>

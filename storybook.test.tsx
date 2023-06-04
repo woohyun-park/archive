@@ -1,21 +1,14 @@
-import initStoryshots, { snapshotWithOptions } from "@storybook/addon-storyshots";
+import initStoryshots from "@storybook/addon-storyshots";
+import { render } from "@testing-library/react";
 
-/* TODO: 현재 Textarea 컴포넌트가 react-textarea-autosize를 사용하는데,
- react-textarea-autosize가 내부적으로 forwardRef를 사용하는데,
- forwardRef는 element가 아니라서 테스트가 되지 않는다.
+// TODO: templates와 pages를 위한 테스팅이 필요하다
 
- 임시적으로 document.createElement()를 통해서 패스처리를 해놓았으며,
- 해당 오류를 우회할 수 있는 방법을 찾아봐야할듯하다. 
-*/
+const reactTestingLibrarySerializer = {
+  print: (val: any, serialize: any, indent: any) => serialize(val.container.firstChild),
+  test: (val: any) => val && val.hasOwnProperty("container"),
+};
 
 initStoryshots({
-  test: snapshotWithOptions((story: any) => ({
-    createNodeMock: (element: Element) => {
-      console.log(story, element);
-      if (story.componentId === "atoms-textarea") {
-        return document.createElement("textarea");
-      }
-      return element;
-    },
-  })),
+  renderer: render,
+  snapshotSerializers: [reactTestingLibrarySerializer],
 });

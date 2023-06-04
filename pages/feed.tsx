@@ -2,7 +2,7 @@ import { InfinitePosts, Message } from "components/common";
 import { useInfiniteScroll, useScrollBack } from "hooks";
 
 import { Header } from "components/pages/feed";
-import { ModalSpinner } from "components/templates";
+import { PageSpinner } from "components/templates";
 import useFirebaseQuery from "hooks/useFirebaseQuery";
 
 export default function Feed() {
@@ -13,7 +13,7 @@ export default function Feed() {
 
   useScrollBack();
 
-  if (infiniteScroll.isLoading) return <ModalSpinner />;
+  if (infiniteScroll.isLoading) return <PageSpinner />;
 
   return (
     <>

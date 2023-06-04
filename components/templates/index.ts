@@ -1,4 +1,4 @@
 import PageError from "./PageError";
-import ModalSpinner from "../common/ModalSpinner";
+import PageSpinner from "./PageSpinner/PageSpinner";
 
-export { PageError, ModalSpinner };
+export { PageError, PageSpinner };

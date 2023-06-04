@@ -2,7 +2,7 @@ import { Icon, Input } from "components/atoms";
 import { Ref, forwardRef, useRef } from "react";
 
 import { AnimatePresence } from "framer-motion";
-import { IIcon } from "components/atoms/Icon/Icon";
+import { IIcon } from "types/common";
 import { WrapMotionSlide } from "components/wrappers/motion";
 import { twMerge } from "tailwind-merge";
 import { useForwardRef } from "hooks";
