@@ -16,7 +16,6 @@ type Story = StoryObj<typeof Input>;
 
 export const Default: Story = {
   render: () => <MockInput />,
-  args: {},
 };
 
 const MockInput = () => {

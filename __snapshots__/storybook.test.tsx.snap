@@ -1,478 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Storyshots Button Default 1`] = `
-<button
-  className="flex items-center h-8 px-4 justify-center py-2 text-sm text-center text-white transition duration-150 ease-in-out bg-black rounded-lg hover:bg-black-f focus:bg-black-f focus:outline-none focus:ring-0 active:bg-black-f min-w-fit"
-  onClick={[Function]}
-  type="button"
->
-  Button
-</button>
-`;
-
-exports[`Storyshots Button Full 1`] = `
-<button
-  className="flex items-center h-8 px-4 justify-center py-2 text-sm text-center text-white transition duration-150 ease-in-out bg-black rounded-lg hover:bg-black-f focus:bg-black-f focus:outline-none focus:ring-0 active:bg-black-f min-w-fit w-full"
-  onClick={[Function]}
-  type="button"
->
-  Button
-</button>
-`;
-
-exports[`Storyshots Button Inactive 1`] = `
-<button
-  className="flex items-center h-8 px-4 justify-center py-2 text-sm text-center transition duration-150 ease-in-out rounded-lg focus:outline-none focus:ring-0 min-w-fit text-black bg-gray-3 hover:bg-gray-3f focus:bg-gray-3f active:bg-gray-3f"
-  onClick={[Function]}
-  type="button"
->
-  Button
-</button>
-`;
-
-exports[`Storyshots Icon Alarm 1`] = `
-<div
-  className="w-fit transition duration-150 ease-in-out hover:cursor-pointer"
->
-  <svg
-    aria-hidden="true"
-    fill="none"
-    height="32px"
-    onClick={[Function]}
-    stroke="currentColor"
-    strokeWidth="1.5"
-    style={
-      {
-        "color": undefined,
-      }
-    }
-    viewBox="0 0 24 24"
-    width="32px"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-</div>
-`;
-
-exports[`Storyshots Icon Back 1`] = `
-<div
-  className="w-fit transition duration-150 ease-in-out hover:cursor-pointer"
->
-  <svg
-    aria-hidden="true"
-    fill="currentColor"
-    height="32px"
-    onClick={[Function]}
-    stroke="currentColor"
-    strokeWidth="0"
-    style={
-      {
-        "color": undefined,
-      }
-    }
-    viewBox="0 0 24 24"
-    width="32px"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      clipRule="evenodd"
-      d="M7.72 12.53a.75.75 0 010-1.06l7.5-7.5a.75.75 0 111.06 1.06L9.31 12l6.97 6.97a.75.75 0 11-1.06 1.06l-7.5-7.5z"
-      fillRule="evenodd"
-    />
-  </svg>
-</div>
-`;
-
-exports[`Storyshots Icon Comment 1`] = `
-<div
-  className="w-fit transition duration-150 ease-in-out hover:cursor-pointer"
->
-  <svg
-    aria-hidden="true"
-    fill="none"
-    height="32px"
-    onClick={[Function]}
-    stroke="currentColor"
-    strokeWidth="1.5"
-    style={
-      {
-        "color": undefined,
-      }
-    }
-    viewBox="0 0 24 24"
-    width="32px"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 01-.923 1.785A5.969 5.969 0 006 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337z"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-</div>
-`;
-
-exports[`Storyshots Icon Delete 1`] = `
-<div
-  className="w-fit transition duration-150 ease-in-out hover:cursor-pointer"
->
-  <svg
-    aria-hidden="true"
-    fill="none"
-    height="32px"
-    onClick={[Function]}
-    stroke="currentColor"
-    strokeWidth="1.5"
-    style={
-      {
-        "color": undefined,
-      }
-    }
-    viewBox="0 0 24 24"
-    width="32px"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-</div>
-`;
-
-exports[`Storyshots Icon Filter 1`] = `
-<div
-  className="w-fit transition duration-150 ease-in-out hover:cursor-pointer"
->
-  <svg
-    aria-hidden="true"
-    fill="none"
-    height="32px"
-    onClick={[Function]}
-    stroke="currentColor"
-    strokeWidth="1.5"
-    style={
-      {
-        "color": undefined,
-      }
-    }
-    viewBox="0 0 24 24"
-    width="32px"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 01-.659 1.591l-5.432 5.432a2.25 2.25 0 00-.659 1.591v2.927a2.25 2.25 0 01-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 00-.659-1.591L3.659 7.409A2.25 2.25 0 013 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0112 3z"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-</div>
-`;
-
-exports[`Storyshots Icon Like 1`] = `
-<div
-  className="w-fit transition duration-150 ease-in-out hover:cursor-pointer"
->
-  <svg
-    aria-hidden="true"
-    fill="none"
-    height="32px"
-    onClick={[Function]}
-    stroke="currentColor"
-    strokeWidth="1.5"
-    style={
-      {
-        "color": undefined,
-      }
-    }
-    viewBox="0 0 24 24"
-    width="32px"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-</div>
-`;
-
-exports[`Storyshots Icon Modify 1`] = `
-<div
-  className="w-fit transition duration-150 ease-in-out hover:cursor-pointer"
->
-  <svg
-    aria-hidden="true"
-    fill="none"
-    height="32px"
-    onClick={[Function]}
-    stroke="currentColor"
-    strokeWidth="1.5"
-    style={
-      {
-        "color": undefined,
-      }
-    }
-    viewBox="0 0 24 24"
-    width="32px"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-</div>
-`;
-
-exports[`Storyshots Icon Refresh 1`] = `
-<div
-  className="w-fit transition duration-150 ease-in-out hover:cursor-pointer"
->
-  <svg
-    aria-hidden="true"
-    fill="currentColor"
-    height="32px"
-    onClick={[Function]}
-    stroke="currentColor"
-    strokeWidth="0"
-    style={
-      {
-        "color": undefined,
-      }
-    }
-    viewBox="0 0 24 24"
-    width="32px"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      clipRule="evenodd"
-      d="M9.53 2.47a.75.75 0 010 1.06L4.81 8.25H15a6.75 6.75 0 010 13.5h-3a.75.75 0 010-1.5h3a5.25 5.25 0 100-10.5H4.81l4.72 4.72a.75.75 0 11-1.06 1.06l-6-6a.75.75 0 010-1.06l6-6a.75.75 0 011.06 0z"
-      fillRule="evenodd"
-    />
-  </svg>
-</div>
-`;
-
-exports[`Storyshots Icon Scrap 1`] = `
-<div
-  className="w-fit transition duration-150 ease-in-out hover:cursor-pointer"
->
-  <svg
-    aria-hidden="true"
-    fill="none"
-    height="32px"
-    onClick={[Function]}
-    stroke="currentColor"
-    strokeWidth="1.5"
-    style={
-      {
-        "color": undefined,
-      }
-    }
-    viewBox="0 0 24 24"
-    width="32px"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-</div>
-`;
-
-exports[`Storyshots Icon Search 1`] = `
-<div
-  className="w-fit transition duration-150 ease-in-out hover:cursor-pointer"
->
-  <svg
-    aria-hidden="true"
-    fill="currentColor"
-    height="32px"
-    onClick={[Function]}
-    stroke="currentColor"
-    strokeWidth="0"
-    style={
-      {
-        "color": undefined,
-      }
-    }
-    viewBox="0 0 24 24"
-    width="32px"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      clipRule="evenodd"
-      d="M10.5 3.75a6.75 6.75 0 100 13.5 6.75 6.75 0 000-13.5zM2.25 10.5a8.25 8.25 0 1114.59 5.28l4.69 4.69a.75.75 0 11-1.06 1.06l-4.69-4.69A8.25 8.25 0 012.25 10.5z"
-      fillRule="evenodd"
-    />
-  </svg>
-</div>
-`;
-
-exports[`Storyshots Icon Setting 1`] = `
-<div
-  className="w-fit transition duration-150 ease-in-out hover:cursor-pointer"
->
-  <svg
-    aria-hidden="true"
-    fill="currentColor"
-    height="32px"
-    onClick={[Function]}
-    stroke="currentColor"
-    strokeWidth="0"
-    style={
-      {
-        "color": undefined,
-      }
-    }
-    viewBox="0 0 24 24"
-    width="32px"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      clipRule="evenodd"
-      d="M11.828 2.25c-.916 0-1.699.663-1.85 1.567l-.091.549a.798.798 0 01-.517.608 7.45 7.45 0 00-.478.198.798.798 0 01-.796-.064l-.453-.324a1.875 1.875 0 00-2.416.2l-.243.243a1.875 1.875 0 00-.2 2.416l.324.453a.798.798 0 01.064.796 7.448 7.448 0 00-.198.478.798.798 0 01-.608.517l-.55.092a1.875 1.875 0 00-1.566 1.849v.344c0 .916.663 1.699 1.567 1.85l.549.091c.281.047.508.25.608.517.06.162.127.321.198.478a.798.798 0 01-.064.796l-.324.453a1.875 1.875 0 00.2 2.416l.243.243c.648.648 1.67.733 2.416.2l.453-.324a.798.798 0 01.796-.064c.157.071.316.137.478.198.267.1.47.327.517.608l.092.55c.15.903.932 1.566 1.849 1.566h.344c.916 0 1.699-.663 1.85-1.567l.091-.549a.798.798 0 01.517-.608 7.52 7.52 0 00.478-.198.798.798 0 01.796.064l.453.324a1.875 1.875 0 002.416-.2l.243-.243c.648-.648.733-1.67.2-2.416l-.324-.453a.798.798 0 01-.064-.796c.071-.157.137-.316.198-.478.1-.267.327-.47.608-.517l.55-.091a1.875 1.875 0 001.566-1.85v-.344c0-.916-.663-1.699-1.567-1.85l-.549-.091a.798.798 0 01-.608-.517 7.507 7.507 0 00-.198-.478.798.798 0 01.064-.796l.324-.453a1.875 1.875 0 00-.2-2.416l-.243-.243a1.875 1.875 0 00-2.416-.2l-.453.324a.798.798 0 01-.796.064 7.462 7.462 0 00-.478-.198.798.798 0 01-.517-.608l-.091-.55a1.875 1.875 0 00-1.85-1.566h-.344zM12 15.75a3.75 3.75 0 100-7.5 3.75 3.75 0 000 7.5z"
-      fillRule="evenodd"
-    />
-  </svg>
-</div>
-`;
-
-exports[`Storyshots Icon X 1`] = `
-<div
-  className="w-fit transition duration-150 ease-in-out hover:cursor-pointer"
->
-  <svg
-    aria-hidden="true"
-    fill="currentColor"
-    height="32px"
-    onClick={[Function]}
-    stroke="currentColor"
-    strokeWidth="0"
-    style={
-      {
-        "color": undefined,
-      }
-    }
-    viewBox="0 0 24 24"
-    width="32px"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      clipRule="evenodd"
-      d="M5.47 5.47a.75.75 0 011.06 0L12 10.94l5.47-5.47a.75.75 0 111.06 1.06L13.06 12l5.47 5.47a.75.75 0 11-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 01-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 010-1.06z"
-      fillRule="evenodd"
-    />
-  </svg>
-</div>
-`;
-
-exports[`Storyshots Input Default 1`] = `
-<input
-  className="block w-full px-2 py-2 my-1 text-base font-normal transition ease-in-out border-2 border-solid rounded-lg form-control text-gray-1 bg-gray-3 bg-clip-padding border-gray-3 focus:text-gray-1 focus:border-gray-3f focus:outline-none"
-  onChange={[Function]}
-  placeholder=""
-  type="text"
-  value=""
-/>
-`;
-
-exports[`Storyshots Loader Default 1`] = `
-<div
-  className="jsx-2f6e94d96912eed7 lds-ellipsis"
->
-  <div
-    className="jsx-2f6e94d96912eed7"
-  />
-  <div
-    className="jsx-2f6e94d96912eed7"
-  />
-  <div
-    className="jsx-2f6e94d96912eed7"
-  />
-  <div
-    className="jsx-2f6e94d96912eed7"
-  />
-</div>
-`;
-
-exports[`Storyshots ScrollUpAndDown Default 1`] = `
-<div
-  className="w-fit"
->
-  <div
-    className="transition duration-150 ease-in-out p-1 mb-2 bg-white rounded-full opacity-75 hover:cursor-pointer w-fit"
-  >
-    <svg
-      aria-hidden="true"
-      fill="currentColor"
-      height="32px"
-      onClick={[Function]}
-      stroke="currentColor"
-      strokeWidth="0"
-      style={
-        {
-          "color": undefined,
-        }
-      }
-      viewBox="0 0 24 24"
-      width="32px"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        clipRule="evenodd"
-        d="M11.47 7.72a.75.75 0 011.06 0l7.5 7.5a.75.75 0 11-1.06 1.06L12 9.31l-6.97 6.97a.75.75 0 01-1.06-1.06l7.5-7.5z"
-        fillRule="evenodd"
-      />
-    </svg>
-  </div>
-  <div
-    className="transition duration-150 ease-in-out p-1 bg-white rounded-full opacity-75 hover:cursor-pointer w-fit"
-  >
-    <svg
-      aria-hidden="true"
-      fill="currentColor"
-      height="32px"
-      onClick={[Function]}
-      stroke="currentColor"
-      strokeWidth="0"
-      style={
-        {
-          "color": undefined,
-        }
-      }
-      viewBox="0 0 24 24"
-      width="32px"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        clipRule="evenodd"
-        d="M12.53 16.28a.75.75 0 01-1.06 0l-7.5-7.5a.75.75 0 011.06-1.06L12 14.69l6.97-6.97a.75.75 0 111.06 1.06l-7.5 7.5z"
-        fillRule="evenodd"
-      />
-    </svg>
-  </div>
-</div>
-`;
-
-exports[`Storyshots Textarea Default 1`] = `
-<textarea
-  className="block w-full h-8 px-2 py-2 text-base leading-5 transition ease-in-out border-2 border-solid rounded-lg resize-none text-gray-1 bg-gray-3 bg-clip-padding border-gray-3 focus:text-gray-1 focus:border-gray-3f focus:outline-none"
-  onChange={[Function]}
-/>
-`;
-
 exports[`Storyshots atoms/Button Default 1`] = `
 <button
   className="flex items-center h-8 px-4 justify-center py-2 text-sm text-center text-white transition duration-150 ease-in-out bg-black rounded-lg hover:bg-black-f focus:bg-black-f focus:outline-none focus:ring-0 active:bg-black-f min-w-fit"
@@ -879,6 +406,158 @@ exports[`Storyshots atoms/Loader Default 1`] = `
   <div
     className="jsx-2f6e94d96912eed7"
   />
+</div>
+`;
+
+exports[`Storyshots atoms/Textarea Default 1`] = `
+<textarea
+  autoFocus={false}
+  className="block w-full h-8 px-2 py-2 text-base leading-5 transition ease-in-out border-2 border-solid rounded-lg resize-none text-gray-1 bg-gray-3 bg-clip-padding border-gray-3 focus:text-gray-1 focus:border-gray-3f focus:outline-none"
+  onChange={[Function]}
+  placeholder=""
+  value=""
+/>
+`;
+
+exports[`Storyshots molecules/Comment Author 1`] = `
+<div
+  className="flex items-end justify-between my-1"
+>
+  <div
+    className="flex items-center mt-2 mb-1"
+  >
+    <div
+      className="jsx-639859231 profileImg-sm cursor-pointer"
+      onClick={[Function]}
+    >
+      <svg
+        className="jsx-639859231 absolute w-0 h-0"
+      >
+        <clipPath
+          className="jsx-639859231"
+          clipPathUnits="objectBoundingBox"
+          id="my-clip-path"
+        >
+          <path
+            className="jsx-639859231"
+            d="M1,0.301 C1,0.135,0.872,0,0.714,0 C0.629,0,0.552,0.039,0.5,0.101 C0.448,0.039,0.371,0,0.286,0 C0.128,0,0,0.135,0,0.301 C0,0.377,0.027,0.447,0.072,0.5 C0.027,0.553,0,0.623,0,0.699 C0,0.865,0.128,1,0.286,1 C0.371,1,0.448,0.961,0.5,0.899 C0.552,0.961,0.629,1,0.714,1 C0.872,1,1,0.865,1,0.699 C1,0.623,0.973,0.553,0.928,0.5 C0.973,0.447,1,0.377,1,0.301"
+          />
+        </clipPath>
+      </svg>
+      <div
+        className="jsx-639859231 w-full h-full"
+        id="profileImg_d1"
+      />
+    </div>
+    <div
+      className="ml-2"
+    >
+      <div
+        className="flex items-center"
+      >
+        <div
+          className="mr-1 text-sm font-bold text-black hover:cursor-pointer"
+          onClick={[Function]}
+        >
+          user
+        </div>
+        <div
+          className="text-xs text-gray-1"
+        >
+          just now
+        </div>
+      </div>
+      <div
+        className="-mt-[0.125rem] text-base leading-5 text-black break-all"
+      >
+        comment
+      </div>
+    </div>
+  </div>
+  <div
+    className="w-fit transition duration-150 ease-in-out mx-2 mt-5 hover:cursor-pointer self-baseline"
+  >
+    <svg
+      aria-hidden="true"
+      fill="currentColor"
+      height="24px"
+      onClick={[Function]}
+      stroke="currentColor"
+      strokeWidth="0"
+      style={
+        {
+          "color": undefined,
+        }
+      }
+      viewBox="0 0 24 24"
+      width="24px"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        clipRule="evenodd"
+        d="M5.47 5.47a.75.75 0 011.06 0L12 10.94l5.47-5.47a.75.75 0 111.06 1.06L13.06 12l5.47 5.47a.75.75 0 11-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 01-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 010-1.06z"
+        fillRule="evenodd"
+      />
+    </svg>
+  </div>
+</div>
+`;
+
+exports[`Storyshots molecules/Comment Default 1`] = `
+<div
+  className="flex items-end justify-between my-1"
+>
+  <div
+    className="flex items-center mt-2 mb-1"
+  >
+    <div
+      className="jsx-639859231 profileImg-sm cursor-pointer"
+      onClick={[Function]}
+    >
+      <svg
+        className="jsx-639859231 absolute w-0 h-0"
+      >
+        <clipPath
+          className="jsx-639859231"
+          clipPathUnits="objectBoundingBox"
+          id="my-clip-path"
+        >
+          <path
+            className="jsx-639859231"
+            d="M1,0.301 C1,0.135,0.872,0,0.714,0 C0.629,0,0.552,0.039,0.5,0.101 C0.448,0.039,0.371,0,0.286,0 C0.128,0,0,0.135,0,0.301 C0,0.377,0.027,0.447,0.072,0.5 C0.027,0.553,0,0.623,0,0.699 C0,0.865,0.128,1,0.286,1 C0.371,1,0.448,0.961,0.5,0.899 C0.552,0.961,0.629,1,0.714,1 C0.872,1,1,0.865,1,0.699 C1,0.623,0.973,0.553,0.928,0.5 C0.973,0.447,1,0.377,1,0.301"
+          />
+        </clipPath>
+      </svg>
+      <div
+        className="jsx-639859231 w-full h-full"
+        id="profileImg_d1"
+      />
+    </div>
+    <div
+      className="ml-2"
+    >
+      <div
+        className="flex items-center"
+      >
+        <div
+          className="mr-1 text-sm font-bold text-black hover:cursor-pointer"
+          onClick={[Function]}
+        >
+          user
+        </div>
+        <div
+          className="text-xs text-gray-1"
+        >
+          just now
+        </div>
+      </div>
+      <div
+        className="-mt-[0.125rem] text-base leading-5 text-black break-all"
+      >
+        comment
+      </div>
+    </div>
+  </div>
 </div>
 `;
 

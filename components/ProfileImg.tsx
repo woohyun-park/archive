@@ -1,14 +1,10 @@
 interface IProfileImgProps {
   size: "sm" | "lg";
   photoURL: string;
-  onClick?: () => void;
+  onClick?: (e: React.MouseEvent<HTMLDivElement>) => void;
 }
 
-export default function ProfileImg({
-  size,
-  photoURL,
-  onClick,
-}: IProfileImgProps) {
+export default function ProfileImg({ size, photoURL, onClick }: IProfileImgProps) {
   return (
     <>
       <div

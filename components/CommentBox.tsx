@@ -1,13 +1,14 @@
-import { IPost, IUser } from "../apis/def";
+import { Children, useEffect, useRef, useState } from "react";
+import { IComment, IPost, IUser } from "../apis/def";
 import { deleteDoc, doc } from "firebase/firestore";
-import { useEffect, useRef, useState } from "react";
 
 import Action from "./Action";
 import { AnimatePresence } from "framer-motion";
-import Btn from "./atoms/Button";
-import Comment from "./Comment";
+import { Button } from "./atoms";
+import Comment from "./molecules/Comment/Comment";
 import ProfileImg from "./ProfileImg";
-import Textarea from "./atoms/Textarea";
+import Textarea from "./atoms/Textarea/Textarea";
+import { WrapMotionFloat } from "./wrappers/motion";
 import { createComment } from "../apis/firebase/fbCreate";
 import { db } from "../apis/firebase/fb";
 import { readComment } from "../apis/firebase/fbRead";
@@ -21,12 +22,7 @@ type ICommentBoxProps = {
   onRefresh: Function;
 };
 
-export default function CommentBox({
-  post,
-  user,
-  className,
-  onRefresh,
-}: ICommentBoxProps) {
+export default function CommentBox({ post, user, className, onRefresh }: ICommentBoxProps) {
   const [comment, setComment] = useState("");
   const [submitListener, setSubmitListener] = useState<boolean | null>(null);
   const router = useRouter();
@@ -39,7 +35,6 @@ export default function CommentBox({
   const pid = post.id || "";
 
   useEffect(() => {
-    console.log(actionRef.current);
     if (submitListener !== null)
       actionRef.current?.scrollIntoView({
         behavior: "smooth",
@@ -47,27 +42,28 @@ export default function CommentBox({
       });
   }, [submitListener]);
 
-  function handleChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setComment(e.target.value);
-  }
+  };
 
-  async function handleSubmit(e: React.MouseEvent<HTMLButtonElement>) {
+  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     const newCommentRef = await createComment(uid, targetUid, pid, comment);
     const newComment = await readComment(newCommentRef.id);
     if (!newComment) return;
     setComment("");
     onRefresh();
     setSubmitListener(!submitListener);
-  }
+  };
 
-  async function handleDeleteComment(e: React.MouseEvent<HTMLDivElement>) {
-    const id = e.currentTarget.id;
-    const comment = post.comments?.find((comment) => comment.id === id);
-    await deleteDoc(doc(db, "comments", id));
-    curUser.id !== comment?.uid &&
-      (await deleteDoc(doc(db, "alarms", comment?.aid || "")));
+  const handleDeleteComment = async (comment: IComment) => {
+    await deleteDoc(doc(db, "comments", comment.id));
+    curUser.id !== comment.uid && (await deleteDoc(doc(db, "alarms", comment.aid || "")));
     onRefresh();
-  }
+  };
+
+  const handleProfileClick = (uid: string) => {
+    router.push(`/profile/${uid}`);
+  };
 
   return (
     <div className={className}>
@@ -80,15 +76,21 @@ export default function CommentBox({
         ref={actionRef}
       />
       <AnimatePresence>
-        {post.comments?.map((comment, i) => {
-          return (
-            <Comment
-              comment={comment}
-              onClick={handleDeleteComment}
-              key={comment.id}
-            />
-          );
-        })}
+        {Children.toArray(
+          post.comments?.map((comment) => {
+            return (
+              <WrapMotionFloat>
+                <Comment
+                  comment={comment}
+                  user={user}
+                  curUser={curUser}
+                  onProfileClick={() => handleProfileClick(user.id)}
+                  onDelete={() => handleDeleteComment(comment)}
+                />
+              </WrapMotionFloat>
+            );
+          })
+        )}
       </AnimatePresence>
       <div className="fixed bottom-0 flex items-center justify-between py-4 bg-white w-[calc(100vw_-_2rem)] max-w-[calc(480px_-_2rem)]">
         <ProfileImg photoURL={user.photoURL} size="sm" />
@@ -98,12 +100,10 @@ export default function CommentBox({
           onChange={handleChange}
           ref={commentRef}
           autoFocus={router.query.isCommentFocused ? true : false}
-          style={{
-            marginLeft: "0.5rem",
-            marginRight: "0.5rem ",
-          }}
+          minRows={1}
+          className="mx-2"
         />
-        <Btn label="게시" onClick={handleSubmit} />
+        <Button label="게시" onClick={handleSubmit} />
       </div>
     </div>
   );

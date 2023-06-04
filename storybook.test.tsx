@@ -11,7 +11,8 @@ import initStoryshots, { snapshotWithOptions } from "@storybook/addon-storyshots
 initStoryshots({
   test: snapshotWithOptions((story: any) => ({
     createNodeMock: (element: Element) => {
-      if (story.componentId === "textarea") {
+      console.log(story, element);
+      if (story.componentId === "atoms-textarea") {
         return document.createElement("textarea");
       }
       return element;

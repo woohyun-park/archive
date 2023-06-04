@@ -18,24 +18,9 @@ import {
   HiXMark,
 } from "react-icons/hi2";
 
+import { IIcon } from "types/common";
 import { SIZE } from "apis/def";
 import { twMerge } from "tailwind-merge";
-
-export type IIcon =
-  | "alarm"
-  | "back"
-  | "comment"
-  | "delete"
-  | "down"
-  | "filter"
-  | "like"
-  | "modify"
-  | "refresh"
-  | "scrap"
-  | "search"
-  | "setting"
-  | "up"
-  | "x";
 
 type Props = {
   icon: IIcon;
