@@ -1,8 +1,9 @@
-import React, { forwardRef } from "react";
+import { IPost, IUser } from "../apis/def";
 import { createLike, createScrap } from "../apis/firebase/fbCreate";
 import { deleteLike, deleteScrap } from "../apis/firebase/fbDelete";
-import { IPost, IUser } from "../apis/def";
-import BtnIcon from "./atoms/BtnIcon";
+
+import { Icon } from "./atoms";
+import { forwardRef } from "react";
 
 interface IActionProps {
   post: IPost;
@@ -33,16 +34,14 @@ export default forwardRef<HTMLDivElement, IActionProps>(function Action(
   function displayLike() {
     const len = post.likes?.length;
     if (len === undefined) return 0;
-    if (post.likes?.find((each) => each.uid === curUser.id))
-      return lid ? len : len - 1;
+    if (post.likes?.find((each) => each.uid === curUser.id)) return lid ? len : len - 1;
     else return lid ? len + 1 : len;
   }
 
   function displayScrap() {
     const len = post.scraps?.length;
     if (len === undefined) return 0;
-    if (post.scraps?.find((each) => each.uid === curUser.id))
-      return sid ? len : len - 1;
+    if (post.scraps?.find((each) => each.uid === curUser.id)) return sid ? len : len - 1;
     else return sid ? len + 1 : len;
   }
 
@@ -52,23 +51,15 @@ export default forwardRef<HTMLDivElement, IActionProps>(function Action(
         <div className="flex justify-between pt-4 mb-2" ref={ref}>
           <div className="flex">
             <span className="mr-2 hover:cursor-pointer">
-              <BtnIcon
-                icon="like"
-                fill={lid !== "" ? true : false}
-                onClick={() => toggleLike()}
-              />
+              <Icon icon="like" fill={lid !== "" ? true : false} onClick={toggleLike} />
             </span>
             <span className="hover:cursor-pointer">
-              <BtnIcon icon="comment" onClick={onCommentClick} />
+              <Icon icon="comment" onClick={onCommentClick} />
             </span>
           </div>
           <div>
             <span className="hover:cursor-pointer">
-              <BtnIcon
-                icon="scrap"
-                fill={sid !== "" ? true : false}
-                onClick={() => toggleScrap()}
-              />
+              <Icon icon="scrap" fill={sid !== "" ? true : false} onClick={toggleScrap} />
             </span>
           </div>
         </div>

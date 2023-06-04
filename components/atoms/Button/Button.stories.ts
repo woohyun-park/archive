@@ -10,27 +10,20 @@ const meta: Meta<typeof Button> = {
 export default meta;
 type Story = StoryObj<typeof Button>;
 
-export const BaseButton: Story = {
+export const Default: Story = {
   args: {
     label: "Button",
   },
 };
 
-export const SmButton: Story = {
-  args: {
-    label: "Button",
-    size: "sm",
-  },
-};
-
-export const InactiveButton: Story = {
+export const Inactive: Story = {
   args: {
     label: "Button",
     isActive: false,
   },
 };
 
-export const FullButton: Story = {
+export const Full: Story = {
   args: {
     label: "Button",
     width: "full",

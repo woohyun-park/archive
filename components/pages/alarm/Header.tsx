@@ -1,6 +1,6 @@
 import { IAlarm } from "apis/def";
-import BtnIcon from "components/atoms/BtnIcon";
 import { IField } from "consts/firebase";
+import { Icon } from "components/atoms";
 import { useCustomRouter } from "hooks";
 
 type Props = {
@@ -25,7 +25,7 @@ export default function Header({ alarms, mutate }: Props) {
   return (
     <div className="flex items-end justify-between m-4">
       <div className="flex">
-        <BtnIcon icon="back" onClick={() => router.back()} />
+        <Icon icon="back" onClick={() => router.back()} />
         <div className="title-page-base">알림</div>
       </div>
       {alarms.length !== 0 && (

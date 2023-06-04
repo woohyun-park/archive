@@ -3,32 +3,24 @@ import * as stories from "./Button.stories";
 import { composeStories } from "@storybook/react";
 import { render } from "@testing-library/react";
 
-const { BaseButton, FullButton, InactiveButton, SmButton } =
-  composeStories(stories);
+const { Default, Full, Inactive } = composeStories(stories);
 
-it("should render BaseButton", () => {
-  const { getByRole } = render(<BaseButton />);
-
-  expect(getByRole("button")).toHaveTextContent("Button");
-  expect(getByRole("button")).toHaveClass("text-base");
-});
-
-it("should render SmButton", () => {
-  const { getByRole } = render(<SmButton />);
+it("should render Default Button", () => {
+  const { getByRole } = render(<Default />);
 
   expect(getByRole("button")).toHaveTextContent("Button");
   expect(getByRole("button")).toHaveClass("text-sm");
 });
 
-it("should render InactiveButton", () => {
-  const { getByRole } = render(<InactiveButton />);
+it("should render Inactive Button", () => {
+  const { getByRole } = render(<Inactive />);
 
   expect(getByRole("button")).toHaveTextContent("Button");
   expect(getByRole("button")).toHaveClass("text-black");
 });
 
-it("should render FullButton", () => {
-  const { getByRole } = render(<FullButton />);
+it("should render Full Button", () => {
+  const { getByRole } = render(<Full />);
 
   expect(getByRole("button")).toHaveTextContent("Button");
   expect(getByRole("button")).toHaveClass("w-full");

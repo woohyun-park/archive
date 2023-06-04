@@ -1,4 +1,4 @@
-import BtnIcon from "components/atoms/BtnIcon";
+import { Icon } from "components/atoms";
 import ProfileImg from "components/ProfileImg";
 import { useCustomRouter } from "hooks";
 import { useUser } from "providers";
@@ -10,14 +10,11 @@ export default function Header({}) {
   return (
     <div className="relative flex flex-col mt-4 bg-white">
       <div className="flex items-center justify-between px-4 pb-2">
-        <h1
-          className="hover:cursor-pointer title-logo"
-          onClick={() => router.reload()}
-        >
+        <h1 className="hover:cursor-pointer title-logo" onClick={() => router.reload()}>
           archive
         </h1>
         <div className="flex items-center justify-center">
-          <BtnIcon
+          <Icon
             icon="alarm"
             // fill={hasNewAlarms ? true : false}
             onClick={() => router.push("/alarm")}

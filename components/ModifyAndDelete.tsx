@@ -1,19 +1,15 @@
 import { IPost, SIZE } from "../apis/def";
 
-import BtnIcon from "./atoms/BtnIcon";
+import { Icon } from "./atoms";
 import { deletePost } from "../apis/firebase/fbDelete";
 import { useCustomRouter } from "hooks";
 import { useStatus } from "../stores/useStatus";
 
 interface IModifyAndDeleteProps {
   post: IPost | null | undefined;
-  // redirect?: string;
 }
 
-export default function ModifyAndDelete({
-  post,
-}: // redirect,
-IModifyAndDeleteProps) {
+export default function ModifyAndDelete({ post }: IModifyAndDeleteProps) {
   const router = useCustomRouter();
 
   const { setRefresh } = useStatus();
@@ -21,7 +17,7 @@ IModifyAndDeleteProps) {
   return post ? (
     <div>
       <div className="flex">
-        <BtnIcon
+        <Icon
           icon="modify"
           size={SIZE.iconSm}
           onClick={() => {
@@ -34,7 +30,7 @@ IModifyAndDeleteProps) {
             );
           }}
         />
-        <BtnIcon
+        <Icon
           icon="delete"
           size={SIZE.iconSm}
           onClick={async () => {

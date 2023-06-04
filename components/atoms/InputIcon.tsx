@@ -1,9 +1,7 @@
-import { AnimatePresence } from "framer-motion";
-import { SIZE } from "../../apis/def";
-import BtnIcon from "./BtnIcon";
-import { ChangeEvent, FocusEventHandler, forwardRef, MouseEvent } from "react";
-import WrapMotion from "../wrappers/motion/WrapMotionFloat";
-import { mergeTailwindClasses } from "apis/tailwind";
+import { ChangeEvent, MouseEvent, forwardRef } from "react";
+
+import Icon from "./Icon/Icon";
+import { twMerge } from "tailwind-merge";
 
 interface IInputIconProps {
   icon: "filter" | "search";
@@ -19,34 +17,18 @@ interface IInputIconProps {
 }
 
 export default forwardRef<HTMLInputElement, IInputIconProps>(function InputIcon(
-  {
-    icon,
-    onChange,
-    onClear,
-    onKeyDown,
-    onFocus,
-    keyword,
-    placeholder,
-    className,
-    style,
-  },
+  { icon, onChange, onClear, onKeyDown, onFocus, keyword, placeholder, className, style },
   ref
 ) {
   return (
     <>
-      <div
-        className={mergeTailwindClasses(
-          "relative flex items-center",
-          className || ""
-        )}
-        id="iconInput_d1"
-      >
+      <div className={twMerge("relative flex items-center", className || "")} id="iconInput_d1">
         <div className="absolute z-10 scale-75 left-1">
-          <BtnIcon icon={icon} size={SIZE.iconSm} />
+          <Icon icon={icon} size="sm" />
         </div>
         {keyword && keyword.length !== 0 && (
           <div className="absolute z-10 scale-75 right-1" onClick={onClear}>
-            <BtnIcon icon={"x"} size={SIZE.iconSm} />
+            <Icon icon="x" size="sm" />
           </div>
         )}
         <input

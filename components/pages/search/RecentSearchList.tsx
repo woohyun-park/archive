@@ -1,12 +1,8 @@
 import { Children, RefObject, useRef } from "react";
-import {
-  WrapMotionAccordion,
-  WrapMotionFade,
-} from "components/wrappers/motion";
+import { WrapMotionAccordion, WrapMotionFade } from "components/wrappers/motion";
 
 import { AnimatePresence } from "framer-motion";
-import BtnIcon from "components/atoms/BtnIcon";
-import { SIZE } from "apis/def";
+import { Icon } from "components/atoms";
 import { useUser } from "providers/UserProvider";
 
 type Props = {
@@ -15,11 +11,7 @@ type Props = {
   onSearch: () => void;
 };
 
-export default function RecentSearchList({
-  keyword,
-  searchBarRef,
-  onSearch,
-}: Props) {
+export default function RecentSearchList({ keyword, searchBarRef, onSearch }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const userContext = useUser();
 
@@ -55,19 +47,14 @@ export default function RecentSearchList({
         >
           <div className="flex justify-between mx-4 mb-2 text-xs text-gray-2">
             <div>최근 검색어</div>
-            <div
-              className="hover:cursor-pointer"
-              onClick={handleDeleteHistoryAll}
-            >
+            <div className="hover:cursor-pointer" onClick={handleDeleteHistoryAll}>
               모두 삭제
             </div>
           </div>
           <AnimatePresence>
             {Children.toArray(
               [...(userContext.data?.history || [])]
-                ?.filter(
-                  (each) => keyword === "" || each.indexOf(keyword) === 0
-                )
+                ?.filter((each) => keyword === "" || each.indexOf(keyword) === 0)
                 .map((e, i) => (
                   <WrapMotionAccordion
                     className="flex items-center justify-between mx-4 hover:cursor-pointer"
@@ -83,7 +70,7 @@ export default function RecentSearchList({
                       id={String(i)}
                       onClick={handleDeleteHistory}
                     >
-                      <BtnIcon icon="delete" size={SIZE.iconXs} />
+                      <Icon icon="delete" size="xs" />
                     </div>
                   </WrapMotionAccordion>
                 ))
