@@ -1,0 +1,37 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Storyshots Button Default 1`] = `
+<button
+  className="flex items-center justify-center h-10 px-2 py-2 text-base text-center text-white transition duration-150 ease-in-out bg-black rounded-lg hover:bg-black-f focus:bg-black-f focus:outline-none focus:ring-0 active:bg-black-f min-w-fit"
+  type="button"
+>
+  Button
+</button>
+`;
+
+exports[`Storyshots Button Full 1`] = `
+<button
+  className="flex items-center justify-center h-10 px-2 py-2 text-base text-center text-white transition duration-150 ease-in-out bg-black rounded-lg hover:bg-black-f focus:bg-black-f focus:outline-none focus:ring-0 active:bg-black-f min-w-fit w-full"
+  type="button"
+>
+  Button
+</button>
+`;
+
+exports[`Storyshots Button Inactive 1`] = `
+<button
+  className="flex items-center justify-center h-10 px-2 py-2 text-base text-center transition duration-150 ease-in-out rounded-lg focus:outline-none focus:ring-0 min-w-fit text-black bg-gray-3 hover:bg-gray-3f focus:bg-gray-3f active:bg-gray-3f"
+  type="button"
+>
+  Button
+</button>
+`;
+
+exports[`Storyshots Button Small 1`] = `
+<button
+  className="flex items-center justify-center py-2 text-center text-white transition duration-150 ease-in-out bg-black rounded-lg hover:bg-black-f focus:bg-black-f focus:outline-none focus:ring-0 active:bg-black-f min-w-fit h-8 px-4 text-sm"
+  type="button"
+>
+  Button
+</button>
+`;
