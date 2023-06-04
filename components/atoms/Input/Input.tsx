@@ -11,7 +11,6 @@ type Props = {
   onChange?: React.ChangeEventHandler<HTMLInputElement>;
   onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>;
   onFocus?: () => void;
-  // autoFocus?: boolean;
 };
 
 const Input = forwardRef<HTMLInputElement, Props>(function Input(

@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import Icon from "./Icon";
 
 const meta: Meta<typeof Icon> = {
-  title: "Icon",
+  title: "atoms/Icon",
   component: Icon,
 };
 

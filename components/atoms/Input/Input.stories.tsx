@@ -6,7 +6,7 @@ import { action } from "@storybook/addon-actions";
 import { withKnobs } from "@storybook/addon-knobs";
 
 const meta: Meta<typeof Input> = {
-  title: "Input",
+  title: "atoms/Input",
   component: Input,
   decorators: [withKnobs],
 };

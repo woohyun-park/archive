@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import ScrollUpAndDown from "./ScrollUpAndDown";
 
 const meta: Meta<typeof ScrollUpAndDown> = {
-  title: "ScrollUpAndDown",
+  title: "molecules/ScrollUpAndDown",
   component: ScrollUpAndDown,
 };
 

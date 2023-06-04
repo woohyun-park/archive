@@ -44,7 +44,6 @@ type Props = {
   fill?: boolean;
   size?: "base" | "sm" | "xs";
   onClick?: () => void;
-  // stroke?: string;
 };
 
 export default function Icon({

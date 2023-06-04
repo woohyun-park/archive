@@ -4,7 +4,7 @@ import InputBar from "./InputBar";
 import { useState } from "react";
 
 const meta: Meta<typeof InputBar> = {
-  title: "InputBar",
+  title: "molecules/InputBar",
   component: InputBar,
 };
 

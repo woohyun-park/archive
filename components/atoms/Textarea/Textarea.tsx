@@ -1,13 +1,12 @@
 import ReactTextareaAutosize from "react-textarea-autosize";
 import { forwardRef } from "react";
-interface ITextareaProps {
+type Props = {
   value?: string;
   placeholder?: string;
   onChange?: React.ChangeEventHandler<HTMLTextAreaElement>;
-  // autoFocus?: boolean;
-}
+};
 
-const Textarea = forwardRef<HTMLTextAreaElement, ITextareaProps>(function Textarea(
+const Textarea = forwardRef<HTMLTextAreaElement, Props>(function Textarea(
   { value, placeholder, onChange },
   ref
 ) {
