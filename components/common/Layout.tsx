@@ -15,9 +15,9 @@ export default function Layout({ children }: Props) {
 
   return (
     <>
-      <WrapMotionFade key={router.asPath}>{children}</WrapMotionFade>
+      <WrapMotionFade>{children}</WrapMotionFade>
       {router.pathname === "/" && (
-        <div className="fixed bottom-[6.25rem] w-full max-w-[480px] right-0">
+        <div className="flex justify-end fixed bottom-32 max-w-[480px] w-full pr-8">
           <ScrollUpAndDown />
         </div>
       )}

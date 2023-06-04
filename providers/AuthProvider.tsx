@@ -53,8 +53,7 @@ export default function AuthProvider({ children }: Props) {
     signInWithPopup(auth, provider)
       .then(async ({ user }) => {
         const snap = await getDoc(doc(db, "users", user.uid));
-        if (!snap.data())
-          await setDoc(doc(db, "users", user.uid), getNewUser(user));
+        if (!snap.data()) await setDoc(doc(db, "users", user.uid), getNewUser(user));
         router.push("/");
       })
       .catch((e) => {
