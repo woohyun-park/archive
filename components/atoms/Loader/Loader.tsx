@@ -1,19 +1,13 @@
-import WrapMotionFloat from "components/wrappers/motion/WrapMotionFloat";
-
 export default function Loader() {
   return (
     <>
-      <WrapMotionFloat
-        className="flex justify-center h-32 mb-24 overflow-hidden duration-500"
-        key={crypto.randomUUID()}
-      >
-        <div className="lds-ellipsis">
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-        </div>
-      </WrapMotionFloat>
+      {/* <WrapMotionFloat className="flex justify-center h-32 mb-24 overflow-hidden duration-500"> */}
+      <div className="lds-ellipsis">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
 
       <style jsx>
         {`

@@ -1,6 +1,6 @@
 import { COLOR } from "apis/def";
 import Nav from "components/Nav";
-import ScrollTop from "components/atoms/ScrollTop";
+import { ScrollUpAndDown } from "components/molecules";
 import { WrapMotionFade } from "components/wrappers/motion";
 import { useCustomRouter } from "hooks";
 import { useUser } from "providers/UserProvider";
@@ -16,7 +16,11 @@ export default function Layout({ children }: Props) {
   return (
     <>
       <WrapMotionFade key={router.asPath}>{children}</WrapMotionFade>
-      {router.pathname === "/" && <ScrollTop />}
+      {router.pathname === "/" && (
+        <div className="fixed bottom-[6.25rem] w-full max-w-[480px] right-0">
+          <ScrollUpAndDown />
+        </div>
+      )}
       <Nav />
 
       <style jsx global>

@@ -1,4 +1,4 @@
-import Loader from "../atoms/Loader";
+import Loader from "../atoms/Loader/Loader";
 import PullToRefresh from "react-simple-pull-to-refresh";
 import React from "react";
 import { twMerge } from "tailwind-merge";

@@ -11,9 +11,10 @@ type Props = {
   onClick?: MouseEventHandler<HTMLButtonElement>;
 };
 
-const btn_base =
+const base =
   "flex items-center h-8 px-4 text-sm justify-center py-2 text-sm text-center text-white transition duration-150 ease-in-out bg-black rounded-lg hover:bg-black-f focus:bg-black-f focus:outline-none focus:ring-0 active:bg-black-f min-w-fit";
-const btn_inactive = "text-black bg-gray-3 hover:bg-gray-3f focus:bg-gray-3f active:bg-gray-3f";
+const inactive = "text-black bg-gray-3 hover:bg-gray-3f focus:bg-gray-3f active:bg-gray-3f";
+const full = "w-full";
 
 export default function Button({
   label,
@@ -23,12 +24,12 @@ export default function Button({
   className = "",
   onClick = () => {},
 }: Props) {
-  function getClassName() {
-    let toFormat: string[] = [btn_base];
-    if (!isActive) toFormat.push(btn_inactive);
-    if (width === "full") toFormat.push("w-full");
-    return twMerge(...toFormat, className || "");
-  }
+  const getClassName = () => {
+    let toFormat: string[] = [base];
+    if (!isActive) toFormat.push(inactive);
+    if (width === "full") toFormat.push(full);
+    return twMerge(...toFormat, className);
+  };
 
   return (
     <button type={type} onClick={onClick} className={getClassName()}>

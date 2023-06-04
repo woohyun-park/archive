@@ -3,6 +3,7 @@
 exports[`Storyshots Button Default 1`] = `
 <button
   className="flex items-center h-8 px-4 justify-center py-2 text-sm text-center text-white transition duration-150 ease-in-out bg-black rounded-lg hover:bg-black-f focus:bg-black-f focus:outline-none focus:ring-0 active:bg-black-f min-w-fit"
+  onClick={[Function]}
   type="button"
 >
   Button
@@ -12,6 +13,7 @@ exports[`Storyshots Button Default 1`] = `
 exports[`Storyshots Button Full 1`] = `
 <button
   className="flex items-center h-8 px-4 justify-center py-2 text-sm text-center text-white transition duration-150 ease-in-out bg-black rounded-lg hover:bg-black-f focus:bg-black-f focus:outline-none focus:ring-0 active:bg-black-f min-w-fit w-full"
+  onClick={[Function]}
   type="button"
 >
   Button
@@ -21,6 +23,7 @@ exports[`Storyshots Button Full 1`] = `
 exports[`Storyshots Button Inactive 1`] = `
 <button
   className="flex items-center h-8 px-4 justify-center py-2 text-sm text-center transition duration-150 ease-in-out rounded-lg focus:outline-none focus:ring-0 min-w-fit text-black bg-gray-3 hover:bg-gray-3f focus:bg-gray-3f active:bg-gray-3f"
+  onClick={[Function]}
   type="button"
 >
   Button
@@ -29,12 +32,13 @@ exports[`Storyshots Button Inactive 1`] = `
 
 exports[`Storyshots Icon Alarm 1`] = `
 <div
-  className="transition duration-150 ease-in-out hover:cursor-pointer"
+  className="w-fit transition duration-150 ease-in-out hover:cursor-pointer"
 >
   <svg
     aria-hidden="true"
     fill="none"
     height="32px"
+    onClick={[Function]}
     stroke="currentColor"
     strokeWidth="1.5"
     style={
@@ -57,12 +61,13 @@ exports[`Storyshots Icon Alarm 1`] = `
 
 exports[`Storyshots Icon Back 1`] = `
 <div
-  className="transition duration-150 ease-in-out hover:cursor-pointer"
+  className="w-fit transition duration-150 ease-in-out hover:cursor-pointer"
 >
   <svg
     aria-hidden="true"
     fill="currentColor"
     height="32px"
+    onClick={[Function]}
     stroke="currentColor"
     strokeWidth="0"
     style={
@@ -85,12 +90,13 @@ exports[`Storyshots Icon Back 1`] = `
 
 exports[`Storyshots Icon Comment 1`] = `
 <div
-  className="transition duration-150 ease-in-out hover:cursor-pointer"
+  className="w-fit transition duration-150 ease-in-out hover:cursor-pointer"
 >
   <svg
     aria-hidden="true"
     fill="none"
     height="32px"
+    onClick={[Function]}
     stroke="currentColor"
     strokeWidth="1.5"
     style={
@@ -113,12 +119,13 @@ exports[`Storyshots Icon Comment 1`] = `
 
 exports[`Storyshots Icon Delete 1`] = `
 <div
-  className="transition duration-150 ease-in-out hover:cursor-pointer"
+  className="w-fit transition duration-150 ease-in-out hover:cursor-pointer"
 >
   <svg
     aria-hidden="true"
     fill="none"
     height="32px"
+    onClick={[Function]}
     stroke="currentColor"
     strokeWidth="1.5"
     style={
@@ -141,12 +148,13 @@ exports[`Storyshots Icon Delete 1`] = `
 
 exports[`Storyshots Icon Filter 1`] = `
 <div
-  className="transition duration-150 ease-in-out hover:cursor-pointer"
+  className="w-fit transition duration-150 ease-in-out hover:cursor-pointer"
 >
   <svg
     aria-hidden="true"
     fill="none"
     height="32px"
+    onClick={[Function]}
     stroke="currentColor"
     strokeWidth="1.5"
     style={
@@ -169,12 +177,13 @@ exports[`Storyshots Icon Filter 1`] = `
 
 exports[`Storyshots Icon Like 1`] = `
 <div
-  className="transition duration-150 ease-in-out hover:cursor-pointer"
+  className="w-fit transition duration-150 ease-in-out hover:cursor-pointer"
 >
   <svg
     aria-hidden="true"
     fill="none"
     height="32px"
+    onClick={[Function]}
     stroke="currentColor"
     strokeWidth="1.5"
     style={
@@ -197,12 +206,13 @@ exports[`Storyshots Icon Like 1`] = `
 
 exports[`Storyshots Icon Modify 1`] = `
 <div
-  className="transition duration-150 ease-in-out hover:cursor-pointer"
+  className="w-fit transition duration-150 ease-in-out hover:cursor-pointer"
 >
   <svg
     aria-hidden="true"
     fill="none"
     height="32px"
+    onClick={[Function]}
     stroke="currentColor"
     strokeWidth="1.5"
     style={
@@ -225,12 +235,13 @@ exports[`Storyshots Icon Modify 1`] = `
 
 exports[`Storyshots Icon Refresh 1`] = `
 <div
-  className="transition duration-150 ease-in-out hover:cursor-pointer"
+  className="w-fit transition duration-150 ease-in-out hover:cursor-pointer"
 >
   <svg
     aria-hidden="true"
     fill="currentColor"
     height="32px"
+    onClick={[Function]}
     stroke="currentColor"
     strokeWidth="0"
     style={
@@ -253,12 +264,13 @@ exports[`Storyshots Icon Refresh 1`] = `
 
 exports[`Storyshots Icon Scrap 1`] = `
 <div
-  className="transition duration-150 ease-in-out hover:cursor-pointer"
+  className="w-fit transition duration-150 ease-in-out hover:cursor-pointer"
 >
   <svg
     aria-hidden="true"
     fill="none"
     height="32px"
+    onClick={[Function]}
     stroke="currentColor"
     strokeWidth="1.5"
     style={
@@ -281,12 +293,13 @@ exports[`Storyshots Icon Scrap 1`] = `
 
 exports[`Storyshots Icon Search 1`] = `
 <div
-  className="transition duration-150 ease-in-out hover:cursor-pointer"
+  className="w-fit transition duration-150 ease-in-out hover:cursor-pointer"
 >
   <svg
     aria-hidden="true"
     fill="currentColor"
     height="32px"
+    onClick={[Function]}
     stroke="currentColor"
     strokeWidth="0"
     style={
@@ -309,12 +322,13 @@ exports[`Storyshots Icon Search 1`] = `
 
 exports[`Storyshots Icon Setting 1`] = `
 <div
-  className="transition duration-150 ease-in-out hover:cursor-pointer"
+  className="w-fit transition duration-150 ease-in-out hover:cursor-pointer"
 >
   <svg
     aria-hidden="true"
     fill="currentColor"
     height="32px"
+    onClick={[Function]}
     stroke="currentColor"
     strokeWidth="0"
     style={
@@ -337,12 +351,13 @@ exports[`Storyshots Icon Setting 1`] = `
 
 exports[`Storyshots Icon X 1`] = `
 <div
-  className="transition duration-150 ease-in-out hover:cursor-pointer"
+  className="w-fit transition duration-150 ease-in-out hover:cursor-pointer"
 >
   <svg
     aria-hidden="true"
     fill="currentColor"
     height="32px"
+    onClick={[Function]}
     stroke="currentColor"
     strokeWidth="0"
     style={
@@ -363,18 +378,97 @@ exports[`Storyshots Icon X 1`] = `
 </div>
 `;
 
-exports[`Storyshots Input Alarm 1`] = `
+exports[`Storyshots Input Default 1`] = `
 <input
-  className="jsx-83904679 block w-full px-2 py-2 my-1 text-base font-normal transition ease-in-out border-2 border-solid rounded-lg form-control text-gray-1 bg-gray-3 bg-clip-padding border-gray-3 focus:text-gray-1 focus:border-gray-3f focus:outline-none"
-  id="input_i1"
+  className="block w-full px-2 py-2 my-1 text-base font-normal transition ease-in-out border-2 border-solid rounded-lg form-control text-gray-1 bg-gray-3 bg-clip-padding border-gray-3 focus:text-gray-1 focus:border-gray-3f focus:outline-none"
+  onChange={[Function]}
+  placeholder=""
   type="text"
+  value=""
 />
 `;
 
-exports[`Storyshots Input Default 1`] = `
-<input
-  className="jsx-83904679 block w-full px-2 py-2 my-1 text-base font-normal transition ease-in-out border-2 border-solid rounded-lg form-control text-gray-1 bg-gray-3 bg-clip-padding border-gray-3 focus:text-gray-1 focus:border-gray-3f focus:outline-none"
-  id="input_i1"
-  type="text"
+exports[`Storyshots Loader Default 1`] = `
+<div
+  className="jsx-2f6e94d96912eed7 lds-ellipsis"
+>
+  <div
+    className="jsx-2f6e94d96912eed7"
+  />
+  <div
+    className="jsx-2f6e94d96912eed7"
+  />
+  <div
+    className="jsx-2f6e94d96912eed7"
+  />
+  <div
+    className="jsx-2f6e94d96912eed7"
+  />
+</div>
+`;
+
+exports[`Storyshots ScrollUpAndDown Default 1`] = `
+<div
+  className="w-fit"
+>
+  <div
+    className="transition duration-150 ease-in-out p-1 mb-2 bg-white rounded-full opacity-75 hover:cursor-pointer w-fit"
+  >
+    <svg
+      aria-hidden="true"
+      fill="currentColor"
+      height="32px"
+      onClick={[Function]}
+      stroke="currentColor"
+      strokeWidth="0"
+      style={
+        {
+          "color": undefined,
+        }
+      }
+      viewBox="0 0 24 24"
+      width="32px"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        clipRule="evenodd"
+        d="M11.47 7.72a.75.75 0 011.06 0l7.5 7.5a.75.75 0 11-1.06 1.06L12 9.31l-6.97 6.97a.75.75 0 01-1.06-1.06l7.5-7.5z"
+        fillRule="evenodd"
+      />
+    </svg>
+  </div>
+  <div
+    className="transition duration-150 ease-in-out p-1 bg-white rounded-full opacity-75 hover:cursor-pointer w-fit"
+  >
+    <svg
+      aria-hidden="true"
+      fill="currentColor"
+      height="32px"
+      onClick={[Function]}
+      stroke="currentColor"
+      strokeWidth="0"
+      style={
+        {
+          "color": undefined,
+        }
+      }
+      viewBox="0 0 24 24"
+      width="32px"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        clipRule="evenodd"
+        d="M12.53 16.28a.75.75 0 01-1.06 0l-7.5-7.5a.75.75 0 011.06-1.06L12 14.69l6.97-6.97a.75.75 0 111.06 1.06l-7.5 7.5z"
+        fillRule="evenodd"
+      />
+    </svg>
+  </div>
+</div>
+`;
+
+exports[`Storyshots Textarea Default 1`] = `
+<textarea
+  className="block w-full h-8 px-2 py-2 text-base leading-5 transition ease-in-out border-2 border-solid rounded-lg resize-none text-gray-1 bg-gray-3 bg-clip-padding border-gray-3 focus:text-gray-1 focus:border-gray-3f focus:outline-none"
+  onChange={[Function]}
 />
 `;
