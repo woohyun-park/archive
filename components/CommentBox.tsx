@@ -1,13 +1,11 @@
+import { Button, ProfileImage, Textarea } from "./atoms";
 import { Children, useEffect, useRef, useState } from "react";
-import { IComment, IPost, IUser } from "../apis/def";
+import { IComment, IPost, IUser } from "types/common";
 import { deleteDoc, doc } from "firebase/firestore";
 
 import Action from "./Action";
 import { AnimatePresence } from "framer-motion";
-import { Button } from "./atoms";
-import Comment from "./molecules/Comment/Comment";
-import ProfileImg from "./ProfileImg";
-import Textarea from "./atoms/Textarea/Textarea";
+import { Comment } from "./molecules";
 import { WrapMotionFloat } from "./wrappers/motion";
 import { createComment } from "../apis/firebase/fbCreate";
 import { db } from "../apis/firebase/fb";
@@ -93,7 +91,7 @@ export default function CommentBox({ post, user, className, onRefresh }: ICommen
         )}
       </AnimatePresence>
       <div className="fixed bottom-0 flex items-center justify-between py-4 bg-white w-[calc(100vw_-_2rem)] max-w-[calc(480px_-_2rem)]">
-        <ProfileImg photoURL={user.photoURL} size="sm" />
+        <ProfileImage photoURL={user.photoURL} size="sm" />
         <Textarea
           value={comment}
           placeholder={`${user.displayName}(으)로 댓글 달기...`}

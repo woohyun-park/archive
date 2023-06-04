@@ -5,7 +5,7 @@ import axios, { AxiosRequestConfig } from "axios";
 import Btn from "../components/atoms/Button";
 import BtnIcon from "../components/atoms/BtnIcon";
 import FormInput from "../components/atoms/FormInput";
-import ProfileImg from "../components/ProfileImg";
+import ProfileImg from "../components/atoms/ProfileImage/ProfileImage";
 import { WrapMotionFade } from "components/wrappers/motion";
 import { signOut } from "firebase/auth";
 import { useForm } from "react-hook-form";
@@ -53,10 +53,7 @@ export default function Setting() {
         headers: { "Content-Type": "multipart/form-data" },
       };
       formData.append("api_key", process.env.NEXT_PUBLIC_CD_API_KEY || "");
-      formData.append(
-        "upload_preset",
-        process.env.NEXT_PUBLIC_CD_UPLOADE_PRESET || ""
-      );
+      formData.append("upload_preset", process.env.NEXT_PUBLIC_CD_UPLOADE_PRESET || "");
       formData.append(`file`, data.file[0]);
       await axios
         .post(
@@ -96,9 +93,7 @@ export default function Setting() {
 
   return (
     <WrapMotionFade className="m-4">
-      {isSubmitting && (
-        <div className="absolute top-0 left-0 z-10 w-full h-full bg-black/20"></div>
-      )}
+      {isSubmitting && <div className="absolute top-0 left-0 z-10 w-full h-full bg-black/20"></div>}
       <div className="flex justify-between mb-4">
         <BtnIcon
           icon="back"
@@ -122,17 +117,11 @@ export default function Setting() {
       </div>
       <div className="flex flex-col items-center">
         <ProfileImg size="lg" photoURL={preview} onClick={handleFileClick} />
-        <div
-          className="mt-2 text-xs hover:cursor-pointer"
-          onClick={handleFileClick}
-        >
+        <div className="mt-2 text-xs hover:cursor-pointer" onClick={handleFileClick}>
           사진 수정
         </div>
       </div>
-      <form
-        className="flex flex-col mt-4"
-        onSubmit={handleSubmit((data) => onValid(data))}
-      >
+      <form className="flex flex-col mt-4" onSubmit={handleSubmit((data) => onValid(data))}>
         <input
           type="file"
           accept="image/*"

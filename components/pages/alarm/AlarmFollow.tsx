@@ -1,6 +1,6 @@
 import Button from "components/atoms/Button/Button";
 import { IAlarm } from "apis/def";
-import ProfileImg from "components/ProfileImg";
+import ProfileImg from "components/atoms/ProfileImage/ProfileImage";
 import { displayCreatedAt } from "apis/time";
 import { updateFollow } from "apis/firebase";
 import { useRouter } from "next/router";
@@ -46,9 +46,7 @@ export default function AlarmFollow({ alarm }: IAlarmFollowProps) {
               >
                 {alarm.author?.displayName}
               </span>
-              <span className="mr-1">
-                {"님이 회원님을 팔로우하기 시작했습니다"}
-              </span>
+              <span className="mr-1">{"님이 회원님을 팔로우하기 시작했습니다"}</span>
               <span className="inline-block text-xs break-keep text-gray-2">
                 {displayCreatedAt(alarm.createdAt)}
               </span>

@@ -1,7 +1,7 @@
-import { IComment, IUser } from "apis/def";
+import { IComment, IUser } from "types/common";
 
 import { Icon } from "components/atoms";
-import ProfileImg from "components/ProfileImg";
+import ProfileImg from "components/atoms/ProfileImage/ProfileImage";
 import { displayCreatedAt } from "apis/time";
 
 type ICommentProps = {

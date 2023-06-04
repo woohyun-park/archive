@@ -1,6 +1,6 @@
-import { IUser } from "apis/def";
-import BtnIcon from "components/atoms/BtnIcon";
-import ProfileImg from "components/ProfileImg";
+import { Icon, ProfileImg } from "components/atoms";
+
+import { IUser } from "types/common";
 import { WrapMotionFade } from "components/wrappers/motion";
 import { useCustomRouter } from "hooks";
 
@@ -17,11 +17,11 @@ export default function Header({ curUser, user }: Props) {
       <div className="flex justify-between">
         {user.id === curUser.id ? (
           <>
-            <BtnIcon icon="back" onClick={() => router.back()} />
-            <BtnIcon icon="setting" onClick={() => router.push("/setting")} />
+            <Icon icon="back" onClick={() => router.back()} />
+            <Icon icon="setting" onClick={() => router.push("/setting")} />
           </>
         ) : (
-          <BtnIcon icon="back" onClick={() => router.back()} />
+          <Icon icon="back" onClick={() => router.back()} />
         )}
       </div>
       <div className="flex items-start justify-between mt-8">
@@ -39,9 +39,7 @@ export default function Header({ curUser, user }: Props) {
             <div>
               <div className="text-gray-2">팔로잉</div>
               <div className="profileNum">
-                {user.id === curUser.id
-                  ? curUser.followings.length
-                  : user.followings.length}
+                {user.id === curUser.id ? curUser.followings.length : user.followings.length}
               </div>
             </div>
           </div>
@@ -58,19 +56,13 @@ export default function Header({ curUser, user }: Props) {
             if (curUser?.id !== user.id) {
               if (curUser?.followings.find((elem) => elem === user.id)) {
                 result.push(
-                  <button
-                    onClick={() => {}}
-                    className="w-full my-4 button-gray"
-                  >
+                  <button onClick={() => {}} className="w-full my-4 button-gray">
                     팔로잉
                   </button>
                 );
               } else {
                 result.push(
-                  <button
-                    onClick={() => {}}
-                    className="w-full my-4 button-black"
-                  >
+                  <button onClick={() => {}} className="w-full my-4 button-black">
                     팔로우
                   </button>
                 );

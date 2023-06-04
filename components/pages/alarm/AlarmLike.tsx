@@ -1,7 +1,7 @@
-import { IAlarm } from "apis/def";
-import { displayCreatedAt } from "apis/time";
-import ProfileImg from "components/ProfileImg";
+import { IAlarm } from "types/common";
 import Image from "next/image";
+import ProfileImg from "components/atoms/ProfileImage/ProfileImage";
+import { displayCreatedAt } from "apis/time";
 import { useRouter } from "next/router";
 
 type IAlarmLikeProps = {
@@ -33,9 +33,7 @@ export default function AlarmLike({ alarm }: IAlarmLikeProps) {
               >
                 {alarm.author?.displayName}
               </span>
-              <span className="mr-1">
-                {"님이 회원님의 게시물을 좋아합니다"}
-              </span>
+              <span className="mr-1">{"님이 회원님의 게시물을 좋아합니다"}</span>
               <span className="inline-block text-xs break-keep text-gray-2">
                 {displayCreatedAt(alarm.createdAt)}
               </span>

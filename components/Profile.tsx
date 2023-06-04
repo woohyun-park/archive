@@ -1,4 +1,4 @@
-import { IAlarm, IPost, IUser } from "../apis/def";
+import { IAlarm, IPost, IUser } from "types/common";
 import {
   addDoc,
   arrayRemove,
@@ -11,10 +11,10 @@ import {
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
 
-import Btn from "./atoms/Button/Button";
+import { Button } from "./atoms";
 import Link from "next/link";
 import ModifyAndDelete from "./ModifyAndDelete";
-import ProfileImg from "./ProfileImg";
+import ProfileImg from "./atoms/ProfileImage/ProfileImage";
 import { db } from "../apis/firebase/fb";
 import { deleteAll } from "../apis/firebase/fbDelete";
 import { displayCreatedAt } from "../apis/time";
@@ -32,13 +32,7 @@ type IProfileProps = {
   className?: string;
 };
 
-export default function Profile({
-  user,
-  post,
-  info,
-  action,
-  className,
-}: IProfileProps) {
+export default function Profile({ user, post, info, action, className }: IProfileProps) {
   const { data: curUser } = useUser();
   const [isFollowing, setIsFollowing] = useState(() =>
     curUser.followings.find((elem: string) => elem === user.id) ? true : false
@@ -46,9 +40,7 @@ export default function Profile({
   const router = useRouter();
 
   useEffect(() => {
-    setIsFollowing(
-      curUser.followings.find((elem) => elem === user.id) ? true : false
-    );
+    setIsFollowing(curUser.followings.find((elem) => elem === user.id) ? true : false);
   }, [curUser]);
 
   async function handleToggleFollow() {
@@ -99,10 +91,7 @@ export default function Profile({
   return (
     <>
       <div
-        className={twMerge(
-          "flex items-center justify-between w-full mt-2 mb-2",
-          className || ""
-        )}
+        className={twMerge("flex items-center justify-between w-full mt-2 mb-2", className || "")}
       >
         <div className="flex items-center">
           <ProfileImg
@@ -112,9 +101,7 @@ export default function Profile({
           />
           <div className="ml-1">
             <Link href={`/profile/${user?.id}`} legacyBehavior>
-              <a className="text-sm font-bold text-black">
-                {user?.displayName}
-              </a>
+              <a className="text-sm font-bold text-black">{user?.displayName}</a>
             </Link>
             {info === "time" && (
               <div className="text-xs -translate-y-[2px] text-gray-1">
@@ -130,14 +117,9 @@ export default function Profile({
         </div>
         {action === "follow" &&
           (isFollowing ? (
-            <Btn
-              label="팔로잉"
-              onClick={handleToggleFollow}
-              isActive={false}
-              size="sm"
-            />
+            <Button label="팔로잉" onClick={handleToggleFollow} isActive={false} />
           ) : (
-            <Btn label="팔로우" onClick={handleToggleFollow} size="sm" />
+            <Button label="팔로우" onClick={handleToggleFollow} />
           ))}
         {action === "modifyAndDelete" && <ModifyAndDelete post={post} />}
       </div>

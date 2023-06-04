@@ -1,6 +1,6 @@
+import { IAlarm } from "types/common";
 import Image from "next/image";
-import { IAlarm } from "../../../apis/def";
-import ProfileImg from "../../ProfileImg";
+import { ProfileImage } from "components/atoms";
 import { displayCreatedAt } from "../../../apis/time";
 import { useCustomRouter } from "hooks";
 
@@ -20,7 +20,7 @@ export default function AlarmComment({ alarm }: IAlarmCommentProps) {
         }
       >
         <div className="flex">
-          <ProfileImg
+          <ProfileImage
             size="sm"
             photoURL={alarm.author?.photoURL || ""}
             onClick={() => router.push(`/profile/${alarm.author?.id}`)}

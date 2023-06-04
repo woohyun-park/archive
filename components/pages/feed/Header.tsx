@@ -1,5 +1,5 @@
 import { Icon } from "components/atoms";
-import ProfileImg from "components/ProfileImg";
+import ProfileImage from "components/atoms/ProfileImage/ProfileImage";
 import { useCustomRouter } from "hooks";
 import { useUser } from "providers";
 
@@ -19,7 +19,7 @@ export default function Header({}) {
             // fill={hasNewAlarms ? true : false}
             onClick={() => router.push("/alarm")}
           />
-          <ProfileImg
+          <ProfileImage
             size="sm"
             photoURL={user?.photoURL || ""}
             onClick={() => router.push(`/profile/${user?.id}`)}
