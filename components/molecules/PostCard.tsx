@@ -1,13 +1,13 @@
-import { IPost, IUser } from "../apis/def";
+import { IPost, IUser } from "types/common";
 
 import { AUTH_USER_DEFAULT } from "consts/auth";
-import Action from "./Action";
-import PostBox from "./PostBox";
-import Profile from "./Profile";
-import Tags from "./Tags";
-import WrapMotionFloat from "./wrappers/motion/WrapMotionFloat";
+import Action from "components/Action";
+import PostBox from "components/molecules/PostImage/PostImage";
+import Profile from "components/Profile";
+import Tags from "components/Tags";
+import { WrapMotionFloat } from "components/wrappers/motion";
 import { useCustomRouter } from "hooks";
-import { useStatus } from "../stores/useStatus";
+import { useStatus } from "stores/useStatus";
 import { useUser } from "providers";
 
 interface IPostCardProps {

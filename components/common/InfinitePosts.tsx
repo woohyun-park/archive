@@ -2,8 +2,8 @@ import React, { Children } from "react";
 
 import { IInfiniteScroll } from "consts/infiniteScroll";
 import { IPost } from "../../apis/def";
-import PostBox from "components/PostBox";
-import PostCard from "../PostCard";
+import PostBox from "components/molecules/PostImage/PostImage";
+import PostCard from "../molecules/PostCard";
 import { WrapMotionFade } from "components/wrappers/motion";
 import WrapPullToRefresh from "../wrappers/WrapPullToRefresh";
 
@@ -23,8 +23,7 @@ export default function InfinitePosts({
   className,
   isPullable = true,
 }: IInfinitePosts) {
-  const { data, hasNextPage, isFetchingNextPage, refetch, fetchNextPage } =
-    infiniteScroll;
+  const { data, hasNextPage, isFetchingNextPage, refetch, fetchNextPage } = infiniteScroll;
   return (
     <WrapMotionFade className={className}>
       <WrapPullToRefresh
@@ -48,28 +47,16 @@ export default function InfinitePosts({
           <div className="grid grid-cols-2 gap-y-2 gap-x-2">
             {Children.toArray(
               data.map((post, i) => (
-                <PostBox
-                  key={post.id}
-                  type="titleAndTags"
-                  post={{ ...post, id: post.id }}
-                />
+                <PostBox key={post.id} type="titleAndTags" post={{ ...post, id: post.id }} />
               ))
             )}
           </div>
         )}
         {numCols === 3 && (
-          <div
-            className={
-              data.length !== 0 ? "grid grid-cols-3 gap-y-2 gap-x-2" : ""
-            }
-          >
+          <div className={data.length !== 0 ? "grid grid-cols-3 gap-y-2 gap-x-2" : ""}>
             {Children.toArray(
               data.map((post, i) => (
-                <PostBox
-                  key={post.id}
-                  type="title"
-                  post={{ ...post, id: post.id }}
-                />
+                <PostBox key={post.id} type="title" post={{ ...post, id: post.id }} />
               ))
             )}
           </div>

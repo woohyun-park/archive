@@ -1,5 +1,5 @@
-import Btn from "./atoms/Button/Button";
 import { Children } from "react";
+import Tag from "./atoms/Tag/Tag";
 import { twMerge } from "tailwind-merge";
 import { useCustomRouter } from "hooks";
 
@@ -17,11 +17,7 @@ export default function Tags({ tags, className }: ITagsProps) {
         {Children.toArray(
           [...tags].reverse().map((tag, i) => {
             return (
-              <Btn
-                label={`#${tag}`}
-                className="px-2 mb-1 ml-1"
-                onClick={() => router.push(`/tag/${tag}`)}
-              />
+              <Tag label={tag} className="mb-1 ml-1" onClick={() => router.push(`/tag/${tag}`)} />
             );
           })
         )}
