@@ -1,5 +1,5 @@
 import ReactDOM from "react-dom";
-import Spinner from "./Spinner";
+import Spinner from "../templates/PageLoad";
 import WrapFullScreen from "../wrappers/WrapFullScreen";
 
 export default function ModalSpinner() {

@@ -7,7 +7,6 @@ import Layout from "./Layout";
 import Message from "./Message";
 import ModalSpinner from "./ModalSpinner";
 import PageTab from "./PageTab";
-import Spinner from "./Spinner";
 
 export {
   ButtonAnimateWidth,
@@ -17,7 +16,6 @@ export {
   InfiniteUsers,
   Message,
   ModalSpinner,
-  Spinner,
   Layout,
   PageTab,
 };
