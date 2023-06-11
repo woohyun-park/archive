@@ -1,9 +1,7 @@
-import { IPost, SIZE } from "../apis/def";
-
-import { Icon } from "./atoms";
-import { deletePost } from "../apis/firebase/fbDelete";
 import { useCustomRouter } from "hooks";
-import { useStatus } from "../stores/useStatus";
+import { IPost } from "types/common";
+import { deletePost } from "../apis/firebase/fbDelete";
+import { Icon } from "./atoms";
 
 interface IModifyAndDeleteProps {
   post: IPost | null | undefined;
@@ -12,14 +10,12 @@ interface IModifyAndDeleteProps {
 export default function ModifyAndDelete({ post }: IModifyAndDeleteProps) {
   const router = useCustomRouter();
 
-  const { setRefresh } = useStatus();
-
   return post ? (
     <div>
       <div className="flex">
         <Icon
           icon="modify"
-          size={SIZE.iconSm}
+          size="sm"
           onClick={() => {
             router.push(
               {
@@ -32,7 +28,7 @@ export default function ModifyAndDelete({ post }: IModifyAndDeleteProps) {
         />
         <Icon
           icon="delete"
-          size={SIZE.iconSm}
+          size="sm"
           onClick={async () => {
             if (confirm("정말 삭제하시겠습니까?")) {
               await deletePost(post?.id || "");

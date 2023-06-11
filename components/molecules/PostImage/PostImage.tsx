@@ -1,10 +1,10 @@
 import React, { createContext, useContext } from "react";
 
 import { COLOR } from "apis/def";
-import { IPost } from "types/common";
+import { useCustomRouter } from "hooks";
 import { NextRouter } from "next/router";
 import { twMerge } from "tailwind-merge";
-import { useCustomRouter } from "hooks";
+import { IPost } from "types/common";
 
 type Props = {
   post: IPost;
@@ -13,27 +13,27 @@ type Props = {
   size?: "sm" | "base";
 };
 
-type PostBoxContext = { post: IPost; router: NextRouter };
-const PostBoxContext = createContext<PostBoxContext | undefined>(undefined);
+type PostImageContext = { post: IPost; router: NextRouter };
+const PostImageContext = createContext<PostImageContext | undefined>(undefined);
 
 export default function PostImage({ post, size = "base", children }: Props) {
   const router = useCustomRouter();
   const getClassName = () => {
     return twMerge(
-      "absolute overflow-hidden rounded-lg",
-      size === "sm" ? "w-36 h-36" : "w-full h-full max-w-[448px] max-h-[448px]"
+      "overflow-hidden rounded-lg",
+      size === "sm" ? "w-36 h-36" : "w-[36rem] h-[36rem] max-w-[448px] max-h-[448px]"
     );
   };
 
   return (
     <>
-      <PostBoxContext.Provider value={{ post, router }}>
+      <PostImageContext.Provider value={{ post, router }}>
         <div className={getClassName()}>
           {children}
           {post.imgs.length !== 0 && <div className="w-full h-full" id="box_image" />}
           {post.imgs.length === 0 && <div className="w-full h-full" id="box_color" />}
         </div>
-      </PostBoxContext.Provider>
+      </PostImageContext.Provider>
 
       <style jsx>{`
         #box_color {
@@ -48,22 +48,22 @@ export default function PostImage({ post, size = "base", children }: Props) {
   );
 }
 
-function usePostBox() {
-  const context = useContext(PostBoxContext);
+function usePostImage() {
+  const context = useContext(PostImageContext);
   if (context === undefined) {
-    throw new Error("usePostBox must be used within a <PostBox />");
+    throw new Error("usePostImage must be used within a <PostImage />");
   }
   return context;
 }
 
 PostImage.Title = function PostImageTitle() {
-  const { post, router } = usePostBox();
+  const { post, router } = usePostImage();
   const handleClick = () => {
     router.push(`/post/${post.id}`);
   };
   return (
     <div
-      className="absolute z-10 m-2 text-xl font-bold leading-5 text-white break-words hover:cursor-pointer"
+      className="w-[calc(144px_-_1rem)] absolute z-10 m-2 text-xl font-bold leading-5 text-white break-words hover:cursor-pointer"
       onClick={handleClick}
     >
       {post.title}

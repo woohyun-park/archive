@@ -1,10 +1,10 @@
 import React, { Children } from "react";
 
-import { IInfiniteScroll } from "consts/infiniteScroll";
-import { IPost } from "../../apis/def";
-import PostBox from "components/molecules/PostImage/PostImage";
-import PostCard from "../molecules/PostCard";
+import PostImage from "components/molecules/PostImage/PostImage";
 import { WrapMotionFade } from "components/wrappers/motion";
+import { IInfiniteScroll } from "consts/infiniteScroll";
+import { IPost } from "types/common";
+import PostCard from "../molecules/PostCard";
 import WrapPullToRefresh from "../wrappers/WrapPullToRefresh";
 
 export type IInfinitePosts = {
@@ -47,7 +47,7 @@ export default function InfinitePosts({
           <div className="grid grid-cols-2 gap-y-2 gap-x-2">
             {Children.toArray(
               data.map((post, i) => (
-                <PostBox key={post.id} type="titleAndTags" post={{ ...post, id: post.id }} />
+                <PostImage key={post.id} size="sm" post={{ ...post, id: post.id }} />
               ))
             )}
           </div>
@@ -56,7 +56,9 @@ export default function InfinitePosts({
           <div className={data.length !== 0 ? "grid grid-cols-3 gap-y-2 gap-x-2" : ""}>
             {Children.toArray(
               data.map((post, i) => (
-                <PostBox key={post.id} type="title" post={{ ...post, id: post.id }} />
+                <PostImage key={post.id} size="sm" post={{ ...post, id: post.id }}>
+                  <PostImage.Title />
+                </PostImage>
               ))
             )}
           </div>

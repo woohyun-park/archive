@@ -1,18 +1,15 @@
+import axios, { AxiosRequestConfig } from "axios";
 import React, { useRef, useState } from "react";
 import { auth, updateUser } from "../apis/firebase";
-import axios, { AxiosRequestConfig } from "axios";
 
-import Btn from "../components/atoms/Button";
-import BtnIcon from "../components/atoms/BtnIcon";
-import FormInput from "../components/atoms/FormInput";
-import ProfileImg from "../components/atoms/ProfileImage/ProfileImage";
+import { Button, Icon } from "components/atoms";
 import { WrapMotionFade } from "components/wrappers/motion";
 import { signOut } from "firebase/auth";
-import { useForm } from "react-hook-form";
 import { useRouter } from "next/router";
-import { useStatus } from "../stores/useStatus";
 import { useUser } from "providers";
-import { wrapPromise } from "../libs/common";
+import { useForm } from "react-hook-form";
+import FormInput from "../components/atoms/FormInput";
+import ProfileImg from "../components/atoms/ProfileImage/ProfileImage";
 
 interface IForm {
   file: File[];
@@ -23,7 +20,6 @@ interface IForm {
 export default function Setting() {
   const { data: curUser } = useUser();
   const [preview, setPreview] = useState(curUser.photoURL);
-  const { setLogoutLoader } = useStatus();
   const router = useRouter();
   const {
     register,
@@ -95,7 +91,7 @@ export default function Setting() {
     <WrapMotionFade className="m-4">
       {isSubmitting && <div className="absolute top-0 left-0 z-10 w-full h-full bg-black/20"></div>}
       <div className="flex justify-between mb-4">
-        <BtnIcon
+        <Icon
           icon="back"
           onClick={() => {
             if (isDirty) {
@@ -106,7 +102,6 @@ export default function Setting() {
         <div
           className="flex items-center text-xs hover:cursor-pointer w-fit"
           onClick={async () => {
-            await wrapPromise(() => setLogoutLoader(true), 1000);
             signOut(auth);
             router.reload();
             // router.replace("/");
@@ -150,7 +145,7 @@ export default function Setting() {
           maxLength={150}
           minRows={4}
         />
-        <Btn label="변경" type="submit" />
+        <Button label="변경" type="submit" />
       </form>
     </WrapMotionFade>
   );

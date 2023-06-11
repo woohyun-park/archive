@@ -32,10 +32,10 @@ export default function PageTab({ header, tabs }: Props) {
   const scrollRefs = useRef<HTMLDivElement[]>([]);
   scrollRefs.current = [];
 
-  const { setScroll, pages, setSelectedPage } = useStatus();
+  const { setScroll, selectedTabs, setSelectedTab } = useStatus();
 
   const path = router.asPath;
-  const page = pages[path] ? pages[path].selectedPage : 0;
+  const page = selectedTabs[path] || 0;
 
   // 각각의 tab에 대한 scroll 값을 가지고 있는 container에 대한 ref인 scrollRefs를 init한다
   function addScrollRefs(e: HTMLDivElement | null, i: number) {
@@ -44,8 +44,15 @@ export default function PageTab({ header, tabs }: Props) {
 
   // tab을 클릭하면 해당 tab에 대한 scroll을 저장하고 page를 변경한다.
   function onTabClick(i: number) {
-    setScroll(path + "/" + page, scrollRefs.current[page]?.scrollTop || 0);
-    setSelectedPage(path, i);
+    // setScroll(path + "/" + page, scrollRefs.current[page]?.scrollTop || 0);
+    setScroll(
+      [path, path + "/" + page],
+      [
+        document.querySelector("#refScroll")?.scrollTop || 0,
+        document.querySelector(`#refScrollTab${page}`)?.scrollTop || 0,
+      ]
+    );
+    setSelectedTab(path, i);
   }
 
   return (

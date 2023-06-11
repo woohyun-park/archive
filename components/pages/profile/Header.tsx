@@ -1,8 +1,8 @@
-import { Icon, ProfileImg } from "components/atoms";
+import { Icon, ProfileImage } from "components/atoms";
 
-import { IUser } from "types/common";
 import { WrapMotionFade } from "components/wrappers/motion";
 import { useCustomRouter } from "hooks";
+import { IUser } from "types/common";
 
 type Props = {
   curUser: IUser;
@@ -44,7 +44,7 @@ export default function Header({ curUser, user }: Props) {
             </div>
           </div>
         </div>
-        <ProfileImg size="lg" photoURL={user.photoURL} />
+        <ProfileImage size="lg" photoURL={user.photoURL} />
       </div>
 
       <div className="h-full py-4 break-all">{user.txt}</div>

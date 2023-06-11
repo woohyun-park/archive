@@ -1,11 +1,11 @@
-import { IDict, IScrap } from "apis/def";
-import React, { Children } from "react";
 import { WrapMotionFade, WrapMotionFloat } from "components/wrappers/motion";
+import React, { Children } from "react";
 
-import BtnIcon from "components/atoms/BtnIcon";
+import { Icon } from "components/atoms";
 import { IInfiniteScroll } from "consts/infiniteScroll";
-import WrapPullToRefresh from "../wrappers/WrapPullToRefresh";
 import { useCustomRouter } from "hooks";
+import { IDict, IScrap } from "types/common";
+import WrapPullToRefresh from "../wrappers/WrapPullToRefresh";
 
 type Props = {
   infiniteScroll: IInfiniteScroll;
@@ -22,8 +22,7 @@ export default function InfiniteScraps({
   isPullable = true,
 }: Props) {
   const router = useCustomRouter();
-  const { data, hasNextPage, isFetchingNextPage, refetch, fetchNextPage } =
-    infiniteScroll;
+  const { data, hasNextPage, isFetchingNextPage, refetch, fetchNextPage } = infiniteScroll;
 
   function formatScraps(scraps: IScrap[]) {
     const formattedScrap: IDict<IScrap[]> = {};
@@ -56,7 +55,7 @@ export default function InfiniteScraps({
                   onClick={() => router.push(`/profile/${uid}/scraps/${cont}`)}
                 >
                   <div className="flex items-center justify-center w-8 h-8 mr-2 text-xl rounded-full bg-gray-3 text-bold">
-                    <BtnIcon icon="scrap" size={"16px"} stroke="2" />
+                    <Icon icon="scrap" size="sm" />
                   </div>
                   <div>
                     <div className="text-sm font-bold text-black">{cont}</div>

@@ -1,17 +1,17 @@
-import { COLOR, IDict, IPost } from "../apis/def";
+import { useCustomRouter, useFormTag } from "hooks";
 import React, { useRef, useState } from "react";
 import { handleColor, handleImage } from "../apis/cloudinary";
-import { useCustomRouter, useFormTag } from "hooks";
+import { COLOR } from "../apis/def";
 
-import BtnIcon from "../components/atoms/BtnIcon";
+import { Icon } from "components/atoms";
+import { WrapMotionFade } from "components/wrappers/motion";
+import Image from "next/image";
+import { useUser } from "providers";
+import { useForm } from "react-hook-form";
+import { IDict, IPost } from "types/common";
 import ColorBox from "../components/atoms/ColorBox";
 import FormInput from "../components/atoms/FormInput";
 import FormTag from "../components/atoms/FormTag";
-import Image from "next/image";
-import { WrapMotionFade } from "components/wrappers/motion";
-import { useForm } from "react-hook-form";
-import { useStatus } from "../stores/useStatus";
-import { useUser } from "providers";
 
 export interface IForm {
   file: File[];
@@ -29,9 +29,9 @@ export default function Add() {
 
   const userContext = useUser();
   const curUser = userContext.data;
-  const { tag, tags, error, onChange, onDelete, onKeyDown, onClick } =
-    useFormTag(prevPost ? prevPost.tags : []);
-  const { setRefresh } = useStatus();
+  const { tag, tags, error, onChange, onDelete, onKeyDown, onClick } = useFormTag(
+    prevPost ? prevPost.tags : []
+  );
 
   const [status, setStatus] = useState({
     selectedTab: prevPost ? (prevPost.imgs.length !== 0 ? true : false) : true,
@@ -62,11 +62,9 @@ export default function Add() {
     if (confirm(`아카이브를 ${prevPost ? "수정" : "생성"}하시겠습니까?`)) {
       let pid;
       // 이미지인 경우
-      if (status.selectedTab)
-        pid = await handleImage({ watch, prevPost, data, curUser, tags });
+      if (status.selectedTab) pid = await handleImage({ watch, prevPost, data, curUser, tags });
       // 색깔인 경우
       else pid = await handleColor({ prevPost, data, curUser, tags });
-      setRefresh("/", true);
       router.replace("/");
     }
   }
@@ -98,14 +96,10 @@ export default function Add() {
   return (
     <WrapMotionFade className="p-4 bg-white">
       <div className="flex">
-        <BtnIcon
+        <Icon
           icon="back"
           onClick={() => {
-            if (
-              confirm(
-                `아카이브 ${prevPost ? "수정" : "작성"}을 취소하시겠습니까?`
-              )
-            )
+            if (confirm(`아카이브 ${prevPost ? "수정" : "작성"}을 취소하시겠습니까?`))
               router.back();
           }}
         />
@@ -185,13 +179,7 @@ export default function Add() {
           id="file"
           hidden
         />
-        <FormInput
-          watch={watch}
-          register={register}
-          type="text"
-          name="title"
-          label="제목"
-        />
+        <FormInput watch={watch} register={register} type="text" name="title" label="제목" />
         <FormTag
           tag={tag}
           tags={tags}

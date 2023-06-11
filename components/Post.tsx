@@ -1,10 +1,9 @@
-import { IPost } from "../apis/def";
 import Image from "next/image";
+import { useUser } from "providers";
+import { IPost } from "types/common";
+import useCustomRouter from "../hooks/useCustomRouter";
 import Profile from "./Profile";
 import Tags from "./Tags";
-import useCustomRouter from "../hooks/useCustomRouter";
-import { useStatus } from "../stores/useStatus";
-import { useUser } from "providers";
 
 interface IPostProps {
   post: IPost;
@@ -12,7 +11,6 @@ interface IPostProps {
 
 export default function Post({ post }: IPostProps) {
   const { data: curUser } = useUser();
-  const { setModalLoader } = useStatus();
 
   const router = useCustomRouter();
 
@@ -21,7 +19,7 @@ export default function Post({ post }: IPostProps) {
       <div
         className="p-4 text-5xl font-bold break-words hover:cursor-pointer w-fit"
         onClick={() => {
-          router.asPath !== `/post/${post.id}` && setModalLoader(true);
+          router.asPath !== `/post/${post.id}`;
           router.push(`/post/${post.id}`);
         }}
       >
@@ -42,20 +40,9 @@ export default function Post({ post }: IPostProps) {
             </div>
           )}
           {curUser.id === post.uid ? (
-            <Profile
-              post={post}
-              user={post.author}
-              info="time"
-              className="px-4"
-            />
+            <Profile post={post} user={post.author} info="time" className="px-4" />
           ) : (
-            <Profile
-              post={post}
-              user={post.author}
-              info="time"
-              action="follow"
-              className="px-4"
-            />
+            <Profile post={post} user={post.author} info="time" action="follow" className="px-4" />
           )}
           <Title />
           <Tags tags={post.tags} className="px-4" />

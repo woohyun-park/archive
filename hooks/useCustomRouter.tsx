@@ -1,9 +1,7 @@
 import { NextRouter, useRouter } from "next/router";
 
 import { Url } from "url";
-import { useStatus } from "../stores/useStatus";
-
-// router에 관련된 여러가지 처리들을 도와주는 custom router를 위한 훅
+import { useStatus } from "stores/useStatus";
 
 export interface TransitionOptions {
   locale?: string | false | undefined;
@@ -14,9 +12,7 @@ export interface TransitionOptions {
 
 export default function useCustomRouter() {
   const router = useRouter();
-
-  const { pages, setScroll } = useStatus();
-
+  const { selectedTabs, setScroll } = useStatus();
   const path = router.asPath;
 
   const customRouter: NextRouter = {
@@ -28,16 +24,13 @@ export default function useCustomRouter() {
     as?: Url | undefined,
     options?: TransitionOptions | undefined
   ) => {
-    // 만약 tab이 있는 페이지라면 refScroll과 refScrollTab의 스크롤을 모두 저장한다.
-    // 만약 tab이 없는 페이지라면 window의 스크롤만을 저장한다.
-    if (pages[path]) {
-      const selectedPage = pages[path].selectedPage;
+    if (selectedTabs[path] !== undefined) {
+      const selectedTab = selectedTabs[path];
       setScroll(
-        [path, path + "/" + selectedPage],
+        [path, path + "/" + selectedTab],
         [
           document.querySelector("#refScroll")?.scrollTop || 0,
-          document.querySelector(`#refScrollTab${selectedPage}`)?.scrollTop ||
-            0,
+          document.querySelector(`#refScrollTab${selectedTab}`)?.scrollTop || 0,
         ]
       );
     } else {

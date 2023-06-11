@@ -1,13 +1,12 @@
 import { IPost, IUser } from "types/common";
 
-import { AUTH_USER_DEFAULT } from "consts/auth";
 import Action from "components/Action";
-import PostBox from "components/molecules/PostImage/PostImage";
+import PostImage from "components/molecules/PostImage/PostImage";
 import Profile from "components/Profile";
 import Tags from "components/Tags";
 import { WrapMotionFloat } from "components/wrappers/motion";
+import { AUTH_USER_DEFAULT } from "consts/auth";
 import { useCustomRouter } from "hooks";
-import { useStatus } from "stores/useStatus";
 import { useUser } from "providers";
 
 interface IPostCardProps {
@@ -17,8 +16,6 @@ interface IPostCardProps {
 export default function PostCard({ post }: IPostCardProps) {
   const userContext = useUser();
   const curUser = userContext.data || AUTH_USER_DEFAULT;
-
-  const { setModalLoader } = useStatus();
 
   const router = useCustomRouter();
   return (
@@ -30,11 +27,11 @@ export default function PostCard({ post }: IPostCardProps) {
           info="time"
           action={curUser.id === post.uid ? "modifyAndDelete" : undefined}
         />
-        <PostBox post={post} type="noText" />
+        <PostImage size="base" post={post} />
         <div
           className="mt-4 mb-4 text-5xl font-bold leading-[3rem] break-words hover:cursor-pointer w-fit"
           onClick={() => {
-            router.asPath !== `/post/${post.id}` && setModalLoader(true);
+            router.asPath !== `/post/${post.id}`;
             router.push(`/post/${post.id}`);
           }}
         >
@@ -45,7 +42,6 @@ export default function PostCard({ post }: IPostCardProps) {
           post={post}
           curUser={curUser}
           onCommentClick={() => {
-            setModalLoader(true);
             router.push(
               {
                 pathname: `/post/${post.id}`,
